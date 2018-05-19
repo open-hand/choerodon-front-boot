@@ -1,0 +1,7 @@
+{
+  "extends": ["tslint:latest"],
+  "rules": {
+    // override custom-tslint-rules rules here
+    // "tsx-no-any-props": false
+  }
+}

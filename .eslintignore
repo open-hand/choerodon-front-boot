@@ -1,0 +1,8 @@
+//路由模板
+templates/*.js
+src/app/generate/*.js
+src/app/*/common/*.js
+generator-hap/*
+../*.js
+lib
+components

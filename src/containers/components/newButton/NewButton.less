@@ -1,0 +1,136 @@
+.custom-btn {
+  &.custom-btn-loading {
+    pointer-events: none;
+    background: #fff;
+    color: #3F51B5;
+    border: 1px solid #3F51B5;
+    .loading-circle {
+      margin-left: 10px;
+    }
+    .object {
+      background: #3F51B5;
+    }
+  }
+  &.custom-btn-clicked {
+    pointer-events: none;
+  }
+  &:visited, &:focus {
+    outline: none;
+  }
+  &:disabled {
+    opacity: .3;
+    pointer-events: none;
+  }
+  &.icon-right:before {
+    content: '';
+  }
+  background-image: linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.02));
+  padding: 0 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  background: #3F51B5;
+  border: 1px solid #303f9f;
+  color: #fff;
+  font-size: 12px;
+  line-height: 26px;
+  .button-wrap {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    >i {
+      color: #fff;
+      display: inline-block;
+      vertical-align: baseline;
+      text-align: center;
+    }
+  }
+  &:hover {
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  }
+}
+.color2 {
+  background: #fff;
+  background-image: -webkit-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.02));
+  background-image: linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.02));
+  border: 1px solid #D3D3D3;
+  color: rgba(0,0,0,.87);
+  .button-wrap {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    >i {
+      color: #3F51B5;
+      display: inline-block;
+      vertical-align: baseline;
+      text-align: center;
+    }
+  }
+}
+.color3 {
+  font-size: 14px;
+  font-weight: bold;
+  background: #fff;
+  color: #3F51B5;
+  border: none;
+  &:hover {
+    box-shadow: none;
+  }
+  &:active {
+    background: #CFD4F5;
+    opacity: .9;
+  }
+}
+.color4 {
+  pointer-events: none;
+  font-size: 14px;
+  font-weight: bold;
+  background: #fff;
+  color: rgba(0,0,0,.26);
+  border: none;
+  &:hover {
+    box-shadow: none;
+  }
+}
+//loading ...的加载动画
+.object {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  margin-right: 5px;
+  float: left;
+  background: #fff;
+}
+#object-one {
+  animation: object-one 0.8s infinite;
+}
+#object-two {
+  animation: object-two 0.8s infinite;
+  -webkit-animation-delay: 0.25s;
+  -moz-animation-delay: 0.25s;
+  -o-animation-delay: 0.25s;
+  animation-delay: 0.25s;
+}
+#object-three {
+  animation: object-three 0.8s infinite;
+  -webkit-animation-delay: 0.5s;
+  -moz-animation-delay: 0.5s;
+  -o-animation-delay: 0.5s;
+  animation-delay: 0.5s;
+}
+@keyframes object-one {
+  75% {
+    transform: scale(1.7);
+  }
+}
+@keyframes object-two {
+  75% {
+    transform: scale(1.7);
+  }
+}
+@keyframes object-three {
+  75% {
+    transform: scale(1.7);
+  }
+}

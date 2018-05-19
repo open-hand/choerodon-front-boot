@@ -1,0 +1,20 @@
+.advancedSearch-enter {
+  opacity: 0.01;
+  height: 0;
+}
+
+.advancedSearch-enter.advancedSearch-enter-active {
+  opacity: 1;
+  height: 70px;
+  transition: opacity 300ms ease-in 200ms, height 150ms ease-out;
+}
+
+.advancedSearch-leave {
+  opacity: 1;
+}
+
+.advancedSearch-leave.advancedSearch-leave-active {
+  opacity: 0.01;
+  height: 0;
+  transition: opacity 300ms ease-in, height 150ms ease-out;
+}

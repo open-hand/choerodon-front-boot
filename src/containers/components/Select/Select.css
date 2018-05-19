@@ -1,0 +1,10 @@
+.pItems:hover {
+  background-color: rgba(0,0,0,0.03);
+  cursor: pointer;
+}
+.pItems {
+  font-size: 12px;
+}
+.selectDiv {
+  font-size: 12px;
+}

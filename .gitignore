@@ -1,0 +1,29 @@
+﻿# Mac OS
+.DS_Store
+
+# IDE
+.idea
+.project
+
+
+# npm
+node_modules
+npm-debug.log
+yarn-error.log
+
+# folder
+dist
+
+# 自动更新目录，不要修改此目录里面的内容
+src/app/*
+.yo-rc.json
+webpack/dist
+webpack/dll
+
+#缓存
+
+.cache
+
+#python的test
+
+testwork/test/test
