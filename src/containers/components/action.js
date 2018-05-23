@@ -13,20 +13,21 @@ class Action extends Component {
     this.onClick2 = this.onClick2.bind(this);
     this.renderMenu = this.renderMenu.bind(this);
   }
+
   onClick = (key) => {
     for (let a = 0; a < this.props.data.length; a += 1) {
       if (a === key.item.props.index) {
         this.props.data[a].action();
       }
     }
-  }
+  };
   onClick2 = (text) => {
     for (let a = 0; a < this.props.data.length; a += 1) {
       if (this.props.data[a].text === text) {
         this.props.data[a].action();
       }
     }
-  }
+  };
   renderMenu = () => {
     const { AppState } = this.props;
     const menuType = AppState.currentMenuType;
@@ -70,9 +71,10 @@ class Action extends Component {
       );
     }
     return child;
-  }
+  };
+
   render() {
-    const { AppState } = this.props;
+    const { AppState, placement } = this.props;
     const menuType = AppState.currentMenuType;
     let type;
     if (AppState.getType) {
@@ -92,11 +94,11 @@ class Action extends Component {
         if (this.props.data[a].service === '') {
           noPermission += 1;
         } else if (Choerodon.getPermission(
-          AppState.getPerMission,
-          this.props.data[a].service,
-          type,
-          organizationId,
-          projectId)) {
+            AppState.getPerMission,
+            this.props.data[a].service,
+            type,
+            organizationId,
+            projectId)) {
           noPermission += 1;
         }
       }
@@ -106,10 +108,10 @@ class Action extends Component {
         if (this.props.data[b].service === '') {
           noPermission += 1;
         } else if (Choerodon.getPermission(
-          AppState.getPerMission,
-          this.props.data[b].service,
-          type,
-          organizationId)) {
+            AppState.getPerMission,
+            this.props.data[b].service,
+            type,
+            organizationId)) {
           noPermission += 1;
         }
       }
@@ -124,10 +126,11 @@ class Action extends Component {
       //   (<Dropdown overlay={menu} trigger={['click']}>
       //     <span style={{ cursor: 'pointer', color: '#3F51B5' }} className="icon-more_vert" />
       //   </Dropdown>) : <div />
-      <Dropdown overlay={menu} trigger={['click']}>
+      <Dropdown overlay={menu} trigger={['click']} placement={placement}>
         <Button shape="circle" style={{ cursor: 'pointer', color: '#3F51B5' }} icon="more_vert" />
       </Dropdown>
     );
   }
 }
+
 export default Action;
