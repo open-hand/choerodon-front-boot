@@ -18,6 +18,13 @@ class Action extends Component {
     this.check(nextProps);
   }
 
+  handleClick = (arg) => {
+    const { action } = arg.item.props;
+    if (typeof action === 'function') {
+      action();
+    }
+  };
+
   check({ data }) {
     data.forEach(({ service, type, organizationId, projectId }) => {
       PermissionStore.check(service, type, organizationId, projectId);
@@ -26,7 +33,7 @@ class Action extends Component {
 
   renderMenu(data) {
     return (
-      <Menu>
+      <Menu onClick={this.handleClick}>
         {data.map(item => this.renderMenuItem(item))}
       </Menu>
     );
@@ -34,7 +41,7 @@ class Action extends Component {
 
   renderMenuItem({ service, type, organizationId, projectId, text, action, icon }) {
     const item = (
-      <Item onClick={action}>
+      <Item action={action}>
         {icon && <Icon type={icon} />}
         {text}
       </Item>
