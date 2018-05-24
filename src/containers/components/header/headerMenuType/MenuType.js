@@ -141,7 +141,7 @@ class MenuType extends Component {
     });
   };
 
-  renderTable(dataSource, canExpand) {
+  renderTable(dataSource, isNotRecent) {
     if (dataSource && dataSource.length) {
       const columns = [{
         title: '名称',
@@ -197,7 +197,7 @@ class MenuType extends Component {
         hideDefaultSelections: true,
       };
       let props = {};
-      if (canExpand) {
+      if (isNotRecent) {
         props = {
           expandedRowKeys: this.renderDefaultExpandAllRows(dataSource),
           onExpand: (expanded, record) => {
@@ -215,7 +215,7 @@ class MenuType extends Component {
           },
           onClick: () => {
             HeaderStore.setSelected(record);
-            if (canExpand) {
+            if (isNotRecent) {
               this.handleExpand(record);
             }
           },
@@ -235,7 +235,9 @@ class MenuType extends Component {
     } else {
       return (
         <div className="menu-type-empty">
-          您还没有在任何组织或项目中被分配角色
+          {
+            isNotRecent ? '您还没有在任何组织或项目中被分配角色' : '您没有最近浏览记录'
+          }
         </div>
       );
     }
