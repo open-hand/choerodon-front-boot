@@ -75,13 +75,13 @@ class PermissionStore {
       case 'organization':
         return {
           code,
-          organizationId,
+          organizationId: Number(organizationId),
           resourceType: type,
         };
       case 'project':
         return {
           code,
-          projectId,
+          projectId: Number(projectId),
           resourceType: type,
         };
       case 'site':
