@@ -1,12 +1,10 @@
 /*eslint-disable*/
 //service 为一个数组，权限的code
 
-import React, { Children, Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import { inject, observer } from 'mobx-react';
+import React, { Children, cloneElement, Component, isValidElement } from 'react';
+import { observer } from 'mobx-react';
 import PermissionStore from '../stores/PermissionStore';
 
-@inject('AppState')
 @observer
 class Permission extends Component {
 
@@ -23,11 +21,23 @@ class Permission extends Component {
     PermissionStore.check(service, type, organizationId, projectId);
   }
 
+  extendProps(children, props) {
+    return Children.map(children, child => {
+      if (isValidElement(child)) {
+        return cloneElement(child, props);
+      } else {
+        return child;
+      }
+    });
+  }
+
   render() {
-    const { service, type, organizationId, projectId } = this.props;
+    const { service, type, organizationId, projectId, defaultChildren, children, ...otherProps } = this.props;
     if (PermissionStore.judgeServices(service, type, organizationId, projectId)
         .some(item => PermissionStore.findPermission(item).approve)) {
-      return Children.only(this.props.children);
+      return this.extendProps(children, otherProps);
+    } else if (defaultChildren) {
+      return this.extendProps(defaultChildren, otherProps);
     } else {
       return null;
     }
@@ -35,4 +45,4 @@ class Permission extends Component {
 }
 
 
-export default withRouter(Permission);
+export default Permission;

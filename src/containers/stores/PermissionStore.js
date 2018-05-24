@@ -1,15 +1,20 @@
 /**
  * Created by HughHzWu on 2018/5/23.
  */
-import { action, observable, set } from 'mobx';
+import { action, observable } from 'mobx';
 import axios from 'Axios';
+
+const DELAY = 300;
 
 class PermissionStore {
   @observable permissions = [];
   queue = [];
-  start = false;
-  delay = 300;
   delayId;
+
+  @action
+  clear() {
+    this.permissions = [];
+  }
 
   @action
   check(service, type, organizationId, projectId) {
@@ -51,7 +56,7 @@ class PermissionStore {
       }
       this.delayId = setTimeout(() => {
         this.fetch();
-      }, this.delay);
+      }, DELAY);
     }
   }
 
