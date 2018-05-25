@@ -15,9 +15,6 @@ import HeaderStore from '@/stores/HeaderStore';
 import MenuStore from '@/stores/MenuStore';
 import './MasterHeader.scss';
 
-const ORGANIZATION_TYPE = 'organization';
-const PROJECT_TYPE = 'project';
-
 @inject('AppState')
 @observer
 class MasterHeader extends Component {
@@ -42,16 +39,7 @@ class MasterHeader extends Component {
             siteFlag: menus.length > 0,
           });
         });
-        HeaderStore.axiosGetOrgAndPro(value.id || sessionStorage.userId || userId).then((org) => {
-          org[0].map(value => {
-            value.type = ORGANIZATION_TYPE;
-          });
-          org[1].map(value => {
-            value.type = PROJECT_TYPE;
-          });
-          HeaderStore.setOrgData(org[0]);
-          HeaderStore.setProData(org[1]);
-        });
+        HeaderStore.axiosGetOrgAndPro(value.id || sessionStorage.userId || userId);
       });
   }
 

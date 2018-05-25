@@ -3,6 +3,9 @@ import store from 'Store';
 import axios from 'Axios';
 import omit from 'object.omit';
 
+const ORGANIZATION_TYPE = 'organization';
+const PROJECT_TYPE = 'project';
+
 function findDataIndex(collection, value) {
   return collection ? collection.findIndex(
     ({ id, organizationId }) => id === value.id && (
@@ -61,7 +64,17 @@ class HeaderStore {
 
   axiosGetOrgAndPro(userId) {
     return axios.all([this.fetchAxios('get', `/iam/v1/users/${userId}/organizations`),
-      this.fetchAxios('get', `/iam/v1/users/${userId}/projects`)]);
+      this.fetchAxios('get', `/iam/v1/users/${userId}/projects`)]).then((data) => {
+      data[0].forEach((value) => {
+        value.type = ORGANIZATION_TYPE;
+      });
+      data[1].forEach((value) => {
+        value.type = PROJECT_TYPE;
+      });
+      this.setOrgData(data[0]);
+      this.setProData(data[1]);
+      return data;
+    });
   }
 
   @action
@@ -71,6 +84,7 @@ class HeaderStore {
 
   @action
   addProject(project) {
+    project.type = PROJECT_TYPE;
     if (this.proData) {
       this.proData.unshift(project);
     } else {
@@ -80,6 +94,7 @@ class HeaderStore {
 
   @action
   updateProject(project) {
+    project.type = PROJECT_TYPE;
     if (this.proData) {
       const index = this.proData.findIndex(({ id }) => id === project.id);
       if (index !== -1) {
@@ -87,6 +102,28 @@ class HeaderStore {
       }
     }
     this.updateRecentItem(project);
+  }
+
+  @action
+  addOrg(org) {
+    org.type = ORGANIZATION_TYPE;
+    if (this.orgData) {
+      this.orgData.unshift(org);
+    } else {
+      this.orgData = [org];
+    }
+  }
+
+  @action
+  updateOrg(org) {
+    org.type = ORGANIZATION_TYPE;
+    if (this.orgData) {
+      const index = this.orgData.findIndex(({ id }) => id === org.id);
+      if (index !== -1) {
+        this.orgData.splice(index, 1, org);
+      }
+    }
+    this.updateRecentItem(org);
   }
 
   @computed
@@ -108,7 +145,8 @@ class HeaderStore {
   updateRecentItem(recent) {
     if (recent) {
       const recentItem = JSON.parse(localStorage.recentItem);
-      const index = recentItem.findIndex(({ id }) => id === recent.id);
+      const index = recentItem.findIndex(({ id, organizationId }) =>
+        id === recent.id && (!organizationId || organizationId === recent.organizationId));
       if (index !== -1) {
         recentItem.splice(index, 1, recent);
         localStorage.recentItem = JSON.stringify(recentItem);
