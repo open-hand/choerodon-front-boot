@@ -14,7 +14,7 @@ class ManagerButton extends Component {
     // HeaderStore.setSelectData(null);
     AppState.changeMenuType({ type: 'site' });
     AppState.setTypeUser(false);
-    MenuStore.loadMenuData().then(menus => {
+    MenuStore.loadMenuData('site').then(menus => {
       if (menus.length) {
         const { route, domain } = menus[0].subMenus[0];
         Choerodon.historyPushMenu(history, route, domain);

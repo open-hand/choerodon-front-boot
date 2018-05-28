@@ -30,7 +30,7 @@ class UserPreferences extends Component {
     const { AppState, history } = this.props;
     AppState.changeMenuType({ type: 'site' });
     AppState.setTypeUser(true);
-    MenuStore.loadMenuData().then(menus => {
+    MenuStore.loadMenuData('user').then(menus => {
       if (menus.length) {
         const { route, domain } = menus[0].subMenus[0];
         Choerodon.historyPushMenu(history, `${route}?type=site`, domain);

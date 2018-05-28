@@ -158,7 +158,12 @@ class MenuStore {
   }
 
   @action
-  loadMenuData(type = getMenuType()) {
+  loadMenuData(type) {
+    if (type) {
+      this.setChosenService(null);
+    } else {
+      type = getMenuType();
+    }
     const menu = this.menuData(type);
     if (menu.length) {
       return Promise.resolve(menu);
@@ -168,7 +173,6 @@ class MenuStore {
         item => item.name !== null && item.subMenus !== null && item.subMenus.length > 0,
       );
       this.loadRoute(child);
-      this.setChosenService(null);
       this.setMenuData(child, type);
       return child;
     });
