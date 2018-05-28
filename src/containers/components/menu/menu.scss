@@ -105,6 +105,9 @@
       &-sub {
         background: #F6F6F6;
       }
+      &-submenu-active {
+        background-color: transparent;
+      }
       &-selected:after,
       &-item-selected:after {
         display: none;
