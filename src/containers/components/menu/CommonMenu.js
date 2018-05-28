@@ -149,7 +149,7 @@ class CommonMenu extends Component {
               }}
             >
               <Icon type={data.icon} />
-              <span style={styles.spanLeft}>
+              <span>
                 {data.name}
               </span>
             </span>

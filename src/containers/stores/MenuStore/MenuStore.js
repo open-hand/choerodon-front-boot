@@ -10,6 +10,17 @@ function getMenuType() {
   return AppState.isTypeUser ? 'user' : AppState.currentMenuType.type;
 }
 
+function filterEmptyMenus(menuData, parent) {
+  const newMenuData = menuData.filter((item) => {
+    const { name, type, subMenus } = item;
+    return name !== null && (type === 'menu' || (subMenus !== null && filterEmptyMenus(subMenus, item).length > 0));
+  });
+  if (parent) {
+    parent.subMenus = newMenuData;
+  }
+  return newMenuData;
+}
+
 class MenuStore {
   @observable siteMenu = [];
   @observable orgMenu = [];
@@ -169,9 +180,7 @@ class MenuStore {
       return Promise.resolve(menu);
     }
     return axios.get(`/iam/v1/menus/tree?test_permission=true&level=${type}`).then((data) => {
-      const child = data.filter(
-        item => item.name !== null && item.subMenus !== null && item.subMenus.length > 0,
-      );
+      const child = filterEmptyMenus(data);
       this.loadRoute(child);
       this.setMenuData(child, type);
       return child;
@@ -192,9 +201,7 @@ class MenuStore {
     let data = child;
     let type = childType;
     if (childType) {
-      data = child.filter(
-        item => item.name !== null && item.subMenus !== null && item.subMenus.length > 0,
-      );
+      data = filterEmptyMenus(child);
     } else {
       type = getMenuType();
     }
