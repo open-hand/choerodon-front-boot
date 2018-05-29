@@ -66,24 +66,29 @@ class CommonMenu extends Component {
     const { pathname, search } = location;
     AppState.setTypeUser(false);
     if (pathname !== '/') {
-      let menType = { type: 'site' };
+      let menuType = { type: 'site' };
       if (search) {
         const { type, name, id, organizationId } = queryString.parse(search);
         if (type) {
           AppState.setTypeUser(type === 'site');
-          menType.type = type;
+          menuType.type = type;
         }
         if (name) {
-          menType.name = name;
+          menuType.name = name;
         }
         if (id) {
-          menType.id = id;
+          menuType.id = id;
+          if (type === 'project') {
+            menuType.projectId = id;
+          } else if (type === 'organization') {
+            menuType.organizationId = id;
+          }
         }
-        if (organizationId) {
-          menType.organizationId = organizationId;
+        if (type === 'project' && organizationId) {
+          menuType.organizationId = organizationId;
         }
       }
-      AppState.changeMenuType(menType);
+      AppState.changeMenuType(menuType);
       MenuStore.loadMenuData();
     } else {
       const recent = HeaderStore.getRecentItem;

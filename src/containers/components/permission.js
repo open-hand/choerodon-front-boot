@@ -3,6 +3,8 @@
 
 import React, { Children, cloneElement, Component, isValidElement } from 'react';
 import { observer } from 'mobx-react';
+import omit from 'object.omit';
+import AppState from '../stores/AppState';
 import PermissionStore from '../stores/PermissionStore';
 
 @observer
@@ -17,8 +19,23 @@ class Permission extends Component {
   }
 
   check(props) {
-    const { service, type, organizationId, projectId } = props;
-    PermissionStore.check(service, type, organizationId, projectId);
+    PermissionStore.check(this.getPermissionProps(props));
+  }
+
+  getPermissionProps(props) {
+    const { type: typeState, id, projectId: projectIdState, organizationId: organizationIdState } = AppState.currentMenuType;
+    const {
+      service,
+      type = typeState,
+      organizationId = organizationIdState || id,
+      projectId = projectIdState || id,
+    } = props;
+    return {
+      service,
+      type,
+      organizationId,
+      projectId,
+    };
   }
 
   extendProps(children, props) {
@@ -32,8 +49,11 @@ class Permission extends Component {
   }
 
   render() {
-    const { service, type, organizationId, projectId, defaultChildren, children, ...otherProps } = this.props;
-    if (PermissionStore.judgeServices(service, type, organizationId, projectId)
+    const { defaultChildren, children } = this.props;
+    const otherProps = omit(this.props, [
+      'service', 'type', 'organizationId', 'projectId', 'defaultChildren', 'children',
+    ]);
+    if (PermissionStore.judgeServices(this.getPermissionProps(this.props))
         .some(item => PermissionStore.findPermission(item).approve)) {
       return this.extendProps(children, otherProps);
     } else if (defaultChildren) {

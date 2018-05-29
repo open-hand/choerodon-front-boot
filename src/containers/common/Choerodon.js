@@ -389,12 +389,7 @@ function logout() {
   removeAccessToken();
   localStorage.clear();
   sessionStorage.clear();
-  AppState.setAuthenticated(false);
   window.location = `${process.env.AUTH_HOST}/logout`;
-  sessionStorage.setItem('permission', '[]');
-  sessionStorage.setItem('permissionBackup', '[]');
-  sessionStorage.setItem('permissionApprove', '[]');
-  sessionStorage.setItem('permissionFlag', true);
 }
 
 // 返回多语言字符串

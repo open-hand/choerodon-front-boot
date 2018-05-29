@@ -31,16 +31,12 @@ class MasterHeader extends Component {
 
   componentDidMount() {
     const { AppState } = this.props;
-    const userId = AppState.getUserId;
-    axios.get(`/iam/v1/users/self`)
-      .then(value => {
-        MenuStore.loadMenuData('site').then(menus => {
-          this.setState({
-            siteFlag: menus.length > 0,
-          });
-        });
-        HeaderStore.axiosGetOrgAndPro(value.id || sessionStorage.userId || userId);
+    MenuStore.loadMenuData('site').then(menus => {
+      this.setState({
+        siteFlag: menus.length > 0,
       });
+    });
+    HeaderStore.axiosGetOrgAndPro(AppState.getUserId);
   }
 
   fetchAxios = (method, url) => {

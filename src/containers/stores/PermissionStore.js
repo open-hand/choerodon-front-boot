@@ -17,8 +17,8 @@ class PermissionStore {
   }
 
   @action
-  check(service, type, organizationId, projectId) {
-    this.judgeServices(service, type, organizationId, projectId)
+  check(props) {
+    this.judgeServices(props)
       .forEach(item => this.checkItem(item));
   }
 
@@ -60,7 +60,7 @@ class PermissionStore {
     }
   }
 
-  judgeServices(service, type, organizationId, projectId) {
+  judgeServices({ service, type, organizationId, projectId }) {
     if (service && service.length) {
       return service.map(serviceValue =>
         this.judgeService(serviceValue, type, organizationId, projectId),
@@ -81,6 +81,7 @@ class PermissionStore {
       case 'project':
         return {
           code,
+          organizationId: Number(organizationId),
           projectId: Number(projectId),
           resourceType: type,
         };

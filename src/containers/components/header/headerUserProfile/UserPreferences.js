@@ -2,10 +2,11 @@
  * Created by hand on 2017/7/3.
  */
 import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { Popover, Row, Col } from 'choerodon-ui';
+import { Col, Popover, Row, Button } from 'choerodon-ui';
 import MenuStore from '@/stores/MenuStore';
+import Avatar from './Avatar';
 import './userPro.scss';
 
 @inject('AppState')
@@ -15,7 +16,6 @@ class UserPreferences extends Component {
     super(props);
     this.state = {
       visible: false,
-      imgUrl: '',
     };
   }
 
@@ -46,55 +46,35 @@ class UserPreferences extends Component {
   };
 
   render() {
-    if (this.props.imgUrl && this.props.imgUrl !== null) {
-      this.state.imgUrl = this.props.imgUrl;
-    } else {
-      this.state.imgUrl = '';
-    }
     const { AppState } = this.props;
-    const user = AppState.currentUser;
+    const { imageUrl, loginName, realName, email } = AppState.getUserInfo || {};
     const AppBarIconRight = (
       <div className="userPro-popver-content">
-        <Row>
-          <Col span={24} className="popover-col">
-            {this.state.imgUrl !== '' ? (
-                <img
-                  alt=""
-                  src={`data:img/jpg;base64,${this.state.imgUrl}`}
-                  className="userPro-popver-content"
-                />) :
-              (
-                <div className="popover-noImage-content">
-                  {user ? user.realName.substr(0, 1).toUpperCase() : ''}
-                </div>
-              )}
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24} className="popover-title">
-            {user ? user.name : ''}
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24} className="popover-text">
-            {user ? user.realName : ''}
-          </Col>
-        </Row>
+        <Avatar src={imageUrl}>
+          {realName && realName.charAt(0)}
+        </Avatar>
+        <div className="popover-title">
+          {loginName}
+        </div>
+        <div className="popover-text">
+          {realName}
+        </div>
+        <div className="popover-text">
+          {email}
+        </div>
         <Row className="popover-button-wrapper">
           <Col>
-            <a
-              role="none"
-              className="bth-center"
+            <Button
+              funcType="raised"
+              type="primary"
               onClick={this.preferences.bind(this)}
-            >{Choerodon.getMessage('个人中心', 'user preferences')}</a>
+            >{Choerodon.getMessage('个人中心', 'user preferences')}</Button>
           </Col>
           <Col>
-            <a
-              role="none"
-              className="btn-signOut"
-              type="primary"
+            <Button
+              funcType="raised"
               onClick={() => Choerodon.logout()}
-            >{Choerodon.getMessage('退出登录', 'sign Out')}</a>
+            >{Choerodon.getMessage('退出登录', 'sign Out')}</Button>
           </Col>
         </Row>
       </div>
@@ -109,18 +89,9 @@ class UserPreferences extends Component {
         placement="bottomRight"
         onVisibleChange={this.handleVisibleChange}
       >
-        {this.state.imgUrl ? (
-          <img
-            className="userPro-img"
-            src={`data:img/jpg;base64,${this.state.imgUrl}`}
-            alt="用户"
-          />
-        ) : (
-          <div className="userPro-wrapper">
-            {user ? user.realName.substr(0, 1).toUpperCase() : ''}
-          </div>
-        )}
-
+        <Avatar src={imageUrl}>
+          {realName && realName.charAt(0)}
+        </Avatar>
       </Popover>
     );
   }
