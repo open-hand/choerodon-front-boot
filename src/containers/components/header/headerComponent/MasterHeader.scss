@@ -28,6 +28,9 @@
     margin: auto;
   }
   &-center {
+    li {
+      margin: 0;
+    }
     padding-left: 0;
     flex-grow: 1;
     .ant-btn {
