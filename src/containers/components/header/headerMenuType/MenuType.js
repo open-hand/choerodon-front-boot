@@ -7,6 +7,7 @@ import { Button, Icon, Input, Modal, Select, Table, Tabs } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import axios from 'Axios';
+import classnames from 'classnames';
 import _ from 'lodash';
 import { toJS } from 'mobx';
 import HeaderStore from '@/stores/HeaderStore';
@@ -313,7 +314,7 @@ class MenuType extends Component {
       buttonClass = 'active';
       buttonIcon = 'project';
     }
-
+    buttonClass = classnames('menu-type-btn', buttonClass);
     if (handlesearch) {
       returnBtn = (
         <Button
