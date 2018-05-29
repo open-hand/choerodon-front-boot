@@ -1,22 +1,13 @@
-import React, { Component, cloneElement } from 'react';
+import React, { cloneElement, Component } from 'react';
 import { observer } from 'mobx-react';
-import { Menu, Dropdown, Button } from 'choerodon-ui';
-import Permission from 'PerComponent';
-import PermissionStore from '../stores/PermissionStore';
+import { Button, Dropdown, Menu } from 'choerodon-ui';
+import Permission from './permission';
 
 const { Item } = Menu;
 
 @observer
 class Action extends Component {
   state = {};
-
-  componentWillMount() {
-    this.check(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.check(nextProps);
-  }
 
   handleClick = (arg) => {
     const { action } = arg.item.props;
@@ -25,10 +16,10 @@ class Action extends Component {
     }
   };
 
-  check({ data }) {
-    data.forEach(({ service, type, organizationId, projectId }) => {
-      PermissionStore.check(service, type, organizationId, projectId);
-    });
+  getAllService(data) {
+    return data.reduce((list, { service = [] }) => {
+      return list.concat(service);
+    }, []);
   }
 
   renderMenu(data) {
@@ -39,7 +30,7 @@ class Action extends Component {
     );
   };
 
-  renderMenuItem({ service, type, organizationId, projectId, text, action, icon }) {
+  renderMenuItem({ service, text, action, icon }) {
     const item = (
       <Item action={action}>
         {icon && <Icon type={icon} />}
@@ -49,9 +40,6 @@ class Action extends Component {
     return (
       <Permission
         service={service}
-        type={type}
-        organizationId={organizationId}
-        projectId={projectId}
         key={Math.random()}
         defaultChildren={cloneElement(item, { style: { display: 'none' } })}
       >
@@ -63,9 +51,13 @@ class Action extends Component {
   render() {
     const { data, placement } = this.props;
     return (
-      <Dropdown overlay={this.renderMenu(data)} trigger={['click']} placement={placement}>
-        <Button shape="circle" style={{ color: '#3F51B5' }} icon="more_vert" />
-      </Dropdown>
+      <Permission
+        service={this.getAllService(data)}
+      >
+        <Dropdown overlay={this.renderMenu(data)} trigger={['click']} placement={placement}>
+          <Button shape="circle" style={{ color: '#3F51B5' }} icon="more_vert" />
+        </Dropdown>
+      </Permission>
     );
   }
 }
