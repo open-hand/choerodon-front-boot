@@ -3,16 +3,14 @@
  */
 /*eslint-disable*/
 import React, { Component } from 'react';
-import { Icon, Tooltip, Menu } from 'choerodon-ui';
-import { Link } from 'react-router-dom';
+import { Icon, Menu, Tooltip } from 'choerodon-ui';
+import { Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router-dom';
-import NProgress from 'react-nprogress';
 import queryString from 'query-string';
 import config from 'Config';
 import MenuStore from '@/stores/MenuStore';
 import HeaderStore from '@/stores/HeaderStore';
-import './menu.scss';
+import './CommonMenu.scss';
 
 const { SubMenu, Item } = Menu;
 

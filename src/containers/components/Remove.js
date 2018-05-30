@@ -1,12 +1,8 @@
 import React from 'react';
-import { Modal, Icon, Col, Row } from 'antd';
+import { Button, Col, Icon, Modal, Row } from 'choerodon-ui';
 import PropTypes from 'prop-types';
-import NewButton from 'NewButton';
 
 class Remove extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  // }
   render() {
     const { open, handleCancel, handleConfirm } = this.props;
     return (
@@ -15,12 +11,12 @@ class Remove extends React.Component {
         width={400}
         onCancel={handleCancel}
         wrapClassName="vertical-center-modal remove"
-        footer={<div><NewButton
+        footer={<div><Button
           onClick={handleCancel}
           className="color3"
           height={36}
           text={Choerodon.getMessage('取消', 'cancel')}
-        /><NewButton
+        /><Button
           onClick={handleConfirm}
           className="color3"
           style={{ marginLeft: '8px' }}

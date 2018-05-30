@@ -23,8 +23,8 @@ try {
 
 const originWebpackConfig = {
   entry: {
-    vendor: ['react', 'react-dom', 'react-router-dom', 'antd', 'babel-polyfill'],
-    app: ['babel-polyfill', 'react-hot-loader/patch', path.resolve(__dirname, '../src/index.js')],
+    vendor: ['react', 'react-dom', 'react-router-dom'],
+    app: ['react-hot-loader/patch', path.resolve(__dirname, '../src/index.js')],
   },
   output: {
     path: path.resolve(__dirname, '../dist'),

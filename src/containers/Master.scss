@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  height: 100vh;
   z-index: 100;
 
   .page-header {
@@ -13,18 +14,18 @@
   }
 
   .page-body {
-    flex: 1 1 0;
+    flex: 1 1 0px;
     display: flex;
 
     .content-wrapper {
       display: flex;
-      flex: 1 1 0;
+      flex: 1 1 0px;
       background-color: white;
       position: relative;
     }
 
     .content {
-      flex: 1 1 0;
+      flex: 1 1 0px;
       order: 2;
       flex-direction: column;
       background-color: white;
