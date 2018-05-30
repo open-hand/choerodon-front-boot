@@ -2,15 +2,13 @@
  * Created by smilesoul on 2017/6/23.
  */
 import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import MenuType from 'MenuType';
 import LeftIconButton from 'LeftIconButton';
 import RightIconButton from 'RightIconButton';
 import UserPreferences from 'UserPreferences';
-import { Tooltip } from 'antd';
 import classnames from 'classnames';
 import axios from 'Axios';
-import { Button } from 'choerodon-ui';
 import HeaderStore from '@/stores/HeaderStore';
 import MenuStore from '@/stores/MenuStore';
 import './MasterHeader.scss';

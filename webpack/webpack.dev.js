@@ -15,6 +15,7 @@ const env = require('./comonConfig/webpack.env');
 module.exports = merge(webpackConfig, {
   devtool: 'cheap-module-eval-source-map',
   entry: [
+    'babel-polyfill',
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:9090',
     'webpack/hot/only-dev-server',

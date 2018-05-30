@@ -5,6 +5,13 @@
 const HappyPack = require('happypack');
 const config = require('./webpack.file');
 const path = require('path');
+const autoprefixer = require('autoprefixer');
+
+const postcssConfig = {
+  plugins: [autoprefixer({
+    browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
+  })],
+};
 
 const rules = [
   {
@@ -64,6 +71,10 @@ const rules = [
         loader: 'css-loader',
       },
       {
+        loader: 'postcss-loader',
+        options: postcssConfig,
+      },
+      {
         loader: 'less-loader',
         options: {
           sourceMap: true,
@@ -82,6 +93,10 @@ const rules = [
         loader: 'css-loader',
       },
       {
+        loader: 'postcss-loader',
+        options: postcssConfig,
+      },
+      {
         loader: 'sass-loader',
         options: {
           sourceMap: true,
@@ -91,22 +106,22 @@ const rules = [
     ],
   }, {
     test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url-loader?limit=10000&minetype=application/font-woff'
+    loader: 'url-loader?limit=10000&minetype=application/font-woff',
   }, {
     test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url-loader?limit=10000&minetype=application/font-woff'
+    loader: 'url-loader?limit=10000&minetype=application/font-woff',
   }, {
     test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url-loader?limit=10000&minetype=application/octet-stream'
+    loader: 'url-loader?limit=10000&minetype=application/octet-stream',
   }, {
     test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url-loader?limit=10000&minetype=application/vnd.ms-fontobject'
+    loader: 'url-loader?limit=10000&minetype=application/vnd.ms-fontobject',
   }, {
     test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url-loader?limit=10000&minetype=image/svg+xml'
+    loader: 'url-loader?limit=10000&minetype=image/svg+xml',
   }, {
     test: /\.(png|jpg|jpeg|gif|ico)(\?v=\d+\.\d+\.\d+)?$/i,
-    loader: 'url-loader?limit=10000'
+    loader: 'url-loader?limit=10000',
   },
 ];
 
@@ -130,76 +145,76 @@ const happypackLoader = [new HappyPack({
     },
   ],
 }),
-new HappyPack({
-  id: 'tslint',
-  threads: 1,
-  loaders: [
-    {
-      loader: 'cache-loader',
-      options: {
-        cacheDirectory: path.resolve('.cache'),
+  new HappyPack({
+    id: 'tslint',
+    threads: 1,
+    loaders: [
+      {
+        loader: 'cache-loader',
+        options: {
+          cacheDirectory: path.resolve('.cache'),
+        },
       },
-    },
-    {
-      path: 'tslint-loader',
-      options: {
-        emitError: true,
-        failOnWarning: true,
-        failOnError: true,
+      {
+        path: 'tslint-loader',
+        options: {
+          emitError: true,
+          failOnWarning: true,
+          failOnError: true,
+        },
       },
-    },
-  ],
-}),
-new HappyPack({
-  id: 'babel',
-  threads: 3,
-  loaders: [
-    {
-      loader: 'cache-loader',
-      options: {
-        cacheDirectory: path.resolve('.cache'),
+    ],
+  }),
+  new HappyPack({
+    id: 'babel',
+    threads: 3,
+    loaders: [
+      {
+        loader: 'cache-loader',
+        options: {
+          cacheDirectory: path.resolve('.cache'),
+        },
       },
-    },
-    {
-      path: 'babel-loader',
-    },
-  ],
-}),
-new HappyPack({
-  id: 'mocha',
-  threads: 1,
-  loaders: [
-    {
-      loader: 'cache-loader',
-      options: {
-        cacheDirectory: path.resolve('.cache'),
+      {
+        path: 'babel-loader',
       },
-    },
-    {
-      path: 'mocha-loader',
-    },
-  ],
-}),
-new HappyPack({
-  id: 'css',
-  threads: 1,
-  loaders: [
-    {
-      loader: 'cache-loader',
-      options: {
-        cacheDirectory: path.resolve('.cache'),
+    ],
+  }),
+  new HappyPack({
+    id: 'mocha',
+    threads: 1,
+    loaders: [
+      {
+        loader: 'cache-loader',
+        options: {
+          cacheDirectory: path.resolve('.cache'),
+        },
       },
-    },
-    {
-      path: 'style-loader',
-    },
-    {
-      path: 'css-loader',
-    },
-  ],
-})];
+      {
+        path: 'mocha-loader',
+      },
+    ],
+  }),
+  new HappyPack({
+    id: 'css',
+    threads: 1,
+    loaders: [
+      {
+        loader: 'cache-loader',
+        options: {
+          cacheDirectory: path.resolve('.cache'),
+        },
+      },
+      {
+        path: 'style-loader',
+      },
+      {
+        path: 'css-loader',
+      },
+    ],
+  })];
 
 module.exports = {
   happypackLoader,
-  rules
-}
+  rules,
+};
