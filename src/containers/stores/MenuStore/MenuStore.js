@@ -179,7 +179,7 @@ class MenuStore {
     if (menu.length) {
       return Promise.resolve(menu);
     }
-    return axios.get(`/iam/v1/menus/tree?test_permission=true&level=${type}`).then((data) => {
+    return axios.get(`/iam/v1/menus?with_permissions=true&level=${type}`).then((data) => {
       const child = filterEmptyMenus(data);
       this.loadRoute(child);
       this.setMenuData(child, type);
