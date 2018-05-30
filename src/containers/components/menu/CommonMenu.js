@@ -114,7 +114,6 @@ class CommonMenu extends Component {
     if (!data.subMenus) {
       const link = (
         <Link
-          role="none"
           to={this.getMenuLink(data)}
         >
           <span
@@ -183,23 +182,23 @@ class CommonMenu extends Component {
     const { route } = service;
     const { AppState } = this.props;
     const { id, name, type, organizationId } = AppState.currentMenuType;
-    let path = route;
+    let search = '';
     switch (type) {
       case 'site':
         if (AppState.isTypeUser) {
-          path = `${route}?type=site`;
+          search = `?type=site`;
         }
         break;
       case 'organization':
       case 'project':
-        path = `${route}?type=${type}&id=${id}&name=${name}`;
+        search = `?type=${type}&id=${id}&name=${encodeURIComponent(name)}`;
         if (organizationId) {
-          path += `&organizationId=${organizationId}`;
+          search += `&organizationId=${organizationId}`;
         }
         break;
       default:
     }
-    return path;
+    return `${route}${search}`;
   }
 
   // loadResourceMenu = (service) => {
