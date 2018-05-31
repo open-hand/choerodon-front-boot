@@ -15,6 +15,7 @@
   border-bottom: 1px solid #d3d3d3;
   background-color: #fff;
   align-items: center;
+  padding-left: 25px;
 
   .back-btn {
     color: #3f51b5;
@@ -23,11 +24,10 @@
   }
 
   &-title {
-    padding-left: 25px;
     color: #000;
     font-size: 18px;
     line-height: 58px;
-    margin-right: 72px;
+    width: 141px;
   }
 
   &-icon {
@@ -46,45 +46,14 @@
       color: rgba(0, 0, 0, .26);
     }
     & + .ant-btn {
-      margin-left: 28px;
+      margin-left: 8px;
     }
-  }
-
-  .leftBtn {
-    padding: 0 10px;
-    line-height: 28px;
-    height: 28px;
-    color: rgb(63, 81, 181);
-    align-items: center;
-  }
-
-  .leftBtnDisabled {
-    padding: 0 10px;
-    line-height: 28px;
-    height: 28px;
-    align-items: center;
-  }
-
-  .leftBtnBan2 {
-    padding: 0 10px;
-    margin-left: 28px;
-    line-height: 24px;
-    height: 28px;
-    color: rgba(0, 0, 0, 0.26);
-    align-items: center;
-    pointer-events: none;
-  }
-
-  .icon-space {
-    margin-left: 3px;
-  }
-
-  .leftBtn2 {
-    margin-left: 28px;
-    line-height: 24px;
-    height: 28px;
-    color: rgb(63, 81, 181);
-    align-items: center;
+    .icon {
+      margin-right: 2px;
+      + span {
+        margin-left: 0;
+      }
+    }
   }
 }
 
