@@ -4,10 +4,10 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { Col, Popover, Row, Button } from 'choerodon-ui';
+import { Popover, Button } from 'choerodon-ui';
 import MenuStore from '@/stores/MenuStore';
 import Avatar from './Avatar';
-import './userPro.scss';
+import './UserPreferences.scss';
 
 @inject('AppState')
 @observer
@@ -49,7 +49,7 @@ class UserPreferences extends Component {
     const { AppState } = this.props;
     const { imageUrl, loginName, realName, email } = AppState.getUserInfo || {};
     const AppBarIconRight = (
-      <div className="userPro-popver-content">
+      <div className="user-preference-popover-content">
         <Avatar src={imageUrl}>
           {realName && realName.charAt(0)}
         </Avatar>
@@ -62,29 +62,24 @@ class UserPreferences extends Component {
         <div className="popover-text">
           {email}
         </div>
-        <Row className="popover-button-wrapper">
-          <Col>
-            <Button
-              funcType="raised"
-              type="primary"
-              onClick={this.preferences.bind(this)}
-            >{Choerodon.getMessage('个人中心', 'user preferences')}</Button>
-          </Col>
-          <Col>
-            <Button
-              funcType="raised"
-              onClick={() => Choerodon.logout()}
-            >{Choerodon.getMessage('退出登录', 'sign Out')}</Button>
-          </Col>
-        </Row>
+        <div className="popover-button-wrapper">
+          <Button
+            funcType="raised"
+            type="primary"
+            onClick={this.preferences.bind(this)}
+          >{Choerodon.getMessage('个人中心', 'user preferences')}</Button>
+          <Button
+            funcType="raised"
+            onClick={() => Choerodon.logout()}
+          >{Choerodon.getMessage('退出登录', 'sign Out')}</Button>
+        </div>
       </div>
     );
     return (
       <Popover
-        overlayClassName="userPro-popver"
+        overlayClassName="user-preference-popover"
         content={AppBarIconRight}
         trigger="click"
-        style={{ padding: '0!import' }}
         visible={this.state.visible}
         placement="bottomRight"
         onVisibleChange={this.handleVisibleChange}

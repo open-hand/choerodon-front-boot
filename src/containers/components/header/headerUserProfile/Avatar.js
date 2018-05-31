@@ -6,7 +6,7 @@ export default class Avatar extends Component {
     const { src, children, className, style, ...props } = this.props;
     return (
       <div
-        className={classnames('userPro-avatar', className)}
+        className={classnames('user-preference-avatar', className)}
         style={
           {
             ...style,
