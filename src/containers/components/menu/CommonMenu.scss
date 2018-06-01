@@ -80,7 +80,8 @@
       width: 280px;
     }
     .ant-menu .ant-menu-item {
-      &-selected {
+      &-selected,
+      &-selected:hover {
         color: #fff;
         background-color: #3f51b5;
       }
