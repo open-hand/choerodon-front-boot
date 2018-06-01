@@ -22,6 +22,10 @@ class PermissionStore {
       .forEach(item => this.checkItem(item));
   }
 
+  access(props) {
+    return this.judgeServices(props).some(item => this.findPermission(item).approve);
+  }
+
   fetch() {
     axios.post('/iam/v1/permissions/checkPermission', JSON.stringify(this.queue))
       .then(action((data) => {

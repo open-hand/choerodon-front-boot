@@ -19,6 +19,7 @@ module.exports = merge(webpackConfig, {
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:9090',
     'webpack/hot/only-dev-server',
+    './src/containers/common/Choerodon',
     "./src/index"
   ],
   output: {

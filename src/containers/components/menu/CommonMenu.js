@@ -201,33 +201,6 @@ class CommonMenu extends Component {
     return `${route}${search}`;
   }
 
-  // loadResourceMenu = (service) => {
-  //   const { route, domain } = service;
-  //   const { history, AppState } = this.props;
-  //   const { id, name, type, organizationId } = AppState.currentMenuType;
-  //   let path = route;
-  //   switch (type) {
-  //     case 'site':
-  //       if (AppState.isTypeUser) {
-  //         path = `${route}?type=site`;
-  //       }
-  //       break;
-  //     case 'organization':
-  //     case 'project':
-  //       path = `${route}?type=${type}&id=${id}&name=${name}`;
-  //       if (organizationId) {
-  //         path += `&organizationId=${organizationId}`;
-  //       }
-  //       break;
-  //     default:
-  //   }
-  //   Choerodon.historyPushMenu(history, path, domain);
-  //   NProgress.start();
-  //   Choerodon.nprogress(() => {
-  //     NProgress.done();
-  //   })();
-  // };
-
   handleClick = (e) => {
     const { AppState } = this.props;
     let child = MenuStore.getMenuData;

@@ -10,9 +10,9 @@ import asyncLocaleProvider from './util/asyncLocaleProvider';
 import asyncRouter from './util/asyncRouter';
 import asyncPropsLoader from './util/asyncPropsLoader';
 import '../src/containers/asset/fonts/style.css';
-import '../node_modules/roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css';
-import '../node_modules/roboto-fontface/css/roboto-slab/roboto-slab-fontface.css';
-import '../node_modules/roboto-fontface/css/roboto/roboto-fontface.css';
+// import '../node_modules/roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css';
+// import '../node_modules/roboto-fontface/css/roboto-slab/roboto-slab-fontface.css';
+// import '../node_modules/roboto-fontface/css/roboto/roboto-fontface.css';
 
 const Masters = asyncRouter(() => import('Masters'));
 
