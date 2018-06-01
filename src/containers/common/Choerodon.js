@@ -3,33 +3,20 @@
  */
 /*eslint-disable*/
 import React from 'react';
-import { toJS } from 'mobx';
 import Cookies from 'universal-cookie';
 import { message } from 'choerodon-ui';
 import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
-import axios from 'Axios';
 import config from 'Config';
 import screenfull from 'screenfull';
 import AppState from 'AppState';
 
 const cookies = new Cookies();
-// (!function () {
 const ACCESS_TOKEN = 'access_token';
 const ACCESS_DOMAIN = 'domain';
 const AUTH_URL = `${process.env.AUTH_HOST}/oauth/authorize?response_type=token&client_id=${process.env.CLIENT_ID}&state=`;
-let local;
-let cookieServer;
+const local = process.env.LOCAL || config.local;
+const cookieServer = process.env.COOKIE_SERVER || config.cookieServer;
 const localReg = /localhost/g;
-local = process.env.LOCAL || config.local;
-// cookieServer = document.location.hostname || process.env.COOKIE_SERVER;
-cookieServer = process.env.COOKIE_SERVER || config.cookieServer;
-// if(JSON.parse(process.env.LOCAL) == true) {
-//   local = process.env.LOCAL;
-// } else {
-//   local = false;
-// }
-const MenuCode = [];
 const theme = config.themeSetting;
 
 const setCookie = (name, value, option) => cookies.set(name, value, option);
@@ -46,8 +33,6 @@ function getCookie(sName) {
 }
 
 const removeCookie = (name, value, option) => cookies.remove(name, value, option);
-let permissionflag;
-let permissionflagGlobal;
 
 // 获取url token
 function getAccessToken(hash) {
@@ -64,151 +49,11 @@ function getAccessToken(hash) {
   return null;
 }
 
-//页面进度完成
-function nprogress(callback) {
-  return () => {
-    if (document.readyState && document.readyState == 'complete') {
-      setTimeout(() => {
-        callback();
-      }, 100);
-    } else {
-      setTimeout(() => {
-        callback();
-      }, 100);
-    }
-  };
-}
-
 //全屏展示
 function fullscreen(id = 'autoRouter') {
   const el = document.getElementById(id);
-  // const position = el.style.position;
-  // const widths = el.style.width;
-  // document.addEventListener('keyup', (e) => {
-  //   if (e.which === 27) {
-  //     el.style.position = position;
-  //     el.style.width = widths;
-  //   }
-  // })
-  // document.addEventListener("fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange", function (e) {
-
-  // });
   if (!screenfull.isFullscreen) {
     screenfull.request(el);
-    // el.style.position = 'initial';
-    // el.style.width = '100%';
-    // document.addEventListener('keyup', (e) => {
-    //   if (e.which === 27) {
-    //     el.style.position = position;
-    //     el.style.width = widths;
-    //   }
-    // })
-  }
-}
-
-//权限获取
-function permissonGet(Permission) {
-  if (AppState.currentMenuType) {
-    if (sessionStorage.type === 'global') {
-      let permissionDataOrg1;
-      let permissionDataPro1;
-      const permissionDataArray1 = [];
-      const arrayCenter1 = [];
-      const type1 = 'global';
-      permissionDataPro1 = {
-        resourceType: 'global',
-      };
-      permissionDataArray1.push(permissionDataPro1);
-      Object.keys(Permission).forEach((i) => {
-        Permission[i].map((value) => {
-          permissionDataArray1.map((permissionDatas) => {
-            let permissionObj1 = {};
-            const permissionData1 = permissionDatas;
-            permissionData1.name = value;
-            permissionData1.menu = i;
-            permissionObj1 = _.cloneDeep(permissionData1);
-            arrayCenter1.push(permissionObj1);
-            return null;
-          });
-          return null;
-        });
-        return null;
-      });
-      const uniqarrayCenter1 = _.uniqWith(arrayCenter1, _.isEqual);
-      if (permissionflagGlobal) {
-        if (_.isEqual(permissionflagGlobal, uniqarrayCenter1)) {
-        } else {
-          axios.post('/iam/v1/permissions/testPermission', JSON.stringify(uniqarrayCenter1))
-            .then((data) => {
-              AppState.setPerMission(data);
-            });
-        }
-      } else {
-        permissionflagGlobal = uniqarrayCenter1;
-        axios.post('/iam/v1/permissions/testPermission', JSON.stringify(uniqarrayCenter1))
-          .then((data) => {
-            AppState.setPerMission(data);
-          });
-      }
-    }
-    else {
-      let permissionDataOrg;
-      let permissionDataPro;
-      const permissionDataArray = [];
-      const arrayCenter = [];
-      const type = AppState.currentMenuType.type;
-      if (type === 'organization') {
-        const orgId = AppState.currentMenuType.id;
-        permissionDataOrg = {
-          resourceId: orgId,
-          resourceType: 'organization',
-          organizationId: orgId,
-        };
-        permissionDataArray.push(permissionDataOrg);
-      } else if (type === 'project') {
-        const proId = AppState.currentMenuType.id;
-        const organizationId = AppState.currentMenuType.organizationId;
-        permissionDataPro = {
-          resourceId: proId,
-          resourceType: 'project',
-          organizationId,
-        };
-        permissionDataArray.push(permissionDataPro);
-      }
-      Object.keys(Permission).forEach((i) => {
-        Permission[i].map((value) => {
-          permissionDataArray.map((permissionDatas) => {
-            let permissionObj = {};
-            const permissionData = permissionDatas;
-            permissionData.name = value;
-            permissionData.menu = i;
-            permissionObj = _.cloneDeep(permissionData);
-            arrayCenter.push(permissionObj);
-            return null;
-          });
-          return null;
-        });
-        return null;
-      });
-      const uniqarrayCenter = _.uniqWith(arrayCenter, _.isEqual);
-      if (permissionflag) {
-        if (_.isEqual(permissionflag, uniqarrayCenter)) {
-        } else {
-          axios.post('/iam/v1/permissions/testPermission', JSON.stringify(uniqarrayCenter))
-            .then((data) => {
-              AppState.setPerMission(data);
-            });
-        }
-      } else {
-        permissionflag = uniqarrayCenter;
-        axios.post('/iam/v1/permissions/testPermission', JSON.stringify(uniqarrayCenter))
-          .then((data) => {
-            AppState.setPerMission(data);
-          });
-      }
-    }
-  } else {
-    return false;
   }
 }
 
@@ -291,90 +136,26 @@ function checkPassword(passwordPolicy, value, callback, userName) {
 }
 
 // 前端存储cookie token
-// function setAccessToken(token, expiresion) {
-//   const expires = expiresion * 1000;
-//   const expirationDate = new Date(Date.now() + expires);
-//   let option;
-//   if (JSON.parse(local)) {
-//     option = {
-//       path: '/',
-//     }
-//     setCookie(ACCESS_DOMAIN, document.location.hostname, option);
-//     setCookie(ACCESS_TOKEN, token, option);
-//   } else {
-//     if(localReg.test(document.location.hostname)) {
-//       option = {
-//         path: '/',
-//       }
-//       setCookie(ACCESS_DOMAIN, document.location.hostname, option);
-//       setCookie(ACCESS_TOKEN, token, option);
-//     } else {
-//       if (_.isNull(getCookie(ACCESS_DOMAIN))) {
-//         option = {
-//           path: '/',
-//           domain: cookieServer
-//         }
-//         setCookie(ACCESS_DOMAIN, cookieServer, option);
-//         setCookie(ACCESS_TOKEN, token, option);
-//       } else {
-//         option = {
-//           path: '/',
-//           domain: cookieServer
-//         }
-//         const cookieReg = new RegExp(`^${getCookie(ACCESS_DOMAIN)}$`, 'g');
-//         if (cookieReg.test(cookieServer)) {
-//           setCookie(ACCESS_TOKEN, token, option);
-//           setCookie(ACCESS_DOMAIN, getCookie(ACCESS_DOMAIN), option);
-//         }
-//       }
-//     }
-//   }
-// }
 function setAccessToken(token, expiresion) {
   const expires = expiresion * 1000;
   const expirationDate = new Date(Date.now() + expires);
-  let option;
-  if (JSON.parse(local)) {
-    option = {
-      path: '/',
-    };
-    setCookie(ACCESS_TOKEN, token, option);
-  } else {
-    if (localReg.test(document.location.hostname)) {
-      option = {
-        path: '/',
-      };
-      setCookie(ACCESS_TOKEN, token, option);
-    } else {
-      if (_.isNull(getCookie(ACCESS_DOMAIN))) {
-        option = {
-          path: '/',
-          domain: cookieServer,
-        };
-        setCookie(ACCESS_TOKEN, token, option);
-      }
-    }
+  const option = {
+    path: '/',
+  };
+  if (!JSON.parse(local) && !localReg.test(window.location.host) &&
+    getCookie(ACCESS_DOMAIN) === null) {
+    option.domain = cookieServer;
   }
+  setCookie(ACCESS_TOKEN, token, option);
 }
 
 // 移除token
 function removeAccessToken() {
-  let option;
-  if (JSON.parse(local)) {
-    option = {
-      path: '/',
-    };
-  } else {
-    if (localReg.test(document.location.host)) {
-      option = {
-        path: '/',
-      };
-    } else {
-      option = {
-        path: '/',
-        domain: cookieServer,
-      };
-    }
+  const option = {
+    path: '/',
+  };
+  if (!JSON.parse(local) && !localReg.test(window.location.host)) {
+    option.domain = cookieServer;
   }
   removeCookie(ACCESS_TOKEN, option);
 }
@@ -405,7 +186,7 @@ function getMessage(zh, en) {
 
 
 // 提示错误信息
-function prompt(content, type = 'info', duration, placement = "leftBottom", onClose) {
+function prompt(content, type = 'info', duration, placement = 'leftBottom', onClose) {
   const messageType = ['success', 'error', 'info', 'warning', 'warn', 'loading'];
   if (messageType.indexOf(type) !== -1) {
     message[type](content, duration, onClose, placement);
@@ -427,14 +208,6 @@ function handleResponseError(error) {
         break;
     }
   }
-}
-
-// 没有权限跳转
-function unauthorized() {
-  // Choerodon.removeAccessToken();
-  axios.get('/oauth/logout');
-  AppState.setAuthenticated(false);
-  window.location = `${Choerodon.AUTH_URL}`;
 }
 
 // 生成指定长度的随机字符串
@@ -459,124 +232,17 @@ function setTheme(site, color) {
   }
 }
 
-// 获取住配置
-function getConfig(site) {
-  if (config) {
-    return config[site];
-  }
-}
-
-function getMenuCode(data, type, permission, organid, proid) {
-  permission.map(value => {
-    if (type === 'organization') {
-      permission = {
-        'name': `${data}.${value}`,
-        'resourceId': organid,
-        'resourceType': type,
-        'organizationId': organid,
-      };
-    } else if (type === 'project') {
-      permission = {
-        'name': `${data}.${value}`,
-        'resourceId': proid,
-        'resourceType': type,
-        'organizationId': organid,
-      };
-    }
-    MenuCode.push(permission);
-  });
-  const uniqMenuCode = _.uniqBy(MenuCode, 'name');
-  return uniqMenuCode;
-}
-
-function analysisUrl(str) {
-  const index = str.lastIndexOf('\?');
-  if (index === -1) {
-    return null;
-  } else {
-    const url = str.substring(index + 1, str.length);
-    return url;
-  }
-}
-
-var getHashStringArgs = function (url) {
-  if (url == null) {
-    return null;
-  } else {
-    var hashStrings = url,
-      hashArgs = {},
-      items = hashStrings.length > 0 ? hashStrings.split('&') : [],
-      item = null,
-      name = null,
-      value = null,
-      i = 0,
-      len = items.length;
-    for (i = 0; i < len; i++) {
-      item = items[i].split('=');
-      name = decodeURIComponent(item[0]);
-      value = decodeURIComponent(item[1]);
-      if (name.length > 0) {
-        hashArgs[name] = value;
-      }
-    }
-    return hashArgs;
-  }
-};
-
-function getPermission(data, service, type, organizationId, projectId) {
-  let approve;
-  let newData = [];
-  let approveArray = [];
-  // newData =  _.uniqWith(_.flattenDeep(data), _.isEqual).slice()[0];
-  newData = data;
-  service.map(valueCode => {
-    if (newData && newData.length && newData.length > 0) {
-      for (let i = 0; i < newData.length; i += 1) {
-        for (let j = 0; j < newData[i].length; j += 1) {
-          if (newData[i][j].code === valueCode) {
-            if (newData[i][j].resourceType === type) {
-              approve = newData[i][j].approve;
-              // if (type === 'organization') {
-              //   approve = newData[i][j].approve;
-              // } else if (type === 'project') {
-              //   approve = newData[i][j].approve;
-              // } else {
-              //   approve = newData[i][j].approve;
-              // }
-            }
-          }
-        }
-      }
-
-    };
-    approveArray.push(approve);
-  })
-  if (_.indexOf(approveArray, true) >= 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function historyPushMenu(history, path, uri, method = 'push') {
-  if (JSON.parse(local)) {
+function historyPushMenu(history, path, domain, method = 'push') {
+  if (!domain || JSON.parse(local)) {
     history[method](path);
+  } else if (!path) {
+    window.location = `${domain}`;
   } else {
-    if (uri) {
-      const pathreg = new RegExp('undefined', 'g');
-      if (pathreg.test(path)) {
-        window.location = `${uri}`;
-      } else {
-        const reg = new RegExp(`${uri}`, 'g');
-        if (reg.test(document.location.host)) {
-          history[method](path);
-        } else {
-          _.compact(path.split('?')).join('');
-          window.location = `${uri}/#${_.compact(path.split('?')).join('?')}`;
-        }
-      }
-    } else {
+    const reg = new RegExp(domain, 'g');
+    if (reg.test(window.location.host)) {
       history[method](path);
+    } else {
+      window.location = `${domain}/#${path}`;
     }
   }
 }
@@ -601,15 +267,8 @@ window.Choerodon = {
   checkPassword,
   handleResponseError,
   randomString,
-  unauthorized,
   setTheme,
-  getConfig,
-  getMenuCode,
-  getPermission,
-  permissonGet,
-  nprogress,
   fullscreen,
   historyPushMenu,
   historyReplaceMenu,
 };
-// })();

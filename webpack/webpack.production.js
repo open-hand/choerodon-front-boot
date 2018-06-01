@@ -9,6 +9,7 @@ const env = require('./comonConfig/webpack.env');
 module.exports = merge(webpackProConfig, {
   entry: [
     'babel-polyfill',
+    './src/containers/common/Choerodon',
     './src/index.prod',
   ],
   plugins: [

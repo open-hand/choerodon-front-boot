@@ -2,6 +2,7 @@
 //service 为一个数组，权限的code
 
 import React, { Children, cloneElement, Component, isValidElement } from 'react';
+import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import omit from 'object.omit';
 import AppState from '../stores/AppState';
@@ -9,6 +10,13 @@ import PermissionStore from '../stores/PermissionStore';
 
 @observer
 class Permission extends Component {
+  static propTypes = {
+    service: PropTypes.arrayOf(PropTypes.string).isRequired,
+    type: PropTypes.string,
+    projectId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    organizationId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    defaultChildren: PropTypes.node,
+  };
 
   componentWillMount() {
     this.check(this.props);
@@ -53,8 +61,7 @@ class Permission extends Component {
     const otherProps = omit(this.props, [
       'service', 'type', 'organizationId', 'projectId', 'defaultChildren', 'children',
     ]);
-    if (PermissionStore.judgeServices(this.getPermissionProps(this.props))
-        .some(item => PermissionStore.findPermission(item).approve)) {
+    if (PermissionStore.access(this.getPermissionProps(this.props))) {
       return this.extendProps(children, otherProps);
     } else if (defaultChildren) {
       return this.extendProps(defaultChildren, otherProps);

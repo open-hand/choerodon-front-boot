@@ -3,15 +3,12 @@
  */
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import 'Choerodon';
 
 const cookies = new Cookies();
 
 // axios 配置
 axios.defaults.timeout = 30000;
 axios.defaults.baseURL = `${process.env.API_HOST}`;
-
-const accessTokens = cookies.get(Choerodon.ACCESS_TOKEN);
 
 // history.go(0);
 // http request 拦截器);

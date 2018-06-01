@@ -14,12 +14,7 @@ import HeaderStore from '@/stores/HeaderStore';
 import MenuStore from '@/stores/MenuStore';
 import './MemuType.scss';
 
-const ORGANIZATION_TYPE = 'organization';
-const PROJECT_TYPE = 'project';
-
-const Option = Select.Option;
 const TabPane = Tabs.TabPane;
-const Search = Input.Search;
 
 @inject('AppState')
 @observer
@@ -366,7 +361,7 @@ class MenuType extends Component {
               {this.getOptionList()}
             </Select>
             <Input
-              prefix={<span className="icon-search" />}
+              prefix={<Icon type="search" />}
               placeholder="搜索组织和项目"
               value={searchValue}
               onChange={this.searchInput}

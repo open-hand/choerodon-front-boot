@@ -1,6 +1,5 @@
 import { action, computed, observable } from 'mobx';
 import axios from 'Axios';
-import 'Choerodon';
 
 function getDefaultLanguage() {
   let locale;

@@ -1,7 +1,7 @@
 import React, { cloneElement, Component } from 'react';
 import { observer } from 'mobx-react';
 import { Button, Dropdown, Menu } from 'choerodon-ui';
-import Permission from './permission';
+import Permission from './Permission';
 
 const { Item } = Menu;
 
