@@ -48,10 +48,6 @@ if (config.theme) {
 class CommonMenu extends Component {
 
   componentWillMount() {
-    sessionStorage.setItem('permission', '[]');
-    sessionStorage.setItem('permissionBackup', '[]');
-    sessionStorage.setItem('permissionApprove', '[]');
-    sessionStorage.setItem('permissionFlag', true);
     this.loadMenu(this.props);
   }
 
