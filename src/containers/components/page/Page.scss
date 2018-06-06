@@ -62,10 +62,16 @@
   flex-grow: 1;
   overflow: auto;
   margin: 0 !important;
+  position: relative;
 }
 
 .page-content {
   padding: 20px 24px;
+}
+
+.sidebar-content {
+  overflow: visible;
+  padding: 0;
 }
 
 .page-content-header {
