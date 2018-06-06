@@ -52,7 +52,7 @@
     "cache-loader": "^1.1.0",
     "chai": "^3.5.0",
     "change-case": "^3.0.1",
-    "choerodon-ui": "^0.2.6",
+    "choerodon-ui": "^0.2.7",
     "ci-info": "^1.1.2",
     "classnames": "^2.2.5",
     "codemirror": "^5.27.4",
