@@ -2,7 +2,7 @@
  * Created by HughHzWu on 2018/5/23.
  */
 import { action, observable } from 'mobx';
-import axios from 'Axios';
+import axios from '../components/axios';
 
 const DELAY = 300;
 

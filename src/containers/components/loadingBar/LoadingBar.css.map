@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAAA,eAAgB;EACd,OAAO,EAAE,OAAO;EAChB,MAAM,EAAE,UAAU;EAClB,UAAU,EAAE,MAAM;EAClB,SAAS,EAAE,IAAI;;AAGjB,YAAa;EACX,OAAO,EAAE,IAAI",
-"sources": ["LoadingBar.scss"],
-"names": [],
-"file": "LoadingBar.css"
-}

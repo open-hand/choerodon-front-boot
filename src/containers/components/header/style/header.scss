@@ -1,0 +1,48 @@
+.master-head {
+  &-wrap {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    font-size: 14px;
+    color: #fff;
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16);
+    position: relative;
+    z-index: 999;
+    background-color: #3F51B5;
+    li {
+      list-style-type: none;
+      margin: auto 10px;
+    }
+    .ant-btn {
+      color: inherit;
+      &:hover,
+      &.active,
+      .ant-ripple {
+        background-color: rgba(255, 255, 255, .1);
+      }
+    }
+  }
+  &-left,
+  &-center,
+  &-right {
+    display: flex;
+    margin: auto;
+  }
+  &-center {
+    li {
+      margin: 0;
+    }
+    padding-left: 0;
+    flex-grow: 1;
+    .ant-btn {
+      border-radius: 2px;
+      text-transform: none;
+    }
+  }
+  &-right {
+    padding-right: 20px;
+    li {
+      width: 30px;
+    }
+  }
+}
