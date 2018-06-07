@@ -103,12 +103,11 @@ def selectMenuTable(table, data):
                                 cursor.execute(sql)
                         else:
                             if serviceId and ('id' in serviceId):
-                                sql = "update {table} set code='{code}', name='{name}', level='{level}', parent_id='{parent_id}', icon='{icon}', route='{route}', sort='{sort}' where code='{code}'".format(
+                                sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}', route='{route}', sort='{sort}' where code='{code}'".format(
                                     table=table,
                                     code=menuList,
                                     name=dataLanguageChinese[menuList],
                                     level=level,
-                                    parent_id=serviceId["id"],
                                     icon=dataMenu[service][level][menuList]["icon"],
                                     route=dataMenu[service][level][menuList]["Routes"],
                                     sort=dataMenu[service][level][menuList]["sort"])

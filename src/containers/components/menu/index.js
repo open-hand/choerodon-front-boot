@@ -1,3 +1,3 @@
-import CommonMenu from './CommonMenu';
+import Menu from './Menu';
 
-export default CommonMenu;
+export default Menu;

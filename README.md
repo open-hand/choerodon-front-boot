@@ -6,21 +6,63 @@ Choerodon front boot is a toolkit about front end package management, startup, c
 The construction project can be used on `macOS`, `Windows` or `Linux`. Teams can be developed in modules, greatly speeding up development.
 
  * The project uses `webpack` for construction.
- * Use `gulp` to manage related processes.
- * Use `yeoman` to automatically generate related modules for the project.
  * `React` and `Mobx` are used as the main development technology.
 
-## Run via NodeJS
+## Install
+
+```bash
+$ npm install choerodon-front-boot -S
+```
+
+## Configuration
+
+* Create a configuration file named `config.js`
+
+```js
+const config = {
+  port: 9090,
+  output: './dist',
+  htmlTemplate: 'index.template.html',
+  devServerConfig: {},
+  postcssConfig: {
+    plugins: [
+      autoprefixer({
+        browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
+      }),
+    ],
+  },
+  babelConfig(config) {
+    return config;
+  },
+  webpackConfig(config) {
+    return config;
+  },
+  entryName: 'index',
+  root: '/',
+  routes: null, //by default, routes use main in package.json
+  server: 'http://api.example.com', //api server
+  clientid: 'localhost',
+  titlename: 'Choerodon', //html title
+  favicon: 'favicon.ico', //page favicon
+  theme: { // less/sass modify vars
+    'primary-color': '#3F51B5', 
+  },
+}
+```
+
+## Run
 
 ```
-$ git clone https://github.com/choerodon/choerodon-front-boot.git
-$ cd ./choerodon-front-boot
-$ npm install
-$ npm run gulp
-$ npm run dev
+  choerodon-front-boot start --config config.js
 ```
 
 Once running, open http://localhost:9090
+
+## Dist
+
+```
+  choerodon-front-boot build --config config.js
+```
 
 ## Dependencies
 
