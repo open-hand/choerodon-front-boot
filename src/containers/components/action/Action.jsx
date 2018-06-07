@@ -24,7 +24,7 @@ class Action extends Component {
 
   renderMenu(data) {
     return (
-      <Menu onClick={this.handleClick}>
+      <Menu onClick={this.handleClick} style={{ minWidth: 80 }}>
         {data.map(item => this.renderMenuItem(item))}
       </Menu>
     );

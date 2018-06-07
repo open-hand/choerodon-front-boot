@@ -5,7 +5,7 @@ const Choerodon = require('../lib/index');
 
 program
   .option('-c, --config <path>', 'set config path. defaults to ./bisheng.config.js')
-  .option('--ssr', 'whether to enable ssr while building pages.')
+  .option('-s, --skip <path>', 'skip install')
   .parse(process.argv);
 
 Choerodon.build(program);
