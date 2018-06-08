@@ -1,6 +1,6 @@
 const path = require('path');
 
 module.exports = {
-  routes: { test: path.join(__dirname, './test/routeIndex') },
-  server: 'http://api.choerodon.com.cn',
+  routes: { test: './test/routeIndex' },
+  server: 'http://api.staging.saas.hand-china.com',
 };

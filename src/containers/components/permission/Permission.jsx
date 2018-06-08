@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { Children, cloneElement, Component, isValidElement } from 'react';
+import React, { Children, cloneElement, createElement, Component, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import omit from 'object.omit';
@@ -14,6 +14,7 @@ class Permission extends Component {
     projectId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     organizationId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     defaultChildren: PropTypes.node,
+    noAccessChildren: PropTypes.node,
   };
 
   componentWillMount() {
@@ -45,23 +46,32 @@ class Permission extends Component {
   }
 
   extendProps(children, props) {
-    return Children.map(children, child => {
-      if (isValidElement(child)) {
-        return cloneElement(child, props);
-      } else {
-        return child;
-      }
-    });
+    if (isValidElement(children)) {
+      return Children.map(children, child => {
+        if (isValidElement(child)) {
+          return cloneElement(child, props);
+        } else {
+          return child;
+        }
+      });
+    } else if (typeof children === 'function') {
+      return createElement(children);
+    } else {
+      return children;
+    }
   }
 
   render() {
-    const { defaultChildren, children } = this.props;
+    const { defaultChildren, children, noAccessChildren } = this.props;
     const otherProps = omit(this.props, [
-      'service', 'type', 'organizationId', 'projectId', 'defaultChildren', 'children',
+      'service', 'type', 'organizationId', 'projectId', 'defaultChildren', 'noAccessChildren', 'children',
     ]);
-    if (PermissionStore.access(this.getPermissionProps(this.props))) {
+    const status = PermissionStore.access(this.getPermissionProps(this.props));
+    if (status === 'success') {
       return this.extendProps(children, otherProps);
-    } else if (defaultChildren) {
+    } else if (status === 'failure' && (noAccessChildren || defaultChildren)) {
+      return this.extendProps(noAccessChildren || defaultChildren, otherProps);
+    } else if (status === 'pending' && defaultChildren) {
       return this.extendProps(defaultChildren, otherProps);
     } else {
       return null;

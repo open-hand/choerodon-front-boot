@@ -29,6 +29,8 @@ export { default as stores } from '../stores';
 
 export { default as nomatch } from './error-pages/404';
 
+export { default as noaccess } from './error-pages/403';
+
 export { default as asyncLocaleProvider } from './util/asyncLocaleProvider';
 
 export { default as asyncRouter } from './util/asyncRouter';
