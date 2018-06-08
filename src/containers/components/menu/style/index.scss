@@ -1,0 +1,131 @@
+/* .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: #f0f4fd !important;
+} */
+:root .ant-menu-submenu-inline > .ant-menu-submenu-title:after {
+  font-size: 16px;
+}
+
+.ant-tooltip-inner {
+  max-width: 500px;
+}
+
+.common-menu {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  &-left,
+  &-right {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #d3d3d3;
+    background-color: #fafafa;
+    .ant-menu {
+      background-color: rgb(250, 250, 250);
+      margin-top: 8px;
+      .icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin-right: 17px;
+      }
+      &-item,
+      &-submenu-title {
+        padding: 0 15px !important;
+      }
+      &-item {
+        color: rgba(0, 0, 0, .65);
+        left: 0;
+        display: flex;
+        align-items: center;
+        > a:hover {
+          color: #3f51b5;
+        }
+      }
+    }
+    &-header {
+      display: flex;
+      padding: 0 12px;
+      height: 58px;
+      line-height: 57px;
+      border-bottom: 1px solid #d3d3d3;
+      font-size: 18px;
+      align-items: center;
+      flex-shrink: 0;
+      color: rgba(0, 0, 0, .65);
+      .icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        margin-right: 14px;
+      }
+    }
+    &-content {
+      overflow: auto;
+      overflow-x: hidden;
+      flex-grow: 1;
+    }
+  }
+  &-left {
+    position: absolute;
+    width: 50px;
+    height: 100%;
+    z-index: 998;
+    transition: all 0.25s;
+    &.collapse {
+      width: 280px;
+    }
+    .ant-menu .ant-menu-item {
+      &-selected,
+      &-selected:hover {
+        color: #fff;
+        background-color: #3f51b5;
+      }
+    }
+    &-header {
+      cursor: pointer;
+      div {
+        width: 100%;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  &-right {
+    width: 230px;
+    .ant-menu {
+      border-right: 0;
+      &-item-selected {
+        color: #3F51B5;
+        background-color: rgba(140, 158, 255, 0.16) !important;
+      }
+      &-sub {
+        background: #F6F6F6;
+      }
+      &-submenu-active {
+        background-color: transparent;
+      }
+      &-selected:after,
+      &-item-selected:after {
+        display: none;
+      }
+    }
+  }
+  &-left + &-right {
+    margin-left: 50px;
+  }
+  &-mask {
+    z-index: 997;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.48;
+  }
+}

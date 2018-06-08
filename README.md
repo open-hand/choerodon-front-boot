@@ -1,71 +1,84 @@
 # Choerodon Boot
-Do not need to write any configuration file to create a project of React . We have also opened some custom configurations that can be modified to some extent.
-The construction project can be used on macOS, Windows and Linux systems.
-If there are some bugs, or if you want to have more custom features, welcome to raise an issue, we will definitely modify it as soon as possible.
 
- * The project uses webpack for construction.
- * Use gulp to manage related processes.
- * Use yeoman to automatically generate related modules for the project.
- * React and Mobx are used as the main development technology.
- * Teams can be developed in modules, greatly speeding up development.
 
-## New function
+Choerodon front boot is a toolkit about front end package management, startup, compilation. It is mainly used to provide custom some configurations file to create a project of React that can be modified to some extent.
 
-New function:
+The construction project can be used on `macOS`, `Windows` or `Linux`. Teams can be developed in modules, greatly speeding up development.
 
- * Upgrade webpack version
- * Encapsulate and merge the boot architecture
- * Provide json-sever development method, is a complete separation of the front and back ends
- * Further optimize the system construction
- * Try and use GraphQL and SSR
- * Try and develop the micro-front-end architecture
+ * The project uses `webpack` for construction.
+ * `React` and `Mobx` are used as the main development technology.
 
-## Necessary conditions
+## Install
+
+```bash
+$ npm install choerodon-front-boot -S
+```
+
+## Configuration
+
+* Create a configuration file named `config.js`
+
+```js
+const config = {
+  port: 9090,
+  output: './dist',
+  htmlTemplate: 'index.template.html',
+  devServerConfig: {},
+  postcssConfig: {
+    plugins: [
+      autoprefixer({
+        browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
+      }),
+    ],
+  },
+  babelConfig(config) {
+    return config;
+  },
+  webpackConfig(config) {
+    return config;
+  },
+  entryName: 'index',
+  root: '/',
+  routes: null, //by default, routes use main in package.json
+  server: 'http://api.example.com', //api server
+  clientid: 'localhost',
+  titlename: 'Choerodon', //html title
+  favicon: 'favicon.ico', //page favicon
+  theme: { // less/sass modify vars
+    'primary-color': '#3F51B5', 
+  },
+}
+```
+
+## Run
+
+```
+  choerodon-front-boot start --config config.js
+```
+
+Once running, open http://localhost:9090
+
+## Dist
+
+```
+  choerodon-front-boot build --config config.js
+```
+
+## Dependencies
 
  * Node environment (6.9.0+)
  * Git environment
- * Python environment(Execute some functional scripts)
-
-## Quick start
-
-### Clone project files:
-```
-git clone https://github.com/choerodon/choerodon-front-boot.git
-```
-
-### Enter the directory, install dependencies:
-```
-npm i or yarn install
-```
-
-### Development:
-```
-npm run gulp
-# Then open a terminal window
-npm run dev
-Open http://localhost:9090
-```
-
-### Build:
-```
-npm run build
-```
-
-### Code detection:
-
-```
-npm run lint
-```
+ * Python environment(2.7)
 
 ## Related documents and information
 
-* React: [https://reactjs.org](https://reactjs.org)
-* Mobx: [https://github.com/mobxjs/mobx](https://github.com/mobxjs/mobx)
-* webpack: [https://webpack.docschina.org](https://webpack.docschina.org)
-* gulp: [https://gulpjs.com](https://gulpjs.com)
+* [React](https://reactjs.org)
+* [Mobx](https://github.com/mobxjs/mobx)
+* [webpack](https://webpack.docschina.org)
+* [gulp](https://gulpjs.com)
 
+## Reporting Issues
+If you find any shortcomings or bugs, please describe them in the  [issue](https://github.com/choerodon/choerodon/issues/new?template=issue_template.md).
 
-## FAQ
-
-If you find any shortcomings or bugs, please describe them in the Issue.
-    
+## How to Contribute
+Pull requests are welcome! [Follow](https://github.com/choerodon/choerodon/blob/master/CONTRIBUTING.md) to know for more information on how to contribute.

@@ -1,0 +1,15 @@
+.c7n-403-page {
+  padding-top: 191px;
+  width: 704px;
+  margin: 0 auto;
+  text-align: right;
+
+  &-banner {
+    width: 100%;
+    height: 418px;
+    margin-bottom: 31px;
+    background-image: url('./403.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}

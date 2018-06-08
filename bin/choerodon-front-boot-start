@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const Choerodon = require('../lib/index');
+
+program
+  .option('-c, --config <path>', 'set config path. defaults to ./bisheng.config.js')
+  .parse(process.argv);
+
+Choerodon.start(program);
