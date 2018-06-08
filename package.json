@@ -50,7 +50,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.4.1",
     "change-case": "^3.0.1",
-    "choerodon-ui": "^0.2.7",
+    "choerodon-ui": "^0.3.0",
     "classnames": "^2.2.5",
     "commander": "^2.9.0",
     "css-loader": "^0.25.0",
