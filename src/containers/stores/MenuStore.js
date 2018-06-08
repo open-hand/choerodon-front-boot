@@ -59,7 +59,8 @@ class MenuStore {
     if (menu.length) {
       return Promise.resolve(menu);
     }
-    return axios.get(`/iam/v1/menus?level=${type}`).then((data) => {
+    const { id = 0 } = AppState.currentMenuType;
+    return axios.get(`/iam/v1/menus?level=${type}&source_id=${id}`).then((data) => {
       const child = filterEmptyMenus(data);
       this.setMenuData(child, type);
       return child;
