@@ -146,9 +146,14 @@ function removeAccessToken() {
   removeCookie(ACCESS_TOKEN, option);
 }
 
-// 多语言
+// 多语言 old
 function languageChange(id, otherProps) {
   return <FormattedMessage id={`${id}`} {...otherProps} />;
+}
+
+// 多语言
+function intl(id, otherProps) {
+  return <FormattedMessage id={id} {...otherProps} />;
 }
 
 // 登出
