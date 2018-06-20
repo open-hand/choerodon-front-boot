@@ -55,7 +55,7 @@ class Action extends Component {
         service={this.getAllService(data)}
       >
         <Dropdown overlay={this.renderMenu(data)} trigger={['click']} placement={placement}>
-          <Button shape="circle" style={{ color: '#3F51B5' }} icon="more_vert" />
+          <Button size="small" shape="circle" style={{ color: '#3F51B5' }} icon="more_vert" />
         </Dropdown>
       </Permission>
     );
