@@ -67,13 +67,12 @@ def selectMenuTable(table, data):
                           sort=dataMenu[root]["sort"])
                       cursor.execute(sql)
                   else:
-                      sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}', sort='{sort}' where code='{code}' and level='{level}'".format(
+                      sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}' where code='{code}' and level='{level}'".format(
                           table=table,
                           code=root,
                           name=dataLanguageChinese[root],
                           level=levelYaml,
-                          icon=dataMenu[root]["icon"],
-                          sort=dataMenu[root]["sort"])
+                          icon=dataMenu[root]["icon"])
                       cursor.execute(sql)
         for service in dataMenu:
             centerLevel = []
@@ -103,14 +102,13 @@ def selectMenuTable(table, data):
                                 cursor.execute(sql)
                         else:
                             if serviceId and ('id' in serviceId):
-                                sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}', route='{route}', sort='{sort}' where code='{code}'".format(
+                                sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}', route='{route}' where code='{code}'".format(
                                     table=table,
                                     code=menuList,
                                     name=dataLanguageChinese[menuList],
                                     level=level,
                                     icon=dataMenu[service][level][menuList]["icon"],
-                                    route=dataMenu[service][level][menuList]["Routes"],
-                                    sort=dataMenu[service][level][menuList]["sort"])
+                                    route=dataMenu[service][level][menuList]["Routes"])
                                 cursor.execute(sql)
     except:
         dealFault()
