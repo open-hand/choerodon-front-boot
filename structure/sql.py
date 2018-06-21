@@ -8,13 +8,13 @@ import sys
 import getopt
 reload(sys)
 sys.setdefaultencoding('utf8')
-# 返回id
+# return menu id
 def returnTableId(table, content, equaldata):
     sql = "select id from {table} where {content} = '{equaldata}'".format(table=table,content=content, equaldata=equaldata)
     cursor.execute(sql)
     Id = cursor.fetchone()
     return Id
-# 判断是否存在
+# judge menu exist
 def judgeTrue(table, *args):
     if len(args) == 4:
       sql = "select id from {table} where {content}='{equaldata}' and {contentTwo}='{equaldataTwo}'".format(
@@ -35,7 +35,7 @@ def judgeTrue(table, *args):
         return True
     else:
         return False
-# 返回菜单成绩
+# return menu level
 def returnLevel(data):
     dataMenu = data["menu"]
     centerLevel = []
@@ -45,7 +45,7 @@ def returnLevel(data):
                 if saveLevel == level:
                     centerLevel.append(saveLevel)
     return centerLevel
-#插入菜单
+# insert iam_menu
 def selectMenuTable(table, data):
     try:
         dataMenu = data["menu"]
@@ -112,7 +112,7 @@ def selectMenuTable(table, data):
                                 cursor.execute(sql)
     except:
         dealFault()
-# 菜单权限插入
+# insert iam_menu_permission
 def menuPermission(table, data):
     try:
         dataMenu = data["menu"]
@@ -129,17 +129,17 @@ def menuPermission(table, data):
                     sql = "delete from {table} where menu_id={menuId}".format(table=table,menuId=menuId["id"])
                     cursor.execute(sql)
                     for permission in dataMenu[service][level][menuList]["permission"]:
-                        permissionId = returnTableId('iam_permission', 'code', permission)
-                        if menuId and permissionId:
-                            sql = "select id from iam_menu_permission where menu_id={menuId} and permission_id={permissionId}".format(menuId=menuId["id"],permissionId=permissionId["id"])
+                        # permissionId = returnTableId('iam_permission', 'code', permission)
+                        if menuId:
+                            sql = "select id from iam_menu_permission where menu_id={menuId} and permission_code='{permission_code}'".format(menuId=menuId["id"],permission_code=permission)
                             cursor.execute(sql)
                             count = cursor.execute(sql)
                             if count == 0:
-                                sql = "insert into {table} (menu_id, permission_id) values ('{menuId}','{permissionId}')".format(table=table,menuId=menuId["id"],permissionId=permissionId["id"])
+                                sql = "insert into {table} (menu_id, permission_code) values ('{menuId}','{permission_code}')".format(table=table,menuId=menuId["id"],permission_code=permission)
                                 cursor.execute(sql)
     except:
         dealFault()
-# 菜单中英文
+# insert iam_menu_tl
 def selectMenuTlTable(table, data):
     try:
         dataService = data["menu"]
