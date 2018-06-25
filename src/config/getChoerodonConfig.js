@@ -1,6 +1,4 @@
 import * as fs from 'fs';
-import * as path from 'path';
-import * as resolve from 'resolve';
 import autoprefixer from 'autoprefixer';
 
 const defaultConfig = {
@@ -21,11 +19,15 @@ const defaultConfig = {
   webpackConfig(config) {
     return config;
   },
+  enterPoints(mode) {
+    return {};
+  },
   entryName: 'index',
   root: '/',
   routes: null,
   local: true,
   server: 'http://api.example.com',
+  fileServer: 'http://file.example.com',
   clientid: 'localhost',
   titlename: 'Choerodon',
   favicon: 'favicon.ico',

@@ -101,6 +101,7 @@
     "typescript": "^2.6.2",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "universal-cookie": "^2.0.8",
+    "url": "^0.11.0",
     "url-loader": "^1.0.1",
     "webpack": "^3.7.0",
     "webpack-dev-server": "^2.9.1"

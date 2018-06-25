@@ -46,7 +46,7 @@ class UserPreferences extends Component {
     const { imageUrl, loginName, realName, email } = AppState.getUserInfo || {};
     const AppBarIconRight = (
       <div className="user-preference-popover-content">
-        <Avatar src={imageUrl}>
+        <Avatar src={Choerodon.fileServer(imageUrl)}>
           {realName && realName.charAt(0)}
         </Avatar>
         <div className="popover-title">
@@ -80,7 +80,7 @@ class UserPreferences extends Component {
         placement="bottomRight"
         onVisibleChange={this.handleVisibleChange}
       >
-        <Avatar src={imageUrl}>
+        <Avatar src={Choerodon.fileServer(imageUrl)}>
           {realName && realName.charAt(0)}
         </Avatar>
       </Popover>
