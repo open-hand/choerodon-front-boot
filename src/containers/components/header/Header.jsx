@@ -26,7 +26,7 @@ class Header extends Component {
 
   componentDidMount() {
     const { AppState } = this.props;
-    MenuStore.loadMenuData('site').then(menus => {
+    MenuStore.loadMenuData({ type: 'site' }, false).then(menus => {
       this.setState({
         siteFlag: menus.length > 0,
       });

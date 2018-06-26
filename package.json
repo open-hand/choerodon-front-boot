@@ -17,6 +17,7 @@
     "prebuild": "npm run compile",
     "build": "node ./bin/choerodon-front-boot-build --config ./choerodon.config.js",
     "clean": "rimraf lib",
+    "watch": "gulp watch",
     "compile": "gulp compile",
     "prepublish": "npm run compile",
     "postpublish": "npm run clean"
