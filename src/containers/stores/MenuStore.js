@@ -5,8 +5,8 @@ import { action, computed, observable } from 'mobx';
 import axios from '../components/axios';
 import AppState from './AppState';
 
-function getMenuType() {
-  return AppState.isTypeUser ? 'user' : AppState.currentMenuType.type;
+function getMenuType(menuType = AppState.currentMenuType, isUser = AppState.isTypeUser) {
+  return isUser ? 'user' : menuType.type;
 }
 
 function filterEmptyMenus(menuData, parent) {
@@ -25,41 +25,15 @@ class MenuStore {
   @observable orgMenu = [];
   @observable prjMenu = [];
   @observable userMenu = [];
-  @observable selectedMenu;
-  @observable chosenService = 0;
 
   @action
-  setChosenService(data) {
-    this.chosenService = data;
-  }
-
-  @computed
-  get getChosenService() {
-    return this.chosenService;
-  }
-
-  @action
-  setSelectedMenu(data) {
-    this.selectedMenu = data;
-  }
-
-  @computed
-  get getSelectedMenu() {
-    return this.selectedMenu;
-  }
-
-  @action
-  loadMenuData(type) {
-    if (type) {
-      this.setChosenService(null);
-    } else {
-      type = getMenuType();
-    }
+  loadMenuData(menuType = AppState.currentMenuType, isUser) {
+    const type = getMenuType(menuType, isUser);
     const menu = this.menuData(type);
     if (menu.length) {
       return Promise.resolve(menu);
     }
-    const { id = 0 } = AppState.currentMenuType;
+    const { id = 0 } = menuType;
     return axios.get(`/iam/v1/menus?level=${type}&source_id=${id}`).then((data) => {
       const child = filterEmptyMenus(data);
       this.setMenuData(child, type);
@@ -113,12 +87,17 @@ class MenuStore {
     }
   }
 
-  treeReduce(tree, callback, childrenName = 'subMenus') {
-    return tree.some((node, index) => {
-      if (node[childrenName] && node[childrenName].length > 0) {
-        return this.treeReduce(node[childrenName], callback, childrenName);
+  treeReduce(tree, callback, childrenName = 'subMenus', parents = []) {
+    return tree[childrenName].some((node, index) => {
+      if (tree.code) {
+        parents.push(tree);
+      } else {
+        parents = [];
       }
-      return callback(node, index);
+      if (node[childrenName] && node[childrenName].length > 0) {
+        return this.treeReduce(node, callback, childrenName, parents);
+      }
+      return callback(node, parents, index);
     });
   }
 }

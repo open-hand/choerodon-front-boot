@@ -11,9 +11,8 @@ function getDefaultLanguage() {
 
 class AppState {
   @observable menuType = {}; // 一个菜单对象 {id:'',name:'',type:''}
-  @observable collapsed = false;
+  @observable expanded = false;
   @observable userInfo = {};
-  @observable single = false;
   @observable debugger = false; // 调试模式
   @observable isUser = false;
 
@@ -33,16 +32,6 @@ class AppState {
   }
 
   @computed
-  get getSingle() {
-    return this.single;
-  }
-
-  @action
-  setSingle(data) {
-    this.single = data;
-  }
-
-  @computed
   get getType() {
     return this.currentMenuType.type;
   }
@@ -58,13 +47,13 @@ class AppState {
   }
 
   @computed
-  get getCollapsed() {
-    return this.collapsed;
+  get getMenuExpanded() {
+    return this.expanded;
   }
 
   @action
-  setCollapsed(data) {
-    this.collapsed = data;
+  setMenuExpanded(data) {
+    this.expanded = data;
   }
 
   @computed

@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Button, Popover } from 'choerodon-ui';
 import MenuStore from '../../stores/MenuStore';
 import Avatar from './Avatar';
+import findFirstLeafMenu from '../util/findFirstLeafMenu';
 
 @inject('AppState')
 @observer
@@ -24,11 +25,9 @@ class UserPreferences extends Component {
 
   preferences = () => {
     const { AppState, history } = this.props;
-    AppState.changeMenuType({ type: 'site' });
-    AppState.setTypeUser(true);
-    MenuStore.loadMenuData('user').then(menus => {
+    MenuStore.loadMenuData({ type: 'site' }, true).then(menus => {
       if (menus.length) {
-        const { route, domain } = menus[0].subMenus[0];
+        const { route, domain } = findFirstLeafMenu(menus[0]);
         Choerodon.historyPushMenu(history, `${route}?type=site`, domain);
       }
     });

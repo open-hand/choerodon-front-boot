@@ -18,12 +18,9 @@ const spinStyle = {
 class Masters extends Component {
   render() {
     const { AppState, AutoRouter } = this.props;
-    const classString = classnames('page-wrapper', {
-      'single-menu': AppState.getSingle,
-    });
     return (
       AppState.isAuth ?
-        <div className={classString}>
+        <div className="page-wrapper">
           <div className="page-header">
             <MasterHeader />
           </div>
