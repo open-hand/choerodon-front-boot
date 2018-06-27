@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import chalk from 'chalk';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
@@ -10,14 +11,55 @@ import getTSCommonConfig from './getTSCommonConfig';
 
 /* eslint quotes:0 */
 
-export default function getWebpackCommonConfig() {
+export default function getWebpackCommonConfig(mode, env) {
   const jsFileName = '[name]_[hash:8].js';
   const jsChunkFileName = 'chunks/[name].[chunkhash:5].chunk.js';
   const cssFileName = '[name].css';
 
-  const babelOptions = getBabelCommonConfig();
+  const babelOptions = getBabelCommonConfig(mode, env);
   const tsOptions = getTSCommonConfig();
 
+  const plugins = [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity,
+    }),
+    new ExtractTextPlugin({
+      filename: cssFileName,
+      disable: false,
+      allChunks: true,
+    }),
+    new CaseSensitivePathsPlugin(),
+    new webpack.ProgressPlugin((percentage, msg, addInfo) => {
+      const stream = process.stderr;
+      if (stream.isTTY && percentage < 0.71) {
+        stream.cursorTo(0);
+        stream.write(`📦  ${chalk.magenta(msg)} (${chalk.magenta(addInfo)})`);
+        stream.clearLine(1);
+      } else if (percentage === 1) {
+        console.log(chalk.green('\nwebpack: bundle build is now finished.'));
+      }
+    }),
+    new FriendlyErrorsWebpackPlugin(),
+    new webpack.ProvidePlugin({
+      Choerodon: join(__dirname, '../containers/common'),
+    }),
+  ];
+
+  if (env === 'production') {
+    plugins.push(
+      new webpack.LoaderOptionsPlugin({
+        minimize: true,
+      }),
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          output: {
+            ascii_only: true,
+          },
+        },
+      }),
+    );
+  }
   return {
     output: {
       filename: jsFileName,
@@ -89,32 +131,6 @@ export default function getWebpackCommonConfig() {
         },
       ],
     },
-
-    plugins: [
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks: Infinity,
-      }),
-      new ExtractTextPlugin({
-        filename: cssFileName,
-        disable: false,
-        allChunks: true,
-      }),
-      new CaseSensitivePathsPlugin(),
-      new webpack.ProgressPlugin((percentage, msg, addInfo) => {
-        const stream = process.stderr;
-        if (stream.isTTY && percentage < 0.71) {
-          stream.cursorTo(0);
-          stream.write(`📦  ${chalk.magenta(msg)} (${chalk.magenta(addInfo)})`);
-          stream.clearLine(1);
-        } else if (percentage === 1) {
-          console.log(chalk.green('\nwebpack: bundle build is now finished.'));
-        }
-      }),
-      new FriendlyErrorsWebpackPlugin(),
-      new webpack.ProvidePlugin({
-        Choerodon: join(__dirname, '../containers/common'),
-      }),
-    ],
+    plugins,
   };
 }

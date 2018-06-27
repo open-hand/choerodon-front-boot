@@ -37,6 +37,8 @@ class CommonMenu extends Component {
     const { pathname, search } = location;
     if (pathname !== '/') {
       const menuType = { type: 'site' };
+      const isUser = AppState.isTypeUser;
+      const { type: currentType, id: currentId } = AppState.currentMenuType;
       let newIsUser = false;
       if (search) {
         const { type, name, id, organizationId } = queryString.parse(search);
@@ -61,19 +63,23 @@ class CommonMenu extends Component {
       }
       AppState.setTypeUser(newIsUser);
       AppState.changeMenuType(menuType);
-        MenuStore.loadMenuData(menuType).then(menus => {
-          MenuStore.treeReduce({ subMenus: menus }, (menu, parents) => {
-            if (menu.route === pathname || pathname.indexOf(`${menu.route}/`) === 0) {
-              this.setState({
-                activeMenu: menu,
-                selected: parents[0],
-                openKeys: this.state.collapsed ? [] : parents.map(({ code }) => code),
-              });
-              return true;
+      MenuStore.loadMenuData(menuType).then(menus => {
+        MenuStore.treeReduce({ subMenus: menus }, (menu, parents) => {
+          if (menu.route === pathname || pathname.indexOf(`${menu.route}/`) === 0) {
+            const { openKeys, collapsed } = this.state;
+            const newState = {
+              activeMenu: menu,
+              selected: parents[0],
+            };
+            if (currentType !== menuType.type || isUser !== newIsUser || currentId !== menuType.id) {
+              newState.openKeys = collapsed ? [] : parents.map(({ code }) => code);
             }
-            return false;
-          });
+            this.setState(newState);
+            return true;
+          }
+          return false;
         });
+      });
     } else {
       AppState.setTypeUser(false);
       const recent = HeaderStore.getRecentItem;

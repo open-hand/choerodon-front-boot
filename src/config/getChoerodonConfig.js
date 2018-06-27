@@ -13,13 +13,13 @@ const defaultConfig = {
       }),
     ],
   },
-  babelConfig(config) {
+  babelConfig(config, mode, env) {
     return config;
   },
-  webpackConfig(config) {
+  webpackConfig(config, mode, env) {
     return config;
   },
-  enterPoints(mode) {
+  enterPoints(mode, env) {
     return {};
   },
   entryName: 'index',

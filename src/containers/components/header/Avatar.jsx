@@ -10,7 +10,7 @@ export default class Avatar extends Component {
         style={
           {
             ...style,
-            backgroundImage: src && `url(${src})`,
+            backgroundImage: src && `url(${Choerodon.fileServer(src)})`,
           }
         }
         {
