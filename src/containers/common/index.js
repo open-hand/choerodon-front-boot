@@ -235,7 +235,7 @@ function historyReplaceMenu(history, path, uri) {
 }
 
 function fileServer(path) {
-  return url.resolve(FILE_SERVER, path);
+  return url.resolve(FILE_SERVER, path || '');
 }
 
 export {
