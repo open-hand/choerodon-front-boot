@@ -6,6 +6,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import context from '../context';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getEnterPointsConfig from './getEnterPointsConfig';
+import getWebpackCommonConfig from './getWebpackCommonConfig';
 
 const choerodonLib = path.join(__dirname, '..');
 
@@ -14,7 +15,8 @@ function getFilePath(file) {
   return fs.existsSync(filePath) ? filePath : path.join(__dirname, '..', file);
 }
 
-export default function updateWebpackConfig(webpackConfig, mode) {
+export default function updateWebpackConfig(mode, env) {
+  const webpackConfig = getWebpackCommonConfig(mode, env);
   const { choerodonConfig, isBuild } = context;
   const {
     theme, output, root, enterPoints, server, fileServer, clientid, local,
@@ -42,7 +44,6 @@ export default function updateWebpackConfig(webpackConfig, mode) {
       });
     });
     defaultEnterPoints = {
-      NODE_ENV: 'development',
       API_HOST: server,
       AUTH_HOST: `${server}/oauth`,
       CLIENT_ID: clientid,
@@ -60,14 +61,11 @@ export default function updateWebpackConfig(webpackConfig, mode) {
         }),
       });
     });
-    defaultEnterPoints = {
-      NODE_ENV: 'production',
-      ...getEnterPointsConfig(),
-    };
+    defaultEnterPoints = getEnterPointsConfig();
   }
   /* eslint-enable no-param-reassign */
-  const mergedEnterPoints = Object.assign(defaultEnterPoints, enterPoints(mode));
-  const env = Object.keys(mergedEnterPoints).reduce((obj, key) => {
+  const mergedEnterPoints = Object.assign({ NODE_ENV: env }, defaultEnterPoints, enterPoints(mode, env));
+  const defines = Object.keys(mergedEnterPoints).reduce((obj, key) => {
     obj[`process.env.${key}`] = JSON.stringify(process.env[key] || mergedEnterPoints[key]);
     return obj;
   }, {});
@@ -79,7 +77,7 @@ export default function updateWebpackConfig(webpackConfig, mode) {
   const entryPath = path.join(choerodonLib, '..', 'tmp', `entry.${entryName}.js`);
   customizedWebpackConfig.entry[entryName] = entryPath;
   customizedWebpackConfig.plugins.push(
-    new webpack.DefinePlugin(env),
+    new webpack.DefinePlugin(defines),
     new HtmlWebpackPlugin({
       title: process.env.TITLE_NAME || titlename,
       template: getFilePath(htmlTemplate),
