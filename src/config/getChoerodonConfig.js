@@ -1,6 +1,4 @@
 import * as fs from 'fs';
-import * as path from 'path';
-import * as resolve from 'resolve';
 import autoprefixer from 'autoprefixer';
 
 const defaultConfig = {
@@ -15,17 +13,21 @@ const defaultConfig = {
       }),
     ],
   },
-  babelConfig(config) {
+  babelConfig(config, mode, env) {
     return config;
   },
-  webpackConfig(config) {
+  webpackConfig(config, mode, env) {
     return config;
+  },
+  enterPoints(mode, env) {
+    return {};
   },
   entryName: 'index',
   root: '/',
   routes: null,
   local: true,
   server: 'http://api.example.com',
+  fileServer: 'http://file.example.com',
   clientid: 'localhost',
   titlename: 'Choerodon',
   favicon: 'favicon.ico',

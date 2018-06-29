@@ -71,7 +71,15 @@
     padding-top: 137px;
   }
   &-disabled {
-    color: rgba(0, 0, 0, 0.36)
+    color: rgba(0, 0, 0, 0.36);
+  }
+  &-name {
+    > icon {
+      vertical-align: text-bottom;
+    }
+  }
+  &-name:hover {
+    color: #3F51B5;
   }
 }
 

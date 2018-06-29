@@ -9,6 +9,7 @@ import { toJS } from 'mobx';
 import axios from '../axios';
 import HeaderStore from '../../stores/HeaderStore';
 import MenuStore from '../../stores/MenuStore';
+import findFirstLeafMenu from '../util/findFirstLeafMenu';
 
 const TabPane = Tabs.TabPane;
 
@@ -82,11 +83,10 @@ class MenuType extends Component {
   selectState = (value) => {
     const { AppState, history } = this.props;
     const { id, name, type, organizationId } = value;
-    AppState.changeMenuType({ id, name, type, organizationId });
     HeaderStore.setRecentItem(value);
-    MenuStore.loadMenuData(type).then(menus => {
+    MenuStore.loadMenuData({ type, id }, false).then(menus => {
       if (menus.length) {
-        const { route, domain } = menus[0].subMenus[0];
+        const { route, domain } = findFirstLeafMenu(menus[0]);
         let path = `${route}?type=${type}&id=${id}&name=${name}`;
         if (organizationId) {
           path += `&organizationId=${organizationId}`;
@@ -144,6 +144,7 @@ class MenuType extends Component {
             <span className="menu-type-disabled">{text}</span> :
             <a
               role="none"
+              className="menu-type-name"
               onClick={this.selectState.bind(this, record)}
             >
               <Icon type={record.type === 'project' ? 'project' : 'domain'} />

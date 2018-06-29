@@ -10,16 +10,26 @@ const merge2 = require('merge2');
 const cwd = process.cwd();
 const libDir = path.join(cwd, 'lib');
 
+function compileAssets() {
+  return gulp.src(['src/**/*.@(jpg|png|svg|scss|html|ico)']).pipe(gulp.dest(libDir));
+}
+
+function compileFile(type) {
+  const source = [];
+  if (!type || type === 'js') {
+    source.push('src/**/*.js');
+  }
+  if (!type || type === 'jsx') {
+    source.push('src/**/*.jsx');
+  }
+  return babelify(gulp.src(source));
+}
+
 function compile() {
   rimraf.sync(libDir);
-  const assets = gulp.src(['src/**/*.@(jpg|png|svg|scss|html|ico)']).pipe(gulp.dest(libDir));
-  const source = [
-    'src/**/*.js',
-    'src/**/*.jsx',
-  ];
-  const jsResult = gulp.src(source);
-  const jsFilesStream = babelify(jsResult);
-  return merge2([jsFilesStream, assets]);
+  const assets = compileAssets();
+  const jsFilesStream = compileFile();
+  // return merge2([jsFilesStream, assets]);
 }
 
 function getBabelCommonConfig() {
@@ -70,4 +80,22 @@ function babelify(js) {
 
 gulp.task('compile', () => {
   compile();
+});
+
+gulp.task('compileJs', () => {
+  compileFile('js');
+});
+
+gulp.task('compileJsx', () => {
+  compileFile('jsx');
+});
+
+gulp.task('compileAssets', () => {
+  compileAssets();
+});
+
+gulp.task('watch', () => {
+  gulp.watch(path.join(__dirname, 'src/**/*.js'), ['compileJs']);
+  gulp.watch(path.join(__dirname, 'src/**/*.jsx'), ['compileJsx']);
+  gulp.watch(path.join(__dirname, 'src/**/*.@(jpg|png|svg|scss|html|ico)'), ['compileAssets']);
 });

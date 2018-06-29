@@ -2,7 +2,7 @@ import { tmpdir } from 'os';
 
 const context = require('../context');
 
-export default function babel() {
+export default function babel(mode, env) {
   const { choerodonConfig } = context;
   return choerodonConfig.babelConfig({
     'presets': [
@@ -26,5 +26,5 @@ export default function babel() {
         },
       ],
     ],
-  });
+  }, mode, env);
 }

@@ -3,14 +3,17 @@ import React from 'react';
 import Cookies from 'universal-cookie';
 import { message } from 'choerodon-ui';
 import { FormattedMessage } from 'react-intl';
+import url from 'url';
 import AppState from '../stores/AppState';
 
 const cookies = new Cookies();
 const ACCESS_TOKEN = 'access_token';
 const ACCESS_DOMAIN = 'domain';
 const AUTH_URL = `${process.env.AUTH_HOST}/oauth/authorize?response_type=token&client_id=${process.env.CLIENT_ID}&state=`;
-const local = JSON.parse(process.env.LOCAL);
-const cookieServer = process.env.COOKIE_SERVER;
+const LOCAL = JSON.parse(process.env.LOCAL || 'true');
+const COOKIE_SERVER = process.env.COOKIE_SERVER;
+const FILE_SERVER = process.env.FILE_SERVER;
+
 const localReg = /localhost/g;
 
 const setCookie = (name, value, option) => cookies.set(name, value, option);
@@ -128,9 +131,9 @@ function setAccessToken(token, expiresion) {
   const option = {
     path: '/',
   };
-  if (!local && !localReg.test(window.location.host) &&
+  if (!LOCAL && !localReg.test(window.location.host) &&
     getCookie(ACCESS_DOMAIN) === null) {
-    option.domain = cookieServer;
+    option.domain = COOKIE_SERVER;
   }
   setCookie(ACCESS_TOKEN, token, option);
 }
@@ -140,15 +143,20 @@ function removeAccessToken() {
   const option = {
     path: '/',
   };
-  if (!local && !localReg.test(window.location.host)) {
-    option.domain = cookieServer;
+  if (!LOCAL && !localReg.test(window.location.host)) {
+    option.domain = COOKIE_SERVER;
   }
   removeCookie(ACCESS_TOKEN, option);
 }
 
-// 多语言
+// 多语言 old
 function languageChange(id, otherProps) {
   return <FormattedMessage id={`${id}`} {...otherProps} />;
+}
+
+// 多语言
+function intl(id, otherProps) {
+  return <FormattedMessage id={id} {...otherProps} />;
 }
 
 // 登出
@@ -208,7 +216,7 @@ function randomString(len = 32) {
 }
 
 function historyPushMenu(history, path, domain, method = 'push') {
-  if (!domain || local) {
+  if (!domain || LOCAL) {
     history[method](path);
   } else if (!path) {
     window.location = `${domain}`;
@@ -226,9 +234,14 @@ function historyReplaceMenu(history, path, uri) {
   historyPushMenu(history, path, uri, 'replace');
 }
 
+function fileServer(path) {
+  return url.resolve(FILE_SERVER, path || '');
+}
+
 export {
   ACCESS_TOKEN,
   AUTH_URL,
+  fileServer,
   getAccessToken,
   setCookie,
   getCookie,

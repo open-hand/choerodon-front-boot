@@ -1,6 +1,6 @@
 {
   "name": "choerodon-front-boot",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Tools to build website for Choerodon",
   "main": "lib/containers/components/index.js",
   "bin": {
@@ -17,6 +17,7 @@
     "prebuild": "npm run compile",
     "build": "node ./bin/choerodon-front-boot-build --config ./choerodon.config.js",
     "clean": "rimraf lib",
+    "watch": "gulp watch",
     "compile": "gulp compile",
     "prepublish": "npm run compile",
     "postpublish": "npm run clean"
@@ -50,7 +51,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.4.1",
     "change-case": "^3.0.1",
-    "choerodon-ui": "^0.3.1",
+    "choerodon-ui": "0.3.2",
     "classnames": "^2.2.5",
     "commander": "^2.9.0",
     "css-loader": "^0.25.0",
@@ -101,6 +102,7 @@
     "typescript": "^2.6.2",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "universal-cookie": "^2.0.8",
+    "url": "^0.11.0",
     "url-loader": "^1.0.1",
     "webpack": "^3.7.0",
     "webpack-dev-server": "^2.9.1"

@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { Button, Icon } from 'choerodon-ui';
 import MenuStore from '../../stores/MenuStore';
+import findFirstLeafMenu from '../util/findFirstLeafMenu';
 
 @inject('AppState')
 @observer
@@ -11,11 +12,9 @@ class Setting extends Component {
   getGlobalMenuData = () => {
     const { AppState, history } = this.props;
     // HeaderStore.setSelectData(null);
-    AppState.changeMenuType({ type: 'site' });
-    AppState.setTypeUser(false);
-    MenuStore.loadMenuData('site').then(menus => {
+    MenuStore.loadMenuData({ type: 'site' }, false).then(menus => {
       if (menus.length) {
-        const { route, domain } = menus[0].subMenus[0];
+        const { route, domain } = findFirstLeafMenu(menus[0]);
         Choerodon.historyPushMenu(history, route, domain);
       }
     });

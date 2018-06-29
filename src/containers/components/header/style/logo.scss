@@ -5,12 +5,12 @@
   background-image: url('./icons/choerodon_logo_letter.svg');
   background-repeat: no-repeat;
   background-size: auto 20px;
-  background-position: 15px center;
+  background-position: 0 center;
   transition: background-position .3s;
 
   &-wrap {
     background-color: #303F9F;
-    width: 280px;
+    width: 250px;
     height: 47px;
     line-height: 47px;
     display: flex;
@@ -27,6 +27,17 @@
     background-repeat: no-repeat;
     background-size: auto 20px;
     background-position: center;
+  }
+
+  &-menu-icon {
+    width: 50px;
+    color: #fff;
+    text-align: center;
+    line-height: 1;
+    cursor: pointer;
+    .icon {
+      font-size: 24px;
+    }
   }
 
 }

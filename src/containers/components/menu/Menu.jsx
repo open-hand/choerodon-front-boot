@@ -4,15 +4,26 @@ import { Icon, Menu, Tooltip } from 'choerodon-ui';
 import { Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import queryString from 'query-string';
+import classNames from 'classnames';
 import MenuStore from '../../stores/MenuStore';
 import HeaderStore from '../../stores/HeaderStore';
 import './style';
+import findFirstLeafMenu from '../util/findFirstLeafMenu';
 
 const { SubMenu, Item } = Menu;
 
 @inject('AppState')
 @observer
 class CommonMenu extends Component {
+
+  savedOpenKeys = [];
+
+  state = {
+    collapsed: false,
+    activeMenu: null,
+    selected: null,
+    leftOpenKeys: [],
+  };
 
   componentWillMount() {
     this.loadMenu(this.props);
@@ -25,13 +36,15 @@ class CommonMenu extends Component {
   loadMenu(props) {
     const { location, AppState, history } = props;
     const { pathname, search } = location;
-    AppState.setTypeUser(false);
     if (pathname !== '/') {
-      let menuType = { type: 'site' };
+      const menuType = { type: 'site' };
+      const isUser = AppState.isTypeUser;
+      const { type: currentType, id: currentId } = AppState.currentMenuType;
+      let newIsUser = false;
       if (search) {
         const { type, name, id, organizationId } = queryString.parse(search);
+        newIsUser = type === 'site';
         if (type) {
-          AppState.setTypeUser(type === 'site');
           menuType.type = type;
         }
         if (name) {
@@ -49,16 +62,41 @@ class CommonMenu extends Component {
           menuType.organizationId = organizationId;
         }
       }
+      AppState.setTypeUser(newIsUser);
       AppState.changeMenuType(menuType);
-      MenuStore.loadMenuData();
+      MenuStore.loadMenuData(menuType).then(menus => {
+        MenuStore.treeReduce({ subMenus: menus }, (menu, parents) => {
+          if (menu.route === pathname || pathname.indexOf(`${menu.route}/`) === 0) {
+            const { selected, collapsed } = this.state;
+            const newState = {
+              activeMenu: menu,
+              selected: parents[0],
+            };
+            const nCode =  parents.length && parents.reverse()[0].code;
+            const oCode = selected && selected.code;
+            if (
+              oCode !== nCode ||
+              currentType !== menuType.type ||
+              isUser !== newIsUser ||
+              currentId !== menuType.id) {
+              newState.openKeys = collapsed ? [] : [menu, ...parents].map(({ code }) => code);
+              this.savedOpenKeys = [menu, ...parents].map(({ code }) => code);
+            }
+            this.setState(newState);
+            return true;
+          }
+          return false;
+        });
+      });
     } else {
+      AppState.setTypeUser(false);
       const recent = HeaderStore.getRecentItem;
       if (recent.length && !sessionStorage.home_first_redirect) {
         const { id, name, type, organizationId } = recent[0];
         AppState.changeMenuType({ id, name, type, organizationId });
         MenuStore.loadMenuData().then(menus => {
           if (menus.length) {
-            const { route, domain } = menus[0].subMenus[0];
+            const { route, domain } = findFirstLeafMenu(menus[0]);
             let path = `${route}?type=${type}&id=${id}&name=${name}`;
             if (organizationId) {
               path += `&organizationId=${organizationId}`;
@@ -75,21 +113,17 @@ class CommonMenu extends Component {
 
   getMenuSingle(data, num) {
     if (!data.subMenus) {
+      const { route } = findFirstLeafMenu(data);
       const link = (
         <Link
-          to={this.getMenuLink(data)}
+          to={this.getMenuLink(route)}
+          style={{
+            marginLeft: parseInt(num, 10) * 20,
+          }}
         >
-          <span
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginLeft: parseInt(num, 10) * 20,
-            }}
-          >
-            <Icon type={data.icon} />
-            <span>
-              {data.name}
-            </span>
+          <Icon type={data.icon} />
+          <span>
+            {data.name}
           </span>
         </Link>
       );
@@ -104,12 +138,10 @@ class CommonMenu extends Component {
       return (
         <SubMenu
           key={data.code}
+          className="common-menu-right-popup"
           title={
             <span
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                fontSize: '13px',
                 marginLeft: parseInt(num, 10) * 20,
               }}
             >
@@ -141,8 +173,7 @@ class CommonMenu extends Component {
     }
   }
 
-  getMenuLink(service) {
-    const { route } = service;
+  getMenuLink(route) {
     const { AppState } = this.props;
     const { id, name, type, organizationId } = AppState.currentMenuType;
     let search = '';
@@ -164,89 +195,101 @@ class CommonMenu extends Component {
     return `${route}${search}`;
   }
 
-  handleClick = (e) => {
-    const { AppState } = this.props;
-    let child = MenuStore.getMenuData;
-    for (let a = 0; a < child.length; a += 1) {
-      if (child[a].code === e.key) {
-        MenuStore.setChosenService(a);
-        AppState.setCollapsed(false);
+  findSelectedMenuByCode(child, code) {
+    let selected = false;
+    child.forEach((item) => {
+      if (selected) {
+        return;
       }
-    }
-  };
-  handleClickMenu = (e) => {
-    MenuStore.setSelectedMenu(e.key);
-  };
+      if (item.code === code) {
+        selected = item;
+      } else if (item.subMenus){
+        selected = this.findSelectedMenuByCode(item.subMenus, code);
+      }
+    });
+    return selected;
+  }
 
-  changeCollapse = () => {
-    const { AppState } = this.props;
-    const collapsed = AppState.getCollapsed;
-    AppState.setCollapsed(!collapsed);
-  };
-
-  render() {
-    // 服务的菜单
-    let child = MenuStore.getMenuData;
-    if (child && child.length > 0) {
-      const { AppState, location, history } = this.props;
-      const { pathname } = location;
-      AppState.setSingle(child.length === 1);
-      let activeMenu;
-      let selected = child.find(node => MenuStore.treeReduce(node.subMenus, menu => {
-        if (menu.route === pathname || pathname.indexOf(`${menu.route}/`) === 0) {
-          activeMenu = menu;
+  handleClick = (e) => {
+    const child = MenuStore.getMenuData;
+    const selected = this.findSelectedMenuByCode(child, e.key);
+    const paths = e.keyPath && e.keyPath.reverse()[0]; // 去掉boot的
+    const selectedRoot = paths ? child.find((item) => item.code === paths) : selected;
+    if (selected) {
+      const { history } = this.props;
+      MenuStore.treeReduce(selectedRoot, (menu, parents, index) => {
+        if (index === 0 && !menu.subMenus) {
+          this.setState({
+            activeMenu: selected,
+            selected: selectedRoot,
+            openKeys: [selected, ...parents].map(({ code }) => code),
+          });
           return true;
         }
         return false;
-      }));
-      selected = child[MenuStore.getChosenService] || selected || child[0];
-      const collapsed = AppState.getCollapsed;
-      const mask = collapsed && (
-        <div
-          role="none"
-          onClick={() => AppState.setCollapsed(false)}
-          className="common-menu-mask"
-        />
-      );
-      return (
-        <div style={{ height: '100%' }}>
-          <div className="common-menu">
-            {this.renderLeftMenu(child, selected, collapsed)}
-            {this.renderRightMenu(selected, activeMenu ? activeMenu.code : MenuStore.getSelectedMenu)}
-          </div>
-          {mask}
-        </div>
-      );
-    } else {
-      return <div />;
+      });
+      const { route, domian } = findFirstLeafMenu(selected);
+      const link = this.getMenuLink(route);
+      Choerodon.historyReplaceMenu(history, link, domian);
     }
-  }
+    this.collapseMenu();
+  };
 
-  renderLeftMenu(child, selected, collapsed) {
-    if (child.length > 1) {
-      let header;
-      if (collapsed) {
-        header = (
-          <div>
-            <Icon type="settings" />
-            <span>{Choerodon.getMessage('设置', 'setting')}</span>
-          </div>
-        );
-      } else {
-        header = <Icon type="menu" />;
-      }
+  handleOpenChange = (openKeys) => {
+    this.setState({
+      openKeys,
+    });
+  };
+
+  handleLeftOpenChange = (leftOpenKeys) => {
+    this.setState({
+      leftOpenKeys,
+    });
+  };
+
+  collapseMenu = () => {
+    this.setState({
+      leftOpenKeys: [],
+    }, () => {
+      this.props.AppState.setMenuExpanded(false);
+    });
+  };
+
+  toggleRightMenu = () => {
+    const { collapsed, openKeys } = this.state;
+    if (collapsed) {
+      this.setState({
+        collapsed: false,
+        openKeys: this.savedOpenKeys,
+      });
+    } else {
+      this.savedOpenKeys = openKeys;
+      this.setState({
+        collapsed: true,
+        openKeys: [],
+      });
+    }
+  };
+
+  renderLeftMenu(child, selected, expanded) {
+    if (child.length > 0) {
       return (
-        <div className={`common-menu-left ${collapsed ? 'collapse' : ''}`}>
+        <div className={`common-menu-left ${expanded ? 'expanded' : ''}`}>
           <div
             className="common-menu-left-header"
             role="none"
-            onClick={this.changeCollapse.bind(this)}
           >
-            {header}
+            <Link to="/" onClick={this.collapseMenu}><Icon type="home" /><span>主页</span></Link>
           </div>
           <div className="common-menu-right-content">
-            <Menu onClick={this.handleClick} selectedKeys={[selected.code]}>
-              {child.map(item => this.renderLeftMenuItem(item, collapsed))}
+            <Menu
+              onClick={this.handleClick}
+              openKeys={this.state.leftOpenKeys}
+              onOpenChange={this.handleLeftOpenChange}
+              selectedKeys={[selected.code]}
+              mode="vertical"
+            >
+              {child.map(item => this.renderLeftMenuItem(item, expanded))}
             </Menu>
           </div>
         </div>
@@ -254,10 +297,10 @@ class CommonMenu extends Component {
     }
   }
 
-  renderLeftMenuItem(item, collapsed) {
+  renderLeftMenuItem(item, expanded) {
     let icon = <Icon type={item.icon} />;
     let text;
-    if (collapsed) {
+    if (expanded) {
       text = <span>{item.name}</span>;
     } else {
       icon = (
@@ -266,32 +309,93 @@ class CommonMenu extends Component {
         </Tooltip>
       );
     }
-    return (
-      <Item key={item.code}>
-        {icon}
-        {text}
-      </Item>
-    );
+    if (!item.subMenus) {
+      return (
+        <Item key={item.code}>
+          {icon}
+          {text}
+        </Item>
+      );
+    } else {
+      return (
+        <SubMenu
+          onTitleClick={this.handleClick}
+          key={item.code}
+          className="common-menu-right-popup"
+          title={
+            <span>
+              {icon}
+              {text}
+            </span>
+          }
+        >
+          {item.subMenus.map(two => {
+            return (
+              <Item key={two.code}>
+                <Icon type={two.icon} style={{ marginLeft: '20px' }} />
+                <span>{two.name}</span>
+              </Item>
+            );
+          })}
+        </SubMenu>
+      );
+    }
   }
 
-  renderRightMenu(menu, selected) {
+  renderRightMenu(menu) {
+    const { collapsed, openKeys, activeMenu } = this.state;
     return (
-      <div className="common-menu-right">
-        <div className="common-menu-right-header">
-          <Icon type={menu.icon} />
-          <span>{menu.name}</span>
-        </div>
+      <div className={classNames('common-menu-right', { collapsed })}>
+        <Tooltip placement="right" title={collapsed ? menu.name : ''}>
+          <div className="common-menu-right-header">
+            <Icon type={menu.icon} />
+            <span>{menu.name}</span>
+          </div>
+        </Tooltip>
         <div className="common-menu-right-content">
           <Menu
             mode="inline"
-            selectedKeys={[selected]}
-            onClick={this.handleClickMenu}
+            inlineCollapsed={collapsed}
+            selectedKeys={[activeMenu && activeMenu.code]}
+            openKeys={openKeys}
+            onOpenChange={this.handleOpenChange}
           >
             {menu.subMenus.map(two => this.getMenuSingle(two, 0))}
           </Menu>
         </div>
+        <div className="common-menu-right-footer" onClick={this.toggleRightMenu}>
+          <Icon type="first_page" />
+        </div>
       </div>
     );
+  }
+
+  render() {
+    // 服务的菜单
+    let child = MenuStore.getMenuData;
+    if (child && child.length > 0) {
+      const { AppState } = this.props;
+      const { selected } = this.state;
+      const expanded = AppState.getMenuExpanded;
+      const mask = expanded && (
+        <div
+          role="none"
+          onClick={this.collapseMenu}
+          className="common-menu-mask"
+        />
+      );
+      return (
+        <div style={{ height: '100%' }}>
+          <div className="common-menu">
+            {this.renderLeftMenu(child, selected || child[0], expanded)}
+            {this.renderRightMenu(selected || child[0])}
+          </div>
+          {mask}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 

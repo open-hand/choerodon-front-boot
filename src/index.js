@@ -1,6 +1,4 @@
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import openBrowser from 'react-dev-utils/openBrowser';
-import getWebpackCommonConfig from './config/getWebpackCommonConfig';
 import updateWebpackConfig from './config/updateWebpackConfig';
 
 const fs = require('fs');
@@ -107,7 +105,7 @@ function run(mainPackage) {
     '/',
   );
 
-  const webpackConfig = updateWebpackConfig(getWebpackCommonConfig(), 'start');
+  const webpackConfig = updateWebpackConfig('start', 'development');
   webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
   const serverOptions = {
     quiet: true,
@@ -137,26 +135,16 @@ function run(mainPackage) {
   );
 }
 
-function dist(mainPackage) {
+function dist(mainPackage, env) {
   const { choerodonConfig } = context;
   generateEntryFile(
     mainPackage,
     choerodonConfig.entryName,
     choerodonConfig.root,
   );
-  const webpackConfig = updateWebpackConfig(getWebpackCommonConfig(), 'build');
-  webpackConfig.plugins.push(new webpack.LoaderOptionsPlugin({
-    minimize: true,
-  }),);
-  webpackConfig.plugins.push(new UglifyJsPlugin({
-    uglifyOptions: {
-      output: {
-        ascii_only: true,
-      },
-    },
-  }));
+  const webpackConfig = updateWebpackConfig('build', env);
   webpackConfig.plugins.push(new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+    'process.env.NODE_ENV': JSON.stringify(env),
   }));
 
 
@@ -195,6 +183,7 @@ exports.start = function start(program) {
 
 exports.build = function build(program) {
   const configFile = path.join(process.cwd(), program.config || 'choerodon.config.js');
+  const env = program.env || process.env.NODE_ENV || 'production';
   const choerodonConfig = getChoerodonConfig(configFile);
   context.initialize({
     choerodonConfig,
@@ -211,10 +200,10 @@ exports.build = function build(program) {
       JSON.stringify(mainPackage),
     );
     install(() => {
-      dist(mainPackage);
+      dist(mainPackage, env);
     });
   } else {
-    dist(mainPackage);
+    dist(mainPackage, env);
   }
 };
 

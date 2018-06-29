@@ -5,29 +5,35 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import context from '../context';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
-import getEntryPointsConfig from './getEntryPointsConfig';
+import getEnterPointsConfig from './getEnterPointsConfig';
+import getWebpackCommonConfig from './getWebpackCommonConfig';
 
 const choerodonLib = path.join(__dirname, '..');
 
-function getFilePath(favicon) {
-  const faviconPath = path.join(process.cwd(), favicon);
-  return fs.existsSync(faviconPath) ? faviconPath : path.join(__dirname, '..', favicon);
+function getFilePath(file) {
+  const filePath = path.join(process.cwd(), file);
+  return fs.existsSync(filePath) ? filePath : path.join(__dirname, '..', file);
 }
 
-export default function updateWebpackConfig(webpackConfig, mode) {
-  const { choerodonConfig } = context;
-  const styleLoadersConfig = getStyleLoadersConfig(choerodonConfig.postcssConfig, {
+export default function updateWebpackConfig(mode, env) {
+  const webpackConfig = getWebpackCommonConfig(mode, env);
+  const { choerodonConfig, isBuild } = context;
+  const {
+    theme, output, root, enterPoints, server, fileServer, clientid, local,
+    postcssConfig, entryName, titlename, htmlTemplate, favicon,
+  } = choerodonConfig;
+  const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: true,
-    modifyVars: choerodonConfig.theme,
+    modifyVars: theme,
   });
-  let env;
 
+  let defaultEnterPoints;
   /* eslint-disable no-param-reassign */
   webpackConfig.entry = {};
-  if (context.isBuild) {
-    webpackConfig.output.path = path.join(process.cwd(), choerodonConfig.output);
+  if (isBuild) {
+    webpackConfig.output.path = path.join(process.cwd(), output);
   }
-  webpackConfig.output.publicPath = context.isBuild ? choerodonConfig.root : '/';
+  webpackConfig.output.publicPath = isBuild ? root : '/';
   if (mode === 'start') {
     webpackConfig.devtool = 'cheap-module-eval-source-map';
     webpackConfig.watch = true;
@@ -37,12 +43,13 @@ export default function updateWebpackConfig(webpackConfig, mode) {
         use: ['style-loader', ...config.use],
       });
     });
-    env = {
-      'process.env.API_HOST': JSON.stringify(`${choerodonConfig.server}`),
-      'process.env.AUTH_HOST': JSON.stringify(`${choerodonConfig.server}/oauth`),
-      'process.env.CLIENT_ID': JSON.stringify(`${choerodonConfig.clientid}`),
-      'process.env.LOCAL': JSON.stringify(`${choerodonConfig.local}`),
-      'process.env.VERSION': JSON.stringify('本地'),
+    defaultEnterPoints = {
+      API_HOST: server,
+      AUTH_HOST: `${server}/oauth`,
+      CLIENT_ID: clientid,
+      LOCAL: local,
+      VERSION: '本地',
+      FILE_SERVER: fileServer,
     };
   }
   if (mode === 'build') {
@@ -54,33 +61,28 @@ export default function updateWebpackConfig(webpackConfig, mode) {
         }),
       });
     });
-    env = {
-      'process.env.API_HOST': getEntryPointsConfig('API_HOST'),
-      'process.env.AUTH_HOST': getEntryPointsConfig('AUTH_HOST'),
-      'process.env.CLIENT_ID': getEntryPointsConfig('CLIENT_ID'),
-      'process.env.LOCAL': getEntryPointsConfig('LOCAL'),
-      'process.env.HEADER_TITLE_NAME': getEntryPointsConfig('HEADER_TITLE_NAME'),
-      'process.env.COOKIE_SERVER': getEntryPointsConfig('COOKIE_SERVER'),
-      'process.env.VERSION': getEntryPointsConfig('VERSION'),
-      'process.env.TITLE_NAME': getEntryPointsConfig('TITLE_NAME'),
-    };
+    defaultEnterPoints = getEnterPointsConfig();
   }
   /* eslint-enable no-param-reassign */
-
+  const mergedEnterPoints = Object.assign({ NODE_ENV: env }, defaultEnterPoints, enterPoints(mode, env));
+  const defines = Object.keys(mergedEnterPoints).reduce((obj, key) => {
+    obj[`process.env.${key}`] = JSON.stringify(process.env[key] || mergedEnterPoints[key]);
+    return obj;
+  }, {});
   const customizedWebpackConfig = choerodonConfig.webpackConfig(webpackConfig, webpack);
 
-  if (customizedWebpackConfig.entry[choerodonConfig.entryName]) {
-    throw new Error(`Should not set \`webpackConfig.entry.${choerodonConfig.entryName}\`!`);
+  if (customizedWebpackConfig.entry[entryName]) {
+    throw new Error(`Should not set \`webpackConfig.entry.${entryName}\`!`);
   }
-  const entryPath = path.join(choerodonLib, '..', 'tmp', `entry.${choerodonConfig.entryName}.js`);
-  customizedWebpackConfig.entry[choerodonConfig.entryName] = entryPath;
+  const entryPath = path.join(choerodonLib, '..', 'tmp', `entry.${entryName}.js`);
+  customizedWebpackConfig.entry[entryName] = entryPath;
   customizedWebpackConfig.plugins.push(
-    new webpack.DefinePlugin(env),
+    new webpack.DefinePlugin(defines),
     new HtmlWebpackPlugin({
-      title: process.env.TITLE_NAME || choerodonConfig.titlename,
-      template: getFilePath(choerodonConfig.htmlTemplate),
+      title: process.env.TITLE_NAME || titlename,
+      template: getFilePath(htmlTemplate),
       inject: true,
-      favicon: getFilePath(choerodonConfig.favicon),
+      favicon: getFilePath(favicon),
       minify: {
         html5: true,
         collapseWhitespace: true,
