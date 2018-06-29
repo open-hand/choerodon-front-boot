@@ -12,7 +12,8 @@ const Logo = () => {
   return (
     <div className="header-logo-wrap">
       {
-        menus.length ?
+        // menus.length ?
+        true ?
           <div className="header-logo-menu-icon" onClick={handleMenuClick}>
             <Icon type="menu" />
           </div> :
