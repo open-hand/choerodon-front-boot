@@ -88,14 +88,13 @@ class MenuStore {
   }
 
   treeReduce(tree, callback, childrenName = 'subMenus', parents = []) {
+    if (tree.code) {
+      parents.push(tree);
+    }
     return tree[childrenName].some((node, index) => {
-      if (tree.code) {
-        parents.push(tree);
-      } else {
-        parents = [];
-      }
+      const newParents = parents.slice(0);
       if (node[childrenName] && node[childrenName].length > 0) {
-        return this.treeReduce(node, callback, childrenName, parents);
+        return this.treeReduce(node, callback, childrenName, newParents);
       }
       return callback(node, parents, index);
     });

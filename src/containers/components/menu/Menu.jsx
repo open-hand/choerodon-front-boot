@@ -19,9 +19,10 @@ class CommonMenu extends Component {
   savedOpenKeys = [];
 
   state = {
-    collapsed: true,
+    collapsed: false,
     activeMenu: null,
     selected: null,
+    leftOpenKeys: [],
   };
 
   componentWillMount() {
@@ -66,13 +67,20 @@ class CommonMenu extends Component {
       MenuStore.loadMenuData(menuType).then(menus => {
         MenuStore.treeReduce({ subMenus: menus }, (menu, parents) => {
           if (menu.route === pathname || pathname.indexOf(`${menu.route}/`) === 0) {
-            const { openKeys, collapsed } = this.state;
+            const { selected, collapsed } = this.state;
             const newState = {
               activeMenu: menu,
               selected: parents[0],
             };
-            if (currentType !== menuType.type || isUser !== newIsUser || currentId !== menuType.id) {
-              newState.openKeys = collapsed ? [] : parents.map(({ code }) => code);
+            const nCode =  parents.length && parents.reverse()[0].code;
+            const oCode = selected && selected.code;
+            if (
+              oCode !== nCode ||
+              currentType !== menuType.type ||
+              isUser !== newIsUser ||
+              currentId !== menuType.id) {
+              newState.openKeys = collapsed ? [] : [menu, ...parents].map(({ code }) => code);
+              this.savedOpenKeys = [menu, ...parents].map(({ code }) => code);
             }
             this.setState(newState);
             return true;
@@ -105,9 +113,10 @@ class CommonMenu extends Component {
 
   getMenuSingle(data, num) {
     if (!data.subMenus) {
+      const { route } = findFirstLeafMenu(data);
       const link = (
         <Link
-          to={this.getMenuLink(data)}
+          to={this.getMenuLink(route)}
           style={{
             marginLeft: parseInt(num, 10) * 20,
           }}
@@ -164,8 +173,7 @@ class CommonMenu extends Component {
     }
   }
 
-  getMenuLink(service) {
-    const { route } = service;
+  getMenuLink(route) {
     const { AppState } = this.props;
     const { id, name, type, organizationId } = AppState.currentMenuType;
     let search = '';
@@ -187,21 +195,42 @@ class CommonMenu extends Component {
     return `${route}${search}`;
   }
 
+  findSelectedMenuByCode(child, code) {
+    let selected = false;
+    child.forEach((item) => {
+      if (selected) {
+        return;
+      }
+      if (item.code === code) {
+        selected = item;
+      } else if (item.subMenus){
+        selected = this.findSelectedMenuByCode(item.subMenus, code);
+      }
+    });
+    return selected;
+  }
+
   handleClick = (e) => {
     const child = MenuStore.getMenuData;
-    const selected = child.find(({ code }) => code === e.key);
+    const selected = this.findSelectedMenuByCode(child, e.key);
+    const paths = e.keyPath && e.keyPath.reverse()[1]; // 去掉boot的
+    const selectedRoot = paths ? child.find((item) => item.code === paths) : selected;
     if (selected) {
-      MenuStore.treeReduce(selected, (menu, parents, index) => {
+      const { history } = this.props;
+      MenuStore.treeReduce(selectedRoot, (menu, parents, index) => {
         if (index === 0 && !menu.subMenus) {
           this.setState({
-            activeMenu: menu,
-            selected,
+            activeMenu: selected,
+            selected: selectedRoot,
             openKeys: [selected, ...parents].map(({ code }) => code),
           });
           return true;
         }
         return false;
       });
+      const { route, domian } = findFirstLeafMenu(selected);
+      const link = this.getMenuLink(route);
+      Choerodon.historyReplaceMenu(history, link, domian);
     }
     this.collapseMenu();
   };
@@ -212,8 +241,18 @@ class CommonMenu extends Component {
     });
   };
 
+  handleLeftOpenChange = (leftOpenKeys) => {
+    this.setState({
+      leftOpenKeys,
+    });
+  };
+
   collapseMenu = () => {
-    this.props.AppState.setMenuExpanded(false);
+    this.setState({
+      leftOpenKeys: [],
+    }, () => {
+      this.props.AppState.setMenuExpanded(false);
+    });
   };
 
   toggleRightMenu = () => {
@@ -243,7 +282,13 @@ class CommonMenu extends Component {
             <Link to="/" onClick={this.collapseMenu}><Icon type="home" /><span>主页</span></Link>
           </div>
           <div className="common-menu-right-content">
-            <Menu onClick={this.handleClick} selectedKeys={[selected.code]}>
+            <Menu
+              onClick={this.handleClick}
+              openKeys={this.state.leftOpenKeys}
+              onOpenChange={this.handleLeftOpenChange}
+              selectedKeys={[selected.code]}
+              mode="vertical"
+            >
               {child.map(item => this.renderLeftMenuItem(item, expanded))}
             </Menu>
           </div>
@@ -264,12 +309,37 @@ class CommonMenu extends Component {
         </Tooltip>
       );
     }
-    return (
-      <Item key={item.code}>
-        {icon}
-        {text}
-      </Item>
-    );
+    if (!item.subMenus) {
+      return (
+        <Item key={item.code}>
+          {icon}
+          {text}
+        </Item>
+      );
+    } else {
+      return (
+        <SubMenu
+          onTitleClick={this.handleClick}
+          key={item.code}
+          className="common-menu-right-popup"
+          title={
+            <span>
+              {icon}
+              {text}
+            </span>
+          }
+        >
+          {item.subMenus.map(two => {
+            return (
+              <Item key={two.code}>
+                <Icon type={two.icon} style={{ marginLeft: '20px' }} />
+                <span>{two.name}</span>
+              </Item>
+            );
+          })}
+        </SubMenu>
+      );
+    }
   }
 
   renderRightMenu(menu) {
