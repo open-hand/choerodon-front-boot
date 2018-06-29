@@ -213,7 +213,7 @@ class CommonMenu extends Component {
   handleClick = (e) => {
     const child = MenuStore.getMenuData;
     const selected = this.findSelectedMenuByCode(child, e.key);
-    const paths = e.keyPath && e.keyPath.reverse()[1]; // 去掉boot的
+    const paths = e.keyPath && e.keyPath.reverse()[0]; // 去掉boot的
     const selectedRoot = paths ? child.find((item) => item.code === paths) : selected;
     if (selected) {
       const { history } = this.props;
