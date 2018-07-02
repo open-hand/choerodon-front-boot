@@ -144,7 +144,6 @@ class MenuType extends Component {
             <span className="menu-type-disabled">{text}</span> :
             <a
               role="none"
-              className="menu-type-name"
               onClick={this.selectState.bind(this, record)}
             >
               <Icon type={record.type === 'project' ? 'project' : 'domain'} />
