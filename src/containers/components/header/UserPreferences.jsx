@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { Button, Popover } from 'choerodon-ui';
-import MenuStore from '../../stores/MenuStore';
 import Avatar from './Avatar';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 
-@inject('AppState')
+@withRouter
+@inject('AppState', 'MenuStore')
 @observer
-class UserPreferences extends Component {
+export default class UserPreferences extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,7 +24,7 @@ class UserPreferences extends Component {
   }
 
   preferences = () => {
-    const { AppState, history } = this.props;
+    const { MenuStore, history } = this.props;
     MenuStore.loadMenuData({ type: 'site' }, true).then(menus => {
       if (menus.length) {
         const { route, domain } = findFirstLeafMenu(menus[0]);
@@ -86,5 +86,3 @@ class UserPreferences extends Component {
     );
   }
 }
-
-export default withRouter(UserPreferences);

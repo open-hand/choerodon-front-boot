@@ -6,8 +6,7 @@ import { Button } from 'choerodon-ui';
 const prefixCls = 'header-logo';
 
 @withRouter
-@inject('AppState')
-@inject('MenuStore')
+@inject('AppState', 'MenuStore')
 @observer
 export default class Logo extends Component {
 
@@ -24,7 +23,7 @@ export default class Logo extends Component {
       <div className={`${prefixCls}-wrap`}>
         {
           menus.length ?
-            <Button shape="circle" icon="menu" className={`${prefixCls}-menu-icon`} onClick={this.handleMenuClick}/> :
+            <Button shape="circle" icon="menu" className={`${prefixCls}-menu-icon`} onClick={this.handleMenuClick} /> :
             <div className={`${prefixCls}-icon`} />
         }
         {
