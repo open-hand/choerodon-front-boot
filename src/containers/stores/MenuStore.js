@@ -1,7 +1,7 @@
 /**
  * Created by jaywoods on 2017/6/24.
  */
-import { action, computed, observable } from 'mobx';
+import { action, computed, get, observable, set } from 'mobx';
 import axios from '../components/axios';
 import AppState from './AppState';
 
@@ -21,70 +21,53 @@ function filterEmptyMenus(menuData, parent) {
 }
 
 class MenuStore {
-  @observable siteMenu = [];
-  @observable orgMenu = [];
-  @observable prjMenu = [];
-  @observable userMenu = [];
+  @observable menuGroup = {
+    site: [],
+    user: [],
+    organization: {},
+    project: {},
+  };
 
   @action
   loadMenuData(menuType = AppState.currentMenuType, isUser) {
     const type = getMenuType(menuType, isUser);
-    const menu = this.menuData(type);
+    const { id = 0 } = menuType;
+    const menu = this.menuData(type, id);
     if (menu.length) {
       return Promise.resolve(menu);
     }
-    const { id = 0 } = menuType;
-    return axios.get(`/iam/v1/menus?level=${type}&source_id=${id}`).then((data) => {
+    return axios.get(`/iam/v1/menus?level=${type}&source_id=${id}`).then(action((data) => {
       const child = filterEmptyMenus(data);
-      this.setMenuData(child, type);
+      this.setMenuData(child, type, id);
       return child;
-    });
+    }));
   }
 
   @action
-  setMenuData(child, childType) {
-    let data = child;
-    let type = childType;
-    if (childType) {
-      data = filterEmptyMenus(child);
+  setMenuData(child, childType, id = AppState.currentMenuType.id) {
+    const data = filterEmptyMenus(child);
+    if (id) {
+      set(this.menuGroup[childType], id, data);
     } else {
-      type = getMenuType();
-    }
-    switch (type) {
-      case 'site':
-        this.siteMenu = data;
-        break;
-      case 'organization':
-        this.orgMenu = data;
-        break;
-      case 'project':
-        this.prjMenu = data;
-        break;
-      case 'user':
-        this.userMenu = data;
-        break;
-      default:
+      set(this.menuGroup, childType, data);
     }
   }
 
   @computed
   get getMenuData() {
-    return this.menuData(getMenuType());
+    return this.menuData();
   }
 
-  menuData(type) {
-    switch (type) {
-      case 'site':
-        return this.siteMenu;
-      case 'organization':
-        return this.orgMenu;
-      case 'project':
-        return this.prjMenu;
-      case 'user':
-        return this.userMenu;
-      default:
-        return [];
+  menuData(type = getMenuType(), id = AppState.currentMenuType.id) {
+    let data;
+    if (type) {
+      if (id) {
+        data = get(this.menuGroup[type], id);
+      } else {
+        data = get(this.menuGroup, type);
+      }
     }
+    return data || [];
   }
 
   treeReduce(tree, callback, childrenName = 'subMenus', parents = []) {

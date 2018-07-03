@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { LocaleProvider } from 'choerodon-ui';
-import { useStrict } from 'mobx';
+import { configure } from 'mobx';
 import { observer, Provider } from 'mobx-react';
 import stores from '../lib/containers/stores';
 import AppState from '../lib/containers/stores/AppState';
@@ -54,6 +54,6 @@ class App extends Component {
   }
 }
 
-useStrict(true);
+configure({ enforceActions: true });
 
 render(<App />, document.getElementById('app'));

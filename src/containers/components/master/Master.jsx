@@ -1,7 +1,6 @@
 /*eslint-disable*/
 import React, { Component, createElement } from 'react';
 import { inject, observer } from 'mobx-react';
-import classnames from 'classnames';
 import { Spin } from 'choerodon-ui';
 import CommonMenu from '../menu';
 import MasterHeader from '../header';
