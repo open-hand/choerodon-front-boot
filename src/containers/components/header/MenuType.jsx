@@ -35,6 +35,8 @@ class MenuType extends Component {
   showModal = () => {
     this.setState({
       visible: true,
+      searchValue: '',
+      handlesearch: false,
     });
   };
   // 确认模态框
