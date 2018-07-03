@@ -12,9 +12,9 @@ import getTSCommonConfig from './getTSCommonConfig';
 /* eslint quotes:0 */
 
 export default function getWebpackCommonConfig(mode, env) {
-  const jsFileName = '[name]_[hash:8].js';
+  const jsFileName = '[name].[hash:8].js';
   const jsChunkFileName = 'chunks/[name].[chunkhash:5].chunk.js';
-  const cssFileName = '[name].css';
+  const cssFileName = '[name].[contenthash:8].css';
 
   const babelOptions = getBabelCommonConfig(mode, env);
   const tsOptions = getTSCommonConfig();
