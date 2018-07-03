@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { Icon } from 'choerodon-ui';
+import { Button } from 'choerodon-ui';
 
+const prefixCls = 'header-logo';
+
+@withRouter
 @inject('AppState')
 @inject('MenuStore')
 @observer
@@ -13,18 +17,21 @@ export default class Logo extends Component {
   };
 
   render() {
-    const { MenuStore } = this.props;
+    const { MenuStore, location } = this.props;
+    const { pathname } = location;
     const menus = MenuStore.getMenuData;
     return (
-      <div className="header-logo-wrap">
+      <div className={`${prefixCls}-wrap`}>
         {
           menus.length ?
-            <div className="header-logo-menu-icon" onClick={this.handleMenuClick}>
-              <Icon type="menu" />
-            </div> :
-            <div className="header-logo-icon" />
+            <Button shape="circle" icon="menu" className={`${prefixCls}-menu-icon`} onClick={this.handleMenuClick}/> :
+            <div className={`${prefixCls}-icon`} />
         }
-        <div className="header-logo" />
+        {
+          pathname === '/' ?
+            <div className={prefixCls} /> :
+            <Link to="/" className={prefixCls} />
+        }
       </div>
     );
   }
