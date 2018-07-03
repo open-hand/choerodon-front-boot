@@ -34,10 +34,6 @@ class Header extends Component {
     HeaderStore.axiosGetOrgAndPro(AppState.getUserId);
   }
 
-  fetchAxios = (method, url) => {
-    return axios[method](url);
-  };
-
   render() {
     const { AppState } = this.props;
     const type = AppState.getType || sessionStorage.type;

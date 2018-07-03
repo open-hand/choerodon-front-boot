@@ -58,21 +58,20 @@ class HeaderStore {
     return this.proData;
   }
 
-  fetchAxios(method, url) {
-    return axios[method](url);
-  }
-
   axiosGetOrgAndPro(userId) {
-    return axios.all([this.fetchAxios('get', `/iam/v1/users/${userId}/organizations`),
-      this.fetchAxios('get', `/iam/v1/users/${userId}/projects`)]).then((data) => {
-      data[0].forEach((value) => {
+    return axios.all([
+      axios.get(`/iam/v1/users/${userId}/organizations`),
+      axios.get(`/iam/v1/users/${userId}/projects`),
+    ]).then((data) => {
+      const [organizations, projects] = data;
+      organizations.forEach((value) => {
         value.type = ORGANIZATION_TYPE;
       });
-      data[1].forEach((value) => {
+      projects.forEach((value) => {
         value.type = PROJECT_TYPE;
       });
-      this.setOrgData(data[0]);
-      this.setProData(data[1]);
+      this.setOrgData(organizations);
+      this.setProData(projects);
       return data;
     });
   }
