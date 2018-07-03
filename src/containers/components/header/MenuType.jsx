@@ -31,10 +31,6 @@ class MenuType extends Component {
     };
   }
 
-  // 请求封装
-  fetchAxios = (method, url) => {
-    return axios[method](url);
-  };
   // 展示modal
   showModal = () => {
     this.setState({
@@ -254,7 +250,7 @@ class MenuType extends Component {
     const needFilterOrganization = filterOrganization !== '' && filterOrganization !== 'total';
     const orgData = toJS(HeaderStore.getOrgData);
     const proData = toJS(HeaderStore.getProData);
-    if (!_.isNull(orgData) && !_.isNull(proData)) {
+    if (orgData && proData) {
       return orgData.filter((item) => {
         const id = item.id;
         if (needFilterOrganization && Number(id) !== Number(filterOrganization)) {
@@ -262,7 +258,7 @@ class MenuType extends Component {
         }
         item.key = id;
         item.children = [];
-        _.forEach(proData, (item2) => {
+        proData.forEach((item2) => {
           const { id: id2, organizationId } = item2;
           item2.key = `${id},${id2}`;
           if (Number(organizationId) === Number(id) && (!handlesearch || this.hitSearch(item2, searchValue))) {
@@ -272,7 +268,7 @@ class MenuType extends Component {
         if (!item.children.length) {
           delete item.children;
         }
-        if (handlesearch && !item.children && !this.hitSearch(item, searchValue)) {
+        if (!item.children && ((handlesearch && !this.hitSearch(item, searchValue) ) || item.into === false)) {
           return false;
         }
         return true;
