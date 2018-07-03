@@ -14,7 +14,7 @@ const Page = ({ className, service, ...props }) => {
   const page = <div {...props} className={classString} />;
   if (service && service.length) {
     return (
-      <Permission service={service} defaultChildren={<div style={spinStyle}><Spin size="large" /></div>} noAccessChildren={NoAccess}>
+      <Permission service={service} defaultChildren={<div style={spinStyle}><Spin size="large" /></div>} noAccessChildren={<NoAccess />}>
         {page}
       </Permission>
     );

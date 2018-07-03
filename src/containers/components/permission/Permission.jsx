@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { Children, cloneElement, createElement, Component, isValidElement } from 'react';
+import React, { Children, cloneElement, Component, createElement, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import omit from 'object.omit';
@@ -54,8 +54,6 @@ class Permission extends Component {
           return child;
         }
       });
-    } else if (typeof children === 'function') {
-      return createElement(children);
     } else {
       return children;
     }
