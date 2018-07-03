@@ -5,16 +5,15 @@ import { Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import queryString from 'query-string';
 import classNames from 'classnames';
-import MenuStore from '../../stores/MenuStore';
-import HeaderStore from '../../stores/HeaderStore';
 import './style';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 
 const { SubMenu, Item } = Menu;
 
-@inject('AppState')
+@withRouter
+@inject('AppState', 'MenuStore', 'HeaderStore')
 @observer
-class CommonMenu extends Component {
+export default class CommonMenu extends Component {
 
   savedOpenKeys = [];
 
@@ -34,7 +33,7 @@ class CommonMenu extends Component {
   }
 
   loadMenu(props) {
-    const { location, AppState, history } = props;
+    const { location, AppState, MenuStore, HeaderStore, history } = props;
     const { pathname, search } = location;
     if (pathname !== '/') {
       const menuType = { type: 'site' };
@@ -72,7 +71,7 @@ class CommonMenu extends Component {
               activeMenu: menu,
               selected: parents[0],
             };
-            const nCode =  parents.length && parents.reverse()[0].code;
+            const nCode = parents.length && parents.reverse()[0].code;
             const oCode = selected && selected.code;
             if (
               oCode !== nCode ||
@@ -203,7 +202,7 @@ class CommonMenu extends Component {
       }
       if (item.code === code) {
         selected = item;
-      } else if (item.subMenus){
+      } else if (item.subMenus) {
         selected = this.findSelectedMenuByCode(item.subMenus, code);
       }
     });
@@ -211,6 +210,7 @@ class CommonMenu extends Component {
   }
 
   handleClick = (e) => {
+    const { MenuStore } = this.props;
     const child = MenuStore.getMenuData;
     const selected = this.findSelectedMenuByCode(child, e.key);
     const paths = e.keyPath && e.keyPath.reverse()[0]; // 去掉boot的
@@ -372,9 +372,9 @@ class CommonMenu extends Component {
 
   render() {
     // 服务的菜单
-    let child = MenuStore.getMenuData;
+    const { MenuStore, AppState } = this.props;
+    const child = MenuStore.getMenuData;
     if (child && child.length > 0) {
-      const { AppState } = this.props;
       const { selected } = this.state;
       const expanded = AppState.getMenuExpanded;
       const mask = expanded && (
@@ -398,5 +398,3 @@ class CommonMenu extends Component {
     }
   }
 }
-
-export default withRouter(CommonMenu);

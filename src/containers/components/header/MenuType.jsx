@@ -4,18 +4,15 @@ import { Button, Icon, Input, Modal, Select, Table, Tabs } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import classnames from 'classnames';
-import _ from 'lodash';
 import { toJS } from 'mobx';
-import axios from '../axios';
-import HeaderStore from '../../stores/HeaderStore';
-import MenuStore from '../../stores/MenuStore';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 
 const TabPane = Tabs.TabPane;
 
-@inject('AppState')
+@withRouter
+@inject('AppState', 'HeaderStore', 'MenuStore')
 @observer
-class MenuType extends Component {
+export default class MenuType extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,6 +30,7 @@ class MenuType extends Component {
 
   // 展示modal
   showModal = () => {
+    this.props.HeaderStore.setSelected(null);
     this.setState({
       visible: true,
       searchValue: '',
@@ -44,7 +42,7 @@ class MenuType extends Component {
     this.setState({
       visible: false,
     });
-    this.selectState(HeaderStore.getSelected);
+    this.selectState(this.props.HeaderStore.getSelected);
   };
   // 取消模态框
   handleCancel = () => {
@@ -79,7 +77,7 @@ class MenuType extends Component {
 
   //选择组织和项目数据
   selectState = (value) => {
-    const { AppState, history } = this.props;
+    const { HeaderStore, MenuStore, history } = this.props;
     const { id, name, type, organizationId } = value;
     HeaderStore.setRecentItem(value);
     MenuStore.loadMenuData({ type, id }, false).then(menus => {
@@ -132,6 +130,7 @@ class MenuType extends Component {
   };
 
   renderTable(dataSource, isNotRecent) {
+    const { HeaderStore } = this.props;
     if (dataSource && dataSource.length) {
       const columns = [{
         title: '名称',
@@ -239,6 +238,7 @@ class MenuType extends Component {
   }
 
   getOptionList() {
+    const { HeaderStore } = this.props;
     const org = toJS(HeaderStore.getOrgData);
     return org && org.length > 0 ? [<Option key="total" value="total">所有组织</Option>].concat(
       org.map(orgOption => (
@@ -248,6 +248,7 @@ class MenuType extends Component {
   }
 
   getCurrentData() {
+    const { HeaderStore } = this.props;
     const { filterOrganization, handlesearch, searchValue } = this.state;
     const needFilterOrganization = filterOrganization !== '' && filterOrganization !== 'total';
     const orgData = toJS(HeaderStore.getOrgData);
@@ -281,7 +282,8 @@ class MenuType extends Component {
 
   render() {
     const { handlesearch, searchValue, visible, activeKey, filterOrganization } = this.state;
-    const { name: selectTitle = '选择项目', type } = this.props.AppState.currentMenuType;
+    const { AppState, HeaderStore } = this.props;
+    const { name: selectTitle = '选择项目', type } = AppState.currentMenuType;
     const currentData = this.getCurrentData();
     const recentItem = HeaderStore.getRecentItem;
     const tabSelect = activeKey || (filterOrganization || !recentItem || recentItem.length === 0 ? 'total' : 'recent');
@@ -368,5 +370,3 @@ class MenuType extends Component {
     );
   }
 }
-
-export default withRouter(MenuType);
