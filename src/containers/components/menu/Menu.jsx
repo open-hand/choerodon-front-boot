@@ -5,8 +5,9 @@ import { Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import queryString from 'query-string';
 import classNames from 'classnames';
-import './style';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
+import { historyReplaceMenu } from '../../common';
+import './style';
 
 const { SubMenu, Item } = Menu;
 
@@ -100,7 +101,7 @@ export default class CommonMenu extends Component {
             if (organizationId) {
               path += `&organizationId=${organizationId}`;
             }
-            Choerodon.historyReplaceMenu(history, path, domain);
+            historyReplaceMenu(history, path, domain);
           }
         });
       } else {
@@ -230,7 +231,7 @@ export default class CommonMenu extends Component {
       });
       const { route, domian } = findFirstLeafMenu(selected);
       const link = this.getMenuLink(route);
-      Choerodon.historyReplaceMenu(history, link, domian);
+      historyReplaceMenu(history, link, domian);
     }
     this.collapseMenu();
   };

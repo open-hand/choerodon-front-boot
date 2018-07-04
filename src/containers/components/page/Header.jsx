@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { Button, Tooltip } from 'choerodon-ui';
+import { getMessage } from '../../common';
 
 @withRouter
 export default class PageHeader extends Component {
@@ -25,7 +26,7 @@ export default class PageHeader extends Component {
       backBtn = (
         <div>
           <Tooltip
-            title={Choerodon.getMessage('返回', 'return')}
+            title={getMessage('返回', 'return')}
             placement="bottom"
             getTooltipContainer={that => that}
           >

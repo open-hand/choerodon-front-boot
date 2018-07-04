@@ -5,6 +5,7 @@ import { message } from 'choerodon-ui';
 import { FormattedMessage } from 'react-intl';
 import url from 'url';
 import AppState from '../stores/AppState';
+import axios from '../components/axios';
 
 const cookies = new Cookies();
 const ACCESS_TOKEN = 'access_token';
@@ -84,23 +85,23 @@ function checkPassword(passwordPolicy, value, callback, userName) {
         low = lows ? lows.length : 0;
       }
       if (minLength && (len < minLength)) {
-        callback(Choerodon.getMessage(`密码长度至少为${minLength}`, `Password length is at least ${minLength}`));
+        callback(getMessage(`密码长度至少为${minLength}`, `Password length is at least ${minLength}`));
         return;
       }
       if (maxLength && (len > maxLength)) {
-        callback(Choerodon.getMessage(`密码长度最多为${maxLength}`, `Password length is upto ${maxLength}`));
+        callback(getMessage(`密码长度最多为${maxLength}`, `Password length is upto ${maxLength}`));
         return;
       }
       if (upcount && (up < upcount)) {
-        callback(Choerodon.getMessage(`大写字母至少为${upcount}`, `At least for a capital letter ${upcount}`));
+        callback(getMessage(`大写字母至少为${upcount}`, `At least for a capital letter ${upcount}`));
         return;
       }
       if (lowcount && (low < lowcount)) {
-        callback(Choerodon.getMessage(`小写字母至少为${lowcount}`, `At least for a lower-case letters ${lowcount}`));
+        callback(getMessage(`小写字母至少为${lowcount}`, `At least for a lower-case letters ${lowcount}`));
         return;
       }
       if (notEqualsUsername && value === userName) {
-        callback(Choerodon.getMessage('密码不能与账号相同', 'password can not equal with the userName'));
+        callback(getMessage('密码不能与账号相同', 'password can not equal with the userName'));
         return;
       }
       if (regexCheck) {
@@ -108,11 +109,11 @@ function checkPassword(passwordPolicy, value, callback, userName) {
         if (regex.test(value)) {
           callback();
         } else {
-          callback(Choerodon.getMessage('正则不匹配', 'can not test regex'));
+          callback(getMessage('正则不匹配', 'can not test regex'));
         }
       }
       if (spcount && (sp < spcount)) {
-        callback(Choerodon.getMessage(`特殊字符至少为${spcount}`, `At least for special characters ${spcount}`));
+        callback(getMessage(`特殊字符至少为${spcount}`, `At least for special characters ${spcount}`));
       } else {
         callback();
       }
@@ -161,10 +162,17 @@ function intl(id, otherProps) {
 
 // 登出
 function logout() {
-  removeAccessToken();
-  localStorage.clear();
-  sessionStorage.clear();
-  window.location = `${process.env.AUTH_HOST}/logout`;
+  axios.get(`${process.env.AUTH_HOST}/logout`, {
+    headers: {
+      Redirect: 'no redirect',
+    },
+  })
+    .then(() => {
+      removeAccessToken();
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location = `${process.env.AUTH_HOST}/login`;
+    });
 }
 
 // 返回多语言字符串

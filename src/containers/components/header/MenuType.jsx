@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import classnames from 'classnames';
 import { toJS } from 'mobx';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
+import { historyPushMenu } from '../../common';
 
 const TabPane = Tabs.TabPane;
 
@@ -87,7 +88,7 @@ export default class MenuType extends Component {
         if (organizationId) {
           path += `&organizationId=${organizationId}`;
         }
-        Choerodon.historyPushMenu(history, path, domain);
+        historyPushMenu(history, path, domain);
       }
     });
     this.setState({

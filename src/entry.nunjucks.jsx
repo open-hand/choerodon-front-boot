@@ -11,6 +11,7 @@ import AppState from '../lib/containers/stores/AppState';
 import asyncRouter from '../lib/containers/components/util/asyncRouter';
 import asyncLocaleProvider from '../lib/containers/components/util/asyncLocaleProvider';
 import asyncPropsLoader from '../lib/containers/components/util/asyncPropsLoader';
+import { getAccessToken, setAccessToken } from '../lib/containers/common';
 
 const Masters = asyncRouter(() => import('../lib/containers/components/master'), () => import('{{ routesPath }}'));
 
@@ -22,9 +23,9 @@ class App extends Component {
   }
 
   handleAuth = () => {
-    let token = Choerodon.getAccessToken(window.location.hash);
+    let token = getAccessToken(window.location.hash);
     if (token) {
-      Choerodon.setAccessToken(token, 60 * 60);
+      setAccessToken(token, 60 * 60);
     }
     AppState.loadUserInfo().then(data => {
       AppState.setUserInfo(data);
