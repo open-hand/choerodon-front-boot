@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { Button, Icon } from 'choerodon-ui';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
+import { historyPushMenu, getMessage } from '../../common';
 
 @withRouter
 @inject('AppState', 'MenuStore')
@@ -14,7 +15,7 @@ export default class Setting extends Component {
     MenuStore.loadMenuData({ type: 'site' }, false).then(menus => {
       if (menus.length) {
         const { route, domain } = findFirstLeafMenu(menus[0]);
-        Choerodon.historyPushMenu(history, route, domain);
+        historyPushMenu(history, route, domain);
       }
     });
   };
@@ -26,7 +27,7 @@ export default class Setting extends Component {
     });
     return (
       <Button className={classString} onClick={this.getGlobalMenuData}>
-        {Choerodon.getMessage('管理', 'Manage')}
+        {getMessage('管理', 'Manage')}
         <Icon className="manager-icon" type="settings " />
       </Button>
     );

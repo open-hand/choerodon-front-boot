@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Icon, Modal, Row } from 'choerodon-ui';
 import PropTypes from 'prop-types';
+import { getMessage } from '../../common';
 
 class Remove extends Component {
   static propTypes = {
@@ -19,13 +20,13 @@ class Remove extends Component {
           onClick={handleCancel}
           className="color3"
           height={36}
-          text={Choerodon.getMessage('取消', 'cancel')}
+          text={getMessage('取消', 'cancel')}
         /><Button
           onClick={handleConfirm}
           className="color3"
           style={{ marginLeft: '8px' }}
           height={36}
-          text={Choerodon.getMessage('删除', 'delete')}
+          text={getMessage('删除', 'delete')}
         />
         </div>}
       >
@@ -37,14 +38,14 @@ class Remove extends Component {
               </a>
             </Col>
             <Col span={22}>
-              <h2>{Choerodon.getMessage('确认删除', 'confirm delete')}</h2>
+              <h2>{getMessage('确认删除', 'confirm delete')}</h2>
             </Col>
           </Col>
         </Row>
         <Row>
           <Col offset={2}>
             <div style={{ marginTop: 10 }}>
-              <span>{Choerodon.getMessage('当你点击删除后，该条数据将被永久删除，不可恢复!', 'When you click delete, after which the data will be permanently deleted and irreversible!')}</span>
+              <span>{getMessage('当你点击删除后，该条数据将被永久删除，不可恢复!', 'When you click delete, after which the data will be permanently deleted and irreversible!')}</span>
             </div>
           </Col>
         </Row>
