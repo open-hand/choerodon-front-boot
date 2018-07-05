@@ -351,6 +351,7 @@ export default class MenuType extends Component {
           footer={modalFooter}
           width={708}
           closable={false}
+          center
         >
           <section className={`select-and-search ${searchClass}`}>
             {returnBtn}
