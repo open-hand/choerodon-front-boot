@@ -80,6 +80,7 @@
     "object.omit": "^3.0.0",
     "postcss-loader": "^2.1.5",
     "prop-types": "^15.5.10",
+    "query-string": "^4.1.0",
     "react": "^16.3.1",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.3.1",

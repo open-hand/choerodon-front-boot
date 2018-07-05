@@ -6,31 +6,32 @@ import { createBrowserHistory } from 'history';
 import { LocaleProvider } from 'choerodon-ui';
 import { configure } from 'mobx';
 import { observer, Provider } from 'mobx-react';
+import queryString from 'query-string';
 import stores from '../lib/containers/stores';
 import AppState from '../lib/containers/stores/AppState';
 import asyncRouter from '../lib/containers/components/util/asyncRouter';
 import asyncLocaleProvider from '../lib/containers/components/util/asyncLocaleProvider';
 import asyncPropsLoader from '../lib/containers/components/util/asyncPropsLoader';
-import { getAccessToken, setAccessToken } from '../lib/containers/common';
+import { authorize, getAccessToken, setAccessToken } from '../lib/containers/common';
+
+function auth() {
+  const { access_token, token_type, expires_in } = queryString.parse(window.location.hash);
+  if (access_token) {
+    setAccessToken(access_token, token_type, expires_in);
+  } else if (!getAccessToken()) {
+    authorize();
+    return false;
+  }
+  AppState.loadUserInfo().then(data => {
+    AppState.setUserInfo(data);
+  });
+  return true;
+}
 
 const Masters = asyncRouter(() => import('../lib/containers/components/master'), () => import('{{ routesPath }}'));
 
 @observer
 class App extends Component {
-
-  componentWillMount() {
-    this.handleAuth();
-  }
-
-  handleAuth = () => {
-    let token = getAccessToken(window.location.hash);
-    if (token) {
-      setAccessToken(token, 60 * 60);
-    }
-    AppState.loadUserInfo().then(data => {
-      AppState.setUserInfo(data);
-    });
-  };
 
   render() {
     const langauge = AppState.currentLanguage;
@@ -55,6 +56,8 @@ class App extends Component {
   }
 }
 
-configure({ enforceActions: true });
+if (auth()) {
+  configure({ enforceActions: true });
 
-render(<App />, document.getElementById('app'));
+  render(<App />, document.getElementById('app'));
+}

@@ -3,7 +3,7 @@
  */
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import { ACCESS_TOKEN, AUTH_URL, removeAccessToken, getMessage, prompt } from '../../common';
+import { authorize, getAccessToken, removeAccessToken } from '../../common';
 
 const cookies = new Cookies();
 
@@ -20,9 +20,9 @@ axios.interceptors.request.use(
     // newConfig.headers['If-Modified-Since'] = new Date();
     // newConfig.headers['Cache-Control'] = 'max-age=3600';
     newConfig.headers.Accept = 'application/json';
-    const accessToken = cookies.get(ACCESS_TOKEN);
+    const accessToken = getAccessToken();
     if (accessToken) {
-      newConfig.headers.Authorization = `bearer ${accessToken}`;
+      newConfig.headers.Authorization = accessToken;
     }
     return newConfig;
   },
@@ -47,7 +47,7 @@ axios.interceptors.response.use(
       switch (status) {
         case 401: {
           removeAccessToken();
-          window.location = `${AUTH_URL}`;
+          authorize();
           break;
         }
         // case 403: {

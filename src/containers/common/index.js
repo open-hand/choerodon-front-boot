@@ -5,10 +5,10 @@ import { message } from 'choerodon-ui';
 import { FormattedMessage } from 'react-intl';
 import url from 'url';
 import AppState from '../stores/AppState';
-import axios from '../components/axios';
 
 const cookies = new Cookies();
 const ACCESS_TOKEN = 'access_token';
+const TOKEN_TYPE = 'token_type';
 const ACCESS_DOMAIN = 'domain';
 const AUTH_URL = `${process.env.AUTH_HOST}/oauth/authorize?response_type=token&client_id=${process.env.CLIENT_ID}&state=`;
 const LOCAL = JSON.parse(process.env.LOCAL || 'true');
@@ -19,33 +19,9 @@ const localReg = /localhost/g;
 
 const setCookie = (name, value, option) => cookies.set(name, value, option);
 
-// const getCookie = (name, value, option) => cookies.getALL(name,value,option);
-function getCookie(sName) {
-  var aCookie = document.cookie.split('; ');
-  for (var i = 0; i < aCookie.length; i++) {
-    var aCrumb = aCookie[i].split('=');
-    if (sName == aCrumb[0])
-      return unescape(aCrumb[1]);
-  }
-  return null;
-}
+const getCookie = (name, option) => cookies.get(name, option);
 
-const removeCookie = (name, value, option) => cookies.remove(name, value, option);
-
-// 获取url token
-function getAccessToken(hash) {
-  if (hash) {
-    const ai = hash.indexOf(ACCESS_TOKEN);
-    if (ai !== -1) {
-      const reg = /access_token=[0-9a-zA-Z-]*/g;
-      hash.match(reg);
-      const centerReg = hash.match(reg)[0];
-      const accessToken = centerReg.split('=')[1];
-      return accessToken;
-    }
-  }
-  return null;
-}
+const removeCookie = (name, option) => cookies.remove(name, option);
 
 function checkPassword(passwordPolicy, value, callback, userName) {
   if (passwordPolicy) {
@@ -125,21 +101,50 @@ function checkPassword(passwordPolicy, value, callback, userName) {
   }
 }
 
-// 前端存储cookie token
-function setAccessToken(token, expiresion) {
-  const expires = expiresion * 1000;
-  const expirationDate = new Date(Date.now() + expires);
+/**
+ * 前端存储cookie token
+ */
+function setAccessToken(token, token_type, expires_in) {
   const option = {
     path: '/',
   };
+  if (expires_in) {
+    const expires = expires_in * 1000;
+    option.expires = new Date(Date.now() + expires);
+  }
   if (!LOCAL && !localReg.test(window.location.host) &&
     getCookie(ACCESS_DOMAIN) === null) {
     option.domain = COOKIE_SERVER;
   }
   setCookie(ACCESS_TOKEN, token, option);
+  setCookie(TOKEN_TYPE, token_type, option);
 }
 
-// 移除token
+function getCookieToken() {
+  const option = {
+    path: '/',
+  };
+  return getCookie(ACCESS_TOKEN, option);
+}
+
+/**
+ * 获取cookie token
+ */
+function getAccessToken() {
+  const option = {
+    path: '/',
+  };
+  const accessToken = getCookieToken();
+  const tokenType = getCookie(TOKEN_TYPE, option);
+  if (accessToken && tokenType) {
+    return `${tokenType} ${accessToken}`;
+  }
+  return null;
+}
+
+/**
+ * 移除token
+ */
 function removeAccessToken() {
   const option = {
     path: '/',
@@ -148,31 +153,37 @@ function removeAccessToken() {
     option.domain = COOKIE_SERVER;
   }
   removeCookie(ACCESS_TOKEN, option);
+  removeCookie(TOKEN_TYPE, option);
 }
 
-// 多语言 old
+/**
+ * @deprecated
+ * 多语言
+ */
 function languageChange(id, otherProps) {
   return <FormattedMessage id={`${id}`} {...otherProps} />;
 }
 
-// 多语言
+/**
+ * 多语言
+ */
 function intl(id, otherProps) {
   return <FormattedMessage id={id} {...otherProps} />;
 }
 
-// 登出
+/**
+ * 登出
+ */
 function logout() {
-  axios.get(`${process.env.AUTH_HOST}/logout`, {
-    headers: {
-      Redirect: 'no redirect',
-    },
-  })
-    .then(() => {
-      removeAccessToken();
-      localStorage.clear();
-      sessionStorage.clear();
-      window.location = `${process.env.AUTH_HOST}/login`;
-    });
+  const token = getCookieToken();
+  let logoutUrl = `${process.env.AUTH_HOST}/logout`;
+  if (token) {
+    logoutUrl += `?${ACCESS_TOKEN}=${getCookieToken()}`;
+  }
+  removeAccessToken();
+  localStorage.clear();
+  sessionStorage.clear();
+  window.location = logoutUrl;
 }
 
 // 返回多语言字符串
@@ -246,15 +257,19 @@ function fileServer(path) {
   return url.resolve(FILE_SERVER, path || '');
 }
 
+function authorize() {
+  window.location = AUTH_URL;
+}
+
 export {
   ACCESS_TOKEN,
   AUTH_URL,
   fileServer,
-  getAccessToken,
   setCookie,
   getCookie,
   removeCookie,
   setAccessToken,
+  getAccessToken,
   removeAccessToken,
   languageChange,
   getMessage,
@@ -265,4 +280,5 @@ export {
   randomString,
   historyPushMenu,
   historyReplaceMenu,
+  authorize,
 };
