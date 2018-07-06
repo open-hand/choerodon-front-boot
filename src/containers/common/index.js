@@ -101,6 +101,19 @@ function checkPassword(passwordPolicy, value, callback, userName) {
   }
 }
 
+let cachedToken = null;
+
+function getCookieToken() {
+  const option = {
+    path: '/',
+  };
+  const token = getCookie(ACCESS_TOKEN, option);
+  if (token && cachedToken && token !== cachedToken) {
+    return null;
+  }
+  return token;
+}
+
 /**
  * 前端存储cookie token
  */
@@ -118,13 +131,7 @@ function setAccessToken(token, token_type, expires_in) {
   }
   setCookie(ACCESS_TOKEN, token, option);
   setCookie(TOKEN_TYPE, token_type, option);
-}
-
-function getCookieToken() {
-  const option = {
-    path: '/',
-  };
-  return getCookie(ACCESS_TOKEN, option);
+  cachedToken = token;
 }
 
 /**
