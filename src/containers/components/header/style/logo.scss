@@ -30,24 +30,18 @@
   }
 
   &-menu-icon {
-    width: 50px;
     color: #fff;
     text-align: center;
     line-height: 1;
     cursor: pointer;
+    margin: 0 9px;
     .icon {
       font-size: 24px;
+      line-height: 32px;
     }
   }
-
 }
 
-.single-menu {
-  .header-logo {
-    background-position: 0 center;
-
-    &-wrap {
-      width: 230px;
-    }
-  }
+a.header-logo {
+  cursor: pointer;
 }

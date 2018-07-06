@@ -3,6 +3,7 @@
  */
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import { authorize, getAccessToken, removeAccessToken } from '../../common';
 
 const cookies = new Cookies();
 
@@ -19,9 +20,9 @@ axios.interceptors.request.use(
     // newConfig.headers['If-Modified-Since'] = new Date();
     // newConfig.headers['Cache-Control'] = 'max-age=3600';
     newConfig.headers.Accept = 'application/json';
-    const accessToken = cookies.get(Choerodon.ACCESS_TOKEN);
+    const accessToken = getAccessToken();
     if (accessToken) {
-      newConfig.headers.Authorization = `bearer ${accessToken}`;
+      newConfig.headers.Authorization = accessToken;
     }
     return newConfig;
   },
@@ -45,23 +46,23 @@ axios.interceptors.response.use(
       const status = response.status;
       switch (status) {
         case 401: {
-          Choerodon.removeAccessToken();
-          window.location = `${Choerodon.AUTH_URL}`;
+          removeAccessToken();
+          authorize();
           break;
         }
         // case 403: {
         //   const errorData = response.data;
         //   const content = errorData.error_description ||
-        // errorData.error || Choerodon.getMessage('未知错误', 'unknown error');
-        //   Choerodon.prompt('error', content);
+        // errorData.error || getMessage('未知错误', 'unknown error');
+        //   prompt('error', content);
         //   break;
         // }
         // case 404: {
-        //   Choerodon.prompt('error', 'Not Found');
+        //   prompt('error', 'Not Found');
         //   break;
         // }
         // case 500: {
-        //   Choerodon.prompt('error', Choerodon.getMessage('服务器内部错误', 'Server Internal Error'));
+        //   prompt('error', getMessage('服务器内部错误', 'Server Internal Error'));
         //   break;
         // }
         default:

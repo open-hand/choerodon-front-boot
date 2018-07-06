@@ -1,27 +1,37 @@
-import React from 'react';
-import { Icon } from 'choerodon-ui';
-import MenuStore from '../../stores/MenuStore';
-import AppState from '../../stores/AppState';
+import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import { inject, observer } from 'mobx-react';
+import { Button } from 'choerodon-ui';
 
-function handleMenuClick() {
-  AppState.setMenuExpanded(!AppState.getMenuExpanded);
+const prefixCls = 'header-logo';
+
+@withRouter
+@inject('AppState', 'MenuStore')
+@observer
+export default class Logo extends Component {
+
+  handleMenuClick = () => {
+    const { AppState } = this.props;
+    AppState.setMenuExpanded(!AppState.getMenuExpanded);
+  };
+
+  render() {
+    const { MenuStore, location } = this.props;
+    const { pathname } = location;
+    const menus = MenuStore.getMenuData;
+    return (
+      <div className={`${prefixCls}-wrap`}>
+        {
+          menus.length ?
+            <Button shape="circle" icon="menu" className={`${prefixCls}-menu-icon`} onClick={this.handleMenuClick} /> :
+            <div className={`${prefixCls}-icon`} />
+        }
+        {
+          pathname === '/' ?
+            <div className={prefixCls} /> :
+            <Link to="/" className={prefixCls} />
+        }
+      </div>
+    );
+  }
 }
-
-const Logo = () => {
-  const menus = MenuStore.getMenuData;
-  return (
-    <div className="header-logo-wrap">
-      {
-        // menus.length ?
-        true ?
-          <div className="header-logo-menu-icon" onClick={handleMenuClick}>
-            <Icon type="menu" />
-          </div> :
-          <div className="header-logo-icon" />
-      }
-      <div className="header-logo" />
-    </div>
-  );
-};
-
-export default Logo;

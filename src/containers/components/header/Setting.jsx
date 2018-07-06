@@ -3,19 +3,19 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { Button, Icon } from 'choerodon-ui';
-import MenuStore from '../../stores/MenuStore';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
+import { historyPushMenu, getMessage } from '../../common';
 
-@inject('AppState')
+@withRouter
+@inject('AppState', 'MenuStore')
 @observer
-class Setting extends Component {
+export default class Setting extends Component {
   getGlobalMenuData = () => {
-    const { AppState, history } = this.props;
-    // HeaderStore.setSelectData(null);
+    const { MenuStore, history } = this.props;
     MenuStore.loadMenuData({ type: 'site' }, false).then(menus => {
       if (menus.length) {
         const { route, domain } = findFirstLeafMenu(menus[0]);
-        Choerodon.historyPushMenu(history, route, domain);
+        historyPushMenu(history, route, domain);
       }
     });
   };
@@ -27,11 +27,9 @@ class Setting extends Component {
     });
     return (
       <Button className={classString} onClick={this.getGlobalMenuData}>
-        {Choerodon.getMessage('管理', 'Manage')}
-        <Icon className="manager-icon" type="settings " />
+        {getMessage('管理', 'Manage')}
+        <Icon className="manager-icon" type="settings " style={{ marginLeft: '5px' }}/>
       </Button>
     );
   }
 }
-
-export default withRouter(Setting);

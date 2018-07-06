@@ -16,11 +16,7 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      projectFlag: true,
-      organizationFlag: true,
       siteFlag: false,
-      orgData: null,
-      proData: null,
     };
   }
 
@@ -33,10 +29,6 @@ class Header extends Component {
     });
     HeaderStore.axiosGetOrgAndPro(AppState.getUserId);
   }
-
-  fetchAxios = (method, url) => {
-    return axios[method](url);
-  };
 
   render() {
     const { AppState } = this.props;

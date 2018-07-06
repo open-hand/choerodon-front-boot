@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { Button, Popover } from 'choerodon-ui';
-import MenuStore from '../../stores/MenuStore';
 import Avatar from './Avatar';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
+import { getMessage, historyPushMenu, logout } from '../../common';
 
-@inject('AppState')
+@withRouter
+@inject('AppState', 'MenuStore')
 @observer
-class UserPreferences extends Component {
+export default class UserPreferences extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,11 +25,11 @@ class UserPreferences extends Component {
   }
 
   preferences = () => {
-    const { AppState, history } = this.props;
+    const { MenuStore, history } = this.props;
     MenuStore.loadMenuData({ type: 'site' }, true).then(menus => {
       if (menus.length) {
         const { route, domain } = findFirstLeafMenu(menus[0]);
-        Choerodon.historyPushMenu(history, `${route}?type=site`, domain);
+        historyPushMenu(history, `${route}?type=site`, domain);
       }
     });
     this.setState({
@@ -62,11 +63,11 @@ class UserPreferences extends Component {
             funcType="raised"
             type="primary"
             onClick={this.preferences.bind(this)}
-          >{Choerodon.getMessage('个人中心', 'user preferences')}</Button>
+          >{getMessage('个人中心', 'user preferences')}</Button>
           <Button
             funcType="raised"
-            onClick={() => Choerodon.logout()}
-          >{Choerodon.getMessage('退出登录', 'sign Out')}</Button>
+            onClick={() => logout()}
+          >{getMessage('退出登录', 'sign Out')}</Button>
         </div>
       </div>
     );
@@ -86,5 +87,3 @@ class UserPreferences extends Component {
     );
   }
 }
-
-export default withRouter(UserPreferences);

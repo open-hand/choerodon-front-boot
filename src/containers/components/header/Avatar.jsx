@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import { fileServer } from '../../common';
 
 export default class Avatar extends Component {
   render() {
@@ -10,7 +11,7 @@ export default class Avatar extends Component {
         style={
           {
             ...style,
-            backgroundImage: src && `url(${Choerodon.fileServer(src)})`,
+            backgroundImage: src && `url(${fileServer(src)})`,
           }
         }
         {

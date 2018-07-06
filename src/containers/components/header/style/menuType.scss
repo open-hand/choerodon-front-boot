@@ -51,10 +51,12 @@
         color: #000;
         &:hover {
           text-decoration: underline;
-          color: blue;
+          color: #3F51B5;
           cursor: pointer;
         }
         .icon {
+          vertical-align: text-bottom;
+          transition: initial;
           margin-right: 6px;
         }
       }
@@ -72,14 +74,6 @@
   }
   &-disabled {
     color: rgba(0, 0, 0, 0.36);
-  }
-  &-name {
-    > icon {
-      vertical-align: text-bottom;
-    }
-  }
-  &-name:hover {
-    color: #3F51B5;
   }
 }
 
