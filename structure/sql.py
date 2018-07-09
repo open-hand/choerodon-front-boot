@@ -46,7 +46,7 @@ def returnLevel(data):
                     centerLevel.append(saveLevel)
     return centerLevel
 # insert iam_menu
-def selectMenuTable(table, data):
+def insertMenuTable(table, data):
     try:
         dataMenu = data["menu"]
         dataLanguageChinese = data["language"]["Chinese"]
@@ -67,12 +67,16 @@ def selectMenuTable(table, data):
                           sort=dataMenu[root]["sort"])
                       cursor.execute(sql)
                   else:
-                      sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}' where code='{code}' and level='{level}'".format(
-                          table=table,
-                          code=root,
-                          name=dataLanguageChinese[root],
-                          level=levelYaml,
-                          icon=dataMenu[root]["icon"])
+                      sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}'"
+                      if attrs and ('sort' in attrs):
+                          sql = sql + ", sort='{sort}'";
+                      sql = (sql + " where code='{code}' and level='{level}'").format(
+                            table=table,
+                            code=root,
+                            name=dataLanguageChinese[root],
+                            level=levelYaml,
+                            icon=dataMenu[root]["icon"],
+                            sort=dataMenu[root]["sort"])
                       cursor.execute(sql)
         for service in dataMenu:
             centerLevel = []
@@ -102,18 +106,25 @@ def selectMenuTable(table, data):
                                 cursor.execute(sql)
                         else:
                             if serviceId and ('id' in serviceId):
-                                sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}', route='{route}' where code='{code}'".format(
+                                sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}', route='{route}'"
+                                if attrs and ('sort' in attrs):
+                                    sql = sql + ", sort='{sort}'";
+                                if attrs and ('parent_id' in attrs):
+                                    sql = sql + ", parent_id='{parent_id}'";
+                                sql = (sql + " where code='{code}' and level='{level}'").format(
                                     table=table,
                                     code=menuList,
                                     name=dataLanguageChinese[menuList],
                                     level=level,
+                                    parent_id=serviceId["id"],
                                     icon=dataMenu[service][level][menuList]["icon"],
-                                    route=dataMenu[service][level][menuList]["Routes"])
+                                    route=dataMenu[service][level][menuList]["Routes"],
+                                    sort=dataMenu[service][level][menuList]["sort"])
                                 cursor.execute(sql)
     except:
         dealFault()
 # insert iam_menu_permission
-def menuPermission(table, data):
+def insertMenuPermission(table, data):
     try:
         dataMenu = data["menu"]
         dataLanguageChinese = data["language"]["Chinese"]
@@ -140,7 +151,7 @@ def menuPermission(table, data):
     except:
         dealFault()
 # insert iam_menu_tl
-def selectMenuTlTable(table, data):
+def insertMenuTlTable(table, data):
     try:
         dataService = data["menu"]
         for service in dataService.keys():
@@ -172,41 +183,6 @@ def selectMenuTlTable(table, data):
                             cursor.execute(sql)
     except:
         dealFault()
-# 初始化服务菜单
-def selectServiceTlTable(table, data):
-    try:
-        dataService = data["menu"]
-        for service in dataService.keys():
-            dataLanguageEnglish = data["language"]["English"]
-            dataLanguageChinese = data["language"]["Chinese"]
-            for level in levelArray:
-                sql = "select id from iam_menu where code='{service}' and level='{level}'".format(
-                    service=service,
-                    level=level)
-                count = cursor.execute(sql)
-                serviceId = cursor.fetchone()
-                if serviceId:
-                  sql = "select id from {table} where id={serviceId}".format(table=table,serviceId=serviceId["id"],
-                      Name=dataLanguageEnglish[service])
-                  count = cursor.execute(sql)
-                  if count == 0:
-                      sql = "insert into {table} (lang,id,name) values ('en_US','{id}','{Name}')".format(
-                          table=table,
-                          id=serviceId["id"],
-                          Name=dataLanguageEnglish[service])
-                      cursor.execute(sql)
-                      sql = "insert into {table} (lang,id,name) values ('zh_CN','{id}','{Name}')".format(table=table,id=serviceId["id"], Name=dataLanguageChinese[service])
-                      cursor.execute(sql)
-                  else:
-                      sql = "update {table} set lang='en_US',id='{id}',name='{Name}' where id={id} and lang='en_US'".format(
-                          table=table,
-                          id=serviceId["id"],
-                          Name=dataLanguageEnglish[service])
-                      cursor.execute(sql)
-                      sql = "update {table} set lang='zh_CN',id='{id}',name='{Name}' where id={id} and lang='zh_CN'".format(table=table,id=serviceId["id"], Name=dataLanguageChinese[service])
-                      cursor.execute(sql)
-    except:
-        dealFault()
 def dealFault():
     traceback.print_exc()
     db.rollback()
@@ -223,8 +199,9 @@ if __name__ == '__main__':
     port=os.environ.get('DB_PORT')
     user=os.environ.get('DB_USER')
     passwd=os.environ.get('DB_PASS')
+    attrs=os.environ.get('UP_ATTRS')
     try:
-        options,args = getopt.getopt(sys.argv[1:],"p:i:u:s:", ["ip=","port=","user=","secret="])
+        options,args = getopt.getopt(sys.argv[1:],"p:i:u:s:a:", ["ip=","port=","user=","secret=","attrs="])
     except getopt.GetoptError:
         sys.exit()
     for name,value in options:
@@ -236,6 +213,8 @@ if __name__ == '__main__':
             user=value
         if name in ("-s","--secret"):
             passwd=value
+        if name in ("-a","--attrs"):
+            attrs=value
     config = {
         'host': host,
         'port': int(port),
@@ -249,8 +228,7 @@ if __name__ == '__main__':
     cursor = db.cursor()
     DB_NAME = os.getenv("DB_NAME", "iam_service")
     db.select_db(DB_NAME)
-    selectMenuTable('iam_menu', contentConfig)
-    selectMenuTlTable('iam_menu_tl', contentConfig)
-    selectServiceTlTable('iam_menu_tl', contentConfig)
-    menuPermission('iam_menu_permission', contentConfig)
+    insertMenuTable('iam_menu', contentConfig)
+    insertMenuTlTable('iam_menu_tl', contentConfig)
+    insertMenuPermission('iam_menu_permission', contentConfig)
     ymlFile.close()
