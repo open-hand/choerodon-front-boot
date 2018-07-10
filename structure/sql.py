@@ -9,8 +9,8 @@ import getopt
 reload(sys)
 sys.setdefaultencoding('utf8')
 # return menu id
-def returnTableId(table, content, equaldata):
-    sql = "select id from {table} where {content} = '{equaldata}'".format(table=table,content=content, equaldata=equaldata)
+def returnMenuId(table, code, level):
+    sql = "select id from {table} where code = '{code}' and level = '{level}'".format(table=table,code=code, level=level)
     cursor.execute(sql)
     Id = cursor.fetchone()
     return Id
@@ -35,6 +35,18 @@ def judgeTrue(table, *args):
         return True
     else:
         return False
+# delete menu by menu_id
+def deleteByMenuId(code, level):
+    menuId = returnMenuId('iam_menu', code, level)
+    sql = "delete from iam_menu_tl where id={menuId}".format(menuId=menuId["id"])
+    cursor.execute(sql)
+    sql = "delete from iam_menu_permission where menu_id={menuId}".format(menuId=menuId["id"])
+    cursor.execute(sql)
+    sql = "update iam_menu set parent_id=0 where parent_id='{parent_id}'".format(parent_id=menuId["id"])
+    cursor.execute(sql)
+    sql = "delete from iam_menu where id='{menuId}'".format(menuId=menuId["id"])
+    cursor.execute(sql)
+
 # return menu level
 def returnLevel(data):
     dataMenu = data["menu"]
@@ -53,31 +65,31 @@ def insertMenuTable(table, data):
         for root in dataMenu:
                 centerLevel = []
                 for level in levelArray:
-                  for service in dataMenu[root]:
-                      if service == level:
-                          centerLevel.append(service)
+                    for service in dataMenu[root]:
+                        if service == level:
+                            centerLevel.append(service)
                 for levelYaml in centerLevel:
-                  if judgeTrue(table, 'code', root, 'level', levelYaml):
-                      sql = "insert into {table} (code, name, level, parent_id, type, is_default, icon, sort) values ('{code}', '{name}', '{level}', 0, 'root', 1, '{icon}', '{sort}')".format(
-                          table=table,
-                          code=root,
-                          name=dataLanguageChinese[root],
-                          level=levelYaml,
-                          icon=dataMenu[root]["icon"],
-                          sort=dataMenu[root]["sort"])
-                      cursor.execute(sql)
-                  else:
-                      sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}'"
-                      if attrs and ('sort' in attrs):
-                          sql = sql + ", sort='{sort}'";
-                      sql = (sql + " where code='{code}' and level='{level}'").format(
+                    if judgeTrue(table, 'code', root, 'level', levelYaml):
+                        sql = "insert into {table} (code, name, level, parent_id, type, is_default, icon, sort) values ('{code}', '{name}', '{level}', 0, 'root', 1, '{icon}', '{sort}')".format(
                             table=table,
                             code=root,
                             name=dataLanguageChinese[root],
                             level=levelYaml,
                             icon=dataMenu[root]["icon"],
                             sort=dataMenu[root]["sort"])
-                      cursor.execute(sql)
+                        cursor.execute(sql)
+                    else:
+                        sql = "update {table} set code='{code}', name='{name}', level='{level}', icon='{icon}'"
+                        if attrs and ('sort' in attrs):
+                            sql = sql + ", sort='{sort}'";
+                        sql = (sql + " where code='{code}' and level='{level}'").format(
+                            table=table,
+                            code=root,
+                            name=dataLanguageChinese[root],
+                            level=levelYaml,
+                            icon=dataMenu[root]["icon"],
+                            sort=dataMenu[root]["sort"])
+                        cursor.execute(sql)
         for service in dataMenu:
             centerLevel = []
             for level in levelArray:
@@ -136,11 +148,10 @@ def insertMenuPermission(table, data):
                         centerLevel.append(saveLevel)
             for level in centerLevel:
                 for menuList in dataMenu[service][level].keys():
-                    menuId = returnTableId('iam_menu', 'code', menuList)
+                    menuId = returnMenuId('iam_menu', menuList, level)
                     sql = "delete from {table} where menu_id={menuId}".format(table=table,menuId=menuId["id"])
                     cursor.execute(sql)
                     for permission in dataMenu[service][level][menuList]["permission"]:
-                        # permissionId = returnTableId('iam_permission', 'code', permission)
                         if menuId:
                             sql = "select id from iam_menu_permission where menu_id={menuId} and permission_code='{permission_code}'".format(menuId=menuId["id"],permission_code=permission)
                             cursor.execute(sql)
@@ -164,25 +175,64 @@ def insertMenuTlTable(table, data):
                 for menuList in dataService[service][level].keys():
                     dataLanguageEnglish = data["language"]["English"]
                     dataLanguageChinese = data["language"]["Chinese"]
-                    menuId = returnTableId('iam_menu', 'code',  menuList)
+                    menuId = returnMenuId('iam_menu', menuList, level)
                     if menuId:
                         sql = "select id from {table} where id={menuId}".format(table=table,menuId=menuId["id"])
                         cursor.execute(sql)
                         count = cursor.execute(sql)
                         if count == 0:
-                            sql = "insert into {table} (lang,id,name) values ('en_US','{id}','{Name}')".format(table=table,id=menuId["id"], Name=dataLanguageEnglish[menuList])
+                            sql = "insert into {table} (lang,id,name) values ('en_US','{id}','{Name}')".format(
+                                table=table,
+                                id=menuId["id"],
+                                Name=dataLanguageEnglish[menuList])
                             cursor.execute(sql)
-                            sql = "insert into {table} (lang,id,name) values ('zh_CN','{id}','{Name}')".format(table=table,id=menuId["id"], Name=dataLanguageChinese[menuList])
+                            sql = "insert into {table} (lang,id,name) values ('zh_CN','{id}','{Name}')".format(
+                                table=table,
+                                id=menuId["id"],
+                                Name=dataLanguageChinese[menuList])
                             cursor.execute(sql)
                         else:
                             sql = "update {table} set lang='en_US',id='{id}',name='{Name}' where id={id} and lang='en_US'".format(
-                                    table=table,id=menuId["id"], Name=dataLanguageEnglish[menuList])
+                                table=table,
+                                id=menuId["id"],
+                                Name=dataLanguageEnglish[menuList])
                             cursor.execute(sql)
                             sql = "update {table} set lang='zh_CN',id='{id}',name='{Name}' where id={id} and lang='zh_CN'".format(
-                                    table=table,id=menuId["id"], Name=dataLanguageChinese[menuList])
+                                table=table,
+                                id=menuId["id"],
+                                Name=dataLanguageChinese[menuList])
                             cursor.execute(sql)
     except:
         dealFault()
+
+def deleteMenu(data):
+    try:
+        dataMenu = data["menu"]
+        dataLanguageChinese = data["language"]["Chinese"]
+        for root in dataMenu:
+            centerLevel = []
+            for level in levelArray:
+              for service in dataMenu[root]:
+                  if service == level:
+                      centerLevel.append(service)
+            for level in centerLevel:
+                if "delete" in dataMenu[root] and (dataMenu[root]["delete"] == "true"):
+                    deleteByMenuId(root, level)
+
+        for service in dataMenu:
+            centerLevel = []
+            for level in levelArray:
+                for saveLevel in dataMenu[service].keys():
+                    if saveLevel == level:
+                        centerLevel.append(saveLevel)
+            for level in centerLevel:
+                for menuList in dataMenu[service][level]:
+                    if "delete" in dataMenu[service][level][menuList] and dataMenu[service][level][menuList]["delete"] == "true":
+                        deleteByMenuId(menuList, level)
+    except:
+        dealFault()
+
+    
 def dealFault():
     traceback.print_exc()
     db.rollback()
@@ -200,8 +250,9 @@ if __name__ == '__main__':
     user=os.environ.get('DB_USER')
     passwd=os.environ.get('DB_PASS')
     attrs=os.environ.get('UP_ATTRS')
+    delete=os.environ.get('ENABLE_DELETE')
     try:
-        options,args = getopt.getopt(sys.argv[1:],"p:i:u:s:a:", ["ip=","port=","user=","secret=","attrs="])
+        options,args = getopt.getopt(sys.argv[1:],"p:i:u:s:a:d:", ["ip=","port=","user=","secret=","attrs=","delete="])
     except getopt.GetoptError:
         sys.exit()
     for name,value in options:
@@ -215,6 +266,8 @@ if __name__ == '__main__':
             passwd=value
         if name in ("-a","--attrs"):
             attrs=value
+        if name in ("-d", "--delete"):
+            delete=value
     config = {
         'host': host,
         'port': int(port),
@@ -231,4 +284,6 @@ if __name__ == '__main__':
     insertMenuTable('iam_menu', contentConfig)
     insertMenuTlTable('iam_menu_tl', contentConfig)
     insertMenuPermission('iam_menu_permission', contentConfig)
+    if delete and delete.lower() == 'true':
+        deleteMenu(contentConfig)
     ymlFile.close()
