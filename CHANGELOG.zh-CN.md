@@ -2,6 +2,15 @@
 
 这个项目的所有显著变化都将被记录在这个文件中。
 
+## [0.6.4] - 2018-07-13
+
+### 修改
+
+- 修改菜单初始化数据库中`getopt` 为`argparse`，用户现在可以通过`python choerodon-front-boot/structure/sql.py -h` 来获取帮助信息。
+- 菜单初始化添加可选参数，通过`-a or --attrs` 或者添加环境变量`UP_ATTRS` 在初始化时指定更新菜单`sort` 和`parent_id` 字段。
+- 菜单初始化添加可选参数，通过`-d or --delete` 或者添加环境变量`ENABLE_DELETE` 在初始化时指定删除菜单，对应要删除的菜单或目录需要添加`delete: true`。
+
+
 ## [0.6.3] - 2018-07-06
 
 ### 修改
