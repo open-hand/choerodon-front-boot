@@ -5,7 +5,7 @@ import os
 import yaml
 import traceback
 import sys
-import getopt
+import argparse
 reload(sys)
 sys.setdefaultencoding('utf8')
 # return menu id
@@ -245,29 +245,23 @@ if __name__ == '__main__':
     wholeConfig = '{baseDirs}/config.yml'.format(baseDirs=baseDirs);
     ymlFile = open(wholeConfig)
     contentConfig = yaml.load(ymlFile)
-    host=os.environ.get('DB_HOST')
-    port=os.environ.get('DB_PORT')
-    user=os.environ.get('DB_USER')
-    passwd=os.environ.get('DB_PASS')
-    attrs=os.environ.get('UP_ATTRS')
-    delete=os.environ.get('ENABLE_DELETE')
-    try:
-        options,args = getopt.getopt(sys.argv[1:],"p:i:u:s:a:d:", ["ip=","port=","user=","secret=","attrs=","delete="])
-    except getopt.GetoptError:
-        sys.exit()
-    for name,value in options:
-        if name in ("-i","--ip"):
-            host=value
-        if name in ("-p","--port"):
-            port=value
-        if name in ("-u","--user"):
-            user=value
-        if name in ("-s","--secret"):
-            passwd=value
-        if name in ("-a","--attrs"):
-            attrs=value
-        if name in ("-d", "--delete"):
-            delete=value
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i','--ip', type=string, help='databse host', dest="host", default="localhost")
+    parser.add_argument('-p','--port', type=int, help='databse port', dest="port", default=3306)
+    parser.add_argument('-u','--user', type=string, help='databse user', dest="user", default="choerodon")
+    parser.add_argument('-s','--secret', type=string, help='databse password', dest="passwd", default="123456")
+    parser.add_argument('-a','--attrs', type=string, help='enable update attrs, it can include sort & parent_id, you can use "port,parent_id" to update menu attrs', dest="attrs", default="")
+    parser.add_argument('-d','--delete', type=bool, help='enable delete menu', dest="delete", default=False)
+    args = parser.parse_args()
+
+    host = os.environ.get('DB_HOST') if os.environ.get('DB_HOST') else args.host
+    port = os.environ.get('DB_PORT') if os.environ.get('DB_PORT') else args.port
+    user = os.environ.get('DB_USER') if os.environ.get('DB_USER') else args.user
+    passwd = os.environ.get('DB_PASS') if os.environ.get('DB_PASS') else args.passwd
+    attrs = os.environ.get('UP_ATTRS') if os.environ.get('UP_ATTRS') else args.attrs
+    delete = os.environ.get('ENABLE_DELETE') if os.environ.get('ENABLE_DELETE') else args.delete
+
     config = {
         'host': host,
         'port': int(port),
@@ -284,6 +278,6 @@ if __name__ == '__main__':
     insertMenuTable('iam_menu', contentConfig)
     insertMenuTlTable('iam_menu_tl', contentConfig)
     insertMenuPermission('iam_menu_permission', contentConfig)
-    if delete and delete.lower() == 'true':
+    if delete == True:
         deleteMenu(contentConfig)
     ymlFile.close()
