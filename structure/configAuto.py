@@ -77,14 +77,15 @@ def menuYml(path):
     for i in sys.argv[1:len(sys.argv)]:
         for k in menuYmlContent[i].keys():
             centerArray = '{code}.{module}'.format(code = serviceCode, module = k)
-            centerObj[centerArray] = menuYmlContent[i][k]
+            if centerArray not in centerObj.keys():
+                centerObj[centerArray] = menuYmlContent[i][k]
             centerLevel = []
             for level in levelArray:
                 for saveLevel in menuYmlContent[i][k].keys():
                     if saveLevel == level:
                         centerLevel.append(saveLevel)
             for level in centerLevel:
-                centerObj[centerArray][level] = menuDirYml(menuYmlContent[i][k][level], centerArray)
+                centerObj[centerArray][level].append(menuDirYml(menuYmlContent[i][k][level], centerArray))
                 centerContent.update(centerObj)
     return centerObj
 def menuDirYml(menuYmlContent, moduleDir):
@@ -112,4 +113,3 @@ whole = {
 # writeYml(languageYml(pathDir["languagezhDir"]), newPathDir["languageDirs"], 'en')
 # # 把文件写入menu文件
 writeYml(whole, newPathDir["wholeConfig"])
-
