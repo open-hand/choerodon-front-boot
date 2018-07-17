@@ -85,9 +85,14 @@ def menuYml(path):
                     if saveLevel == level:
                         centerLevel.append(saveLevel)
             for level in centerLevel:
-                centerObj[centerArray][level] = (menuDirYml(menuYmlContent[i][k][level], centerArray))
+                subMenu = menuDirYml(menuYmlContent[i][k][level], centerArray)
+                if type(centerObj[centerArray][level]) == list:
+                    centerObj[centerArray][level] = subMenu
+                else:
+                    centerObj[centerArray][level].update(subMenu)
                 centerContent.update(centerObj)
     return centerObj
+
 def menuDirYml(menuYmlContent, moduleDir):
     centerLevel = {}
     for (n,index) in zip(menuYmlContent,range(0,len(menuYmlContent))):
