@@ -73,7 +73,7 @@ const config = {
 ## Run
 
 ```
-  choerodon-front-boot start --config config.js
+$choerodon-front-boot start --config config.js
 ```
 
 Once running, open http://localhost:9090
@@ -81,8 +81,45 @@ Once running, open http://localhost:9090
 ## Dist
 
 ```
-  choerodon-front-boot build --config config.js
+$choerodon-front-boot build --config config.js
 ```
+
+## Init Menu
+
+First, you should make sure that you have `Menu.yml` under `./{1}/src/app/{1}/config/Menu.yml`. And also should have `language/en.yml & language/zh.yml`。
+
+A `Menu.yml` file like this:
+
+``` yml
+#Menu.yml
+"iam": code
+  icon: IAM  # icon ode
+  sort: 1  # sort
+  delete: "true"  # Whether it should be deleted
+  site:  # menu level
+    - "organization": # code
+        sort: 1  # sort
+        Routes: /iam/organization  # route
+        icon: manage_organization  # icon
+        permission:  # permissions
+          - 'iam-service.organization.enableOrganization' 
+```
+A `language/en.yml` file like this:
+
+``` yml
+#language/en.yml
+"iam": "platform settings"
+# site
+"iam.organization": "Organization"
+```
+
+Then, you can run the script to initialize the menu.
+```
+$python ./{1}/node_modules/choerodon-front-boot/structure/configAuto.py {1}
+$python ./{1}/node_modules/choerodon-front-boot/structure/sql.py [-i HOST] [-p PORT] [-u USER] [-s PASSWD] [-a ATTRS] [-d DELETE]
+```
+`{1}` is your module name.
+
 
 ## Dependencies
 
