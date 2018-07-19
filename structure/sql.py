@@ -181,29 +181,55 @@ def insertMenuTlTable(table, data):
                         cursor.execute(sql)
                         count = cursor.execute(sql)
                         if count == 0:
-                            sql = "insert into {table} (lang,id,name) values ('en_US','{id}','{Name}')".format(
-                                table=table,
-                                id=menuId["id"],
-                                Name=dataLanguageEnglish[menuList])
-                            cursor.execute(sql)
-                            sql = "insert into {table} (lang,id,name) values ('zh_CN','{id}','{Name}')".format(
-                                table=table,
-                                id=menuId["id"],
-                                Name=dataLanguageChinese[menuList])
-                            cursor.execute(sql)
+                            insertMenuTl(table, 'en_US', menuId["id"], dataLanguageEnglish[menuList])
+                            insertMenuTl(table, 'zh_CN', menuId["id"], dataLanguageChinese[menuList])
                         else:
-                            sql = "update {table} set lang='en_US',id='{id}',name='{Name}' where id={id} and lang='en_US'".format(
-                                table=table,
-                                id=menuId["id"],
-                                Name=dataLanguageEnglish[menuList])
-                            cursor.execute(sql)
-                            sql = "update {table} set lang='zh_CN',id='{id}',name='{Name}' where id={id} and lang='zh_CN'".format(
-                                table=table,
-                                id=menuId["id"],
-                                Name=dataLanguageChinese[menuList])
-                            cursor.execute(sql)
+                            updateMenuTl(table, 'en_US', menuId["id"], dataLanguageEnglish[menuList])
+                            updateMenuTl(table, 'zh_CN', menuId["id"], dataLanguageChinese[menuList])
     except:
         dealFault()
+
+# insert service menu tl
+def insertServiceTlTable(table, data):
+    try:
+        dataService = data["menu"]
+        for service in dataService.keys():
+            dataLanguageEnglish = data["language"]["English"]
+            dataLanguageChinese = data["language"]["Chinese"]
+            for level in levelArray:
+                sql = "select id from iam_menu where code='{service}' and level='{level}'".format(
+                    service=service,
+                    level=level)
+                count = cursor.execute(sql)
+                serviceId = cursor.fetchone()
+                menuId = returnMenuId('iam_menu', service, level)
+                if menuId:
+                  sql = "select id from {table} where id={id}".format(
+                      table=table,
+                      id=menuId["id"])
+                  count = cursor.execute(sql)
+                  if count == 0:
+                      insertMenuTl(table, 'en_US', menuId["id"], dataLanguageEnglish[service])
+                      insertMenuTl(table, 'zh_CN', menuId["id"], dataLanguageChinese[service])
+                  else:
+                      updateMenuTl(table, 'en_US', menuId["id"], dataLanguageEnglish[service])
+                      updateMenuTl(table, 'zh_CN', menuId["id"], dataLanguageChinese[service])
+    except:
+        dealFault()
+def insertMenuTl(table, lang, id, name):
+    sql = "insert into {table} (lang,id,name) values ('{lang}','{id}','{name}')".format(
+        table=table,
+        lang=lang,
+        id=id,
+        name=name)
+    cursor.execute(sql)
+def updateMenuTl(table, lang, id, name):
+    sql = "insert into {table} (lang,id,name) values ('{lang}','{id}','{name}')".format(
+        table=table,
+        lang=lang,
+        id=id,
+        name=name)
+    cursor.execute(sql)
 
 def deleteMenu(data):
     try:
@@ -277,6 +303,7 @@ if __name__ == '__main__':
     db.select_db(DB_NAME)
     insertMenuTable('iam_menu', contentConfig)
     insertMenuTlTable('iam_menu_tl', contentConfig)
+    insertServiceTlTable('iam_menu_tl', contentConfig)
     insertMenuPermission('iam_menu_permission', contentConfig)
     if delete == True:
         deleteMenu(contentConfig)
