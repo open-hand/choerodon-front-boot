@@ -224,7 +224,7 @@ def insertMenuTl(table, lang, id, name):
         name=name)
     cursor.execute(sql)
 def updateMenuTl(table, lang, id, name):
-    sql = "insert into {table} (lang,id,name) values ('{lang}','{id}','{name}')".format(
+    sql = "update {table} set id='{id}', name='{name}' where id={id} and lang='{lang}'".format(
         table=table,
         lang=lang,
         id=id,
