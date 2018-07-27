@@ -170,8 +170,6 @@ if __name__ == '__main__':
     parser.add_argument('-p','--port', type=int, help='databse port', dest="port", default=3306)
     parser.add_argument('-u','--user', help='databse user', dest="user", default="choerodon")
     parser.add_argument('-s','--secret', help='databse password', dest="passwd", default="123456")
-    parser.add_argument('-a','--attrs', help='enable update attrs, it can include sort & parent_id, you can use "port,parent_id" to update menu attrs', dest="attrs", default="")
-    parser.add_argument('-d','--delete', type=bool, help='enable delete menu', dest="delete", default=False)
     args = parser.parse_args()
 
     options = os.environ.get('DASHBOARD_OPTIONS') if os.environ.get('DASHBOARD_OPTIONS') else args.options
@@ -184,8 +182,6 @@ if __name__ == '__main__':
         port = os.environ.get('DB_PORT') if os.environ.get('DB_PORT') else args.port
         user = os.environ.get('DB_USER') if os.environ.get('DB_USER') else args.user
         passwd = os.environ.get('DB_PASS') if os.environ.get('DB_PASS') else args.passwd
-        attrs = os.environ.get('UP_ATTRS') if os.environ.get('UP_ATTRS') else args.attrs
-        delete = os.environ.get('ENABLE_DELETE') if os.environ.get('ENABLE_DELETE') else args.delete
         dbConfig = {
             'host': host,
             'port': int(port),
