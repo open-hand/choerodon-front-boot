@@ -1,25 +1,14 @@
 /*eslint-disable*/
 import React, { Component } from 'react';
-import { isArray } from 'lodash';
+import { addLocaleData, IntlProvider } from 'react-intl';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import esModule from './esModule';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/zip';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromPromise';
-import { IntlProvider, addLocaleData } from 'react-intl';
-
-const moduleDefaultExport = module => module.default || module;
-
-function esModule(module, forceArray) {
-  if (isArray(module)) {
-    return module.map(moduleDefaultExport);
-  }
-
-  const defualted = moduleDefaultExport(module);
-  return forceArray ? [defualted] : defualted;
-}
 
 export default function asyncLocaleProvider(locale, getMessage, getLocaleData) {
   return class AsyncLocaleProvider extends Component {

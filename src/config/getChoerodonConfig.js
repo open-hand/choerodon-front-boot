@@ -34,6 +34,7 @@ const defaultConfig = {
   theme: {
     'primary-color': '#3F51B5',
   },
+  dashboard: false,
 };
 
 module.exports = function getChoerodonConfig(configFile) {

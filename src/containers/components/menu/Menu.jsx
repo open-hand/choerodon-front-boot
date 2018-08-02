@@ -3,10 +3,9 @@ import React, { Component } from 'react';
 import { Icon, Menu, Tooltip } from 'choerodon-ui';
 import { Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import queryString from 'query-string';
 import classNames from 'classnames';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
-import { historyReplaceMenu } from '../../common';
+import { dashboard, historyReplaceMenu } from '../../common';
 import './style';
 
 const { SubMenu, Item } = Menu;
@@ -34,80 +33,49 @@ export default class CommonMenu extends Component {
   }
 
   loadMenu(props) {
-    const { location, AppState, MenuStore, HeaderStore, history } = props;
-    const { pathname, search } = location;
-    if (pathname !== '/') {
-      const menuType = { type: 'site' };
-      const isUser = AppState.isTypeUser;
-      const { type: currentType, id: currentId } = AppState.currentMenuType;
-      let newIsUser = false;
-      if (search) {
-        const { type, name, id, organizationId } = queryString.parse(search);
-        newIsUser = type === 'site';
-        if (type) {
-          menuType.type = type;
-        }
-        if (name) {
-          menuType.name = name;
-        }
-        if (id) {
-          menuType.id = id;
-          if (type === 'project') {
-            menuType.projectId = id;
-          } else if (type === 'organization') {
-            menuType.organizationId = id;
-          }
-        }
-        if (type === 'project' && organizationId) {
-          menuType.organizationId = organizationId;
-        }
-      }
-      AppState.setTypeUser(newIsUser);
-      AppState.changeMenuType(menuType);
-      MenuStore.loadMenuData(menuType).then(menus => {
-        MenuStore.treeReduce({ subMenus: menus }, (menu, parents) => {
-          if (menu.route === pathname || pathname.indexOf(`${menu.route}/`) === 0) {
-            const { selected, collapsed } = this.state;
-            const newState = {
-              activeMenu: menu,
-              selected: parents[0],
-            };
-            const nCode = parents.length && parents.reverse()[0].code;
-            const oCode = selected && selected.code;
-            if (
-              oCode !== nCode ||
-              currentType !== menuType.type ||
-              isUser !== newIsUser ||
-              currentId !== menuType.id) {
-              newState.openKeys = collapsed ? [] : [menu, ...parents].map(({ code }) => code);
-              this.savedOpenKeys = [menu, ...parents].map(({ code }) => code);
+    const { location, AppState, MenuStore } = props;
+    const { currentType, currentIsUser, currentId, selected, collapsed } = this.state;
+    const { pathname } = location;
+    const { type, id } = AppState.currentMenuType;
+    if (type) {
+      MenuStore.loadMenuData().then(menus => {
+        const isUser = AppState.isTypeUser;
+        if (pathname === '/') {
+          this.setState({
+            activeMenu: null,
+            selected: selected ? menus.find(({ code }) => code === selected.code) || menus[0] : menus[0],
+            currentType: type,
+            currentId: id,
+            currentIsUser: isUser,
+            openKeys: [],
+          });
+        } else {
+          MenuStore.treeReduce({ subMenus: menus }, (menu, parents) => {
+            if (menu.route === pathname || pathname.indexOf(`${menu.route}/`) === 0) {
+              const newState = {
+                activeMenu: menu,
+                selected: parents[0],
+                currentType: type,
+                currentId: id,
+                currentIsUser: isUser,
+              };
+              const nCode = parents.length && parents.reverse()[0].code;
+              const oCode = selected && selected.code;
+              if (
+                oCode !== nCode ||
+                currentType !== type ||
+                isUser !== currentIsUser ||
+                currentId !== id) {
+                newState.openKeys = collapsed ? [] : [menu, ...parents].map(({ code }) => code);
+                this.savedOpenKeys = [menu, ...parents].map(({ code }) => code);
+              }
+              this.setState(newState);
+              return true;
             }
-            this.setState(newState);
-            return true;
-          }
-          return false;
-        });
+            return false;
+          });
+        }
       });
-    } else {
-      AppState.setTypeUser(false);
-      const recent = HeaderStore.getRecentItem;
-      if (recent.length && !sessionStorage.home_first_redirect) {
-        const { id, name, type, organizationId } = recent[0];
-        AppState.changeMenuType({ id, name, type, organizationId });
-        MenuStore.loadMenuData().then(menus => {
-          if (menus.length) {
-            const { route, domain } = findFirstLeafMenu(menus[0]);
-            let path = `${route}?type=${type}&id=${id}&name=${name}`;
-            if (organizationId) {
-              path += `&organizationId=${organizationId}`;
-            }
-            historyReplaceMenu(history, path, domain);
-          }
-        });
-      } else {
-        AppState.changeMenuType({});
-      }
-      sessionStorage.home_first_redirect = 'yes';
     }
   }
 
@@ -274,13 +242,23 @@ export default class CommonMenu extends Component {
 
   renderLeftMenu(child, selected, expanded) {
     if (child.length > 0) {
+      let homePath = '/';
+      if (dashboard) {
+        const { type, id, name, organizationId } = this.props.AppState.currentMenuType;
+        if (type) {
+          homePath = `${homePath}?type=${type}&id=${id}&name=${name}`;
+          if (organizationId) {
+            homePath += `&organizationId=${organizationId}`;
+          }
+        }
+      }
       return (
         <div className={`common-menu-left ${expanded ? 'expanded' : ''}`}>
           <div
             className="common-menu-left-header"
             role="none"
           >
-            <Link to="/" onClick={this.collapseMenu}><Icon type="home" /><span>主页</span></Link>
+            <Link to={homePath} onClick={this.collapseMenu}><Icon type="home" /><span>主页</span></Link>
           </div>
           <div className="common-menu-right-content">
             <Menu
