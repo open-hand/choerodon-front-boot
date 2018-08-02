@@ -30,7 +30,7 @@ class MenuStore {
 
   @action
   loadMenuData(menuType = AppState.currentMenuType, isUser) {
-    const type = getMenuType(menuType, isUser);
+    const type = getMenuType(menuType, isUser) || 'site';
     const { id = 0 } = menuType;
     const menu = this.menuData(type, id);
     if (menu.length) {

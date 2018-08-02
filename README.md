@@ -33,24 +33,24 @@ const config = {
       }),
     ],
   },
-  babelConfig(config) {
+  babelConfig(config, mode, env) {
     return config;
   },
-  webpackConfig(config) {
+  webpackConfig(config, mode, env) {
     return config;
   },
-  enterPoints(mode) {
+  enterPoints(mode, env) {
     // By default, it returns empty object.
     // In javascript files, words `process.env.XXX` will be replaced with the key of returned map object like `XXX` from this function .
     // e.g.
     // development env
-    if (mode === 'start') {
+    if (mode === 'start' || env === 'development') {
       return {
         API_HOST: 'http://api.example.org', // The `server` property of root config will be overwritten by this.
       }
     }
     // production env
-    if (mode === 'build') {
+    if (mode === 'build' || env === 'production') {
       return {
         API_HOST: 'an `enterpoint` placeholder string', // Reference to `enterpoint.sh`
       }
@@ -58,7 +58,19 @@ const config = {
   },
   entryName: 'index',
   root: '/',
-  routes: null, // By default, routes use main in package.json
+  // By default, The property `routes` is null and we use property `main` as path of router component and use the last word of property `name` what be split by char `-` as router path in package.json
+  routes: {
+    'iam': 'src/app/iam/containers/IAMIndex.js', // For e.g.
+  }, 
+  // By default, dashboard is false.
+  // The keys of dashboard are namespaces, and entries are Component paths.
+  dashboard: {
+    'choerodon-front-iam': 'src/dashboard/*', //  For e.g., use glob pattern
+    'choerodon-front-devops': [
+      'src/dashboard/Test', //  For e.g., use dir path
+      'src/dashboard/Test2.js', //  For e.g., use file path
+    ], 
+  },
   server: 'http://api.example.com', // API server
   fileServer: 'http://file.example.com', // File server
   clientid: 'localhost',

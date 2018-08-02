@@ -20,7 +20,7 @@ export default function updateWebpackConfig(mode, env) {
   const { choerodonConfig, isBuild } = context;
   const {
     theme, output, root, enterPoints, server, fileServer, clientid, local,
-    postcssConfig, entryName, titlename, htmlTemplate, favicon,
+    postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: true,
@@ -64,7 +64,12 @@ export default function updateWebpackConfig(mode, env) {
     defaultEnterPoints = getEnterPointsConfig();
   }
   /* eslint-enable no-param-reassign */
-  const mergedEnterPoints = Object.assign({ NODE_ENV: env }, defaultEnterPoints, enterPoints(mode, env));
+  const mergedEnterPoints = {
+    NODE_ENV: env,
+    USE_DASHBOARD: !!dashboard,
+    ...defaultEnterPoints,
+    ...enterPoints(mode, env)
+  };
   const defines = Object.keys(mergedEnterPoints).reduce((obj, key) => {
     obj[`process.env.${key}`] = JSON.stringify(process.env[key] || mergedEnterPoints[key]);
     return obj;

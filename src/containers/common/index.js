@@ -14,6 +14,7 @@ const AUTH_URL = `${process.env.AUTH_HOST}/oauth/authorize?response_type=token&c
 const LOCAL = JSON.parse(process.env.LOCAL || 'true');
 const COOKIE_SERVER = process.env.COOKIE_SERVER;
 const FILE_SERVER = process.env.FILE_SERVER;
+const USE_DASHBOARD = JSON.parse(process.env.USE_DASHBOARD || 'false');
 
 const localReg = /localhost/g;
 
@@ -288,4 +289,5 @@ export {
   historyPushMenu,
   historyReplaceMenu,
   authorize,
+  USE_DASHBOARD as dashboard,
 };

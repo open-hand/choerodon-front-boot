@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import classnames from 'classnames';
 import { toJS } from 'mobx';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
-import { historyPushMenu } from '../../common';
+import { dashboard, historyPushMenu } from '../../common';
 
 const TabPane = Tabs.TabPane;
 
@@ -82,12 +82,21 @@ export default class MenuType extends Component {
     const { id, name, type, organizationId } = value;
     HeaderStore.setRecentItem(value);
     MenuStore.loadMenuData({ type, id }, false).then(menus => {
-      if (menus.length) {
-        const { route, domain } = findFirstLeafMenu(menus[0]);
-        let path = `${route}?type=${type}&id=${id}&name=${name}`;
+      let route, path, domain;
+      if (dashboard) {
+        route = '/';
+      } else if (menus.length) {
+        const menu = findFirstLeafMenu(menus[0]);
+        route = menu.route;
+        domain = menu.domain;
+      }
+      if (route) {
+        path = `${route}?type=${type}&id=${id}&name=${name}`;
         if (organizationId) {
           path += `&organizationId=${organizationId}`;
         }
+      }
+      if (path) {
         historyPushMenu(history, path, domain);
       }
     });

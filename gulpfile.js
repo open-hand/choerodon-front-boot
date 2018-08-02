@@ -51,6 +51,7 @@ function getBabelCommonConfig() {
         'style': true,
       },
     ],
+    require.resolve('babel-plugin-lodash'),
   ];
   return {
     presets: [
@@ -64,13 +65,14 @@ function getBabelCommonConfig() {
 
 function babelify(js) {
   const babelConfig = getBabelCommonConfig();
-  let stream = js.pipe(babel(babelConfig));
+  const stream = js.pipe(babel(babelConfig));
   return stream
     .pipe(through2.obj(function (file, encoding, next) {
-      if (file.path.match(/routes\.nunjucks\.js/)) {
+      const matches = file.path.match(/(routes|dashboard)\.nunjucks\.js/);
+      if (matches) {
         const content = file.contents.toString(encoding);
         file.contents = Buffer.from(content
-          .replace(`'[routes]',`, `{{ routes }}`));
+          .replace(`'{{ ${matches[1]} }}'`, `{{ ${matches[1]} }}`));
       }
       this.push(file);
       next();
