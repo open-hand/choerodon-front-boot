@@ -78,7 +78,7 @@ export default class MenuType extends Component {
 
   //选择组织和项目数据
   selectState = (value) => {
-    const { HeaderStore, MenuStore, history } = this.props;
+    const { AppState, HeaderStore, MenuStore, history } = this.props;
     const { id, name, type, organizationId } = value;
     HeaderStore.setRecentItem(value);
     MenuStore.loadMenuData({ type, id }, false).then(menus => {
@@ -100,6 +100,7 @@ export default class MenuType extends Component {
         historyPushMenu(history, path, domain);
       }
     });
+    AppState.setMenuExpanded(false);
     this.setState({
       visible: false,
     });
