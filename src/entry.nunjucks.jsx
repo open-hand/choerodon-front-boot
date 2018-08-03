@@ -24,8 +24,8 @@ async function auth() {
   return true;
 }
 
-const UILocaleProviderAsync = asyncRouter(() => import('choerodon-ui/es/locale-provider'), {
-  locale: () => import(`choerodon-ui/es/locale-provider/${AppState.currentLanguage}.js`),
+const UILocaleProviderAsync = asyncRouter(() => import('choerodon-ui/lib/locale-provider'), {
+  locale: () => import(`choerodon-ui/lib/locale-provider/${AppState.currentLanguage}.js`),
 });
 
 const Masters = asyncRouter(() => import('../lib/containers/components/master'), {

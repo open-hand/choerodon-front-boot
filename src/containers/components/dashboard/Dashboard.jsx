@@ -167,8 +167,8 @@ export default class Dashboard extends Component {
     return (
       <div className={PREFIX_CLS}>
         {this.renderHeader(editing)}
-        <Spin spinning={loading}>
-          <Row className={classString} type="flex" gutter={20}>
+        <Spin spinning={loading} wrapperClassName={classString }>
+          <Row type="flex" gutter={20}>
             {this.renderColumns()}
           </Row>
         </Spin>
