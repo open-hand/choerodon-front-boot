@@ -129,4 +129,18 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
       height: 0 !important;
     }
   }
+  &-navbar {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    padding: 13px 16px;
+    > .icon:first-child {
+      font-size: 24px;
+      margin-right: 16px;
+      + * {
+        vertical-align: middle;
+      }
+    }
+    a {
+      color: #000;
+    }
+  }
 }
