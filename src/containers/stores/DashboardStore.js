@@ -5,7 +5,7 @@ import AppState from './AppState';
 
 class DashboardStore {
   @observable dashboardGroup = {
-    site: [],
+    site: { '0': [] },
     organization: {},
     project: {},
   };
@@ -25,24 +25,36 @@ class DashboardStore {
   }
 
   @action
+  updateCachedData({ level, code, name, title, icon, namespace }) {
+    const group = this.dashboardGroup[level];
+    Object.keys(group).forEach(key => {
+      const found = group[key] && group[key].find(
+        ({ dashboardCode, dashboardNamespace }) =>
+          dashboardCode === code && dashboardNamespace === namespace,
+      );
+      if (found) {
+        set(found, 'dashboardTitle', title);
+        set(found, 'dashboardName', name);
+        set(found, 'dashboardIcon', icon);
+      }
+    });
+  }
+
+  @action
   setDashboardData(data, childType, id) {
-    if (id) {
-      set(this.dashboardGroup[childType], id, data);
-    } else {
-      set(this.dashboardGroup, childType, data);
-    }
+    set(this.dashboardGroup[childType], id, data);
     this.dirty = false;
   }
 
   @computed
   get getDashboardData() {
-    const { currentMenuType: { id = 0, type = 'site' } } = AppState;
+    const { currentMenuType: { id = '0', type = 'site' } } = AppState;
     return this.dashboardData(type, id);
   }
 
   @action
   loadDashboardData() {
-    const { currentMenuType: { id = 0, type = 'site' } } = AppState;
+    const { currentMenuType: { id = '0', type = 'site' } } = AppState;
     const data = this.dashboardData(type, id);
     if (data.length) {
       return Promise.resolve(data);
@@ -65,7 +77,7 @@ class DashboardStore {
   @action
   updateDashboardData() {
     this.loading = true;
-    const { currentMenuType: { id = 0, type = 'site' } } = AppState;
+    const { currentMenuType: { id = '0', type = 'site' } } = AppState;
     return axios.post(`/iam/v1/home/dashboard?level=${type}&source_id=${id}`, JSON.stringify(this.dashboardData(type, id)))
       .then(action((data) => {
         this.loading = false;
@@ -81,15 +93,7 @@ class DashboardStore {
   }
 
   dashboardData(type, id) {
-    let data;
-    if (type) {
-      if (id) {
-        data = get(this.dashboardGroup[type], id);
-      } else {
-        data = get(this.dashboardGroup, type);
-      }
-    }
-    return data || [];
+    return get(this.dashboardGroup[type], id) || [];
   }
 }
 
