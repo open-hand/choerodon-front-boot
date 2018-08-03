@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { Button, Tooltip } from 'choerodon-ui';
+import classNames from 'classnames';
 import { getMessage } from '../../common';
 
 @withRouter
@@ -20,7 +21,7 @@ export default class PageHeader extends Component {
   };
 
   render() {
-    const { title, backPath, children } = this.props;
+    const { title, backPath, children, className } = this.props;
     let backBtn = '';
     if (backPath) {
       backBtn = (
@@ -43,7 +44,7 @@ export default class PageHeader extends Component {
       );
     }
     return (
-      <div className="page-head" id="dd">
+      <div className={classNames('page-head', className)}>
         {backBtn}
         <span className="page-head-title">{title}</span>
         {children}

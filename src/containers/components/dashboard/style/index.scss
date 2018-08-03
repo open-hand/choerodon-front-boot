@@ -30,6 +30,7 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
   &-container {
     flex: 1 1 0px;
     padding: 12px 20px;
+    overflow: auto;
   }
   &-column {
     &-empty {
