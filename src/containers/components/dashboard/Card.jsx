@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
 import { Icon, Switch } from 'choerodon-ui';
 import addEventListener from 'choerodon-ui/lib/rc-components/util/Dom/addEventListener';
+import Animate from 'choerodon-ui/lib/rc-components/animate';
+import CardContent from './CardContent';
 
 let dragItem = null;
 let relativeX = 0;
@@ -129,8 +131,12 @@ export default class Card extends Component {
 
   calcHeight = (node) => {
     if (node) {
+      if (!this.props.data.visible) {
+        node.style.display = 'block';
+      }
       const { height } = node.getBoundingClientRect();
       node.style.height = `${this.height = height}px`;
+      node.style.display = '';
     }
   };
 
@@ -140,12 +146,10 @@ export default class Card extends Component {
     const { editing } = DashboardStore;
     const { dashboardNamespace, dashboardCode, dashboardTitle, dashboardIcon, visible } = data;
     const dragging = dragData === data;
-    const classString = classNames(`${prefixCls}-card`, {
-      [`${prefixCls}-card-disabled`]: !visible,
-    });
     const wrapperClassString = classNames(`${prefixCls}-card-wrapper`, {
       [`${prefixCls}-card-dragging`]: dragging,
       [`${prefixCls}-card-drop-${dropSide}`]: !!dropSide,
+      [`${prefixCls}-card-disabled`]: !visible,
     });
     const wrapperProps = {
       className: wrapperClassString,
@@ -166,7 +170,7 @@ export default class Card extends Component {
     return (
       <section {...wrapperProps}>
         <div className={`${prefixCls}-card-placeholder`}>
-          <div className={classString}>
+          <div className={`${prefixCls}-card`}>
             <header
               className={`${prefixCls}-card-title`}
               onMouseDown={this.handleDragStart}
@@ -182,9 +186,15 @@ export default class Card extends Component {
                 }
               </h1>
             </header>
-            <div ref={this.calcHeight} className={`${prefixCls}-card-container`}>
-              {component && createElement(component)}
-            </div>
+            <Animate
+              component=""
+              transitionName="slide-up"
+              showProp="visible"
+            >
+              <CardContent visible={!dragData} key="content" prefixCls={prefixCls}>
+                {component && createElement(component)}
+              </CardContent>
+            </Animate>
           </div>
         </div>
       </section>

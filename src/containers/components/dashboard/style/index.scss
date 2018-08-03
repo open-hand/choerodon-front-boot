@@ -67,8 +67,10 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
       }
     }
     &-disabled {
-      background-color: rgba(0, 0, 0, .14);
       display: none;
+      .#{$c7n-boot-dashboard}-card {
+        background-color: rgba(0, 0, 0, .14);
+      }
     }
     &-switch {
       float: right;
@@ -87,6 +89,9 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
     &-container {
       overflow: hidden;
       transition: height .3s;
+    }
+    &-hidden {
+      display: none;
     }
     &-dragging {
       .#{$c7n-boot-dashboard}-card {
@@ -125,9 +130,6 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
     .#{$c7n-boot-dashboard}-card-wrapper:not(.#{$c7n-boot-dashboard}-card-dragging),
     .#{$c7n-boot-dashboard}-column-empty {
       border-color: #303F9F;
-    }
-    .#{$c7n-boot-dashboard}-card-container {
-      height: 0 !important;
     }
   }
   &-navbar {
