@@ -11,6 +11,7 @@ import AppState from '../lib/containers/stores/AppState';
 import asyncRouter from '../lib/containers/components/util/asyncRouter';
 import asyncLocaleProvider from '../lib/containers/components/util/asyncLocaleProvider';
 import { authorize, getAccessToken, setAccessToken } from '../lib/containers/common';
+import '../lib/containers/components/style';
 
 async function auth() {
   const { access_token, token_type, expires_in } = queryString.parse(window.location.hash);
