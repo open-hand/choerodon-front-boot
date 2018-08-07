@@ -17,7 +17,7 @@ export default class Logo extends Component {
 
   render() {
     const { MenuStore, location } = this.props;
-    const { pathname } = location;
+    const { pathname, search } = location;
     const menus = MenuStore.getMenuData;
     return (
       <div className={`${prefixCls}-wrap`}>
@@ -27,7 +27,7 @@ export default class Logo extends Component {
             <div className={`${prefixCls}-icon`} />
         }
         {
-          pathname === '/' ?
+          pathname === '/' && !search ?
             <div className={prefixCls} /> :
             <Link to="/" className={prefixCls} />
         }

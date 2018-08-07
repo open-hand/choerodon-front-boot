@@ -21,6 +21,8 @@ export { default as Permission } from './permission';
 
 export { default as Remove } from './remove';
 
+export { default as DashBoardNavBar } from './dashboard/Navbar';
+
 export { default as axios } from './axios';
 
 export { default as store } from './store';

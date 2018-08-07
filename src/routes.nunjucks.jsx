@@ -2,21 +2,29 @@ import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { nomatch } from '../lib/containers/components';
 import asyncRouter from '../lib/containers/components/util/asyncRouter';
+import { dashboard } from '../lib/containers/common';
+import Dashboard from '{{ dashboardPath }}';
 
-const Home = asyncRouter(() => import('../lib/containers/components/home'));
+function createRoute(path, component) {
+  return <Route path={path} component={asyncRouter(component)} />;
+}
+
+const Home = asyncRouter(
+  dashboard ?
+    () => import('../lib/containers/components/dashboard') :
+    () => import('../lib/containers/components/home'),
+  dashboard && Dashboard,
+);
 
 export default class AutoRouter extends Component {
-  static getStoreName() {
-    return 'AutoRouter';
-  }
 
   render() {
     return (
       <Switch>
         <Route exact path='/' component={Home} />
-        [routes]
+        {'{{ routes }}'}
         <Route path={'*'} component={nomatch} />
       </Switch>
     );
   }
-};
+}

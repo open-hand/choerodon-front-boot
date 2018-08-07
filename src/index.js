@@ -3,6 +3,7 @@ import updateWebpackConfig from './config/updateWebpackConfig';
 
 const fs = require('fs');
 const path = require('path');
+const glob = require('glob');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 const nunjucks = require('nunjucks');
@@ -14,6 +15,7 @@ const context = require('./context');
 
 const entryTemplate = fs.readFileSync(path.join(__dirname, 'entry.nunjucks.js')).toString();
 const routesTemplate = fs.readFileSync(path.join(__dirname, 'routes.nunjucks.js')).toString();
+const dashboardTemplate = fs.readFileSync(path.join(__dirname, 'dashboard.nunjucks.js')).toString();
 const tmpDirPath = path.join(__dirname, '..', 'tmp');
 mkdirp.sync(tmpDirPath);
 
@@ -32,6 +34,38 @@ function getPackageRoute(packageInfo, base = '.') {
   }
 }
 
+function getDashBoardComponents(namespace, dir) {
+  return glob.sync(path.join(process.cwd(), dir)).map(f => (
+    `"${namespace}/${path.basename(f, path.extname(f))}": () => import("${f}"),`
+  ));
+}
+
+function getDashBoards(dashboard) {
+  const data = [];
+  if (dashboard) {
+    Object.keys(dashboard).forEach(key => {
+      [].concat(dashboard[key]).forEach(dir => {
+        data.push(...getDashBoardComponents(key, dir));
+      });
+    });
+  }
+  return `{\n${data.join('\n')}\n}`;
+}
+
+function getDashBoardPath(dashboard, configEntryName) {
+  const dashboardPath = path.join(tmpDirPath, `dashboard.${configEntryName}.js`);
+  nunjucks.configure(dashboardPath, {
+    autoescape: false,
+  });
+  fs.writeFileSync(
+    dashboardPath,
+    nunjucks.renderString(dashboardTemplate, {
+      dashboard: getDashBoards(dashboard),
+    }),
+  );
+  return dashboardPath;
+}
+
 function getRoutes(packageInfo) {
   const { choerodonConfig } = context;
   let configRoutes = choerodonConfig.routes;
@@ -41,7 +75,7 @@ function getRoutes(packageInfo) {
   return configRoutes;
 }
 
-function getRoutesPath(configRoutes, configEntryName) {
+function getRoutesPath(configRoutes, configEntryName, dashboardPath) {
   const routesPath = path.join(tmpDirPath, `routes.${configEntryName}.js`);
   nunjucks.configure(routesPath, {
     autoescape: false,
@@ -50,24 +84,22 @@ function getRoutesPath(configRoutes, configEntryName) {
     routesPath,
     nunjucks.renderString(routesTemplate, {
       routes: Object.keys(configRoutes).map((key) => (
-        `_react2['default'].createElement(
-          _reactRouterDom.Route,
-          {
-            path: '/${key}',
-            component: _asyncRouter2['default'](() => import('${escapeWinPath(path.join(process.cwd(), configRoutes[key]))}')),
-          }
-        ),`
-      )).join('\n'),
+        `createRoute("/${key}", () => import("${escapeWinPath(path.join(process.cwd(), configRoutes[key]))}"))`
+      )).join(',\n'),
+      dashboardPath: escapeWinPath(dashboardPath),
     }),
   );
   return routesPath;
 }
 
 function generateEntryFile(mainPackage, configEntryName, root) {
+  const { choerodonConfig: { dashboard } } = context;
   const entryPath = path.join(tmpDirPath, `entry.${configEntryName}.js`);
+  const dashboardPath = getDashBoardPath(dashboard, configEntryName);
   const routesPath = getRoutesPath(
     getRoutes(mainPackage),
     configEntryName,
+    dashboardPath,
   );
   fs.writeFileSync(
     entryPath,
@@ -78,19 +110,19 @@ function generateEntryFile(mainPackage, configEntryName, root) {
   );
 }
 
-function getDependenciesByModules(modules) {
+function getDependenciesByModules(modules, dependencies) {
   const { choerodonConfig } = context;
-  const dependencies = {};
+  const deps = {};
   const routes = modules.reduce((obj, module) => {
     const packageInfo = require(getPackagePath(module));
-    Object.assign(dependencies, packageInfo.dependencies);
+    Object.assign(deps, packageInfo[dependencies]);
     return Object.assign(obj, getPackageRoute(packageInfo, module));
   }, {});
 
   if (!choerodonConfig.routes) {
     choerodonConfig.routes = routes;
   }
-  return dependencies;
+  return deps;
 }
 
 function install(done) {
@@ -167,7 +199,8 @@ exports.start = function start(program) {
   const mainPackagePath = getPackagePath();
   const mainPackage = require(mainPackagePath);
   if (program.args.length) {
-    mainPackage.dependencies = Object.assign(getDependenciesByModules(program.args), mainPackage.dependencies);
+    mainPackage.dependencies = Object.assign(getDependenciesByModules(program.args, 'dependencies'), mainPackage.dependencies);
+    mainPackage.peerDependencies = Object.assign(getDependenciesByModules(program.args, 'peerDependencies'), mainPackage.peerDependencies);
     fs.writeFileSync(
       mainPackagePath,
       JSON.stringify(mainPackage),
@@ -194,7 +227,8 @@ exports.build = function build(program) {
   const mainPackagePath = getPackagePath();
   const mainPackage = require(mainPackagePath);
   if (program.args.length) {
-    mainPackage.dependencies = Object.assign(getDependenciesByModules(program.args), mainPackage.dependencies);
+    mainPackage.dependencies = Object.assign(getDependenciesByModules(program.args, 'dependencies'), mainPackage.dependencies);
+    mainPackage.peerDependencies = Object.assign(getDependenciesByModules(program.args, 'peerDependencies'), mainPackage.peerDependencies);
     fs.writeFileSync(
       mainPackagePath,
       JSON.stringify(mainPackage),

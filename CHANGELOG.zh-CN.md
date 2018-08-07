@@ -2,6 +2,17 @@
 
 这个项目的所有显著变化都将被记录在这个文件中。
 
+## [0.7.0]
+
+### 新增
+
+- 增加可定制化仪表盘功能
+
+### 修改
+
+- 滚动条样式优化
+- 升级组件库choerodon-ui@0.3.5、react@16.4.1、react-dom@16.4.1
+
 ## [0.6.5] - 2018-07-20
 
 ### 修改
@@ -17,6 +28,7 @@
 
 ### 修改
 
+- 修改菜单初始化数据库中`getopt` 为`argparse`，用户现在可以通过`python choerodon-front-boot/structure/sql.py -h` 来获取帮助信息。
 - 修改菜单初始化数据库中`getopt` 为`argparse`，用户现在可以通过`python choerodon-front-boot/structure/sql.py -h` 来获取帮助信息。
 
 ## [0.6.3] - 2018-07-06
