@@ -7,6 +7,7 @@
 ### 修改
 
 - 部分组件的状态迁移到Store中
+- Action控件传递props给内部的Button控件
 
 ### 修复
 

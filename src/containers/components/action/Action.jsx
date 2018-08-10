@@ -49,13 +49,13 @@ class Action extends Component {
   }
 
   render() {
-    const { data, placement } = this.props;
+    const { data, placement, ...restProps } = this.props;
     return (
       <Permission
         service={this.getAllService(data)}
       >
         <Dropdown overlay={this.renderMenu(data)} trigger={['click']} placement={placement}>
-          <Button size="small" shape="circle" style={{ color: '#000' }} icon="more_vert" />
+          <Button size="small" shape="circle" style={{ color: '#000' }} icon="more_vert" {...restProps} />
         </Dropdown>
       </Permission>
     );
