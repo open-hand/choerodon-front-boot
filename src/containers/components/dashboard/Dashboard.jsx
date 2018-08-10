@@ -94,6 +94,10 @@ export default class Dashboard extends Component {
     const { data: dragData, column: dragColumn, sort: dragSort } = dragCard;
     if (dragData && dragColumn && column) {
       dragColumn.splice(dragColumn.indexOf(dragData), 1);
+      const index = column.indexOf(dragData);
+      if (index > -1) {
+        column.splice(index, 1);
+      }
       if (data && side) {
         const newIndex = column.indexOf(data) + (side === 'bottom' ? 1 : 0);
         column.splice(newIndex, 0, dragData);
@@ -167,7 +171,7 @@ export default class Dashboard extends Component {
     return (
       <div className={PREFIX_CLS}>
         {this.renderHeader(editing)}
-        <Spin spinning={loading} wrapperClassName={classString }>
+        <Spin spinning={loading} wrapperClassName={classString}>
           <Row type="flex" gutter={20}>
             {this.renderColumns()}
           </Row>

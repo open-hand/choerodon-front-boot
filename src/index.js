@@ -105,7 +105,7 @@ function generateEntryFile(mainPackage, configEntryName, root) {
     entryPath,
     nunjucks.renderString(entryTemplate, {
       routesPath: escapeWinPath(routesPath),
-      root: escapeWinPath(root),
+      // root: escapeWinPath(root),
     }),
   );
 }

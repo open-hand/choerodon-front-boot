@@ -32,6 +32,8 @@ class HeaderStore {
   @observable proData = null;
   @observable selected = null;
   @observable recentItem = null;
+  @observable userPreferenceVisible = false;
+  @observable menuTypeVisible = false;
 
   @computed
   get getSelected() {
@@ -56,6 +58,16 @@ class HeaderStore {
   @computed
   get getProData() {
     return this.proData;
+  }
+
+  @action
+  setUserPreferenceVisible(userPreferenceVisible) {
+    this.userPreferenceVisible = userPreferenceVisible;
+  }
+
+  @action
+  setMenuTypeVisible(menuTypeVisible) {
+    this.menuTypeVisible = menuTypeVisible;
   }
 
   axiosGetOrgAndPro(userId) {

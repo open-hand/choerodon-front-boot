@@ -17,9 +17,6 @@ export default class MenuType extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
-      totalTabData: props.org && props.pro ? [...props.org, ...props.pro] : [],
-      selected: {},
       filterOrganization: '',
       searchValue: '',
       handlesearch: false,
@@ -31,25 +28,23 @@ export default class MenuType extends Component {
 
   // 展示modal
   showModal = () => {
-    this.props.HeaderStore.setSelected(null);
+    const { HeaderStore } = this.props;
+    HeaderStore.setSelected(null);
+    HeaderStore.setMenuTypeVisible(true);
     this.setState({
-      visible: true,
       searchValue: '',
       handlesearch: false,
     });
   };
   // 确认模态框
   handleOk = () => {
-    this.setState({
-      visible: false,
-    });
-    this.selectState(this.props.HeaderStore.getSelected);
+    const { HeaderStore } = this.props;
+    HeaderStore.setMenuTypeVisible(false);
+    this.selectState(HeaderStore.getSelected);
   };
   // 取消模态框
   handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
+    this.props.HeaderStore.setMenuTypeVisible(false);
   };
   //select 选择
   handleChange = (value) => {
@@ -101,9 +96,7 @@ export default class MenuType extends Component {
       }
     });
     AppState.setMenuExpanded(false);
-    this.setState({
-      visible: false,
-    });
+    HeaderStore.setMenuTypeVisible(false);
   };
 
   renderDefaultExpandAllRows(dataSource) {
@@ -292,11 +285,11 @@ export default class MenuType extends Component {
   }
 
   render() {
-    const { handlesearch, searchValue, visible, activeKey, filterOrganization } = this.state;
+    const { handlesearch, searchValue, activeKey, filterOrganization } = this.state;
     const { AppState, HeaderStore } = this.props;
     const { name: selectTitle = '选择项目', type } = AppState.currentMenuType;
     const currentData = this.getCurrentData();
-    const recentItem = HeaderStore.getRecentItem;
+    const { menuTypeVisible: visible, getRecentItem: recentItem } = HeaderStore;
     const tabSelect = activeKey || (filterOrganization || !recentItem || recentItem.length === 0 ? 'total' : 'recent');
     const modalFooter = [
       <Button key="back" onClick={this.handleCancel}>取消</Button>,

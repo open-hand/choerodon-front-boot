@@ -27,6 +27,54 @@ class MenuStore {
     organization: {},
     project: {},
   };
+  @observable collapsed = false;
+  @observable activeMenu = null;
+  @observable selected = null;
+  @observable leftOpenKeys = [];
+  @observable openKeys = [];
+  @observable type = null;
+  @observable isUser = null;
+  @observable id = null;
+
+  @action
+  setCollapsed(collapsed) {
+    this.collapsed = collapsed;
+  }
+
+  @action
+  setActiveMenu(activeMenu) {
+    this.activeMenu = activeMenu;
+  }
+
+  @action
+  setSelected(selected) {
+    this.selected = selected;
+  }
+
+  @action
+  setLeftOpenKeys(leftOpenKeys) {
+    this.leftOpenKeys = leftOpenKeys;
+  }
+
+  @action
+  setOpenKeys(openKeys) {
+    this.openKeys = openKeys;
+  }
+
+  @action
+  setType(type) {
+    this.type = type;
+  }
+
+  @action
+  setIsUser(isUser) {
+    this.isUser = isUser;
+  }
+
+  @action
+  setId(id) {
+    this.id = id;
+  }
 
   @action
   loadMenuData(menuType = AppState.currentMenuType, isUser) {
@@ -56,6 +104,11 @@ class MenuStore {
   @computed
   get getMenuData() {
     return this.menuData();
+  }
+
+  @computed
+  get getSiteMenuData() {
+    return this.menuData('site', 0);
   }
 
   menuData(type = getMenuType(), id = AppState.currentMenuType.id) {
