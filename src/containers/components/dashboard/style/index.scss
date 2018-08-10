@@ -31,6 +31,11 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
     flex: 1 1 0px;
     padding: 12px 20px;
     overflow: auto;
+    overflow-x: hidden;
+    .ant-spin-container,
+    .ant-row-flex {
+      height: 100%;
+    }
   }
   &-column {
     &-empty {
