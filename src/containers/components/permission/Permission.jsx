@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import omit from 'object.omit';
 import AppState from '../../stores/AppState';
 import PermissionStore from '../../stores/PermissionStore';
+import PermissionWrapper from './PermissionWrapper';
 
 @observer
 class Permission extends Component {
@@ -60,13 +61,17 @@ class Permission extends Component {
   }
 
   render() {
-    const { defaultChildren, children, noAccessChildren } = this.props;
+    const { defaultChildren, children, noAccessChildren, onAccess } = this.props;
     const otherProps = omit(this.props, [
       'service', 'type', 'organizationId', 'projectId', 'defaultChildren', 'noAccessChildren', 'children',
     ]);
     const status = PermissionStore.access(this.getPermissionProps(this.props));
     if (status === 'success') {
-      return this.extendProps(children, otherProps);
+      return (
+        <PermissionWrapper onAccess={onAccess}>
+          {this.extendProps(children, otherProps)}
+        </PermissionWrapper>
+      );
     } else if (status === 'failure' && (noAccessChildren || defaultChildren)) {
       return this.extendProps(noAccessChildren || defaultChildren, otherProps);
     } else if (status === 'pending' && defaultChildren) {

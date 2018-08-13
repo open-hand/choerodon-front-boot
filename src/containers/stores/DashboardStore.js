@@ -5,7 +5,7 @@ import AppState from './AppState';
 
 class DashboardStore {
   @observable dashboardGroup = {
-    site: { '0': [] },
+    site: { 0: [] },
     organization: {},
     project: {},
   };
@@ -27,7 +27,7 @@ class DashboardStore {
   @action
   updateCachedData({ level, code, name, title, icon, namespace }) {
     const group = this.dashboardGroup[level];
-    Object.keys(group).forEach(key => {
+    Object.keys(group).forEach((key) => {
       const found = group[key] && group[key].find(
         ({ dashboardCode, dashboardNamespace }) =>
           dashboardCode === code && dashboardNamespace === namespace,
@@ -55,9 +55,9 @@ class DashboardStore {
   @action
   loadDashboardData() {
     const { currentMenuType: { id = '0', type = 'site' } } = AppState;
-    const data = this.dashboardData(type, id);
-    if (data.length) {
-      return Promise.resolve(data);
+    const dashboardData = this.dashboardData(type, id);
+    if (dashboardData.length) {
+      return Promise.resolve(dashboardData);
     }
     this.loading = true;
     return axios.get(`/iam/v1/home/dashboard?level=${type}&source_id=${id}`)
@@ -68,7 +68,7 @@ class DashboardStore {
         }
         return data;
       }))
-      .catch(action(error => {
+      .catch(action((error) => {
         this.loading = false;
         handleResponseError(error);
       }));

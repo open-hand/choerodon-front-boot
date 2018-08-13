@@ -1,8 +1,6 @@
-'use strict';
+import path from 'path';
 
-const path = require('path');
-
-module.exports = function getRunCmdEnv() {
+export default function getRunCmdEnv() {
   const env = {};
   Object.keys(process.env).forEach((key) => {
     env[key] = process.env[key];
@@ -10,4 +8,4 @@ module.exports = function getRunCmdEnv() {
   const nodeModulesBinDir = path.join(__dirname, '../../node_modules/.bin');
   env.PATH = env.PATH ? `${nodeModulesBinDir}:${env.PATH}` : nodeModulesBinDir;
   return env;
-};
+}

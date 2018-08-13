@@ -4,7 +4,7 @@ const program = require('commander');
 const Choerodon = require('../lib/index');
 
 program
-  .option('-c, --config <path>', 'set config path. defaults to ./bisheng.config.js')
+  .option('-c, --config <path>', 'set config path. defaults to ./choerodon.config.js')
   .parse(process.argv);
 
 Choerodon.start(program);

@@ -15,6 +15,7 @@
     }
   },
   "plugins": [
+    "babel",
     "react"
   ],
   "extends": "airbnb",

@@ -3,7 +3,7 @@ import path from 'path';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import context from '../context';
+import context from '../bin/common/context';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getEnterPointsConfig from './getEnterPointsConfig';
 import getWebpackCommonConfig from './getWebpackCommonConfig';
@@ -17,7 +17,7 @@ function getFilePath(file) {
 
 export default function updateWebpackConfig(mode, env) {
   const webpackConfig = getWebpackCommonConfig(mode, env);
-  const { choerodonConfig, isBuild } = context;
+  const { choerodonConfig } = context;
   const {
     theme, output, root, enterPoints, server, fileServer, clientid, local,
     postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard,
@@ -30,11 +30,8 @@ export default function updateWebpackConfig(mode, env) {
   let defaultEnterPoints;
   /* eslint-disable no-param-reassign */
   webpackConfig.entry = {};
-  if (isBuild) {
-    webpackConfig.output.path = path.join(process.cwd(), output);
-  }
-  webpackConfig.output.publicPath = isBuild ? root : '/';
   if (mode === 'start') {
+    webpackConfig.output.publicPath = '/';
     webpackConfig.devtool = 'cheap-module-eval-source-map';
     webpackConfig.watch = true;
     styleLoadersConfig.forEach((config) => {
@@ -51,8 +48,9 @@ export default function updateWebpackConfig(mode, env) {
       VERSION: '本地',
       FILE_SERVER: fileServer,
     };
-  }
-  if (mode === 'build') {
+  } else if (mode === 'build') {
+    webpackConfig.output.publicPath = root;
+    webpackConfig.output.path = path.join(process.cwd(), output);
     styleLoadersConfig.forEach((config) => {
       webpackConfig.module.rules.push({
         test: config.test,
