@@ -10,7 +10,6 @@ import './style';
 @inject('AppState', 'HeaderStore', 'MenuStore')
 @observer
 class Header extends Component {
-
   componentDidMount() {
     const { AppState, HeaderStore, MenuStore } = this.props;
     MenuStore.loadMenuData({ type: 'site' }, false);

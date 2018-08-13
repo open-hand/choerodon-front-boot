@@ -9,6 +9,12 @@ const spinStyle = {
   paddingTop: 300,
 };
 
+const defaultChildren = (
+  <div style={spinStyle}>
+    <Spin size="large" />
+  </div>
+);
+
 const Page = ({ className, service, onAccess, ...props }) => {
   const classString = classNames('page-container', className);
   const page = <div {...props} className={classString} />;
@@ -16,7 +22,7 @@ const Page = ({ className, service, onAccess, ...props }) => {
     return (
       <Permission
         service={service}
-        defaultChildren={<div style={spinStyle}><Spin size="large" /></div>}
+        defaultChildren={defaultChildren}
         noAccessChildren={<NoAccess />}
         onAccess={onAccess}
       >

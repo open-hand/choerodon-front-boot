@@ -8,7 +8,9 @@ const DELAY = 300;
 
 class PermissionStore {
   @observable permissions = [];
+
   queue = [];
+
   delayId;
 
   @action
@@ -81,9 +83,8 @@ class PermissionStore {
 
   judgeServices({ service, type, organizationId, projectId }) {
     if (service && service.length) {
-      return service.map(serviceValue =>
-        this.judgeService(serviceValue, type, organizationId, projectId),
-      );
+      return service
+        .map(code => this.judgeService(code, type, organizationId, projectId));
     } else {
       return [];
     }

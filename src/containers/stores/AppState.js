@@ -11,9 +11,13 @@ function getDefaultLanguage() {
 
 class AppState {
   @observable menuType = null; // 一个菜单对象 {id:'',name:'',type:''}
+
   @observable expanded = false;
+
   @observable userInfo = {};
+
   @observable debugger = false; // 调试模式
+
   @observable isUser = false;
 
   @computed

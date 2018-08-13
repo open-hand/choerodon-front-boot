@@ -9,8 +9,11 @@ class DashboardStore {
     organization: {},
     project: {},
   };
+
   @observable editing = false;
+
   @observable loading = false;
+
   @observable dirty = false;
 
   @action
@@ -29,8 +32,8 @@ class DashboardStore {
     const group = this.dashboardGroup[level];
     Object.keys(group).forEach((key) => {
       const found = group[key] && group[key].find(
-        ({ dashboardCode, dashboardNamespace }) =>
-          dashboardCode === code && dashboardNamespace === namespace,
+        ({ dashboardCode, dashboardNamespace }) => dashboardCode === code
+          && dashboardNamespace === namespace,
       );
       if (found) {
         set(found, 'dashboardTitle', title);

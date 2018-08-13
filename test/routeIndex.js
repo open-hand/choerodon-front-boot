@@ -7,7 +7,7 @@ export default class RouteIndex extends Component {
     return (
       <Switch>
         <Route path="/" component={noaccess} />
-        <Route path={'*'} component={nomatch} />
+        <Route path="*" component={nomatch} />
       </Switch>
     );
   }

@@ -9,7 +9,6 @@ const prefixCls = 'header-logo';
 @inject('AppState', 'MenuStore')
 @observer
 export default class Logo extends Component {
-
   handleMenuClick = () => {
     const { AppState } = this.props;
     AppState.setMenuExpanded(!AppState.getMenuExpanded);
@@ -22,14 +21,14 @@ export default class Logo extends Component {
     return (
       <div className={`${prefixCls}-wrap`}>
         {
-          menus.length ?
-            <Button shape="circle" icon="menu" className={`${prefixCls}-menu-icon`} onClick={this.handleMenuClick} /> :
-            <div className={`${prefixCls}-icon`} />
+          menus.length
+            ? <Button shape="circle" icon="menu" className={`${prefixCls}-menu-icon`} onClick={this.handleMenuClick} />
+            : <div className={`${prefixCls}-icon`} />
         }
         {
-          pathname === '/' && !search ?
-            <div className={prefixCls} /> :
-            <Link to="/" className={prefixCls} />
+          pathname === '/' && !search
+            ? <div className={prefixCls} />
+            : <Link to="/" className={prefixCls} />
         }
       </div>
     );

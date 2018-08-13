@@ -5,6 +5,7 @@ import { Icon, Switch } from 'choerodon-ui';
 import addEventListener from 'choerodon-ui/lib/rc-components/util/Dom/addEventListener';
 import Animate from 'choerodon-ui/lib/rc-components/animate';
 import CardContent from './CardContent';
+import warning from '../../common/warning';
 
 let dragItem = null;
 let timeoutId = 0;
@@ -13,15 +14,18 @@ let timeoutId = 0;
 @inject('DashboardStore')
 @observer
 export default class Card extends Component {
-
   state = {
     dropSide: null,
   };
 
   relativeX = 0;
+
   relativeY = 0;
+
   height = null;
+
   onMouseMoveListener = null;
+
   onMouseUpListener = null;
 
   componentWillUnmount() {
@@ -134,17 +138,6 @@ export default class Card extends Component {
     }
   };
 
-  calcHeight = (node) => {
-    if (node) {
-      if (!this.props.data.visible) {
-        node.style.display = 'block';
-      }
-      const { height } = node.getBoundingClientRect();
-      node.style.height = `${this.height = height}px`;
-      node.style.display = '';
-    }
-  };
-
   render() {
     const { prefixCls, component, data, DashboardStore, dragData } = this.props;
     const { dropSide } = this.state;
@@ -169,9 +162,9 @@ export default class Card extends Component {
         onMouseUp: this.handleDrop,
       });
     }
-    if (!component) {
-      console.error(`Dashboard Component<${dashboardNamespace}/${dashboardCode}> is missing.`);
-    }
+
+    warning(!component, `Dashboard Component<${dashboardNamespace}/${dashboardCode}> is missing.`);
+
     return (
       <section {...wrapperProps}>
         <div className={`${prefixCls}-card-placeholder`}>
@@ -183,7 +176,9 @@ export default class Card extends Component {
             >
               <h1>
                 <Icon type={dashboardIcon} />
-                <span>{dashboardTitle}</span>
+                <span>
+                  {dashboardTitle}
+                </span>
                 {
                   editing && (
                     <Switch className={`${prefixCls}-card-switch`} checked={visible} onChange={this.handleVisibleChange} />

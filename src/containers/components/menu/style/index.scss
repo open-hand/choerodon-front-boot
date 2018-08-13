@@ -117,7 +117,7 @@
     .ant-menu {
       border-right: 0;
       &-sub {
-        background: #F6F6F6;
+        background: #f6f6f6;
       }
       &-submenu-active {
         background-color: transparent;
@@ -130,7 +130,7 @@
     .ant-menu-item-selected,
     .ant-menu-vertical .ant-menu-submenu-selected,
     &-popup .ant-menu-item-selected {
-      color: #3F51B5;
+      color: #3f51b5;
       background-color: rgba(140, 158, 255, 0.16) !important;
     }
     &-popup.ant-menu-submenu-popup {
