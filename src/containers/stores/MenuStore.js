@@ -27,13 +27,21 @@ class MenuStore {
     organization: {},
     project: {},
   };
+
   @observable collapsed = false;
+
   @observable activeMenu = null;
+
   @observable selected = null;
+
   @observable leftOpenKeys = [];
+
   @observable openKeys = [];
+
   @observable type = null;
+
   @observable isUser = null;
+
   @observable id = null;
 
   @action

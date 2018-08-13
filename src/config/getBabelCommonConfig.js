@@ -1,6 +1,5 @@
 import { tmpdir } from 'os';
-
-const context = require('../context');
+import context from '../bin/common/context';
 
 export default function babel(mode, env) {
   const { choerodonConfig } = context;

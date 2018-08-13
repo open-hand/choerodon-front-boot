@@ -2,10 +2,8 @@
  * Created by smilesoul on 2017/6/23.
  */
 import axios from 'axios';
-import Cookies from 'universal-cookie';
-import { authorize, getAccessToken, removeAccessToken } from '../../common';
-
-const cookies = new Cookies();
+import { authorize } from '../../common/authorize';
+import { getAccessToken, removeAccessToken } from '../../common/accessToken';
 
 // axios 配置
 axios.defaults.timeout = 30000;
@@ -29,7 +27,8 @@ axios.interceptors.request.use(
   (err) => {
     const error = err;
     return Promise.reject(error);
-  });
+  },
+);
 
 // http response 拦截器
 axios.interceptors.response.use(
@@ -41,35 +40,21 @@ axios.interceptors.response.use(
     return Promise.resolve(response.data);
   },
   (error) => {
-    const response = error.response;
+    const { response } = error;
     if (response) {
-      const status = response.status;
+      const { status } = response;
       switch (status) {
         case 401: {
           removeAccessToken();
           authorize();
           break;
         }
-        // case 403: {
-        //   const errorData = response.data;
-        //   const content = errorData.error_description ||
-        // errorData.error || getMessage('未知错误', 'unknown error');
-        //   prompt('error', content);
-        //   break;
-        // }
-        // case 404: {
-        //   prompt('error', 'Not Found');
-        //   break;
-        // }
-        // case 500: {
-        //   prompt('error', getMessage('服务器内部错误', 'Server Internal Error'));
-        //   break;
-        // }
         default:
           break;
       }
     }
     return Promise.reject(error);
-  });
+  },
+);
 
 export default axios;

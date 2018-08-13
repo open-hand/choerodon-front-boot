@@ -14,18 +14,18 @@
   }
 
   .page-body {
-    flex: 1 1 0px;
+    flex: 1 1 0;
     display: flex;
 
     .content-wrapper {
       display: flex;
-      flex: 1 1 0px;
+      flex: 1 1 0;
       background-color: white;
       position: relative;
     }
 
     .content {
-      flex: 1 1 0px;
+      flex: 1 1 0;
       order: 2;
       flex-direction: column;
       background-color: white;

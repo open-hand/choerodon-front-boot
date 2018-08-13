@@ -10,7 +10,6 @@ import { getMessage, historyPushMenu, logout } from '../../common';
 @inject('AppState', 'MenuStore', 'HeaderStore')
 @observer
 export default class UserPreferences extends Component {
-
   componentDidMount() {
     const { history } = this.props;
     if (window.location.href.split('#')[1].split('&')[1] === 'token_type=bearer') {
@@ -20,7 +19,7 @@ export default class UserPreferences extends Component {
 
   preferences = () => {
     const { MenuStore, history, HeaderStore } = this.props;
-    MenuStore.loadMenuData({ type: 'site' }, true).then(menus => {
+    MenuStore.loadMenuData({ type: 'site' }, true).then((menus) => {
       if (menus.length) {
         const { route, domain } = findFirstLeafMenu(menus[0]);
         historyPushMenu(history, `${route}?type=site`, domain);
@@ -55,11 +54,15 @@ export default class UserPreferences extends Component {
             funcType="raised"
             type="primary"
             onClick={this.preferences.bind(this)}
-          >{getMessage('个人中心', 'user preferences')}</Button>
+          >
+            {getMessage('个人中心', 'user preferences')}
+          </Button>
           <Button
             funcType="raised"
             onClick={() => logout()}
-          >{getMessage('退出登录', 'sign Out')}</Button>
+          >
+            {getMessage('退出登录', 'sign Out')}
+          </Button>
         </div>
       </div>
     );

@@ -6,12 +6,12 @@ import { createBrowserHistory } from 'history';
 import { configure } from 'mobx';
 import { observer, Provider } from 'mobx-react';
 import queryString from 'query-string';
-import stores from '../lib/containers/stores';
+import stores from '../lib/containers/stores/index';
 import AppState from '../lib/containers/stores/AppState';
 import asyncRouter from '../lib/containers/components/util/asyncRouter';
 import asyncLocaleProvider from '../lib/containers/components/util/asyncLocaleProvider';
-import { authorize, getAccessToken, setAccessToken } from '../lib/containers/common';
-import '../lib/containers/components/style';
+import { authorize, getAccessToken, setAccessToken } from '../lib/containers/common/index';
+import '../lib/containers/components/style/index';
 
 async function auth() {
   const { access_token, token_type, expires_in } = queryString.parse(window.location.hash);

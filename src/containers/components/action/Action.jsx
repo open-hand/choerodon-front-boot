@@ -1,6 +1,6 @@
 import React, { cloneElement, Component } from 'react';
 import { observer } from 'mobx-react';
-import { Button, Dropdown, Menu } from 'choerodon-ui';
+import { Button, Dropdown, Icon, Menu } from 'choerodon-ui';
 import Permission from '../permission';
 
 const { Item } = Menu;
@@ -17,9 +17,7 @@ class Action extends Component {
   };
 
   getAllService(data) {
-    return data.reduce((list, { service = [] }) => {
-      return list.concat(service);
-    }, []);
+    return data.reduce((list, { service = [] }) => list.concat(service), []);
   }
 
   renderMenu(data) {
@@ -28,7 +26,7 @@ class Action extends Component {
         {data.map(item => this.renderMenuItem(item))}
       </Menu>
     );
-  };
+  }
 
   renderMenuItem({ service, text, action, icon }) {
     const item = (

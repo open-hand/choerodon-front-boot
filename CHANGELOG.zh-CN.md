@@ -8,6 +8,7 @@
 
 - 部分组件的状态迁移到Store中
 - Action控件传递props给内部的Button控件
+- Permission和Page控件增加onAccess钩子
 
 ### 修复
 

@@ -8,7 +8,9 @@ const DELAY = 300;
 
 class PermissionStore {
   @observable permissions = [];
+
   queue = [];
+
   delayId;
 
   @action
@@ -24,17 +26,18 @@ class PermissionStore {
 
   access(props) {
     let status = 'success';
-    if (this.judgeServices(props).every(item => {
-        const { key, approve } = this.findPermission(item);
-        if (approve) {
-          status = 'success';
-          return false;
-        }
-        if (!key) {
-          status = 'pending';
-        }
-        return true;
-      }) && status !== 'pending') {
+    const allFailure = this.judgeServices(props).every((item) => {
+      const { key, approve } = this.findPermission(item);
+      if (approve) {
+        status = 'success';
+        return false;
+      }
+      if (!key) {
+        status = 'pending';
+      }
+      return true;
+    });
+    if (allFailure && status !== 'pending') {
       status = 'failure';
     }
     return status;
@@ -80,9 +83,8 @@ class PermissionStore {
 
   judgeServices({ service, type, organizationId, projectId }) {
     if (service && service.length) {
-      return service.map(serviceValue =>
-        this.judgeService(serviceValue, type, organizationId, projectId),
-      );
+      return service
+        .map(code => this.judgeService(code, type, organizationId, projectId));
     } else {
       return [];
     }

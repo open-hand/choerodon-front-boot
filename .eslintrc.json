@@ -15,10 +15,41 @@
     }
   },
   "plugins": [
+    "babel",
     "react"
   ],
   "extends": "airbnb",
   "rules": {
+    "class-methods-use-this": "off",
+    "import/extensions": "off",
+    "import/no-duplicates": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
+    "import/no-unresolved": "off",
+    "jsx-a11y/anchor-has-content": "off",
+    "jsx-a11y/anchor-is-valid": [
+      "warn",
+      {
+        "aspects": [
+          "invalidHref"
+        ]
+      }
+    ],
+    "jsx-a11y/href-no-hash": "off",
+    "jsx-a11y/interactive-supports-focus": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "linebreak-style": "off",
+    "no-console": "error",
+    "no-control-regex": "off",
+    "no-debugger": "off",
+    "no-else-return": "off",
+    "no-param-reassign": "off",
+    "no-trailing-spaces": "off",
+    "no-unused-vars": "off",
+    "object-curly-newline": "off",
+    "react/destructuring-assignment": "off",
+    "react/jsx-filename-extension": "off",
     "react/jsx-no-bind": [
       "error",
       {
@@ -32,35 +63,9 @@
         "ignorePureComponents": true
       }
     ],
-    "no-control-regex": "off",
-    "no-param-reassign": "off",
-    "import/no-duplicates": "off",
-    "import/no-named-as-default": "off",
-    "import/no-named-as-default-member": "off",
-    "jsx-a11y/interactive-supports-focus": "off",
-    "no-trailing-spaces": "off",
-    "class-methods-use-this": "off",
-    "import/no-extraneous-dependencies": "off",
-    "no-else-return": "off",
-    "linebreak-style": "off",
-    "import/extensions": "off",
-    "import/no-unresolved": "off",
     "react/prop-types": "off",
-    "react/jsx-filename-extension": "off",
-    "jsx-a11y/anchor-has-content": "off",
-    "jsx-a11y/href-no-hash": "off",
     "react/require-default-props": "off",
-    "no-unused-vars": "off",
-    "no-console": "error",
-    "no-debugger": "off",
-    "jsx-a11y/anchor-is-valid": [
-      "warn",
-      {
-        "aspects": [
-          "invalidHref"
-        ]
-      }
-    ]
+    "react/sort-comp": "off"
   },
   "globals": {
     "Choerodon": true
