@@ -1,13 +1,15 @@
 import path from 'path';
 import mkdirp from 'mkdirp';
+import warning from '../../common/warning';
 
 let isInitialized = false;
-exports.initialize = function (context) {
+exports.initialize = function initialize(context) {
   if (isInitialized) {
-    console.error('`context` had been initialized');
+    warning(true, '`context` had been initialized');
     return;
   }
-  const tmpDirPath = context.tmpDirPath = path.join(__dirname, '../../../tmp');
+  const tmpDirPath = path.join(__dirname, '../../../tmp');
+  context.tmpDirPath = tmpDirPath;
   mkdirp.sync(tmpDirPath);
   Object.assign(exports, context);
   isInitialized = true;

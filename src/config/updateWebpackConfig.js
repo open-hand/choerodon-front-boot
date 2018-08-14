@@ -28,7 +28,6 @@ export default function updateWebpackConfig(mode, env) {
   });
 
   let defaultEnterPoints;
-  /* eslint-disable no-param-reassign */
   webpackConfig.entry = {};
   if (mode === 'start') {
     webpackConfig.output.publicPath = '/';
@@ -66,7 +65,7 @@ export default function updateWebpackConfig(mode, env) {
     NODE_ENV: env,
     USE_DASHBOARD: !!dashboard,
     ...defaultEnterPoints,
-    ...enterPoints(mode, env)
+    ...enterPoints(mode, env),
   };
   const defines = Object.keys(mergedEnterPoints).reduce((obj, key) => {
     obj[`process.env.${key}`] = JSON.stringify(process.env[key] || mergedEnterPoints[key]);

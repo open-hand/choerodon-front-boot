@@ -1,5 +1,3 @@
-/*eslint-disable*/
-import React from 'react';
 import { message } from 'choerodon-ui';
 import url from 'url';
 import { authorize, logout } from './authorize';
@@ -8,7 +6,7 @@ import { getCookie, removeCookie, setCookie } from './cookie';
 import { ACCESS_TOKEN, AUTH_URL, FILE_SERVER, LOCAL, USE_DASHBOARD } from './constants';
 import { getMessage, intl } from './intl';
 import checkPassword from './checkPassword';
-import warning from './warning';
+import warning from '../../common/warning';
 
 // 提示错误信息
 function prompt(content, type = 'info', duration, placement = 'leftBottom', onClose) {
@@ -20,9 +18,9 @@ function prompt(content, type = 'info', duration, placement = 'leftBottom', onCl
 
 // 处理错误相应
 function handleResponseError(error) {
-  const response = error.response;
+  const { response } = error;
   if (response) {
-    const status = response.status;
+    const { status } = response;
     switch (status) {
       case 400: {
         const mess = response.data.message;

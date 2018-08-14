@@ -5,17 +5,26 @@ import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import chalk from 'chalk';
-
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getTSCommonConfig from './getTSCommonConfig';
 
-/* eslint quotes:0 */
+const jsFileName = '[name].[hash:8].js';
+const jsChunkFileName = 'chunks/[name].[chunkhash:5].chunk.js';
+const cssFileName = '[name].[contenthash:8].css';
+const assetFileName = 'assets/[name].[hash:8].[ext]';
+
+function getAssetLoader(mimetype, limit = 10000) {
+  return {
+    loader: 'url-loader',
+    options: {
+      limit,
+      mimetype,
+      name: assetFileName,
+    },
+  };
+}
 
 export default function getWebpackCommonConfig(mode, env) {
-  const jsFileName = '[name].[hash:8].js';
-  const jsChunkFileName = 'chunks/[name].[chunkhash:5].chunk.js';
-  const cssFileName = '[name].[contenthash:8].css';
-
   const babelOptions = getBabelCommonConfig(mode, env);
   const tsOptions = getTSCommonConfig();
 
@@ -37,7 +46,9 @@ export default function getWebpackCommonConfig(mode, env) {
         stream.write(`📦  ${chalk.magenta(msg)} (${chalk.magenta(addInfo)})`);
         stream.clearLine(1);
       } else if (percentage === 1) {
+        /* eslint-disable */
         console.log(chalk.green('\nwebpack: bundle build is now finished.'));
+        /* eslint-enable */
       }
     }),
     new FriendlyErrorsWebpackPlugin(),
@@ -103,27 +114,27 @@ export default function getWebpackCommonConfig(mode, env) {
         },
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          loader: 'url-loader?limit=10000&minetype=application/font-woff',
+          use: getAssetLoader('application/font-woff'),
         },
         {
           test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          loader: 'url-loader?limit=10000&minetype=application/font-woff',
+          use: getAssetLoader('application/font-woff'),
         },
         {
           test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          loader: 'url-loader?limit=10000&minetype=application/octet-stream',
+          use: getAssetLoader('application/octet-stream'),
         },
         {
           test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-          loader: 'url-loader?limit=10000&minetype=application/vnd.ms-fontobject',
+          use: getAssetLoader('application/vnd.ms-fontobject'),
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          loader: 'url-loader?limit=10000&minetype=image/svg+xml',
+          use: getAssetLoader('image/svg+xml'),
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
-          loader: 'url-loader?limit=10000',
+          use: getAssetLoader(),
         },
         {
           test: /\.json$/,

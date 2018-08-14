@@ -1,4 +1,3 @@
-/*eslint-disable*/
 import React, { Component } from 'react';
 import { Icon, Menu, Tooltip } from 'choerodon-ui';
 import { Link, withRouter } from 'react-router-dom';
@@ -14,7 +13,6 @@ const { SubMenu, Item } = Menu;
 @inject('AppState', 'MenuStore')
 @observer
 export default class CommonMenu extends Component {
-
   savedOpenKeys = [];
 
   componentWillMount() {
@@ -31,7 +29,7 @@ export default class CommonMenu extends Component {
     const { pathname } = location;
     const { type, id } = AppState.currentMenuType;
     if (type) {
-      MenuStore.loadMenuData().then(menus => {
+      MenuStore.loadMenuData().then((menus) => {
         const isUser = AppState.isTypeUser;
         if (pathname === '/') {
           MenuStore.setActiveMenu(null);
@@ -46,10 +44,10 @@ export default class CommonMenu extends Component {
               const nCode = parents.length && parents.reverse()[0].code;
               const oCode = selected && selected.code;
               if (
-                oCode !== nCode ||
-                currentType !== type ||
-                isUser !== currentIsUser ||
-                currentId !== id
+                oCode !== nCode
+                || currentType !== type
+                || isUser !== currentIsUser
+                || currentId !== id
               ) {
                 MenuStore.setOpenKeys(collapsed ? [] : [menu, ...parents].map(({ code }) => code));
                 this.savedOpenKeys = [menu, ...parents].map(({ code }) => code);
@@ -96,7 +94,7 @@ export default class CommonMenu extends Component {
         <SubMenu
           key={data.code}
           className="common-menu-right-popup"
-          title={
+          title={(
             <span
               style={{
                 marginLeft: parseInt(num, 10) * 20,
@@ -107,7 +105,7 @@ export default class CommonMenu extends Component {
                 {data.name}
               </span>
             </span>
-          }
+          )}
         >
           {data.subMenus.map(
             two => this.getMenuSingle(two, parseInt(num, 10) + 1),
@@ -137,7 +135,7 @@ export default class CommonMenu extends Component {
     switch (type) {
       case 'site':
         if (AppState.isTypeUser) {
-          search = `?type=site`;
+          search = '?type=site';
         }
         break;
       case 'organization':
@@ -172,7 +170,7 @@ export default class CommonMenu extends Component {
     const child = MenuStore.getMenuData;
     const selected = this.findSelectedMenuByCode(child, e.key);
     const paths = e.keyPath && e.keyPath.reverse()[0]; // 去掉boot的
-    const selectedRoot = paths ? child.find((item) => item.code === paths) : selected;
+    const selectedRoot = paths ? child.find(({ code }) => code === paths) : selected;
     if (selected) {
       const { history } = this.props;
       MenuStore.treeReduce(selectedRoot, (menu, parents, index) => {
@@ -280,21 +278,16 @@ export default class CommonMenu extends Component {
           onTitleClick={this.handleClick}
           key={item.code}
           className="common-menu-right-popup"
-          title={
-            <span>
-              {icon}
-              {text}
-            </span>
-          }
+          title={<span>{icon}{text}</span>}
         >
-          {item.subMenus.map(two => {
-            return (
+          {
+            item.subMenus.map(two => (
               <Item key={two.code}>
-                <Icon type={two.icon} style={{ marginLeft: '20px' }} />
+                <Icon type={two.icon} style={{ marginLeft: 20 }} />
                 <span>{two.name}</span>
               </Item>
-            );
-          })}
+            ))
+          }
         </SubMenu>
       );
     }
