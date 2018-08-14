@@ -10,20 +10,19 @@ function createRoute(path, component) {
 }
 
 const Home = asyncRouter(
-  dashboard ?
-    () => import('../lib/containers/components/dashboard') :
-    () => import('../lib/containers/components/home'),
+  dashboard
+    ? () => import('../lib/containers/components/dashboard')
+    : () => import('../lib/containers/components/home'),
   dashboard && Dashboard,
 );
 
 export default class AutoRouter extends Component {
-
   render() {
     return (
       <Switch>
-        <Route exact path='/' component={Home} />
+        <Route exact path="/" component={Home} />
         {'{{ routes }}'}
-        <Route path={'*'} component={nomatch} />
+        <Route path="*" component={nomatch} />
       </Switch>
     );
   }

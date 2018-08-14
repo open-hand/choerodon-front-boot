@@ -5,7 +5,7 @@ import { Icon, Switch } from 'choerodon-ui';
 import addEventListener from 'choerodon-ui/lib/rc-components/util/Dom/addEventListener';
 import Animate from 'choerodon-ui/lib/rc-components/animate';
 import CardContent from './CardContent';
-import warning from '../../common/warning';
+import warning from '../../../common/warning';
 
 let dragItem = null;
 let timeoutId = 0;

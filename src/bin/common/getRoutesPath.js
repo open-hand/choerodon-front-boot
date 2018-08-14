@@ -17,7 +17,7 @@ export default function getRoutesPath(packageInfo, configEntryName, dashboardPat
   fs.writeFileSync(
     routesPath,
     nunjucks.renderString(routesTemplate, {
-      routes: Object.keys(configRoutes).map((key) => (
+      routes: Object.keys(configRoutes).map(key => (
         `createRoute("/${key}", () => import("${escapeWinPath(path.join(process.cwd(), configRoutes[key]))}"))`
       )).join(',\n'),
       dashboardPath: escapeWinPath(dashboardPath),

@@ -55,4 +55,4 @@ export default function start(program) {
     const mainPackage = require(mainPackagePath);
     run(mainPackage);
   }
-};
+}

@@ -4,14 +4,14 @@ import context from '../bin/common/context';
 export default function babel(mode, env) {
   const { choerodonConfig } = context;
   return choerodonConfig.babelConfig({
-    'presets': [
+    presets: [
       'react',
       [
         'es2015',
       ],
       'stage-1',
     ],
-    'plugins': [
+    plugins: [
       'transform-async-to-generator',
       'transform-decorators-legacy',
       'transform-class-properties',
@@ -20,8 +20,8 @@ export default function babel(mode, env) {
       [
         'import',
         {
-          'libraryName': 'choerodon-ui',
-          'style': true,
+          libraryName: 'choerodon-ui',
+          style: true,
         },
       ],
     ],

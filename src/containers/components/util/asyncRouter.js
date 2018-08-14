@@ -1,6 +1,4 @@
-/*eslint-disable*/
-import React, { Component, PropTypes } from 'react';
-import { isArray } from 'lodash';
+import React, { Component } from 'react';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import esModule from './esModule';
@@ -12,16 +10,15 @@ import 'rxjs/add/observable/fromPromise';
 
 export default function asyncRouter(getComponent, getInjects) {
   return class AsyncRoute extends Component {
-
     state = {
-      Component: null,
+      Cmp: null,
       injects: {},
     };
 
-    _componentWillUnmountSubject = new Subject();
+    componentWillUnmountSubject = new Subject();
 
     componentWillMount() {
-      const subject = this._componentWillUnmountSubject;
+      const subject = this.componentWillUnmountSubject;
       const streams = [];
       if (getComponent) {
         streams.push(
@@ -35,7 +32,7 @@ export default function asyncRouter(getComponent, getInjects) {
           streams.push(
             Observable.fromPromise(getInjects())
               .map(esModule)
-              .map(inject => {
+              .map((inject) => {
                 if (inject.getStoreName) {
                   return { [inject.getStoreName()]: inject };
                 }
@@ -44,7 +41,7 @@ export default function asyncRouter(getComponent, getInjects) {
               .takeUntil(subject),
           );
         } else if (typeof getInjects === 'object') {
-          Object.keys(getInjects).forEach(key => {
+          Object.keys(getInjects).forEach((key) => {
             streams.push(
               Observable.fromPromise(getInjects[key]())
                 .map(esModule)
@@ -52,21 +49,20 @@ export default function asyncRouter(getComponent, getInjects) {
                 .takeUntil(subject),
             );
           });
-
         }
       }
       if (streams.length > 0) {
         Observable.zip(...streams)
           .takeUntil(subject)
-          .subscribe(([Component, ...injects]) => {
-            this.setState({ Component, injects });
+          .subscribe(([Cmp, ...injects]) => {
+            this.setState({ Cmp, injects });
             subject.unsubscribe();
           });
       }
     }
 
     componentWillUnmount() {
-      const subject = this._componentWillUnmountSubject;
+      const subject = this.componentWillUnmountSubject;
       if (subject && !subject.closed) {
         subject.next();
         subject.unsubscribe();
@@ -74,9 +70,9 @@ export default function asyncRouter(getComponent, getInjects) {
     }
 
     render() {
-      const { Component, injects } = this.state;
+      const { Cmp, injects } = this.state;
 
-      return Component && <Component {...Object.assign({}, this.props, ...injects)} />;
+      return Cmp && <Cmp {...Object.assign({}, this.props, ...injects)} />;
     }
   };
 }

@@ -7,6 +7,7 @@ import generateEntryFile from './common/generateEntryFile';
 import getPackagePath from './common/getPackagePath';
 import installSubmoduleDependencies from './common/installSubmoduleDependencies';
 import initialize from './common/initialize';
+import warning from '../common/warning';
 
 function dist(mainPackage, env) {
   const { choerodonConfig: { entryName } } = context;
@@ -22,12 +23,9 @@ function dist(mainPackage, env) {
 
   webpack(webpackConfig, (err, stats) => {
     if (err !== null) {
-      return console.error(err);
-    }
-
-    if (stats.hasErrors()) {
-      console.log(stats.toString('errors-only'));
-      return;
+      // warning(true, err);
+    } else if (stats.hasErrors()) {
+      // warning(true, stats.toString('errors-only'));
     }
   });
 }

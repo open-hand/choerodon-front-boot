@@ -1,4 +1,3 @@
-/*eslint-disable*/
 import React, { Component } from 'react';
 import { Button, Icon, Input, Modal, Select, Table, Tabs } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
@@ -8,7 +7,8 @@ import { toJS } from 'mobx';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 import { dashboard, historyPushMenu } from '../../common';
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
+const { Option } = Select;
 
 @withRouter
 @inject('AppState', 'HeaderStore', 'MenuStore')
@@ -36,17 +36,20 @@ export default class MenuType extends Component {
       handlesearch: false,
     });
   };
+
   // 确认模态框
   handleOk = () => {
     const { HeaderStore } = this.props;
     HeaderStore.setMenuTypeVisible(false);
     this.selectState(HeaderStore.getSelected);
   };
+
   // 取消模态框
   handleCancel = () => {
     this.props.HeaderStore.setMenuTypeVisible(false);
   };
-  //select 选择
+
+  // select 选择
   handleChange = (value) => {
     this.setState({
       filterOrganization: value,
@@ -59,31 +62,36 @@ export default class MenuType extends Component {
       activeKey,
     });
   };
-  //search 搜索
+
+  // search 搜索
   searchInput = (e) => {
     this.setState({
       searchValue: e.target.value,
     });
   };
-  searchChange = (e) => {
+
+  searchChange = () => {
+    const { searchValue } = this.state;
     this.setState({
-      handlesearch: !!this.state.searchValue,
+      handlesearch: !!searchValue,
     });
   };
 
-  //选择组织和项目数据
+  // 选择组织和项目数据
   selectState = (value) => {
     const { AppState, HeaderStore, MenuStore, history } = this.props;
     const { id, name, type, organizationId } = value;
     HeaderStore.setRecentItem(value);
-    MenuStore.loadMenuData({ type, id }, false).then(menus => {
-      let route, path, domain;
+    MenuStore.loadMenuData({ type, id }, false).then((menus) => {
+      let route;
+      let path;
+      let domain;
       if (dashboard) {
         route = '/';
       } else if (menus.length) {
-        const menu = findFirstLeafMenu(menus[0]);
-        route = menu.route;
-        domain = menu.domain;
+        const { route: menuRoute, domain: menuDomain } = findFirstLeafMenu(menus[0]);
+        route = menuRoute;
+        domain = menuDomain;
       }
       if (route) {
         path = `${route}?type=${type}&id=${id}&name=${name}`;
@@ -141,8 +149,11 @@ export default class MenuType extends Component {
         dataIndex: 'name',
         key: 'name',
         render: (text, record) => (
-          record.into === false ?
-            <span className="menu-type-disabled">{text}</span> :
+          record.into === false ? (
+            <span className="menu-type-disabled">
+              {text}
+            </span>
+          ) : (
             <a
               role="none"
               onClick={this.selectState.bind(this, record)}
@@ -150,6 +161,7 @@ export default class MenuType extends Component {
               <Icon type={record.type === 'project' ? 'project' : 'domain'} />
               {text}
             </a>
+          )
         ),
       }, {
         title: '编码',
@@ -158,7 +170,7 @@ export default class MenuType extends Component {
         render: (text, record) => {
           if (record.into === false) {
             return (
-              <span className='menu-type-disabled'>
+              <span className="menu-type-disabled">
                 {text}
               </span>
             );
@@ -172,7 +184,7 @@ export default class MenuType extends Component {
         render: (text, record) => {
           if (record.into === false) {
             return (
-              <span className='menu-type-disabled'>
+              <span className="menu-type-disabled">
                 {text === 'organization' ? '组织' : '项目'}
               </span>
             );
@@ -244,11 +256,21 @@ export default class MenuType extends Component {
   getOptionList() {
     const { HeaderStore } = this.props;
     const org = toJS(HeaderStore.getOrgData);
-    return org && org.length > 0 ? [<Option key="total" value="total">所有组织</Option>].concat(
+    return org && org.length > 0 ? [
+      <Option key="total" value="total">
+        所有组织
+      </Option>,
+    ].concat(
       org.map(orgOption => (
-        <Option key={orgOption.id} value={orgOption.id}>{orgOption.name}</Option>
+        <Option key={orgOption.id} value={orgOption.id}>
+          {orgOption.name}
+        </Option>
       )),
-    ) : <Option value="total">无组织</Option>;
+    ) : (
+      <Option value="total">
+        无组织
+      </Option>
+    );
   }
 
   getCurrentData() {
@@ -259,7 +281,7 @@ export default class MenuType extends Component {
     const proData = toJS(HeaderStore.getProData);
     if (orgData && proData) {
       return orgData.filter((item) => {
-        const id = item.id;
+        const { id } = item;
         if (needFilterOrganization && Number(id) !== Number(filterOrganization)) {
           return false;
         }
@@ -275,7 +297,7 @@ export default class MenuType extends Component {
         if (!item.children.length) {
           delete item.children;
         }
-        if (!item.children && ((handlesearch && !this.hitSearch(item, searchValue) ) || item.into === false)) {
+        if (!item.children && ((handlesearch && !this.hitSearch(item, searchValue)) || item.into === false)) {
           return false;
         }
         return true;
@@ -292,7 +314,9 @@ export default class MenuType extends Component {
     const { menuTypeVisible: visible, getRecentItem: recentItem } = HeaderStore;
     const tabSelect = activeKey || (filterOrganization || !recentItem || recentItem.length === 0 ? 'total' : 'recent');
     const modalFooter = [
-      <Button key="back" onClick={this.handleCancel}>取消</Button>,
+      <Button key="back" onClick={this.handleCancel}>
+        取消
+      </Button>,
       <Button key="submit" type="primary" disabled={!HeaderStore.getSelected} onClick={this.handleOk}>
         打开
       </Button>,
@@ -319,7 +343,9 @@ export default class MenuType extends Component {
         />
       );
       content = (
-        <div className="table-wrapper">{this.renderTable(currentData, true)}</div>
+        <div className="table-wrapper">
+          {this.renderTable(currentData, true)}
+        </div>
       );
       searchClass = 'has-search';
     } else {
@@ -367,7 +393,8 @@ export default class MenuType extends Component {
               value={searchValue}
               onChange={this.searchInput}
               onBlur={this.searchChange}
-              onPressEnter={this.searchChange} />
+              onPressEnter={this.searchChange}
+            />
           </section>
           {content}
         </Modal>

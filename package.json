@@ -86,9 +86,6 @@
     "rxjs": "^5.5.6",
     "sass-loader": "^6.0.6",
     "style-loader": "0.13.1",
-    "stylelint": "^8.4.0",
-    "stylelint-config-standard": "^18.0.0",
-    "stylelint-webpack-plugin": "^0.10.1",
     "ts-loader": "^2.0.2",
     "ts-node": "^4.0.2",
     "tslint": "^5.9.1",
@@ -115,18 +112,18 @@
     "prebuild": "npm run compile",
     "build": "node ./bin/choerodon-front-boot build --config ./choerodon.config.js",
     "lint": "npm run lint:es && npm run lint:style",
-    "lint:es": "eslint src/containers/**/*.{js,jsx} test ./choerodon.config.js",
+    "lint:es": "eslint src/**/*.{js,jsx} test ./choerodon.config.js",
     "lint:style": "stylelint src/**/*.scss --syntax scss",
     "lint-staged": "lint-staged",
     "lint-staged:es": "eslint test ./choerodon.config.js",
     "clean": "rimraf lib",
     "watch": "gulp watch",
     "compile": "gulp compile",
-    "prepublish": "npm run compile",
+    "prepublish": "npm run lint && npm run compile",
     "postpublish": "npm run clean"
   },
   "lint-staged": {
-    "src/containers/**/*.{js,jsx}": [
+    "src/**/*.{js,jsx}": [
       "npm run lint-staged:es"
     ],
     "src/**/*.scss": "stylelint --syntax scss"

@@ -16,8 +16,8 @@ function getDashBoardComponents(namespace, dir) {
 function getDashBoards(dashboard) {
   const data = [];
   if (dashboard) {
-    Object.keys(dashboard).forEach(key => {
-      [].concat(dashboard[key]).forEach(dir => {
+    Object.keys(dashboard).forEach((key) => {
+      [].concat(dashboard[key]).forEach((dir) => {
         data.push(...getDashBoardComponents(key, dir));
       });
     });
