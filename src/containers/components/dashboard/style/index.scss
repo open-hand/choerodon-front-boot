@@ -63,6 +63,10 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
     border-radius: 2px;
     transition: all .3s;
 
+    &:hover {
+      box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.20), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+
     &-title {
       padding: 20px 16px;
       cursor: move;
@@ -164,8 +168,13 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
   }
 
   &-navbar {
+    position: relative;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
     padding: 13px 16px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
 
     > .icon:first-child {
       font-size: 24px;
@@ -177,6 +186,15 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
 
     a {
       color: #000;
+      &:before {
+        position: absolute;
+        background-color: transparent;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        content: '';
+      }
     }
   }
 }
