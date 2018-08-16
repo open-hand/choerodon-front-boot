@@ -41,7 +41,7 @@ export default class CommonMenu extends Component {
         } else {
           MenuStore.treeReduce({ subMenus: menus }, (menu, parents) => {
             if (menu.route === pathname || pathname.indexOf(`${menu.route}/`) === 0) {
-              const nCode = parents.length && parents.reverse()[0].code;
+              const nCode = parents.length && parents[parents.length - 1].code;
               const oCode = selected && selected.code;
               if (
                 oCode !== nCode
