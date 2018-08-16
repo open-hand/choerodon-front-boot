@@ -5,20 +5,22 @@ import { Icon, Switch } from 'choerodon-ui';
 import addEventListener from 'choerodon-ui/lib/rc-components/util/Dom/addEventListener';
 import Animate from 'choerodon-ui/lib/rc-components/animate';
 import CardContent from './CardContent';
+import warning from '../../../common/warning';
 
 let dragItem = null;
-let relativeX = 0;
-let relativeY = 0;
 let timeoutId = 0;
 
 
 @inject('DashboardStore')
 @observer
 export default class Card extends Component {
-
   state = {
     dropSide: null,
   };
+
+  relativeX = 0;
+
+  relativeY = 0;
 
   height = null;
 
@@ -46,6 +48,18 @@ export default class Card extends Component {
     DashboardStore.changeVisible(data, checked);
   };
 
+  handleAnimateEnd = (key, flag) => {
+    if (dragItem) {
+      if (!flag) {
+        const { top } = dragItem.parentNode.getBoundingClientRect();
+        this.relativeY += top;
+      } else {
+        dragItem.style.zIndex = null;
+        dragItem = null;
+      }
+    }
+  };
+
   handleDragStart = ({ currentTarget, clientX, clientY }) => {
     timeoutId = setTimeout(() => {
       timeoutId = 0;
@@ -54,8 +68,9 @@ export default class Card extends Component {
         onDragStart(data);
       }
       dragItem = currentTarget.parentNode;
-      relativeX = clientX;
-      relativeY = clientY;
+      const { top } = dragItem.parentNode.getBoundingClientRect();
+      this.relativeX = clientX;
+      this.relativeY = clientY - top;
       this.onMouseMoveListener = addEventListener(document, 'mousemove', this.handleDragMove);
     }, 250);
     this.onMouseUpListener = addEventListener(document, 'mouseup', this.handleDragEnd);
@@ -63,8 +78,8 @@ export default class Card extends Component {
 
   handleDragMove = ({ clientX, clientY }) => {
     Object.assign(dragItem.style, {
-      left: `${clientX - relativeX}px`,
-      top: `${clientY - relativeY}px`,
+      left: `${clientX - this.relativeX}px`,
+      top: `${clientY - this.relativeY}px`,
     });
   };
 
@@ -86,12 +101,6 @@ export default class Card extends Component {
         top: 0,
         zIndex: 1,
       });
-      setTimeout(() => {
-        if (dragItem) {
-          dragItem.style.zIndex = null;
-          dragItem = null;
-        }
-      }, 300);
       const { onDragEnd } = this.props;
       if (typeof onDragEnd === 'function') {
         onDragEnd();
@@ -129,17 +138,6 @@ export default class Card extends Component {
     }
   };
 
-  calcHeight = (node) => {
-    if (node) {
-      if (!this.props.data.visible) {
-        node.style.display = 'block';
-      }
-      const { height } = node.getBoundingClientRect();
-      node.style.height = `${this.height = height}px`;
-      node.style.display = '';
-    }
-  };
-
   render() {
     const { prefixCls, component, data, DashboardStore, dragData } = this.props;
     const { dropSide } = this.state;
@@ -164,9 +162,9 @@ export default class Card extends Component {
         onMouseUp: this.handleDrop,
       });
     }
-    if (!component) {
-      console.error(`Dashboard Component<${dashboardNamespace}/${dashboardCode}> is missing.`);
-    }
+
+    warning(!component, `Dashboard Component<${dashboardNamespace}/${dashboardCode}> is missing.`);
+
     return (
       <section {...wrapperProps}>
         <div className={`${prefixCls}-card-placeholder`}>
@@ -178,7 +176,9 @@ export default class Card extends Component {
             >
               <h1>
                 <Icon type={dashboardIcon} />
-                <span>{dashboardTitle}</span>
+                <span>
+                  {dashboardTitle}
+                </span>
                 {
                   editing && (
                     <Switch className={`${prefixCls}-card-switch`} checked={visible} onChange={this.handleVisibleChange} />
@@ -190,6 +190,7 @@ export default class Card extends Component {
               component=""
               transitionName="slide-up"
               showProp="visible"
+              onEnd={this.handleAnimateEnd}
             >
               <CardContent visible={!dragData} key="content" prefixCls={prefixCls}>
                 {component && createElement(component)}

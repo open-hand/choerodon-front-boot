@@ -3,28 +3,10 @@
   height: 8px;
 }
 
-::-webkit-scrollbar-button {
-}
-
-::-webkit-scrollbar-track {
-}
-
-::-webkit-scrollbar-track-piece {
-}
-
 ::-webkit-scrollbar-thumb {
   background-color: #d6d6d6;
   transition: background-color .3s;
   &:hover {
     background-color: #aeaeae;
   }
-  &:window-inactive {
-    background-color: transparent;
-  }
-}
-
-::-webkit-scrollbar-corner {
-}
-
-::-webkit-resizer {
 }

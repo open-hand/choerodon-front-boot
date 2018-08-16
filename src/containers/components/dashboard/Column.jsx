@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
 import Card from './Card';
 
+@inject('DashboardStore')
+@observer
 export default class Column extends Component {
-
   static defaultProps = {
     column: [],
   };
@@ -67,10 +69,13 @@ export default class Column extends Component {
   }
 
   render() {
-    const { column } = this.props;
-    if (column.length > 0) {
+    const { column, DashboardStore } = this.props;
+    if (column.length > 0
+      && (DashboardStore.editing || column.filter(({ visible }) => visible).length > 0)) {
       return (
-        <div>{column.map(item => this.renderCard(item))}</div>
+        <div>
+          {column.map(item => this.renderCard(item))}
+        </div>
       );
     } else {
       const { prefixCls, dragData } = this.props;

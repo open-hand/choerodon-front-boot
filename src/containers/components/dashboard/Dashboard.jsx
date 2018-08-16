@@ -8,7 +8,11 @@ import Column from './Column';
 import './style';
 
 function normalizeColumns(items) {
-  const columns = [[], [], []];
+  const columns = {
+    0: [],
+    1: [],
+    2: [],
+  };
   items.slice().sort(({ sort }, { sort: sort2 }) => sort - sort2).forEach((item) => {
     columns[(item.sort - 1) % 3].push(item);
   });
@@ -17,10 +21,13 @@ function normalizeColumns(items) {
 
 function resortColumn(column, columnIndex) {
   if (column.length > 0) {
-    column.forEach(action((data, index) => data.sort = index * 3 + columnIndex + 1));
+    column.forEach(action((data, index) => {
+      const sort = index * 3 + columnIndex + 1;
+      data.sort = sort;
+      return sort;
+    }));
   }
 }
-
 
 const PREFIX_CLS = 'c7n-boot-dashboard';
 
@@ -42,7 +49,6 @@ function clearDragCard() {
 @injectIntl
 @observer
 export default class Dashboard extends Component {
-
   fetchData = () => {
     this.props.DashboardStore.loadDashboardData();
   };
@@ -94,6 +100,10 @@ export default class Dashboard extends Component {
     const { data: dragData, column: dragColumn, sort: dragSort } = dragCard;
     if (dragData && dragColumn && column) {
       dragColumn.splice(dragColumn.indexOf(dragData), 1);
+      const index = column.indexOf(dragData);
+      if (index > -1) {
+        column.splice(index, 1);
+      }
       if (data && side) {
         const newIndex = column.indexOf(data) + (side === 'bottom' ? 1 : 0);
         column.splice(newIndex, 0, dragData);
@@ -139,14 +149,14 @@ export default class Dashboard extends Component {
   }
 
   renderColumns() {
-    const items = this.props.DashboardStore.getDashboardData;
+    const { DashboardStore: { getDashboardData: items } } = this.props;
     const columns = normalizeColumns(items);
-    return columns.map((column, index) => (
-      <Col key={index} span={8}>
+    return Object.keys(columns).map(key => (
+      <Col key={key} span={8}>
         <Column
           prefixCls={PREFIX_CLS}
-          column={column}
-          sort={index}
+          column={columns[key]}
+          sort={key}
           components={this.props}
           dragData={dragCard.data}
           onDragStart={this.handleDragStart}
@@ -158,7 +168,7 @@ export default class Dashboard extends Component {
   }
 
   render() {
-    const { editing, loading } = this.props.DashboardStore;
+    const { DashboardStore: { editing, loading } } = this.props;
     const classString = classNames(`${PREFIX_CLS}-container`, {
       [`${PREFIX_CLS}-dragging`]: !!dragCard.data,
       [`${PREFIX_CLS}-editing`]: editing,
@@ -167,7 +177,7 @@ export default class Dashboard extends Component {
     return (
       <div className={PREFIX_CLS}>
         {this.renderHeader(editing)}
-        <Spin spinning={loading} wrapperClassName={classString }>
+        <Spin spinning={loading} wrapperClassName={classString}>
           <Row type="flex" gutter={20}>
             {this.renderColumns()}
           </Row>

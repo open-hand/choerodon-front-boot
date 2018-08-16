@@ -1,4 +1,4 @@
-//components index
+// components index
 export { default as Master } from './master';
 
 export { default as MasterHeader } from './header';

@@ -46,7 +46,9 @@ export default class PageHeader extends Component {
     return (
       <div className={classNames('page-head', className)}>
         {backBtn}
-        <span className="page-head-title">{title}</span>
+        <span className="page-head-title">
+          {title}
+        </span>
         {children}
       </div>
     );

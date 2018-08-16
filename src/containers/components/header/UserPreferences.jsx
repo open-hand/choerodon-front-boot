@@ -7,16 +7,9 @@ import findFirstLeafMenu from '../util/findFirstLeafMenu';
 import { getMessage, historyPushMenu, logout } from '../../common';
 
 @withRouter
-@inject('AppState', 'MenuStore')
+@inject('AppState', 'MenuStore', 'HeaderStore')
 @observer
 export default class UserPreferences extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-    };
-  }
-
   componentDidMount() {
     const { history } = this.props;
     if (window.location.href.split('#')[1].split('&')[1] === 'token_type=bearer') {
@@ -25,24 +18,22 @@ export default class UserPreferences extends Component {
   }
 
   preferences = () => {
-    const { MenuStore, history } = this.props;
-    MenuStore.loadMenuData({ type: 'site' }, true).then(menus => {
+    const { MenuStore, history, HeaderStore } = this.props;
+    MenuStore.loadMenuData({ type: 'site' }, true).then((menus) => {
       if (menus.length) {
         const { route, domain } = findFirstLeafMenu(menus[0]);
         historyPushMenu(history, `${route}?type=site`, domain);
       }
     });
-    this.setState({
-      visible: false,
-    });
+    HeaderStore.setUserPreferenceVisible(false);
   };
 
   handleVisibleChange = (visible) => {
-    this.setState({ visible });
+    this.props.HeaderStore.setUserPreferenceVisible(visible);
   };
 
   render() {
-    const { AppState } = this.props;
+    const { AppState, HeaderStore } = this.props;
     const { imageUrl, loginName, realName, email } = AppState.getUserInfo || {};
     const AppBarIconRight = (
       <div className="user-preference-popover-content">
@@ -63,11 +54,15 @@ export default class UserPreferences extends Component {
             funcType="raised"
             type="primary"
             onClick={this.preferences.bind(this)}
-          >{getMessage('个人中心', 'user preferences')}</Button>
+          >
+            {getMessage('个人中心', 'user preferences')}
+          </Button>
           <Button
             funcType="raised"
             onClick={() => logout()}
-          >{getMessage('退出登录', 'sign Out')}</Button>
+          >
+            {getMessage('退出登录', 'sign Out')}
+          </Button>
         </div>
       </div>
     );
@@ -76,7 +71,7 @@ export default class UserPreferences extends Component {
         overlayClassName="user-preference-popover"
         content={AppBarIconRight}
         trigger="click"
-        visible={this.state.visible}
+        visible={HeaderStore.userPreferenceVisible}
         placement="bottomRight"
         onVisibleChange={this.handleVisibleChange}
       >

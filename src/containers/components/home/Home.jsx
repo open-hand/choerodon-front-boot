@@ -13,8 +13,12 @@ class Home extends Component {
         <a href={link}>
           <div className="access-list-item">
             <div className={`access-list-icon ${icon}`} />
-            <h4>{title}</h4>
-            <p>{content}</p>
+            <h4>
+              {title}
+            </h4>
+            <p>
+              {content}
+            </p>
           </div>
         </a>
       </li>
@@ -24,8 +28,12 @@ class Home extends Component {
   renderContentLinks() {
     return mainList.map(({ title, items, key }) => (
       <div key={key} className="access-list-group">
-        <h3>{title}</h3>
-        <ul>{items.map(item => this.renderItem(item))}</ul>
+        <h3>
+          {title}
+        </h3>
+        <ul>
+          {items.map(item => this.renderItem(item))}
+        </ul>
       </div>
     ));
   }
@@ -33,11 +41,19 @@ class Home extends Component {
   renderFooterLinks() {
     return footerLinks.map(({ title, items, key }) => (
       <ul key={key}>
-        <li><h3>{title}</h3></li>
+        <li>
+          <h3>
+            {title}
+          </h3>
+        </li>
         {
           items.map(({ text, link, key: itemKey }) => (
-            <li key={itemKey}><a href={link}>{text}</a></li>),
-          )
+            <li key={itemKey}>
+              <a href={link}>
+                {text}
+              </a>
+            </li>
+          ))
         }
       </ul>
     ));
@@ -50,7 +66,9 @@ class Home extends Component {
       <div className="choerodon-home">
         <header className="choerodon-home-header">
           <div className="choerodon-home-header-content">
-            <h1>{user ? `${user.realName}：` : ''} 您好！欢迎使用</h1>
+            <h1>
+              {`${user ? `${user.realName}：` : ''} 您好！欢迎使用`}
+            </h1>
             <p>
               Choerodon猪齿鱼是一个开源企业服务平台，是基于Kubernetes的容器编排和管理能力，
               整合DevOps工具链、微服务和移动应用框架，来帮助企业实现敏捷化的应用交付和自动化的运营管理，

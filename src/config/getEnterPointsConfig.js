@@ -12,4 +12,4 @@ const enterPoints = {
 
 export default function getEnterPointsConfig() {
   return enterPoints;
-};
+}

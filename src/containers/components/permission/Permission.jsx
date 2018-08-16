@@ -1,10 +1,10 @@
-/*eslint-disable*/
 import React, { Children, cloneElement, Component, createElement, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import omit from 'object.omit';
 import AppState from '../../stores/AppState';
 import PermissionStore from '../../stores/PermissionStore';
+import PermissionWrapper from './PermissionWrapper';
 
 @observer
 class Permission extends Component {
@@ -15,6 +15,7 @@ class Permission extends Component {
     organizationId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     defaultChildren: PropTypes.node,
     noAccessChildren: PropTypes.node,
+    onAccess: PropTypes.func,
   };
 
   componentWillMount() {
@@ -47,7 +48,7 @@ class Permission extends Component {
 
   extendProps(children, props) {
     if (isValidElement(children)) {
-      return Children.map(children, child => {
+      return Children.map(children, (child) => {
         if (isValidElement(child)) {
           return cloneElement(child, props);
         } else {
@@ -60,13 +61,17 @@ class Permission extends Component {
   }
 
   render() {
-    const { defaultChildren, children, noAccessChildren } = this.props;
+    const { defaultChildren, children, noAccessChildren, onAccess } = this.props;
     const otherProps = omit(this.props, [
-      'service', 'type', 'organizationId', 'projectId', 'defaultChildren', 'noAccessChildren', 'children',
+      'service', 'type', 'organizationId', 'projectId', 'defaultChildren', 'noAccessChildren', 'children', 'onAccess',
     ]);
     const status = PermissionStore.access(this.getPermissionProps(this.props));
     if (status === 'success') {
-      return this.extendProps(children, otherProps);
+      return (
+        <PermissionWrapper onAccess={onAccess}>
+          {this.extendProps(children, otherProps)}
+        </PermissionWrapper>
+      );
     } else if (status === 'failure' && (noAccessChildren || defaultChildren)) {
       return this.extendProps(noAccessChildren || defaultChildren, otherProps);
     } else if (status === 'pending' && defaultChildren) {

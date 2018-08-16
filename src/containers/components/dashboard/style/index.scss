@@ -3,9 +3,10 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
 .#{$c7n-boot-dashboard} {
   display: flex;
   background-color: #fafafa;
-  flex: 1 1 0px;
+  flex: 1 1 0;
   flex-direction: column;
   overflow: hidden;
+
   &-header {
     padding: 0 21px;
     line-height: 57px;
@@ -13,68 +14,93 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
     border-bottom: 1px solid #d3d3d3;
     font-size: 18px;
     color: rgba(0, 0, 0, 0.65);
+
     &-button {
       font-size: 13px;
       float: right;
       margin-top: 13px;
       color: #3f51b5;
     }
+
     > .icon {
       font-size: 22px;
       margin-right: 14px;
     }
+
     > * {
       vertical-align: middle;
     }
   }
+
   &-container {
-    flex: 1 1 0px;
+    flex: 1 1 0;
     padding: 12px 20px;
     overflow: auto;
+    overflow-x: hidden;
+
+    .ant-spin-container,
+    .ant-row-flex {
+      height: 100%;
+    }
   }
+
   &-column {
     &-empty {
       border-top: 1px dashed transparent;
       height: 100%;
     }
+
     &-drag-over {
       border-top-width: 3px;
       border-top-style: solid;
     }
   }
+
   &-card {
     position: relative;
     background-color: #fff;
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .20), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
     border-radius: 2px;
     transition: all .3s;
+
+    &:hover {
+      box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.20), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+
     &-title {
       padding: 20px 16px;
       cursor: move;
       user-select: none;
+
       h1 {
         font-size: 18px;
         font-weight: normal;
         margin: 0;
         line-height: 25px;
+
         > span {
           vertical-align: middle;
         }
       }
+
       .icon {
         font-size: 24px;
         margin-right: 12px;
       }
     }
+
     &-disabled {
       display: none;
+
       .#{$c7n-boot-dashboard}-card {
         background-color: rgba(0, 0, 0, .14);
       }
     }
+
     &-switch {
       float: right;
     }
+
     &-wrapper {
       padding-top: 12px;
       padding-bottom: 10px;
@@ -82,17 +108,21 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
       border-color: transparent;
       border-width: 0;
       border-top-width: 1px;
+
       &:last-child {
         border-bottom-width: 1px;
       }
     }
+
     &-container {
       overflow: hidden;
       transition: height .3s;
     }
+
     &-hidden {
       display: none;
     }
+
     &-dragging {
       .#{$c7n-boot-dashboard}-card {
         z-index: 1;
@@ -110,31 +140,42 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
         border-top-color: transparent !important;
       }
     }
+
     &-drop-top,
     &-drop-bottom + &-wrapper {
       border-top-style: solid;
       border-top-width: 3px;
       padding-top: 10px;
     }
+
     &-drop-bottom.#{$c7n-boot-dashboard}-card-wrapper:last-child {
       border-bottom-style: solid;
       border-bottom-width: 3px;
       padding-bottom: 8px;
     }
   }
+
   &-editing .#{$c7n-boot-dashboard}-card-disabled {
     display: block;
   }
+
   &-dragging {
     user-select: none;
     .#{$c7n-boot-dashboard}-card-wrapper:not(.#{$c7n-boot-dashboard}-card-dragging),
     .#{$c7n-boot-dashboard}-column-empty {
-      border-color: #303F9F;
+      border-color: #303f9f;
     }
   }
+
   &-navbar {
+    position: relative;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
     padding: 13px 16px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+
     > .icon:first-child {
       font-size: 24px;
       margin-right: 16px;
@@ -142,8 +183,18 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
         vertical-align: middle;
       }
     }
+
     a {
       color: #000;
+      &:before {
+        position: absolute;
+        background-color: transparent;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        content: '';
+      }
     }
   }
 }

@@ -1,4 +1,3 @@
-/*eslint-disable*/
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
@@ -6,17 +5,17 @@ import { createBrowserHistory } from 'history';
 import { configure } from 'mobx';
 import { observer, Provider } from 'mobx-react';
 import queryString from 'query-string';
-import stores from '../lib/containers/stores';
+import stores from '../lib/containers/stores/index';
 import AppState from '../lib/containers/stores/AppState';
 import asyncRouter from '../lib/containers/components/util/asyncRouter';
 import asyncLocaleProvider from '../lib/containers/components/util/asyncLocaleProvider';
-import { authorize, getAccessToken, setAccessToken } from '../lib/containers/common';
-import '../lib/containers/components/style';
+import { authorize, getAccessToken, setAccessToken } from '../lib/containers/common/index';
+import '../lib/containers/components/style/index';
 
 async function auth() {
-  const { access_token, token_type, expires_in } = queryString.parse(window.location.hash);
-  if (access_token) {
-    setAccessToken(access_token, token_type, expires_in);
+  const { access_token: accessToken, token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
+  if (accessToken) {
+    setAccessToken(accessToken, tokenType, expiresIn);
   } else if (!getAccessToken()) {
     authorize();
     return false;
@@ -35,7 +34,6 @@ const Masters = asyncRouter(() => import('../lib/containers/components/master'),
 
 @observer
 class App extends Component {
-
   render() {
     const langauge = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(langauge, () => import(`../lib/containers/locale/${langauge}`), () => import(`react-intl/locale-data/${langauge.split('_')[0]}`));

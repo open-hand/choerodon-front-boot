@@ -1,4 +1,3 @@
-/*eslint-disable*/
 import React, { Component, createElement } from 'react';
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
@@ -46,7 +45,6 @@ function parseQueryToMenuType(search) {
 @inject('AppState', 'MenuStore', 'HeaderStore')
 @observer
 class Masters extends Component {
-
   componentWillMount() {
     this.initMenuType(this.props);
   }
@@ -82,9 +80,10 @@ class Masters extends Component {
     AppState.setTypeUser(isUser);
     AppState.changeMenuType(menuType);
     if (needLoad) {
-      MenuStore.loadMenuData().then(menus => {
+      MenuStore.loadMenuData().then((menus) => {
         if (menus.length) {
           const { route, domain } = findFirstLeafMenu(menus[0]);
+          const { type, name, id, organizationId } = AppState.currentMenuType;
           let path = `${route}?type=${type}&id=${id}&name=${name}`;
           if (organizationId) {
             path += `&organizationId=${organizationId}`;
@@ -98,7 +97,7 @@ class Masters extends Component {
   render() {
     const { AppState, AutoRouter } = this.props;
     return (
-      AppState.isAuth && AppState.currentMenuType ?
+      AppState.isAuth && AppState.currentMenuType ? (
         <div className="page-wrapper">
           <div className="page-header">
             <MasterHeader />
@@ -114,7 +113,11 @@ class Masters extends Component {
             </div>
           </div>
         </div>
-        : <div style={spinStyle}><Spin /></div>
+      ) : (
+        <div style={spinStyle}>
+          <Spin />
+        </div>
+      )
     );
   }
 }

@@ -5,33 +5,19 @@ import MenuType from './MenuType';
 import Logo from './Logo';
 import Setting from './Setting';
 import UserPreferences from './UserPreferences';
-import axios from '../axios';
-import HeaderStore from '../../stores/HeaderStore';
-import MenuStore from '../../stores/MenuStore';
 import './style';
 
-@inject('AppState')
+@inject('AppState', 'HeaderStore', 'MenuStore')
 @observer
 class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      siteFlag: false,
-    };
-  }
-
   componentDidMount() {
-    const { AppState } = this.props;
-    MenuStore.loadMenuData({ type: 'site' }, false).then(menus => {
-      this.setState({
-        siteFlag: menus.length > 0,
-      });
-    });
+    const { AppState, HeaderStore, MenuStore } = this.props;
+    MenuStore.loadMenuData({ type: 'site' }, false);
     HeaderStore.axiosGetOrgAndPro(AppState.getUserId);
   }
 
   render() {
-    const { AppState } = this.props;
+    const { AppState, MenuStore } = this.props;
     const type = AppState.getType || sessionStorage.type;
     const menuTypeStyle = classnames({
       'masterHead-hoverMaster': true,
@@ -60,7 +46,7 @@ class Header extends Component {
             <MenuType />
           </li>
           {
-            this.state.siteFlag && (
+            MenuStore.getSiteMenuData.length > 0 && (
               <li className={logoStyle}>
                 <Setting />
               </li>

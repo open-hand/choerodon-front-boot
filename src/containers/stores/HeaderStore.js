@@ -9,8 +9,8 @@ const PROJECT_TYPE = 'project';
 function findDataIndex(collection, value) {
   return collection ? collection.findIndex(
     ({ id, organizationId }) => id === value.id && (
-      (!organizationId && !value.organizationId) ||
-      organizationId === value.organizationId
+      (!organizationId && !value.organizationId)
+      || organizationId === value.organizationId
     ),
   ) : -1;
 }
@@ -29,9 +29,16 @@ function saveRecent(collection = [], value, number) {
 @store('HeaderStore')
 class HeaderStore {
   @observable orgData = null;
+
   @observable proData = null;
+
   @observable selected = null;
+
   @observable recentItem = null;
+
+  @observable userPreferenceVisible = false;
+
+  @observable menuTypeVisible = false;
 
   @computed
   get getSelected() {
@@ -56,6 +63,16 @@ class HeaderStore {
   @computed
   get getProData() {
     return this.proData;
+  }
+
+  @action
+  setUserPreferenceVisible(userPreferenceVisible) {
+    this.userPreferenceVisible = userPreferenceVisible;
+  }
+
+  @action
+  setMenuTypeVisible(menuTypeVisible) {
+    this.menuTypeVisible = menuTypeVisible;
   }
 
   axiosGetOrgAndPro(userId) {
@@ -135,8 +152,8 @@ class HeaderStore {
         .map(recent => omit(recent, 'children'));
     }
     return recents.filter(
-      value => findDataIndex(this.orgData, value) !== -1 ||
-        findDataIndex(this.proData, value) !== -1,
+      value => findDataIndex(this.orgData, value) !== -1
+        || findDataIndex(this.proData, value) !== -1,
     );
   }
 
@@ -144,8 +161,10 @@ class HeaderStore {
   updateRecentItem(recent) {
     if (recent) {
       const recentItem = JSON.parse(localStorage.recentItem);
-      const index = recentItem.findIndex(({ id, organizationId }) =>
-        id === recent.id && (!organizationId || organizationId === recent.organizationId));
+      const index = recentItem.findIndex(
+        ({ id, organizationId }) => id === recent.id
+          && (!organizationId || organizationId === recent.organizationId),
+      );
       if (index !== -1) {
         recentItem.splice(index, 1, recent);
         localStorage.recentItem = JSON.stringify(recentItem);
