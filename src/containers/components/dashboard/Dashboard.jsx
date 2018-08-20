@@ -7,14 +7,12 @@ import classNames from 'classnames';
 import Column from './Column';
 import './style';
 
+const COLUMN_COUNT = 3;
+
 function normalizeColumns(items) {
-  const columns = {
-    0: [],
-    1: [],
-    2: [],
-  };
+  const columns = new Array(COLUMN_COUNT).fill().map(() => []);
   items.slice().sort(({ sort }, { sort: sort2 }) => sort - sort2).forEach((item) => {
-    columns[(item.sort - 1) % 3].push(item);
+    columns[(item.sort - 1) % COLUMN_COUNT].push(item);
   });
   return columns;
 }
@@ -22,7 +20,7 @@ function normalizeColumns(items) {
 function resortColumn(column, columnIndex) {
   if (column.length > 0) {
     column.forEach(action((data, index) => {
-      const sort = index * 3 + columnIndex + 1;
+      const sort = index * COLUMN_COUNT + columnIndex + 1;
       data.sort = sort;
       return sort;
     }));
