@@ -10,7 +10,6 @@ import warning from '../../../common/warning';
 let dragItem = null;
 let timeoutId = 0;
 
-
 @inject('DashboardStore')
 @observer
 export default class Card extends Component {
@@ -21,6 +20,10 @@ export default class Card extends Component {
   relativeX = 0;
 
   relativeY = 0;
+
+  beginTop = 0;
+
+  endTop = 0;
 
   height = null;
 
@@ -51,8 +54,15 @@ export default class Card extends Component {
   handleAnimateEnd = (key, flag) => {
     if (dragItem) {
       if (!flag) {
-        const { top } = dragItem.parentNode.getBoundingClientRect();
-        this.relativeY += top;
+        const { data, dragData } = this.props;
+        if (dragData === data) {
+          const { top } = dragItem.parentNode.getBoundingClientRect();
+          const { top: styleTop } = dragItem.style;
+          const delta = top - this.beginTop;
+          this.endTop = top;
+          this.relativeY += delta;
+          dragItem.style.top = `${parseInt(styleTop || 0, 10) - delta}px`;
+        }
       } else {
         dragItem.style.zIndex = null;
         dragItem = null;
@@ -69,8 +79,9 @@ export default class Card extends Component {
       }
       dragItem = currentTarget.parentNode;
       const { top } = dragItem.parentNode.getBoundingClientRect();
+      this.beginTop = top;
       this.relativeX = clientX;
-      this.relativeY = clientY - top;
+      this.relativeY = clientY;
       this.onMouseMoveListener = addEventListener(document, 'mousemove', this.handleDragMove);
     }, 250);
     this.onMouseUpListener = addEventListener(document, 'mouseup', this.handleDragEnd);
@@ -96,11 +107,19 @@ export default class Card extends Component {
     }
     this.unSubscriptListener();
     if (dragItem) {
+      const { top: styleTop } = dragItem.style;
       Object.assign(dragItem.style, {
-        left: 0,
-        top: 0,
+        transition: 'none',
+        top: `${parseInt(styleTop || 0, 10) - this.beginTop + this.endTop}px`,
         zIndex: 1,
       });
+      setTimeout(() => {
+        Object.assign(dragItem.style, {
+          transition: '',
+          left: 0,
+          top: 0,
+        });
+      }, 0);
       const { onDragEnd } = this.props;
       if (typeof onDragEnd === 'function') {
         onDragEnd();
