@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
 import Card from './Card';
+import asyncLocaleProvider from '../util/asyncLocaleProvider';
+import asyncRouter from '../util/asyncRouter';
 
-@inject('DashboardStore')
+@inject('AppState', 'DashboardStore')
 @observer
 export default class Column extends Component {
   static defaultProps = {
@@ -53,19 +55,33 @@ export default class Column extends Component {
   renderCard(data) {
     const { dashboardCode, dashboardNamespace, sort } = data;
     const key = `${dashboardNamespace}/${dashboardCode}`;
-    const { prefixCls, components, dragData } = this.props;
-    return (
+    const { prefixCls, components, dragData, locale, AppState } = this.props;
+    const language = AppState.currentLanguage;
+    const getMessage = locale[`${dashboardNamespace}/${language}`];
+    const component = asyncRouter(components[key]);
+    const card = (
       <Card
         key={`${key}-${sort}`}
         prefixCls={prefixCls}
         data={data}
         dragData={dragData}
-        component={components[key]}
+        component={component}
         onDragStart={this.handleDragStart}
         onDragEnd={this.handleDragEnd}
         onDrop={this.handleDrop}
       />
     );
+
+    if (getMessage) {
+      const IntlProviderAsync = asyncLocaleProvider(language, getMessage);
+      return (
+        <IntlProviderAsync key={`${key}-${sort}`}>
+          {card}
+        </IntlProviderAsync>
+      );
+    } else {
+      return card;
+    }
   }
 
   render() {

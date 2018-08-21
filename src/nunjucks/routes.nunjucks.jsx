@@ -13,6 +13,7 @@ const Home = asyncRouter(
   dashboard
     ? () => import('../lib/containers/components/dashboard')
     : () => import('../lib/containers/components/home'),
+  null,
   dashboard && Dashboard,
 );
 

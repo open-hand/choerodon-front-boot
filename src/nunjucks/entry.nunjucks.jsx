@@ -35,8 +35,8 @@ const Masters = asyncRouter(() => import('../lib/containers/components/master'),
 @observer
 class App extends Component {
   render() {
-    const langauge = AppState.currentLanguage;
-    const IntlProviderAsync = asyncLocaleProvider(langauge, () => import(`../lib/containers/locale/${langauge}`), () => import(`react-intl/locale-data/${langauge.split('_')[0]}`));
+    const language = AppState.currentLanguage;
+    const IntlProviderAsync = asyncLocaleProvider(language, () => import(`../lib/containers/locale/${language}`), () => import(`react-intl/locale-data/${language.split('_')[0]}`));
     return (
       <UILocaleProviderAsync>
         <IntlProviderAsync>

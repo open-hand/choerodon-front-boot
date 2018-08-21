@@ -8,7 +8,7 @@ import 'rxjs/add/observable/zip';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromPromise';
 
-export default function asyncRouter(getComponent, getInjects) {
+export default function asyncRouter(getComponent, getInjects, extProps) {
   return class AsyncRoute extends Component {
     state = {
       Cmp: null,
@@ -72,7 +72,7 @@ export default function asyncRouter(getComponent, getInjects) {
     render() {
       const { Cmp, injects } = this.state;
 
-      return Cmp && <Cmp {...Object.assign({}, this.props, ...injects)} />;
+      return Cmp && <Cmp {...Object.assign({}, extProps, this.props, ...injects)} />;
     }
   };
 }
