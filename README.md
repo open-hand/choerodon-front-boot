@@ -65,11 +65,16 @@ const config = {
   // By default, dashboard is false.
   // The keys of dashboard are namespaces, and entries are Component paths.
   dashboard: {
-    'choerodon-front-iam': 'src/dashboard/*', //  For e.g., use glob pattern
-    'choerodon-front-devops': [
+    iam: 'src/dashboard/*', //  For e.g., use glob pattern
+    devops: [
       'src/dashboard/Test', //  For e.g., use dir path
       'src/dashboard/Test2.js', //  For e.g., use file path
-    ], 
+    ],
+    // Intl expample
+    agile: {
+      components: 'src/dashboard/*',
+      locale: 'src/locale/*', 
+    }
   },
   server: 'http://api.example.com', // API server
   fileServer: 'http://file.example.com', // File server

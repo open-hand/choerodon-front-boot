@@ -147,7 +147,7 @@ export default class Dashboard extends Component {
   }
 
   renderColumns() {
-    const { DashboardStore: { getDashboardData: items } } = this.props;
+    const { DashboardStore: { getDashboardData: items }, dashboardLocale, dashboardComponents } = this.props;
     const columns = normalizeColumns(items);
     return Object.keys(columns).map(key => (
       <Col key={key} span={8}>
@@ -155,7 +155,8 @@ export default class Dashboard extends Component {
           prefixCls={PREFIX_CLS}
           column={columns[key]}
           sort={key}
-          components={this.props}
+          components={dashboardComponents}
+          locale={dashboardLocale}
           dragData={dragCard.data}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
