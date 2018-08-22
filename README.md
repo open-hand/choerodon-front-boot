@@ -70,7 +70,7 @@ const config = {
       'src/dashboard/Test', //  For e.g., use dir path
       'src/dashboard/Test2.js', //  For e.g., use file path
     ],
-    // Intl expample
+    // Intl example
     agile: {
       components: 'src/dashboard/*',
       locale: 'src/locale/*', 
@@ -137,6 +137,43 @@ $python ./{1}/node_modules/choerodon-front-boot/structure/sql.py [-i HOST] [-p P
 ```
 `{1}` is your module name.
 
+## Init Dashboard (0.7.0+)
+
+First, you should make sure that you have `dashboard.yml` under `./{1}/src/app/{1}/config/dashboard/dashboard.yml`. And also should have `language/en.yml & language/zh.yml`。
+
+A `dashboard.yml` file like this:
+
+``` yml
+#dashboard.yml
+dashboard:
+  - code: "Guide"
+    icon: APItest
+    title: "快速入门"
+    description: "新手指引"
+    level: site
+    sort: 1
+  - code: "Document"
+    icon: description
+    title: "文档"
+    description: "文档"
+    level: site
+    sort: 2
+    
+```
+A `language/en.yml` file like this:
+
+``` yml
+#language/en.yml
+"Guide": "Guide"
+"Document": "Document"
+```
+
+Then, you can run the script to initialize the menu.
+```
+$python ./{1}/node_modules/choerodon-front-boot/structure/dashboard.py -o yml -m {1}
+$python ./{1}/node_modules/choerodon-front-boot/structure/dashboard.py -o sql [-i HOST] [-p PORT] [-u USER] [-s PASSWD]
+```
+`{1}` is your module name.
 
 ## Dependencies
 
@@ -150,6 +187,7 @@ $python ./{1}/node_modules/choerodon-front-boot/structure/sql.py [-i HOST] [-p P
 * [Mobx](https://github.com/mobxjs/mobx)
 * [webpack](https://webpack.docschina.org)
 * [gulp](https://gulpjs.com)
+* [choerodon ui](http://ui.choerodon.io/docs/react/introduce-cn)
 
 ## Reporting Issues
 If you find any shortcomings or bugs, please describe them in the  [issue](https://github.com/choerodon/choerodon/issues/new?template=issue_template.md).
