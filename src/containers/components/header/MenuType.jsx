@@ -94,7 +94,7 @@ export default class MenuType extends Component {
         domain = menuDomain;
       }
       if (route) {
-        path = `${route}?type=${type}&id=${id}&name=${name}`;
+        path = `${route}?type=${type}&id=${id}&name=${encodeURIComponent(name)}`;
         if (organizationId) {
           path += `&organizationId=${organizationId}`;
         }

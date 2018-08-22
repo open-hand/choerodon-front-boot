@@ -3,6 +3,7 @@
   "version": "0.7.3",
   "description": "Tools to build website for Choerodon",
   "main": "lib/containers/components/index.js",
+  "homepage": "http://choerodon.io/",
   "bin": {
     "choerodon-front-boot": "./bin/choerodon-front-boot"
   },
@@ -11,6 +12,20 @@
     "bin",
     "structure"
   ],
+  "keywords": [
+    "choerodon",
+    "c7n",
+    "boot",
+    "framework",
+    "frontend"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/choerodon/choerodon-front-boot"
+  },
+  "bugs": {
+    "url": "https://github.com/choerodon/choerodon/issues"
+  },
   "author": "Hugh <99571603@qq.com>",
   "license": "ISC",
   "dependencies": {
