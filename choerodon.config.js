@@ -1,6 +1,6 @@
 module.exports = {
   routes: { test: './test/routeIndex' },
-  server: 'http://api.staging.saas.hand-china.com',
+  server: 'https://api.choerodon.com.cn',
   dashboard: {
     iam: {
       components: 'test/dashboard/*',

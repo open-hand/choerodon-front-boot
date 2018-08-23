@@ -5,6 +5,22 @@ import Card from './Card';
 import asyncLocaleProvider from '../util/asyncLocaleProvider';
 import asyncRouter from '../util/asyncRouter';
 
+const cache = {};
+
+function getCachedIntlProvider(key, language, getMessage) {
+  if (!cache[key]) {
+    cache[key] = asyncLocaleProvider(language, getMessage);
+  }
+  return cache[key];
+}
+
+function getCachedRouter(key, componentImport) {
+  if (!cache[key]) {
+    cache[key] = asyncRouter(componentImport);
+  }
+  return cache[key];
+}
+
 @inject('AppState', 'DashboardStore')
 @observer
 export default class Column extends Component {
@@ -53,19 +69,20 @@ export default class Column extends Component {
   };
 
   renderCard(data) {
-    const { dashboardCode, dashboardNamespace, sort } = data;
-    const key = `${dashboardNamespace}/${dashboardCode}`;
     const { prefixCls, components, dragData, locale, AppState } = this.props;
+    const { dashboardCode, dashboardNamespace, sort } = data;
     const language = AppState.currentLanguage;
-    const getMessage = locale[`${dashboardNamespace}/${language}`];
-    const component = asyncRouter(components[key]);
+    const key = `${dashboardNamespace}/${dashboardCode}`;
+    const localeKey = `${dashboardNamespace}/${language}`;
+    const getMessage = locale[localeKey];
+    const componentImport = components[key];
     const card = (
       <Card
         key={`${key}-${sort}`}
         prefixCls={prefixCls}
         data={data}
         dragData={dragData}
-        component={component}
+        component={componentImport && getCachedRouter(`router-${key}`, componentImport)}
         onDragStart={this.handleDragStart}
         onDragEnd={this.handleDragEnd}
         onDrop={this.handleDrop}
@@ -73,7 +90,7 @@ export default class Column extends Component {
     );
 
     if (getMessage) {
-      const IntlProviderAsync = asyncLocaleProvider(language, getMessage);
+      const IntlProviderAsync = getCachedIntlProvider(`locale-${localeKey}`, language, getMessage);
       return (
         <IntlProviderAsync key={`${key}-${sort}`}>
           {card}

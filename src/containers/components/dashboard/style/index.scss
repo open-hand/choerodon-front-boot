@@ -165,6 +165,9 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
     .#{$c7n-boot-dashboard}-column-empty {
       border-color: #303f9f;
     }
+    .#{$c7n-boot-dashboard}-toolbar {
+      display: none;
+    }
   }
 
   &-navbar {
@@ -196,5 +199,9 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
         content: '';
       }
     }
+  }
+
+  &-toolbar {
+    float: right;
   }
 }
