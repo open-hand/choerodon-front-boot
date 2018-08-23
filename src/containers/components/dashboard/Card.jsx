@@ -5,6 +5,7 @@ import { Icon, Switch } from 'choerodon-ui';
 import addEventListener from 'choerodon-ui/lib/rc-components/util/Dom/addEventListener';
 import Animate from 'choerodon-ui/lib/rc-components/animate';
 import CardContent from './CardContent';
+import CardProvider from './CardProvider';
 import warning from '../../../common/warning';
 
 let dragItem = null;
@@ -187,35 +188,45 @@ export default class Card extends Component {
     return (
       <section {...wrapperProps}>
         <div className={`${prefixCls}-card-placeholder`}>
-          <div className={`${prefixCls}-card`}>
-            <header
-              className={`${prefixCls}-card-title`}
-              onMouseDown={this.handleDragStart}
-              onMouseLeave={this.handleDragLeave}
-            >
-              <h1>
-                <Icon type={dashboardIcon} />
-                <span>
-                  {dashboardTitle}
-                </span>
-                {
-                  editing && (
-                    <Switch className={`${prefixCls}-card-switch`} checked={visible} onChange={this.handleVisibleChange} />
-                  )
-                }
-              </h1>
-            </header>
-            <Animate
-              component=""
-              transitionName="slide-up"
-              showProp="visible"
-              onEnd={this.handleAnimateEnd}
-            >
-              <CardContent visible={!dragData} key="content" prefixCls={prefixCls}>
-                {component && createElement(component)}
-              </CardContent>
-            </Animate>
-          </div>
+
+          <CardProvider>
+            {
+              toolBar => (
+                <div className={`${prefixCls}-card`}>
+                  <header
+                    className={`${prefixCls}-card-title`}
+                    onMouseDown={this.handleDragStart}
+                    onMouseLeave={this.handleDragLeave}
+                  >
+                    <h1>
+                      <Icon type={dashboardIcon} />
+                      <span>
+                        {dashboardTitle}
+                      </span>
+                      {
+                        editing && (
+                          <Switch className={`${prefixCls}-card-switch`} checked={visible} onChange={this.handleVisibleChange} />
+                        )
+                      }
+                      {
+                        toolBar
+                      }
+                    </h1>
+                  </header>
+                  <Animate
+                    component=""
+                    transitionName="slide-up"
+                    showProp="visible"
+                    onEnd={this.handleAnimateEnd}
+                  >
+                    <CardContent visible={!dragData} key="content" prefixCls={prefixCls}>
+                      {component && createElement(component)}
+                    </CardContent>
+                  </Animate>
+                </div>
+              )
+            }
+          </CardProvider>
         </div>
       </section>
     );

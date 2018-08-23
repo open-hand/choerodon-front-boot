@@ -6,7 +6,11 @@ import Permission from '../permission';
 const { Item } = Menu;
 
 @observer
-class Action extends Component {
+export default class Action extends Component {
+  static defaultProps = {
+    data: [],
+  };
+
   state = {};
 
   handleClick = (arg) => {
@@ -59,5 +63,3 @@ class Action extends Component {
     );
   }
 }
-
-export default Action;
