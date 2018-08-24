@@ -43,6 +43,12 @@ function clearDragCard() {
   });
 }
 
+const animations = {
+  length: 0,
+  runLength: 0,
+  callback: null,
+};
+
 @inject('DashboardStore')
 @injectIntl
 @observer
@@ -58,6 +64,18 @@ export default class Dashboard extends Component {
   componentWillReceiveProps() {
     this.fetchData();
   }
+
+  handleAnimateEnd = (callback) => {
+    animations.runLength += 1;
+    if (callback) {
+      animations.callback = callback;
+    }
+    if (animations.length === animations.runLength && animations.callback) {
+      animations.callback();
+      animations.runLength = 0;
+      animations.callback = null;
+    }
+  };
 
   handleEdit = () => {
     this.props.DashboardStore.setEditing(true);
@@ -149,6 +167,7 @@ export default class Dashboard extends Component {
   renderColumns() {
     const { DashboardStore: { getDashboardData: items }, dashboardLocale, dashboardComponents } = this.props;
     const columns = normalizeColumns(items);
+    animations.length = items.length;
     return Object.keys(columns).map(key => (
       <Col key={key} span={8}>
         <Column
@@ -161,6 +180,7 @@ export default class Dashboard extends Component {
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
           onDrop={this.handleDrop}
+          onAnimateEnd={this.handleAnimateEnd}
         />
       </Col>
     ));

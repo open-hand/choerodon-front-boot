@@ -69,7 +69,7 @@ export default class Column extends Component {
   };
 
   renderCard(data) {
-    const { prefixCls, components, dragData, locale, AppState } = this.props;
+    const { prefixCls, components, dragData, locale, AppState, onAnimateEnd } = this.props;
     const { dashboardCode, dashboardNamespace, sort } = data;
     const language = AppState.currentLanguage;
     const key = `${dashboardNamespace}/${dashboardCode}`;
@@ -86,6 +86,7 @@ export default class Column extends Component {
         onDragStart={this.handleDragStart}
         onDragEnd={this.handleDragEnd}
         onDrop={this.handleDrop}
+        onAnimateEnd={onAnimateEnd}
       />
     );
 

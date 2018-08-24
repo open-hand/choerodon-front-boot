@@ -55,15 +55,15 @@ export default class Card extends Component {
   handleAnimateEnd = (key, flag) => {
     if (dragItem) {
       if (!flag) {
-        const { data, dragData } = this.props;
-        if (dragData === data) {
+        const { data, dragData, onAnimateEnd } = this.props;
+        onAnimateEnd(dragData === data && (() => {
           const { top } = dragItem.parentNode.getBoundingClientRect();
           const { top: styleTop } = dragItem.style;
           const delta = top - this.beginTop;
           this.endTop = top;
           this.relativeY += delta;
           dragItem.style.top = `${parseInt(styleTop || 0, 10) - delta}px`;
-        }
+        }));
       } else {
         dragItem.style.zIndex = null;
         dragItem = null;
