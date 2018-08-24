@@ -22,7 +22,7 @@ export default function checkPassword(passwordPolicy, value, callback, userName)
           len += 1;
         }
       }
-      const pattern = new RegExp('[`~!@#$^&*()=%|{}\':;\',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“\'。，、？]');
+      const pattern = new RegExp('[-~`@#$%^&*_=+|/()<>,.;:!]');
       for (let i = 0; i < value.length; i += 1) {
         rs += value.substr(i, 1).replace(pattern, '');
         sp = value.length - rs.length;
