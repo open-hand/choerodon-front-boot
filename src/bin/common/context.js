@@ -5,7 +5,7 @@ import warning from '../../common/warning';
 let isInitialized = false;
 exports.initialize = function initialize(context) {
   if (isInitialized) {
-    warning(true, '`context` had been initialized');
+    warning(false, '`context` had been initialized');
     return;
   }
   const tmpDirPath = path.join(__dirname, '../../../tmp');

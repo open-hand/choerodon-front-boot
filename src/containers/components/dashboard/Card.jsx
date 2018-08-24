@@ -183,7 +183,7 @@ export default class Card extends Component {
       });
     }
 
-    warning(!component, `Dashboard Component<${dashboardNamespace}/${dashboardCode}> is missing.`);
+    warning(!!component, `Dashboard Component<${dashboardNamespace}/${dashboardCode}> is missing.`);
 
     return (
       <section {...wrapperProps}>
