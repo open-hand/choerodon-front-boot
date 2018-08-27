@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { nomatch } from '../lib/containers/components/index';
-import asyncRouter from '../lib/containers/components/util/asyncRouter';
-import { dashboard } from '../lib/containers/common/index';
+import { nomatch } from '../{{ source }}/containers/components/index';
+import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter';
+import { dashboard } from '../{{ source }}/containers/common/index';
 import Dashboard from '{{ dashboardPath }}';
 
 function createRoute(path, component) {
@@ -11,8 +11,8 @@ function createRoute(path, component) {
 
 const Home = asyncRouter(
   dashboard
-    ? () => import('../lib/containers/components/dashboard')
-    : () => import('../lib/containers/components/home'),
+    ? () => import('../{{ source }}/containers/components/dashboard')
+    : () => import('../{{ source }}/containers/components/home'),
   null,
   dashboard && Dashboard,
 );

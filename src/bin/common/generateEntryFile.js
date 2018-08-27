@@ -9,7 +9,7 @@ import escapeWinPath from './escapeWinPath';
 const entryTemplate = fs.readFileSync(path.join(__dirname, '../../nunjucks/entry.nunjucks.js')).toString();
 
 export default function generateEntryFile(mainPackage, configEntryName) {
-  const { tmpDirPath } = context;
+  const { tmpDirPath, isDev } = context;
   const entryPath = path.join(tmpDirPath, `entry.${configEntryName}.js`);
   const dashboardPath = getDashBoardPath(configEntryName);
   const routesPath = getRoutesPath(
@@ -21,6 +21,7 @@ export default function generateEntryFile(mainPackage, configEntryName) {
     entryPath,
     nunjucks.renderString(entryTemplate, {
       routesPath: escapeWinPath(routesPath),
+      source: isDev ? 'src' : 'lib',
     }),
   );
 }
