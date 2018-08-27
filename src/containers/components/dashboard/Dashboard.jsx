@@ -5,6 +5,9 @@ import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import Column from './Column';
+import Page from '../page';
+import Header from '../page/Header';
+import Content from '../page/Content';
 import './style';
 
 const COLUMN_COUNT = 3;
@@ -138,9 +141,13 @@ export default class Dashboard extends Component {
 
   renderHeader(editing) {
     return (
-      <header className={`${PREFIX_CLS}-header`}>
-        <Icon type="home" />
-        <FormattedMessage id="boot.dashboard.home" />
+      <Header
+        className={`${PREFIX_CLS}-header`}
+        title={[
+          <Icon type="home" key="icon" />,
+          <FormattedMessage id="boot.dashboard.home" key="title" />,
+        ]}
+      >
         {
           editing ? (
             <Button
@@ -160,7 +167,7 @@ export default class Dashboard extends Component {
             </Button>
           )
         }
-      </header>
+      </Header>
     );
   }
 
@@ -188,20 +195,26 @@ export default class Dashboard extends Component {
 
   render() {
     const { DashboardStore: { editing, loading } } = this.props;
-    const classString = classNames(`${PREFIX_CLS}-container`, {
+    const classString = classNames({
       [`${PREFIX_CLS}-dragging`]: !!dragCard.data,
       [`${PREFIX_CLS}-editing`]: editing,
     });
 
     return (
-      <div className={PREFIX_CLS}>
+      <Page className={PREFIX_CLS}>
         {this.renderHeader(editing)}
-        <Spin spinning={loading} wrapperClassName={classString}>
-          <Row type="flex" gutter={20}>
-            {this.renderColumns()}
-          </Row>
-        </Spin>
-      </div>
+        <Content className={classString}>
+          {
+            loading ? (
+              <Spin spinning />
+            ) : (
+              <Row type="flex" gutter={20}>
+                {this.renderColumns()}
+              </Row>
+            )
+          }
+        </Content>
+      </Page>
     );
   }
 }
