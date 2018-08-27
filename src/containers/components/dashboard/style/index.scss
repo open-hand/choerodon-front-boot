@@ -1,17 +1,10 @@
 $c7n-boot-dashboard: c7n-boot-dashboard;
 
 .#{$c7n-boot-dashboard} {
-  display: flex;
-  background-color: #fafafa;
-  flex: 1 1 0;
-  flex-direction: column;
-  overflow: hidden;
 
   &-header {
+    display: block;
     padding: 0 21px;
-    line-height: 57px;
-    height: 58px;
-    border-bottom: 1px solid #d3d3d3;
     font-size: 18px;
     color: rgba(0, 0, 0, 0.65);
 
@@ -22,25 +15,27 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
       color: #3f51b5;
     }
 
-    > .icon {
-      font-size: 22px;
-      margin-right: 14px;
-    }
+    .page-head-title {
+      color: inherit;
+      > .icon {
+        font-size: 22px;
+        margin-right: 14px;
+      }
 
-    > * {
-      vertical-align: middle;
+      > * {
+        vertical-align: middle;
+      }
     }
   }
 
-  &-container {
-    flex: 1 1 0;
+  .page-content {
     padding: 12px 20px;
-    overflow: auto;
     overflow-x: hidden;
+    display: flex;
 
-    .ant-spin-container,
     .ant-row-flex {
-      height: 100%;
+      flex: 1 1 0;
+      width: 100%;
     }
   }
 
