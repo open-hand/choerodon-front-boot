@@ -8,7 +8,6 @@ import MasterHeader from '../header';
 import { dashboard, historyReplaceMenu } from '../../common';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 import './style';
-import 'babel-polyfill';
 
 const spinStyle = {
   textAlign: 'center',
