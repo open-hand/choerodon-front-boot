@@ -240,7 +240,7 @@ export default class CommonMenu extends Component {
           <div className="common-menu-right-content">
             <Menu
               onClick={this.handleClick}
-              openKeys={MenuStore.leftOpenKeys}
+              openKeys={MenuStore.leftOpenKeys.slice()}
               onOpenChange={this.handleLeftOpenChange}
               selectedKeys={[selected.code]}
               mode="vertical"

@@ -57,7 +57,7 @@ class App extends Component {
 }
 
 if (auth()) {
-  configure({ enforceActions: true });
+  configure({ enforceActions: 'observed' });
 
   render(<App />, document.getElementById('app'));
 }

@@ -2,6 +2,13 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
 
 .#{$c7n-boot-dashboard} {
 
+  .ant-spin-nested-loading {
+    width: 100%;
+  }
+  .ant-spin-container {
+    height: 100%;
+  }
+
   &-header {
     display: block;
     padding: 0 21px;
@@ -64,7 +71,7 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
 
     &-title {
       padding: 20px 16px;
-      cursor: move;
+      cursor: grab;
       user-select: none;
 
       h1 {
@@ -155,12 +162,16 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
 
   &-dragging {
     user-select: none;
+    cursor: grabbing;
     .#{$c7n-boot-dashboard}-card-wrapper:not(.#{$c7n-boot-dashboard}-card-dragging),
     .#{$c7n-boot-dashboard}-column-empty {
       border-color: #303f9f;
     }
     .#{$c7n-boot-dashboard}-toolbar {
       display: none;
+    }
+    .#{$c7n-boot-dashboard}-card-title {
+      cursor: inherit;
     }
   }
 
