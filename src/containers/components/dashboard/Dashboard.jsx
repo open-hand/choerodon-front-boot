@@ -204,15 +204,11 @@ export default class Dashboard extends Component {
       <Page className={PREFIX_CLS}>
         {this.renderHeader(editing)}
         <Content className={classString}>
-          {
-            loading ? (
-              <Spin spinning />
-            ) : (
-              <Row type="flex" gutter={20}>
-                {this.renderColumns()}
-              </Row>
-            )
-          }
+          <Spin spinning={loading}>
+            <Row type="flex" gutter={20}>
+              {this.renderColumns()}
+            </Row>
+          </Spin>
         </Content>
       </Page>
     );

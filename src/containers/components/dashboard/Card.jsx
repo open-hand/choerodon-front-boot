@@ -1,6 +1,7 @@
 import React, { Component, createElement } from 'react';
 import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
+import classes from 'component-classes';
 import { Icon, Switch } from 'choerodon-ui';
 import addEventListener from 'choerodon-ui/lib/rc-components/util/Dom/addEventListener';
 import Animate from 'choerodon-ui/lib/rc-components/animate';
@@ -11,6 +12,20 @@ import warning from '../../../common/warning';
 let dragItem = null;
 let timeoutId = 0;
 
+function findParent(node, cb) {
+  let parent = node.parentNode;
+  while (parent) {
+    if (cb(parent)) {
+      return parent;
+    }
+    parent = parent.parentNode;
+  }
+}
+
+function findContainer(node) {
+  return findParent(node, parent => classes(parent).has('page-content'));
+}
+
 @inject('DashboardStore')
 @observer
 export default class Card extends Component {
@@ -18,25 +33,25 @@ export default class Card extends Component {
     dropSide: null,
   };
 
-  relativeX = 0;
-
-  relativeY = 0;
-
-  beginTop = 0;
-
-  endTop = 0;
-
-  height = null;
+  dndProps = {};
 
   onMouseMoveListener = null;
 
+  onMouseWheelListener = null;
+
   onMouseUpListener = null;
+
+  scrollInterval = null;
 
   componentWillUnmount() {
     this.unSubscriptListener();
   }
 
   unSubscriptListener() {
+    if (this.scrollInterval) {
+      cancelAnimationFrame(this.scrollInterval);
+      this.scrollInterval = null;
+    }
     if (this.onMouseMoveListener) {
       this.onMouseMoveListener.remove();
       this.onMouseMoveListener = null;
@@ -45,7 +60,36 @@ export default class Card extends Component {
       this.onMouseUpListener.remove();
       this.onMouseUpListener = null;
     }
+    if (this.onMouseWheelListener) {
+      this.onMouseWheelListener.remove();
+      this.onMouseWheelListener = null;
+    }
   }
+
+  changeTop(top = dragItem.parentNode.getBoundingClientRect().top) {
+    const { dndProps } = this;
+    const { top: beginTop, relativeY } = this.dndProps;
+    const deltaTop = top - beginTop;
+    if (deltaTop !== 0) {
+      const { top: originTop } = dragItem.style;
+      dragItem.style.top = `${parseInt(originTop || 0, 10) - deltaTop}px`;
+      this.dndProps = Object.assign(dndProps, {
+        top,
+        relativeY: relativeY + deltaTop,
+      });
+    }
+  }
+
+  scrollContainer = () => {
+    const { container, deltaScroll } = this.dndProps;
+    container.scrollTop += deltaScroll;
+    if (dragItem) {
+      this.changeTop();
+    }
+    if (this.scrollInterval) {
+      this.scrollInterval = requestAnimationFrame(this.scrollContainer);
+    }
+  };
 
   handleVisibleChange = (checked) => {
     const { data, DashboardStore } = this.props;
@@ -57,12 +101,27 @@ export default class Card extends Component {
       if (!flag) {
         const { data, dragData, onAnimateEnd } = this.props;
         onAnimateEnd(dragData === data && (() => {
-          const { top } = dragItem.parentNode.getBoundingClientRect();
-          const { top: styleTop } = dragItem.style;
-          const delta = top - this.beginTop;
-          this.endTop = top;
-          this.relativeY += delta;
-          dragItem.style.top = `${parseInt(styleTop || 0, 10) - delta}px`;
+          const { dndProps } = this;
+          const { top: beginTop } = dndProps;
+          const container = findContainer(dragItem);
+          const { left: containerLeft, top: containerTop, width: containerWidth, height: containerHeight } = container.getBoundingClientRect();
+          const { left, width, height, top } = dragItem.parentNode.getBoundingClientRect();
+          const deltaTopFromAnimate = top - beginTop;
+          const { clientHeight, scrollHeight } = container;
+          this.dndProps = Object.assign(dndProps, {
+            left,
+            width,
+            height,
+            containerLeft,
+            containerTop,
+            containerWidth,
+            containerHeight,
+            deltaTopFromAnimate,
+            hasScroll: scrollHeight > clientHeight,
+            container,
+          });
+          this.changeTop(top);
+          this.onMouseWheelListener = addEventListener(container, 'scroll', this.handleContainerScroll);
         }));
       } else {
         dragItem.style.zIndex = null;
@@ -80,19 +139,51 @@ export default class Card extends Component {
       }
       dragItem = currentTarget.parentNode;
       const { top } = dragItem.parentNode.getBoundingClientRect();
-      this.beginTop = top;
-      this.relativeX = clientX;
-      this.relativeY = clientY;
+      this.dndProps = {
+        top,
+        relativeX: clientX,
+        relativeY: clientY,
+      };
       this.onMouseMoveListener = addEventListener(document, 'mousemove', this.handleDragMove);
     }, 250);
     this.onMouseUpListener = addEventListener(document, 'mouseup', this.handleDragEnd);
   };
 
   handleDragMove = ({ clientX, clientY }) => {
+    const {
+      left, top, width, height,
+      containerLeft, containerTop, containerWidth, containerHeight,
+      hasScroll, relativeX, relativeY,
+    } = this.dndProps;
+    const x = Math.max(containerLeft - left, Math.min(clientX - relativeX, containerWidth - width - left + containerLeft));
+    const y = Math.max(containerTop - top, Math.min(clientY - relativeY, containerHeight - height - top + containerTop));
+
     Object.assign(dragItem.style, {
-      left: `${clientX - this.relativeX}px`,
-      top: `${clientY - this.relativeY}px`,
+      left: `${x}px`,
+      top: `${y}px`,
     });
+
+    if (hasScroll) {
+      let delta = 0;
+      const offsetTop = containerTop + height;
+      const offsetBottom = containerTop + containerHeight - height;
+      if (clientY < offsetTop) {
+        delta = clientY - offsetTop;
+      } else if (clientY > offsetBottom) {
+        delta = clientY - offsetBottom;
+      }
+      if (delta !== 0) {
+        this.dndProps.deltaScroll = delta / 10;
+        this.scrollInterval = requestAnimationFrame(this.scrollContainer);
+      } else if (this.scrollInterval) {
+        cancelAnimationFrame(this.scrollInterval);
+        this.scrollInterval = null;
+      }
+    }
+  };
+
+  handleContainerScroll = () => {
+    this.changeTop();
   };
 
   handleDragLeave = () => {
@@ -111,7 +202,7 @@ export default class Card extends Component {
       const { top: styleTop } = dragItem.style;
       Object.assign(dragItem.style, {
         transition: 'none',
-        top: `${parseInt(styleTop || 0, 10) - this.beginTop + this.endTop}px`,
+        top: `${parseInt(styleTop || 0, 10) + this.dndProps.deltaTopFromAnimate}px`,
         zIndex: 1,
       });
       setTimeout(() => {
@@ -171,9 +262,6 @@ export default class Card extends Component {
     });
     const wrapperProps = {
       className: wrapperClassString,
-      // fix react 16.4.1 bug
-      onMouseUp: () => {
-      },
     };
     if (dragData && !dragging) {
       Object.assign(wrapperProps, {
@@ -188,7 +276,6 @@ export default class Card extends Component {
     return (
       <section {...wrapperProps}>
         <div className={`${prefixCls}-card-placeholder`}>
-
           <CardProvider>
             {
               toolBar => (
