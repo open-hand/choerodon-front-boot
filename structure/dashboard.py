@@ -83,7 +83,7 @@ def insertDb():
     ymlFile.close()
 
 def returnId(table, code, namespace):
-    sql = "select id from {table} where code='{code}' and namespace='{namespace}'".format(table=table, code=code, namespace=namespace)
+    sql = "select ID from {table} where CODE='{code}' and NAMESPACE='{namespace}'".format(table=table, code=code, namespace=namespace)
     cursor.execute(sql)
     Id = cursor.fetchone()
     return Id
@@ -92,13 +92,13 @@ def insertDashboard(data):
     try:
         dashboards = data["dashboard"]
         dataLanguageChinese = data["language"]["Chinese"]
-        table = "iam_dashboard"
+        table = "IAM_DASHBOARD"
         for i in dashboards:
             dashboard = dashboards[i]
             Id = returnId(table, dashboard["code"], dashboard["namespace"])
             if Id:
-                sql = "update {table} set code='{code}', level='{level}', icon='{icon}', sort='{sort}', namespace='{namespace}'"
-                sql = (sql + " where code='{code}' and level='{level}'").format(
+                sql = "update {table} set CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', NAMESPACE='{namespace}'"
+                sql = (sql + " where CODE='{code}' and FD_LEVEL='{level}'").format(
                     table=table,
                     code=dashboard["code"],
                     namespace=dashboard["namespace"],
@@ -107,7 +107,7 @@ def insertDashboard(data):
                     sort=dashboard["sort"])
                 cursor.execute(sql)
             else:
-                sql = "insert into {table} (code, name, level, title, description, icon, namespace, sort) values ('{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}')"
+                sql = "insert into {table} (CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT) values ('{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}')"
                 sql = sql.format(
                     table=table,
                     code=dashboard["code"],
@@ -126,33 +126,33 @@ def insertDashbaordTl(data):
         dashboards = data["dashboard"]
         dataLanguageEnglish = data["language"]["English"]
         dataLanguageChinese = data["language"]["Chinese"]
-        table = "iam_dashboard_tl"
+        table = "IAM_DASHBOARD_TL"
         for i in dashboards:
             dashboard = dashboards[i]
-            Id = returnId("iam_dashboard", dashboard["code"], dashboard["namespace"])
+            Id = returnId("IAM_DASHBOARD", dashboard["code"], dashboard["namespace"])
             if Id:
-                sql = "select id from {table} where id={id}".format(
+                sql = "select ID from {table} where id={id}".format(
                         table=table,
-                        id=Id["id"])
+                        id=Id["ID"])
                 count = cursor.execute(sql)
                 if count == 0:
-                    insertTl(table, 'en_US', Id["id"], dataLanguageEnglish[i])
-                    insertTl(table, 'zh_CN', Id["id"], dataLanguageChinese[i])
+                    insertTl(table, 'en_US', Id["ID"], dataLanguageEnglish[i])
+                    insertTl(table, 'zh_CN', Id["ID"], dataLanguageChinese[i])
                 else:
-                    updateTl(table, 'en_US', Id["id"], dataLanguageEnglish[i])
-                    updateTl(table, 'zh_CN', Id["id"], dataLanguageChinese[i])
+                    updateTl(table, 'en_US', Id["ID"], dataLanguageEnglish[i])
+                    updateTl(table, 'zh_CN', Id["ID"], dataLanguageChinese[i])
     except:
         dealFault()
 
 def insertTl(table, lang, id, name):
-    sql = "insert into {table} (lang,id,name) values ('{lang}','{id}','{name}')".format(
+    sql = "insert into {table} (LANG, ID, NAME) values ('{lang}','{id}','{name}')".format(
         table=table,
         lang=lang,
         id=id,
         name=name)
     cursor.execute(sql)
 def updateTl(table, lang, id, name):
-    sql = "update {table} set id='{id}', name='{name}' where id={id} and lang='{lang}'".format(
+    sql = "update {table} set ID='{id}', NAME='{name}' where ID={id} and LANG='{lang}'".format(
         table=table,
         lang=lang,
         id=id,
