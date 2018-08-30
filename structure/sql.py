@@ -10,21 +10,21 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 # return menu id
 def returnMenuId(table, code, level):
-    sql = "select id from {table} where code = '{code}' and level = '{level}'".format(table=table,code=code, level=level)
+    sql = "select ID from {table} where CODE = '{code}' and FD_LEVEL = '{level}'".format(table=table,code=code, level=level)
     cursor.execute(sql)
     Id = cursor.fetchone()
     return Id
 # judge menu exist
 def judgeTrue(table, *args):
     if len(args) == 4:
-      sql = "select id from {table} where {content}='{equaldata}' and {contentTwo}='{equaldataTwo}'".format(
+      sql = "select ID from {table} where {content}='{equaldata}' and {contentTwo}='{equaldataTwo}'".format(
         table=table,
         content=args[0],
         equaldata=args[1],
         contentTwo=args[2],
         equaldataTwo=args[3])
     else:
-      sql = "select id from {table} where {content}='{equaldata}'".format(
+      sql = "select ID from {table} where {content}='{equaldata}'".format(
         table=table,
         content=args[0],
         equaldata=args[1])
@@ -38,13 +38,13 @@ def judgeTrue(table, *args):
 # delete menu by menu_id
 def deleteByMenuId(code, level):
     menuId = returnMenuId('IAM_MENU', code, level)
-    sql = "delete from IAM_MENU_TL where ID={menuId}".format(menuId=menuId["id"])
+    sql = "delete from IAM_MENU_TL where ID={menuId}".format(menuId=menuId["ID"])
     cursor.execute(sql)
-    sql = "delete from IAM_MENU_PERMISSION where MENU_ID={menuId}".format(menuId=menuId["id"])
+    sql = "delete from IAM_MENU_PERMISSION where MENU_ID={menuId}".format(menuId=menuId["ID"])
     cursor.execute(sql)
-    sql = "update IAM_MENU set parent_id=0 where PARENT_ID='{parent_id}'".format(parent_id=menuId["id"])
+    sql = "update IAM_MENU set PARENT_ID=0 where PARENT_ID='{parent_id}'".format(parent_id=menuId["ID"])
     cursor.execute(sql)
-    sql = "delete from IAM_MENU where ID='{menuId}'".format(menuId=menuId["id"])
+    sql = "delete from IAM_MENU where ID='{menuId}'".format(menuId=menuId["ID"])
     cursor.execute(sql)
 
 # return menu level
@@ -69,7 +69,7 @@ def insertMenuTable(table, data):
                         if service == level:
                             centerLevel.append(service)
                 for levelYaml in centerLevel:
-                    if judgeTrue(table, 'code', root, 'level', levelYaml):
+                    if judgeTrue(table, 'CODE', root, 'FD_LEVEL', levelYaml):
                         sql = "insert into {table} (CODE, NAME, FD_LEVEL, PARENT_ID, TYPE, IS_DEFAULT, ICON, SORT) values ('{code}', '{name}', '{level}', 0, 'root', 1, '{icon}', '{sort}')".format(
                             table=table,
                             code=root,
@@ -79,10 +79,10 @@ def insertMenuTable(table, data):
                             sort=dataMenu[root]["sort"])
                         cursor.execute(sql)
                     else:
-                        sql = "update {table} set CODE='{code}', NAME='{name}', LEVEL='{level}', ICON='{icon}'"
+                        sql = "update {table} set CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}'"
                         if attrs and ('sort' in attrs):
                             sql = sql + ", SORT='{sort}'";
-                        sql = (sql + " where CODE='{code}' and LEVEL='{level}'").format(
+                        sql = (sql + " where CODE='{code}' and FD_LEVEL='{level}'").format(
                             table=table,
                             code=root,
                             name=dataLanguageChinese[root],
@@ -98,37 +98,37 @@ def insertMenuTable(table, data):
                         centerLevel.append(saveLevel)
             for level in centerLevel:
                 for menuList in dataMenu[service][level]:
-                    sql = "select id from IAM_MENU where CODE='{service}' and LEVEL='{level}'".format(
+                    sql = "select ID from IAM_MENU where CODE='{service}' and FD_LEVEL='{level}'".format(
                     service=service,
                     level=level)
                     count = cursor.execute(sql)
                     serviceId = cursor.fetchone()
                     if dataMenu[service][level][menuList]:
-                        if judgeTrue(table, 'code', menuList):
-                            if serviceId and ('id' in serviceId):
+                        if judgeTrue(table, 'CODE', menuList):
+                            if serviceId and ('ID' in serviceId):
                                 sql = "insert into {table} (CODE, NAME, FD_LEVEL, PARENT_ID, TYPE, IS_DEFAULT, ICON, ROUTE, SORT) values ('{code}', '{name}', '{level}', '{parent_id}', 'menu', 1, '{icon}', '{route}', '{sort}')".format(
                                     table=table,
                                     code=menuList,
                                     name=dataLanguageChinese[menuList],
                                     level=level,
-                                    parent_id=serviceId["id"],
+                                    parent_id=serviceId["ID"],
                                     icon=dataMenu[service][level][menuList]["icon"],
                                     route=dataMenu[service][level][menuList]["Routes"],
                                     sort=dataMenu[service][level][menuList]["sort"])
                                 cursor.execute(sql)
                         else:
-                            if serviceId and ('id' in serviceId):
+                            if serviceId and ('ID' in serviceId):
                                 sql = "update {table} set CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}', ROUTE='{route}'"
                                 if attrs and ('sort' in attrs):
                                     sql = sql + ", SORT='{sort}'";
                                 if attrs and ('parent_id' in attrs):
                                     sql = sql + ", PARENT_ID='{parent_id}'";
-                                sql = (sql + " where CODE='{code}' and LEVEL='{level}'").format(
+                                sql = (sql + " where CODE='{code}' and FD_LEVEL='{level}'").format(
                                     table=table,
                                     code=menuList,
                                     name=dataLanguageChinese[menuList],
                                     level=level,
-                                    parent_id=serviceId["id"],
+                                    parent_id=serviceId["ID"],
                                     icon=dataMenu[service][level][menuList]["icon"],
                                     route=dataMenu[service][level][menuList]["Routes"],
                                     sort=dataMenu[service][level][menuList]["sort"])
@@ -149,15 +149,15 @@ def insertMenuPermission(table, data):
             for level in centerLevel:
                 for menuList in dataMenu[service][level].keys():
                     menuId = returnMenuId('IAM_MENU', menuList, level)
-                    sql = "delete from {table} where MENU_ID={menuId}".format(table=table,menuId=menuId["id"])
+                    sql = "delete from {table} where MENU_ID={menuId}".format(table=table,menuId=menuId["ID"])
                     cursor.execute(sql)
                     for permission in dataMenu[service][level][menuList]["permission"]:
                         if menuId:
-                            sql = "select ID from IAM_MENU_PERMISSION where MENU_ID={menuId} and PERMISSION_CODE='{permission_code}'".format(menuId=menuId["id"],permission_code=permission)
+                            sql = "select ID from IAM_MENU_PERMISSION where MENU_ID={menuId} and PERMISSION_CODE='{permission_code}'".format(menuId=menuId["ID"],permission_code=permission)
                             cursor.execute(sql)
                             count = cursor.execute(sql)
                             if count == 0:
-                                sql = "insert into {table} (MENU_ID, PERMISSION_CODE) values ('{menuId}','{permission_code}')".format(table=table,menuId=menuId["id"],permission_code=permission)
+                                sql = "insert into {table} (MENU_ID, PERMISSION_CODE) values ('{menuId}','{permission_code}')".format(table=table,menuId=menuId["ID"],permission_code=permission)
                                 cursor.execute(sql)
     except:
         dealFault()
@@ -177,15 +177,15 @@ def insertMenuTlTable(table, data):
                     dataLanguageChinese = data["language"]["Chinese"]
                     menuId = returnMenuId('IAM_MENU', menuList, level)
                     if menuId:
-                        sql = "select ID from {table} where ID={menuId}".format(table=table,menuId=menuId["id"])
+                        sql = "select ID from {table} where ID={menuId}".format(table=table,menuId=menuId["ID"])
                         cursor.execute(sql)
                         count = cursor.execute(sql)
                         if count == 0:
-                            insertMenuTl(table, 'en_US', menuId["id"], dataLanguageEnglish[menuList])
-                            insertMenuTl(table, 'zh_CN', menuId["id"], dataLanguageChinese[menuList])
+                            insertMenuTl(table, 'en_US', menuId["ID"], dataLanguageEnglish[menuList])
+                            insertMenuTl(table, 'zh_CN', menuId["ID"], dataLanguageChinese[menuList])
                         else:
-                            updateMenuTl(table, 'en_US', menuId["id"], dataLanguageEnglish[menuList])
-                            updateMenuTl(table, 'zh_CN', menuId["id"], dataLanguageChinese[menuList])
+                            updateMenuTl(table, 'en_US', menuId["ID"], dataLanguageEnglish[menuList])
+                            updateMenuTl(table, 'zh_CN', menuId["ID"], dataLanguageChinese[menuList])
     except:
         dealFault()
 
@@ -206,14 +206,14 @@ def insertServiceTlTable(table, data):
                 if menuId:
                   sql = "select ID from {table} where ID={id}".format(
                       table=table,
-                      id=menuId["id"])
+                      id=menuId["ID"])
                   count = cursor.execute(sql)
                   if count == 0:
-                      insertMenuTl(table, 'en_US', menuId["id"], dataLanguageEnglish[service])
-                      insertMenuTl(table, 'zh_CN', menuId["id"], dataLanguageChinese[service])
+                      insertMenuTl(table, 'en_US', menuId["ID"], dataLanguageEnglish[service])
+                      insertMenuTl(table, 'zh_CN', menuId["ID"], dataLanguageChinese[service])
                   else:
-                      updateMenuTl(table, 'en_US', menuId["id"], dataLanguageEnglish[service])
-                      updateMenuTl(table, 'zh_CN', menuId["id"], dataLanguageChinese[service])
+                      updateMenuTl(table, 'en_US', menuId["ID"], dataLanguageEnglish[service])
+                      updateMenuTl(table, 'zh_CN', menuId["ID"], dataLanguageChinese[service])
     except:
         dealFault()
 def insertMenuTl(table, lang, id, name):

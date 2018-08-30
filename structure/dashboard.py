@@ -133,14 +133,14 @@ def insertDashbaordTl(data):
             if Id:
                 sql = "select ID from {table} where id={id}".format(
                         table=table,
-                        id=Id["id"])
+                        id=Id["ID"])
                 count = cursor.execute(sql)
                 if count == 0:
-                    insertTl(table, 'en_US', Id["id"], dataLanguageEnglish[i])
-                    insertTl(table, 'zh_CN', Id["id"], dataLanguageChinese[i])
+                    insertTl(table, 'en_US', Id["ID"], dataLanguageEnglish[i])
+                    insertTl(table, 'zh_CN', Id["ID"], dataLanguageChinese[i])
                 else:
-                    updateTl(table, 'en_US', Id["id"], dataLanguageEnglish[i])
-                    updateTl(table, 'zh_CN', Id["id"], dataLanguageChinese[i])
+                    updateTl(table, 'en_US', Id["ID"], dataLanguageEnglish[i])
+                    updateTl(table, 'zh_CN', Id["ID"], dataLanguageChinese[i])
     except:
         dealFault()
 
