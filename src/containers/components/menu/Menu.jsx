@@ -308,7 +308,7 @@ export default class CommonMenu extends Component {
             mode="inline"
             inlineCollapsed={collapsed}
             selectedKeys={[activeMenu && activeMenu.code]}
-            openKeys={openKeys}
+            openKeys={openKeys.slice()}
             onOpenChange={this.handleOpenChange}
           >
             {menu.subMenus.map(two => this.getMenuSingle(two, 0))}

@@ -11,7 +11,7 @@ const dashboardTemplate = fs.readFileSync(path.join(__dirname, '../../nunjucks/d
 
 function normalizeDashBoardComponentOrLocale(components, key, dir) {
   glob.sync(path.join(process.cwd(), dir)).forEach((match) => {
-    components.push(`"${key}/${path.basename(match, path.extname(match))}": () => import("${match}"),`);
+    components.push(`"${key}/${path.basename(match, path.extname(match))}": function() { return import("${match}"); },`);
   });
 }
 
