@@ -1,9 +1,9 @@
 $c7n-boot-dashboard: c7n-boot-dashboard;
 
 .#{$c7n-boot-dashboard} {
-
   .ant-spin-nested-loading {
     width: 100%;
+    flex: 1 1 0;
   }
   .ant-spin-container {
     height: 100%;
