@@ -5,16 +5,17 @@ import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import Column from './Column';
+import Page from '../page';
+import Header from '../page/Header';
+import Content from '../page/Content';
 import './style';
 
+const COLUMN_COUNT = 3;
+
 function normalizeColumns(items) {
-  const columns = {
-    0: [],
-    1: [],
-    2: [],
-  };
+  const columns = new Array(COLUMN_COUNT).fill().map(() => []);
   items.slice().sort(({ sort }, { sort: sort2 }) => sort - sort2).forEach((item) => {
-    columns[(item.sort - 1) % 3].push(item);
+    columns[(item.sort - 1) % COLUMN_COUNT].push(item);
   });
   return columns;
 }
@@ -22,7 +23,7 @@ function normalizeColumns(items) {
 function resortColumn(column, columnIndex) {
   if (column.length > 0) {
     column.forEach(action((data, index) => {
-      const sort = index * 3 + columnIndex + 1;
+      const sort = index * COLUMN_COUNT + columnIndex + 1;
       data.sort = sort;
       return sort;
     }));
@@ -45,6 +46,12 @@ function clearDragCard() {
   });
 }
 
+const animations = {
+  length: 0,
+  runLength: 0,
+  callback: null,
+};
+
 @inject('DashboardStore')
 @injectIntl
 @observer
@@ -60,6 +67,18 @@ export default class Dashboard extends Component {
   componentWillReceiveProps() {
     this.fetchData();
   }
+
+  handleAnimateEnd = (callback) => {
+    animations.runLength += 1;
+    if (callback) {
+      animations.callback = callback;
+    }
+    if (animations.length === animations.runLength && animations.callback) {
+      animations.callback();
+      animations.runLength = 0;
+      animations.callback = null;
+    }
+  };
 
   handleEdit = () => {
     this.props.DashboardStore.setEditing(true);
@@ -122,9 +141,13 @@ export default class Dashboard extends Component {
 
   renderHeader(editing) {
     return (
-      <header className={`${PREFIX_CLS}-header`}>
-        <Icon type="home" />
-        <FormattedMessage id="boot.dashboard.home" />
+      <Header
+        className={`${PREFIX_CLS}-header`}
+        title={[
+          <Icon type="home" key="icon" />,
+          <FormattedMessage id="boot.dashboard.home" key="title" />,
+        ]}
+      >
         {
           editing ? (
             <Button
@@ -144,24 +167,27 @@ export default class Dashboard extends Component {
             </Button>
           )
         }
-      </header>
+      </Header>
     );
   }
 
   renderColumns() {
-    const { DashboardStore: { getDashboardData: items } } = this.props;
+    const { DashboardStore: { getDashboardData: items }, dashboardLocale, dashboardComponents } = this.props;
     const columns = normalizeColumns(items);
+    animations.length = items.length;
     return Object.keys(columns).map(key => (
       <Col key={key} span={8}>
         <Column
           prefixCls={PREFIX_CLS}
           column={columns[key]}
           sort={key}
-          components={this.props}
+          components={dashboardComponents}
+          locale={dashboardLocale}
           dragData={dragCard.data}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
           onDrop={this.handleDrop}
+          onAnimateEnd={this.handleAnimateEnd}
         />
       </Col>
     ));
@@ -169,20 +195,22 @@ export default class Dashboard extends Component {
 
   render() {
     const { DashboardStore: { editing, loading } } = this.props;
-    const classString = classNames(`${PREFIX_CLS}-container`, {
+    const classString = classNames({
       [`${PREFIX_CLS}-dragging`]: !!dragCard.data,
       [`${PREFIX_CLS}-editing`]: editing,
     });
 
     return (
-      <div className={PREFIX_CLS}>
+      <Page className={PREFIX_CLS}>
         {this.renderHeader(editing)}
-        <Spin spinning={loading} wrapperClassName={classString}>
-          <Row type="flex" gutter={20}>
-            {this.renderColumns()}
-          </Row>
-        </Spin>
-      </div>
+        <Content className={classString}>
+          <Spin spinning={loading}>
+            <Row type="flex" gutter={20}>
+              {this.renderColumns()}
+            </Row>
+          </Spin>
+        </Content>
+      </Page>
     );
   }
 }

@@ -8,7 +8,7 @@ import escapeWinPath from './escapeWinPath';
 const routesTemplate = fs.readFileSync(path.join(__dirname, '../../nunjucks/routes.nunjucks.js')).toString();
 
 export default function getRoutesPath(packageInfo, configEntryName, dashboardPath) {
-  const { tmpDirPath, choerodonConfig: { routes } } = context;
+  const { tmpDirPath, isDev, choerodonConfig: { routes } } = context;
   const configRoutes = routes || getPackageRoute(packageInfo);
   const routesPath = path.join(tmpDirPath, `routes.${configEntryName}.js`);
   nunjucks.configure(routesPath, {
@@ -18,9 +18,10 @@ export default function getRoutesPath(packageInfo, configEntryName, dashboardPat
     routesPath,
     nunjucks.renderString(routesTemplate, {
       routes: Object.keys(configRoutes).map(key => (
-        `createRoute("/${key}", () => import("${escapeWinPath(path.join(process.cwd(), configRoutes[key]))}"))`
+        `createRoute("/${key}", function() { return import("${escapeWinPath(path.join(process.cwd(), configRoutes[key]))}"); })`
       )).join(',\n'),
       dashboardPath: escapeWinPath(dashboardPath),
+      source: isDev ? 'src' : 'lib',
     }),
   );
   return routesPath;

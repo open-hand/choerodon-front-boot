@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { noaccess, nomatch } from '../lib/containers/components';
+import { noaccess, nomatch } from '../src/containers/components';
 
 export default class RouteIndex extends Component {
   render() {

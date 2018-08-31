@@ -48,6 +48,11 @@
     }
     .ant-table {
       a {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+        display: inline-block;
         color: #000;
         &:hover {
           text-decoration: underline;

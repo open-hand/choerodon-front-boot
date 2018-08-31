@@ -240,7 +240,7 @@ export default class CommonMenu extends Component {
           <div className="common-menu-right-content">
             <Menu
               onClick={this.handleClick}
-              openKeys={MenuStore.leftOpenKeys}
+              openKeys={MenuStore.leftOpenKeys.slice()}
               onOpenChange={this.handleLeftOpenChange}
               selectedKeys={[selected.code]}
               mode="vertical"
@@ -308,7 +308,7 @@ export default class CommonMenu extends Component {
             mode="inline"
             inlineCollapsed={collapsed}
             selectedKeys={[activeMenu && activeMenu.code]}
-            openKeys={openKeys}
+            openKeys={openKeys.slice()}
             onOpenChange={this.handleOpenChange}
           >
             {menu.subMenus.map(two => this.getMenuSingle(two, 0))}
@@ -323,7 +323,7 @@ export default class CommonMenu extends Component {
 
   render() {
     // 服务的菜单
-    const { MenuStore, AppState } = this.props;
+    const { MenuStore, AppState, location } = this.props;
     const child = MenuStore.getMenuData;
     if (child && child.length > 0) {
       const { selected } = MenuStore;
@@ -339,7 +339,7 @@ export default class CommonMenu extends Component {
         <div style={{ height: '100%' }}>
           <div className="common-menu">
             {this.renderLeftMenu(child, selected || child[0], expanded)}
-            {this.renderRightMenu(selected || child[0])}
+            {location.pathname !== '/' && this.renderRightMenu(selected || child[0])}
           </div>
           {mask}
         </div>

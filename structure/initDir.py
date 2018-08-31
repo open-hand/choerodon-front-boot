@@ -10,13 +10,13 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 # return menu id
 def returnTableId(table, content, equaldata):
-    sql = "select id from {table} where {content} = '{equaldata}'".format(table=table,content=content, equaldata=equaldata)
+    sql = "select ID from {table} where {content} = '{equaldata}'".format(table=table,content=content, equaldata=equaldata)
     cursor.execute(sql)
     Id = cursor.fetchone()
     return Id
 # judge menu exist
 def judgeTrue(table, code, level):
-    sql = "select id from {table} where code='{code}' and level='{level}' and type='dir'".format(
+    sql = "select ID from {table} where CODE='{code}' and FD_LEVEL='{level}' and TYPE='dir'".format(
         table=table,
         code=code,
         level=level)
@@ -25,12 +25,12 @@ def judgeTrue(table, code, level):
     parent_id = cursor.fetchone()
     # print count
     if parent_id:
-        return parent_id["id"]
+        return parent_id["ID"]
     else:
         return 0
 
 def getParentId(table, code, level):
-    sql = "select id from {table} where code='{code}' and level='{level}'".format(
+    sql = "select ID from {table} where CODE='{code}' and FD_LEVEL='{level}'".format(
         table=table,
         code=code,
         level=level)
@@ -38,7 +38,7 @@ def getParentId(table, code, level):
     count = cursor.execute(sql)
     parent_id = cursor.fetchone()
     if parent_id:
-        return parent_id["id"]
+        return parent_id["ID"]
     else:
         return 0
 
@@ -50,7 +50,7 @@ def insertDir(table, data):
             dirId = judgeTrue(table, dir["code"], dir["level"]);
             if dirId == 0:
                 parent = getParentId(table, dir["parent"], dir["level"])
-                sql = "insert into {table} (code, name, level, parent_id, type, is_default, icon, sort) values ('{code}', '{name}', '{level}', {parent_id}, 'dir', 0, '{icon}', '{sort}')".format(
+                sql = "insert into {table} (CODE, NAME, FD_LEVEL, PARENT_ID, TYPE, IS_DEFAULT, ICON, SORT) values ('{code}', '{name}', '{level}', {parent_id}, 'dir', 0, '{icon}', '{sort}')".format(
                           table=table,
                           code=dir["code"],
                           name=dir["name"],
@@ -60,20 +60,20 @@ def insertDir(table, data):
                           parent_id=parent)
                 cursor.execute(sql)
                 dirId = cursor.lastrowid
-                sql = "insert into iam_menu_tl (id, lang, name) values ('{id}', '{lang}', '{name}')".format(
+                sql = "insert into IAM_MENU_TL (ID, LANG, NAME) values ('{id}', '{lang}', '{name}')".format(
                     id=dirId,
                     lang="zh_CN",
                     name=dir["name"]
                 )
                 cursor.execute(sql)
-                sql = "insert into iam_menu_tl (id, lang, name) values ('{id}', '{lang}', '{name}')".format(
+                sql = "insert into IAM_MENU_TL (ID, LANG, NAME) values ('{id}', '{lang}', '{name}')".format(
                     id=dirId,
                     lang="en_US",
                     name=dir["enName"]
                 )
                 cursor.execute(sql)                
             for sub in dir["subMenu"]:
-                sql = "update {table} set parent_id = {dir_id} where code='{subCode}'".format(
+                sql = "update {table} set PARENT_ID = {dir_id} where CODE='{subCode}'".format(
                     table=table,
                     dir_id=dirId,
                     subCode=sub)
@@ -120,6 +120,6 @@ if __name__ == '__main__':
     cursor = db.cursor()
     DB_NAME = os.getenv("DB_NAME", "iam_service")
     db.select_db(DB_NAME)
-    insertDir('iam_menu', contentConfig)
+    insertDir('IAM_MENU', contentConfig)
 
     ymlFile.close()

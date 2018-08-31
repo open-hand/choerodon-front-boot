@@ -19,9 +19,9 @@ export default class PageContent extends Component {
       const { name = HEADER_TITLE_NAME } = currentMenuType;
       const { messages } = intl;
       title = intl.formatMessage({ id: `${code}.title` }, values || { name });
-      description = intl.formatMessage({ id: `${code}.description` });
+      description = intl.formatMessage({ id: `${code}.description` }, values);
       if (messages[`${code}.link`]) {
-        link = intl.formatMessage({ id: `${code}.link` });
+        link = intl.formatMessage({ id: `${code}.link` }, values);
       }
     }
     return (
