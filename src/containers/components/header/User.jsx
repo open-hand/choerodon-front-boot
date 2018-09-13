@@ -5,6 +5,9 @@ import { Button, Popover } from 'choerodon-ui';
 import Avatar from './Avatar';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 import { getMessage, historyPushMenu, logout } from '../../common';
+import { PREFIX_CLS } from '../../common/constants';
+
+const prefixCls = `${PREFIX_CLS}-boot-header-user`;
 
 @withRouter
 @inject('AppState', 'MenuStore', 'HeaderStore')
@@ -36,20 +39,20 @@ export default class UserPreferences extends Component {
     const { AppState, HeaderStore } = this.props;
     const { imageUrl, loginName, realName, email } = AppState.getUserInfo || {};
     const AppBarIconRight = (
-      <div className="user-preference-popover-content">
-        <Avatar src={imageUrl}>
+      <div className={`${prefixCls}-popover-content`}>
+        <Avatar src={imageUrl} prefixCls={prefixCls}>
           {realName && realName.charAt(0)}
         </Avatar>
-        <div className="popover-title">
+        <div className={`${prefixCls}-popover-title`}>
           {loginName}
         </div>
-        <div className="popover-text">
+        <div className={`${prefixCls}-popover-text`}>
           {realName}
         </div>
-        <div className="popover-text">
+        <div className={`${prefixCls}-popover-text`}>
           {email}
         </div>
-        <div className="popover-button-wrapper">
+        <div className={`${prefixCls}-popover-button-group`}>
           <Button
             funcType="raised"
             type="primary"
@@ -68,14 +71,14 @@ export default class UserPreferences extends Component {
     );
     return (
       <Popover
-        overlayClassName="user-preference-popover"
+        overlayClassName={`${prefixCls}-popover`}
         content={AppBarIconRight}
         trigger="click"
         visible={HeaderStore.userPreferenceVisible}
         placement="bottomRight"
         onVisibleChange={this.handleVisibleChange}
       >
-        <Avatar src={imageUrl}>
+        <Avatar src={imageUrl} prefixCls={prefixCls}>
           {realName && realName.charAt(0)}
         </Avatar>
       </Popover>

@@ -1,0 +1,90 @@
+@import "../../style/theme/default";
+@import "../../style/mixin/link";
+
+$c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
+
+.#{$c7n-boot-header-inbox} {
+  .icon {
+    color: #fff;
+    font-size: 23px;
+  }
+  &-popover {
+    width: 300px;
+    .is-empty {
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+    &-header {
+      padding: 0 16px;
+      line-height: 48px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      span {
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      a {
+        float: right;
+        color: $primary-color;
+      }
+    }
+    &-content {
+      overflow: hidden;
+      ul {
+        padding: 0 16px;
+        list-style: none;
+      }
+      li {
+        margin: 12px 0;
+        div {
+          display: inline-block;
+          width: 236px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: middle;
+        }
+      }
+      label {
+        font-size: 13px;
+        line-height: 20px;
+      }
+      p {
+        font-size: 10px;
+        margin: 0;
+      }
+      .icon {
+        color: #a3a3a3;
+        margin-left: 16px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    }
+    &-footer {
+      background-color: #fff;
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+      line-height: 48px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: $primary-color;
+
+      @include button-link-masker();
+    }
+
+    .ant-popover-inner-content {
+      padding: 0;
+    }
+  }
+  &-empty {
+    margin-top: 28px;
+    margin-bottom: 28px;
+    padding-top: 124px;
+    text-align: center;
+    font-size: 14px;
+    color: rgba(140, 140, 140, 0.54);
+    line-height: 48px;
+    background-image: url("./icons/inbox_empty.svg");
+    background-repeat: no-repeat;
+    background-position: top;
+  }
+}

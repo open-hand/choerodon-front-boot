@@ -26,7 +26,7 @@ export default function updateWebpackConfig(mode, env) {
   const webpackConfig = getWebpackCommonConfig(mode, env);
   const { choerodonConfig } = context;
   const {
-    theme, output, root, enterPoints, server, fileServer, clientid, local,
+    theme, output, root, enterPoints, server, fileServer, webSocketServer, clientid, local,
     postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
@@ -53,6 +53,7 @@ export default function updateWebpackConfig(mode, env) {
       LOCAL: local,
       VERSION: '本地',
       FILE_SERVER: fileServer,
+      WEBSOCKET_SERVER: webSocketServer,
     };
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;

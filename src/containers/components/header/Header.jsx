@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import classnames from 'classnames';
 import MenuType from './MenuType';
 import Logo from './Logo';
 import Setting from './Setting';
-import UserPreferences from './UserPreferences';
+import User from './User';
+import Inbox from './Inbox';
+import { PREFIX_CLS } from '../../common/constants';
 import './style';
+
+const prefixCls = `${PREFIX_CLS}-boot-header`;
 
 @inject('AppState', 'HeaderStore', 'MenuStore')
 @observer
@@ -17,45 +20,30 @@ class Header extends Component {
   }
 
   render() {
-    const { AppState, MenuStore } = this.props;
-    const type = AppState.getType || sessionStorage.type;
-    const menuTypeStyle = classnames({
-      'masterHead-hoverMaster': true,
-      'masterHead-menuType': true,
-      'masterHead-menuType-showBG': type !== 'site',
-      'masterHead-menuType-hideBG': type === 'site',
-    });
-    const logoStyle = classnames({
-      'masterHead-hoverMaster': true,
-      'masterHead-logo-wrap': true,
-      'masterHead-menuType-showBG': type === 'site',
-      'masterHead-menuType-hideBG': type !== 'site',
-    });
-    let imgUrl;
-    const data = AppState.getUserInfo;
-    if (data) {
-      imgUrl = data.image_url;
-    }
+    const { AppState: { getUserInfo: { image_url: imgUrl } }, MenuStore: { getSiteMenuData }, history } = this.props;
     return (
-      <div className="master-head-wrap">
-        <div className="master-head-left">
-          <Logo history={this.props.history} />
+      <div className={`${prefixCls}-wrap`}>
+        <div className={`${prefixCls}-left`}>
+          <Logo history={history} />
         </div>
-        <ul className="master-head-center">
-          <li className={menuTypeStyle}>
+        <ul className={`${prefixCls}-center`}>
+          <li>
             <MenuType />
           </li>
           {
-            MenuStore.getSiteMenuData.length > 0 && (
-              <li className={logoStyle}>
+            getSiteMenuData.length > 0 && (
+              <li>
                 <Setting />
               </li>
             )
           }
         </ul>
-        <ul className="master-head-right">
+        <ul className={`${prefixCls}-right`}>
           <li>
-            <UserPreferences imgUrl={imgUrl} />
+            <Inbox />
+          </li>
+          <li>
+            <User imgUrl={imgUrl} />
           </li>
         </ul>
       </div>

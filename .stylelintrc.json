@@ -3,6 +3,7 @@
     "stylelint-config-standard"
   ],
   "rules": {
+    "at-rule-no-unknown": null,
     "comment-empty-line-before": null,
     "declaration-empty-line-before": null,
     "function-comma-newline-after": null,

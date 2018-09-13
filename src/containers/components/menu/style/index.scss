@@ -1,6 +1,6 @@
-/* .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-  background-color: #f0f4fd !important;
-} */
+@import "../../style/theme/default";
+@import "../../style/mixin/link";
+
 :root .ant-menu-submenu-inline > .ant-menu-submenu-title:after {
   font-size: 16px;
 }
@@ -11,23 +11,14 @@
 
 .common-menu {
   display: flex;
-  position: relative;
   width: 100%;
   height: 100%;
   a {
     text-decoration: none;
     color: inherit;
-    display: block;
-    &:before {
-      position: absolute;
-      background-color: transparent;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      content: '';
-    }
   }
+
+  @include button-link-masker();
   .icon + span {
     transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
@@ -56,7 +47,7 @@
         display: flex;
         align-items: center;
         > a:hover {
-          color: #3f51b5;
+          color: $primary-color;
         }
       }
     }
@@ -101,7 +92,7 @@
       &-selected,
       &-selected:hover {
         color: #fff;
-        background-color: #3f51b5;
+        background-color: $primary-color;
       }
     }
     &-header {
@@ -133,7 +124,7 @@
     .ant-menu-item-selected,
     .ant-menu-vertical .ant-menu-submenu-selected,
     &-popup .ant-menu-item-selected {
-      color: #3f51b5;
+      color: $primary-color;
       background-color: rgba(140, 158, 255, 0.16) !important;
     }
     &-popup.ant-menu-submenu-popup {

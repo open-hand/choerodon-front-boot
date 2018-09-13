@@ -4,6 +4,9 @@
 
 ## [0.7.4]
 
+### 新增
+- 新增WSProvider, WSHandler组件, 用于提供websocket服务
+
 ### 修改
 
 - 升级组件库choerodon-ui@0.3.9

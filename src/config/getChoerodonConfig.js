@@ -28,6 +28,7 @@ const defaultConfig = {
   local: true,
   server: 'http://api.example.com',
   fileServer: 'http://file.example.com',
+  webSocketServer: 'ws://ws.example.com',
   clientid: 'localhost',
   titlename: 'Choerodon',
   favicon: 'favicon.ico',
