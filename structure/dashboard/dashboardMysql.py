@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pymysql
-import os
-import traceback
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+from dashboard import Dashboard
 
-class DashboardMysql:
-    db = {}
-    cursor = {}
+class DashboardMysql(Dashboard):
     def __init__(self, config, schema):
         dbConfig = {
             'charset': 'utf8',
@@ -20,12 +14,6 @@ class DashboardMysql:
         self.db.autocommit(1)
         self.db.select_db(schema)
         self.cursor = self.db.cursor()
-
-    def returnId(self, table, code, namespace):
-        sql = "SELECT ID FROM {table} WHERE CODE='{code}' AND NAMESPACE='{namespace}'".format(table=table, code=code, namespace=namespace)
-        self.cursor.execute(sql)
-        Id = self.cursor.fetchone()
-        return Id
 
     def insertDashboard(self, data):
         try:
@@ -113,24 +101,3 @@ class DashboardMysql:
                                     self.cursor.execute(sql)
         except:
             self.dealFault()
-
-    def insertTl(self, table, lang, id, name):
-        sql = "INSERT INTO {table} (LANG, ID, NAME) VALUES ('{lang}','{id}','{name}')".format(
-            table=table,
-            lang=lang,
-            id=id,
-            name=name)
-        self.cursor.execute(sql)
-    def updateTl(self, table, lang, id, name):
-        sql = "UPDATE {table} SET ID='{id}', NAME='{name}' WHERE ID={id} AND LANG='{lang}'".format(
-            table=table,
-            lang=lang,
-            id=id,
-            name=name)
-        self.cursor.execute(sql)
-    def dealFault(self):
-        traceback.print_exc()
-        self.db.rollback()
-    def close(self):
-        self.cursor.close()
-        self.db.close()
