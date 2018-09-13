@@ -31,3 +31,6 @@ webpack/dll
 #python的test
 
 testwork/test/test
+
+*.pyc
+*.spec
