@@ -2,13 +2,9 @@
 # -*- coding: utf-8 -*-
 import cx_Oracle
 import os
-import traceback
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+from menu import Menu
 
-
-class MenuOracle:
+class MenuOracle(Menu):
     levelArray = ["site", "organization", "project", "user"]
     db = {}
     cursor = {}
@@ -23,12 +19,6 @@ class MenuOracle:
         self.cursor = self.db.cursor()
         self.attrs = attrs
 
-    # return menu id
-    def returnMenuId(self, table, code, level):
-        sql = "SELECT ID FROM {table} WHERE CODE = '{code}' AND FD_LEVEL = '{level}'".format(table=table,code=code, level=level)
-        self.cursor.execute(sql)
-        Id = self.cursor.fetchone()
-        return Id
     # judge menu exist
     def judgeTrue(self, table, *args):
         if len(args) == 4:
@@ -60,16 +50,6 @@ class MenuOracle:
             sql = "DELETE FROM IAM_MENU WHERE ID='{menuId}'".format(menuId=menuId[0])
             self.cursor.execute(sql)
 
-    # return menu level
-    def returnLevel(self, data):
-        dataMenu = data["menu"]
-        centerLevel = []
-        for service in dataMenu.keys():
-            for level in self.levelArray:
-                for saveLevel in dataMenu[service].keys():
-                    if saveLevel == level:
-                        centerLevel.append(saveLevel)
-        return centerLevel
     # insert IAM_MENU
     def insertMenuTable(self, table, data):
         try:
@@ -227,52 +207,3 @@ class MenuOracle:
                           self.updateMenuTl(table, 'zh_CN', menuId[0], dataLanguageChinese[service])
         except:
             self.dealFault()
-    def insertMenuTl(self, table, lang, id, name):
-        sql = "INSERT INTO {table} (LANG, ID, NAME) VALUES ('{lang}','{id}','{name}')".format(
-            table=table,
-            lang=lang,
-            id=id,
-            name=name)
-        self.cursor.execute(sql)
-    def updateMenuTl(self, table, lang, id, name):
-        sql = "UPDATE {table} SET ID='{id}', NAME='{name}' WHERE ID={id} AND LANG='{lang}'".format(
-            table=table,
-            lang=lang,
-            id=id,
-            name=name)
-        self.cursor.execute(sql)
-
-    def deleteMenu(self, data):
-        try:
-            dataMenu = data["menu"]
-            dataLanguageChinese = data["language"]["Chinese"]
-            for root in dataMenu:
-                centerLevel = []
-                for level in self.levelArray:
-                  for service in dataMenu[root]:
-                      if service == level:
-                          centerLevel.append(service)
-                for level in centerLevel:
-                    if "delete" in dataMenu[root] and (dataMenu[root]["delete"] == True):
-                        self.deleteByMenuId(root, level)
-
-            for service in dataMenu:
-                centerLevel = []
-                for level in self.levelArray:
-                    for saveLevel in dataMenu[service].keys():
-                        if saveLevel == level:
-                            centerLevel.append(saveLevel)
-                for level in centerLevel:
-                    for menuList in dataMenu[service][level]:
-                        if "delete" in dataMenu[service][level][menuList] and dataMenu[service][level][menuList]["delete"] == True:
-                            self.deleteByMenuId(menuList, level)
-        except:
-            self.dealFault()
-
-
-    def dealFault(self):
-        traceback.print_exc()
-        self.db.rollback()
-    def close(self):
-        self.cursor.close()
-        self.db.close()
