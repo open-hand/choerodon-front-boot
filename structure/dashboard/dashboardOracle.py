@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import cx_Oracle
 import os
-from dashboard import Dashboard
+from Dashboard import Dashboard
 
 class DashboardOracle(Dashboard):
     db = {}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pymysql
-from menu import Menu
+from Menu import Menu
 
 class MenuMysql(Menu):
     

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pymysql
-from dashboard import Dashboard
+from Dashboard import Dashboard
 
 class DashboardMysql(Dashboard):
     def __init__(self, config, schema):
