@@ -27,13 +27,6 @@ serviceCode = 'choerodon.code'
 serviceGroup = 'choerodon-front'
 serviceKind = 'choerodon-front'
 
-# 把文件写去yml文件
-def writeYml(obj, pathDir, language=None):
-    ymlString = pathDir.format(baseDirs = baseDirs, language = language)
-    ymlFile = open(ymlString, 'w+')
-    ymlFile.write(json.dumps(obj))
-    ymlFile.close()
-
 def writeYml(modules, newPathDir, language=None):
     whole = {
         "group": serviceGroup,
@@ -100,7 +93,7 @@ def menuDirYml(menuYmlContent, moduleDir):
     for (n,index) in zip(menuYmlContent,range(0,len(menuYmlContent))):
         for j in n.keys():
             centerMenuDir = '{codeModule}.{menu}'.format(codeModule = moduleDir,menu = j)
-            centerLevel[centerMenuDir] = menuYmlContent[index][j];
+            centerLevel[centerMenuDir] = menuYmlContent[index][j]
     return centerLevel
 
 if __name__ == '__main__':
@@ -131,7 +124,7 @@ if __name__ == '__main__':
         writeYml(modules, newPathDir["wholeConfig"])
     elif (cmp(options, "sql") == 0) :
         try:
-            wholeConfig = newPathDir["wholeConfig"].format(baseDirs=baseDirs);
+            wholeConfig = newPathDir["wholeConfig"].format(baseDirs=baseDirs)
             ymlFile = open(wholeConfig)
             contentConfig = yaml.load(ymlFile)
         except:
