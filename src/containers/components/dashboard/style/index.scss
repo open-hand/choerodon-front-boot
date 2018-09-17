@@ -1,4 +1,7 @@
-$c7n-boot-dashboard: c7n-boot-dashboard;
+@import "../../style/theme/default";
+@import "../../style/mixin/link";
+
+$c7n-boot-dashboard: #{$c7n-prefix}-boot-dashboard;
 
 .#{$c7n-boot-dashboard} {
   .ant-spin-nested-loading {
@@ -19,7 +22,7 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
       font-size: 13px;
       float: right;
       margin-top: 13px;
-      color: #3f51b5;
+      color: $primary-color;
     }
 
     .page-head-title {
@@ -176,7 +179,6 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
   }
 
   &-navbar {
-    position: relative;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
     padding: 13px 16px;
 
@@ -192,18 +194,7 @@ $c7n-boot-dashboard: c7n-boot-dashboard;
       }
     }
 
-    a {
-      color: #000;
-      &:before {
-        position: absolute;
-        background-color: transparent;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        content: '';
-      }
-    }
+    @include button-link-masker();
   }
 
   &-toolbar {

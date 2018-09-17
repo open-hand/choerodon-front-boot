@@ -4,10 +4,11 @@
 import axios from 'axios';
 import { authorize } from '../../common/authorize';
 import { getAccessToken, removeAccessToken } from '../../common/accessToken';
+import { API_HOST } from '../../common/constants';
 
 // axios 配置
 axios.defaults.timeout = 30000;
-axios.defaults.baseURL = `${process.env.API_HOST}`;
+axios.defaults.baseURL = API_HOST;
 
 // history.go(0);
 // http request 拦截器);
@@ -34,10 +35,10 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => {
     if (response.status === 204) {
-      return Promise.resolve(response);
+      return response;
     }
     // continue sending response to the then() method
-    return Promise.resolve(response.data);
+    return response.data;
   },
   (error) => {
     const { response } = error;
@@ -53,7 +54,7 @@ axios.interceptors.response.use(
           break;
       }
     }
-    return Promise.reject(error);
+    throw error;
   },
 );
 

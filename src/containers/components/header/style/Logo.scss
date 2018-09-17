@@ -1,4 +1,8 @@
-.header-logo {
+@import "../../style/theme/default";
+
+$c7n-boot-header-logo: #{$c7n-prefix}-boot-header-logo;
+
+.#{$c7n-boot-header-logo} {
   color: white;
   flex-grow: 1;
   height: 100%;
@@ -42,6 +46,6 @@
   }
 }
 
-a.header-logo {
+a.#{$c7n-boot-header-logo} {
   cursor: pointer;
 }

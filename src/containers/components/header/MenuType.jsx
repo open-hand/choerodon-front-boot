@@ -5,10 +5,22 @@ import { withRouter } from 'react-router-dom';
 import classnames from 'classnames';
 import { toJS } from 'mobx';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
-import { dashboard, historyPushMenu } from '../../common';
+import { historyPushMenu } from '../../common';
+import { PREFIX_CLS } from '../../common/constants';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
+const prefixCls = `${PREFIX_CLS}-boot-header-menu-type`;
+
+function getButtonIcon(type) {
+  switch (type) {
+    case 'organization':
+      return 'domain';
+    case 'project':
+      return 'project';
+    default:
+  }
+}
 
 @withRouter
 @inject('AppState', 'HeaderStore', 'MenuStore')
@@ -148,7 +160,7 @@ export default class MenuType extends Component {
         key: 'name',
         render: (text, record) => (
           record.into === false ? (
-            <span className="menu-type-disabled">
+            <span className={`${prefixCls}-disabled`}>
               {text}
             </span>
           ) : (
@@ -168,7 +180,7 @@ export default class MenuType extends Component {
         render: (text, record) => {
           if (record.into === false) {
             return (
-              <span className="menu-type-disabled">
+              <span className={`${prefixCls}-disabled`}>
                 {text}
               </span>
             );
@@ -182,7 +194,7 @@ export default class MenuType extends Component {
         render: (text, record) => {
           if (record.into === false) {
             return (
-              <span className="menu-type-disabled">
+              <span className={`${prefixCls}-disabled`}>
                 {text === 'organization' ? '组织' : '项目'}
               </span>
             );
@@ -237,7 +249,7 @@ export default class MenuType extends Component {
       );
     } else {
       return (
-        <div className="menu-type-empty">
+        <div className={`${prefixCls}-empty`}>
           {
             isNotRecent ? '您还没有在任何组织或项目中被分配角色' : '您没有最近浏览记录'
           }
@@ -304,60 +316,70 @@ export default class MenuType extends Component {
     return orgData;
   }
 
-  render() {
+  renderModalContent() {
     const { handlesearch, searchValue, activeKey, filterOrganization } = this.state;
-    const { AppState, HeaderStore } = this.props;
-    const { name: selectTitle = '选择项目', type } = AppState.currentMenuType;
+    const {
+      AppState: { currentMenuType: { name: selectTitle = '选择项目', type } },
+      HeaderStore: { menuTypeVisible: visible, getRecentItem: recentItem, getSelected },
+    } = this.props;
     const currentData = this.getCurrentData();
-    const { menuTypeVisible: visible, getRecentItem: recentItem } = HeaderStore;
     const tabSelect = activeKey || (filterOrganization || !recentItem || recentItem.length === 0 ? 'total' : 'recent');
-    const modalFooter = [
+    if (handlesearch) {
+      return (
+        <div className={`${prefixCls}-table-wrapper`}>
+          {this.renderTable(currentData, true)}
+        </div>
+      );
+    } else {
+      return (
+        <Tabs activeKey={tabSelect} onChange={this.handleTabChange}>
+          <TabPane tab="最近" key="recent" className={`${prefixCls}-tab-body`}>
+            {this.renderTable(recentItem)}
+          </TabPane>
+          <TabPane tab="全部" key="total" className={`${prefixCls}-tab-body`}>
+            {this.renderTable(currentData, true)}
+          </TabPane>
+        </Tabs>
+      );
+    }
+  }
+
+  renderModalFooter() {
+    const {
+      HeaderStore: { getSelected },
+    } = this.props;
+    return [
       <Button key="back" onClick={this.handleCancel}>
         取消
       </Button>,
-      <Button key="submit" type="primary" disabled={!HeaderStore.getSelected} onClick={this.handleOk}>
+      <Button key="submit" type="primary" disabled={!getSelected} onClick={this.handleOk}>
         打开
       </Button>,
     ];
-    let returnBtn;
-    let searchClass = '';
-    let content;
-    let buttonClass;
-    let buttonIcon;
-    if (type === 'organization') {
-      buttonClass = 'active';
-      buttonIcon = 'domain';
-    } else if (type === 'project') {
-      buttonClass = 'active';
-      buttonIcon = 'project';
-    }
-    buttonClass = classnames('menu-type-btn', buttonClass);
+  }
+
+  renderReturnButton() {
+    const { handlesearch } = this.state;
     if (handlesearch) {
-      returnBtn = (
+      return (
         <Button
           funcType="raised"
           icon="return"
           onClick={this.handleReturnButtonClick}
         />
       );
-      content = (
-        <div className="table-wrapper">
-          {this.renderTable(currentData, true)}
-        </div>
-      );
-      searchClass = 'has-search';
-    } else {
-      content = (
-        <Tabs activeKey={tabSelect} onChange={this.handleTabChange}>
-          <TabPane tab="最近" key="recent">
-            {this.renderTable(recentItem)}
-          </TabPane>
-          <TabPane tab="全部" key="total">
-            {this.renderTable(currentData, true)}
-          </TabPane>
-        </Tabs>
-      );
     }
+  }
+
+  render() {
+    const { handlesearch, searchValue } = this.state;
+    const {
+      AppState: { currentMenuType: { name: selectTitle = '选择项目', type } },
+      HeaderStore: { menuTypeVisible: visible },
+    } = this.props;
+    const buttonClass = classnames(`${prefixCls}-button`, { active: type === 'organization' || type === 'project' });
+    const toolbarClass = classnames(`${prefixCls}-toolbar`, { 'has-search': handlesearch });
+    const buttonIcon = getButtonIcon(type);
     return (
       <div>
         <Button
@@ -365,24 +387,30 @@ export default class MenuType extends Component {
           funcType="flat"
           onClick={this.showModal}
         >
-          <Icon type={buttonIcon} />
+          {buttonIcon && <Icon type={buttonIcon} />}
           {selectTitle}
           <Icon type="arrow_drop_down" />
         </Button>
         <Modal
           title="选择"
-          className="menu-type-modal"
+          className={`${prefixCls}-modal`}
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          footer={modalFooter}
+          footer={this.renderModalFooter()}
           width={708}
           closable={false}
           center
         >
-          <section className={`select-and-search ${searchClass}`}>
-            {returnBtn}
-            <Select label="组织" placeholder="Please Select" defaultValue="total" onChange={this.handleChange}>
+          <section className={toolbarClass}>
+            {this.renderReturnButton()}
+            <Select
+              className={`${prefixCls}-organization-select`}
+              label="组织"
+              placeholder="Please Select"
+              defaultValue="total"
+              onChange={this.handleChange}
+            >
               {this.getOptionList()}
             </Select>
             <Input
@@ -394,7 +422,7 @@ export default class MenuType extends Component {
               onPressEnter={this.searchChange}
             />
           </section>
-          {content}
+          {this.renderModalContent()}
         </Modal>
       </div>
     );

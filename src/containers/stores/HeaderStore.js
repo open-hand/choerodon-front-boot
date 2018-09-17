@@ -40,6 +40,8 @@ class HeaderStore {
 
   @observable menuTypeVisible = false;
 
+  @observable inboxData = [];
+
   @computed
   get getSelected() {
     return this.selected;

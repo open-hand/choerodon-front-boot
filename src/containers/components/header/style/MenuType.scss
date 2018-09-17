@@ -1,51 +1,27 @@
-.select-and-search {
-  display: flex;
-  margin-top: 16px;
-  align-items: center;
-  justify-content: space-between;
-  .ant-select {
-    width: 200px;
-  }
-  .ant-input-wrapper {
-    margin-top: 20px;
-    width: 442px;
-  }
-}
+@import "../../style/theme/default";
 
-.has-search .ant-input-wrapper {
-  width: 396px;
-}
+$c7n-boot-header-menu-type: #{$c7n-prefix}-boot-header-menu-type;
 
-.menu-type {
-  &-btn.ant-btn > .icon + span, &-btn.ant-btn > span + .icon {
-    margin-left: 4px;
-  }
-
-  &-btn.ant-btn > .icon {
-    margin: 0;
-  }
-
-  &-btn {
+.#{$c7n-boot-header-menu-type} {
+  &-button {
     margin: 0 20px 0 15px;
     padding: 0 2px 0 8px;
     > span {
       font-weight: 400;
     }
+    > .icon {
+      margin: 0;
+    }
+  }
+  &-tab-body,
+  &-table-wrapper {
+    height: 400px;
+    overflow: auto;
+  }
+  &-table-wrapper {
+    margin-top: 24px;
   }
   &-modal {
-    .ant-modal-title {
-      font-size: 20px;
-      line-height: 20px;
-      color: rgba(0, 0, 0, 0.87);
-    }
-    .ant-tabs-tabpane,
-    .table-wrapper {
-      height: 400px;
-      overflow: auto;
-    }
-    .table-wrapper {
-      margin-top: 24px;
-    }
     .ant-table {
       a {
         white-space: nowrap;
@@ -56,7 +32,7 @@
         color: #000;
         &:hover {
           text-decoration: underline;
-          color: #3f51b5;
+          color: $primary-color;
           cursor: pointer;
         }
         .icon {
@@ -79,5 +55,21 @@
   }
   &-disabled {
     color: rgba(0, 0, 0, 0.36);
+  }
+  &-toolbar {
+    display: flex;
+    margin-top: 16px;
+    align-items: center;
+    justify-content: space-between;
+    &.has-search .#{$c7n-boot-header-menu-type}-organization-select + * {
+      width: 396px;
+    }
+  }
+  &-organization-select {
+    width: 200px;
+    & + * {
+      margin-top: 20px;
+      width: 442px;
+    }
   }
 }

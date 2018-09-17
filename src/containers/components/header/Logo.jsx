@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { Button } from 'choerodon-ui';
+import { PREFIX_CLS } from '../../common/constants';
 
-const prefixCls = 'header-logo';
+const prefixCls = `${PREFIX_CLS}-boot-header-logo`;
 
 @withRouter
 @inject('AppState', 'MenuStore')
