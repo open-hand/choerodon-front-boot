@@ -68,7 +68,6 @@ export default class Inbox extends Component {
   }
 
   componentWillUnmount() {
-    debugger;
     clearInterval(this.hb);
   }
 
