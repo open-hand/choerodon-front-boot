@@ -68,13 +68,11 @@ export default class Inbox extends Component {
   }
 
   componentWillUnmount() {
-    debugger;
     clearInterval(this.hb);
   }
 
   cleanMsg = (msgId) => {
     const { AppState, HeaderStore } = this.props;
-    debugger;
     const newData = [];
     HeaderStore.readMsg([msgId], AppState.userInfo.id);
     this.state.iData.forEach((v) => {
