@@ -4,10 +4,25 @@
 $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
 
 .#{$c7n-boot-header-inbox} {
-  .icon {
-    color: #fff;
-    font-size: 23px;
+  :hover {
+    background-color: rgba(255, 255, 255, 0.1);
   }
+  button {
+    .icon {
+      color: #fff;
+      font-size: 23px;
+      border-radius: 50%;
+    }
+  }
+  .ant-badge-count {
+    top: -5px;
+    right: -15px;
+    min-width: 18px;
+    line-height: 18px;
+    height: 18px;
+    width: 18px;
+  }
+
   &-popover {
     width: 300px;
     .is-empty {
@@ -15,7 +30,8 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     }
     &-header {
       padding: 0 16px;
-      line-height: 48px;
+      line-height: 41px;
+      height: 41px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);
       span {
         color: rgba(0, 0, 0, 0.54);
@@ -29,32 +45,60 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       }
     }
     &-content {
-      overflow: hidden;
+      overflow: auto;
+      height: 228px;
       ul {
-        padding: 0 16px;
+        padding: 0;
         list-style: none;
       }
       li {
-        margin: 12px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        position: relative;
+        font-size: 13px;
+        line-height: 20px;
+        padding: 9px 20px;
         div {
           display: inline-block;
           width: 236px;
           overflow: hidden;
           text-overflow: ellipsis;
           vertical-align: middle;
+          a {
+            vertical-align: middle;
+            color: inherit;
+
+            &:before {
+              position: absolute;
+              background-color: transparent;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 50px;
+              content: '';
+            }
+          }
+        }
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.02);
         }
       }
-      label {
-        font-size: 13px;
-        line-height: 20px;
-      }
-      p {
-        font-size: 10px;
-        margin: 0;
+      div {
+        label {
+          font-size: 13px;
+          line-height: 20px;
+          font-weight: 500;
+        }
+        p {
+          font-size: 10px;
+          margin: 0;
+          max-width: 216px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
       }
       .icon {
         color: #a3a3a3;
-        margin-left: 16px;
         font-size: 16px;
         cursor: pointer;
       }
@@ -64,7 +108,7 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       border-top: 1px solid rgba(0, 0, 0, 0.12);
       line-height: 48px;
       text-align: center;
-      font-size: 16px;
+      font-size: 13px;
       font-weight: bold;
       color: $primary-color;
 
