@@ -4,9 +4,6 @@
 $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
 
 .#{$c7n-boot-header-inbox} {
-  :hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
   button {
     .icon {
       color: #fff;
@@ -17,10 +14,13 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
   .ant-badge-count {
     top: -5px;
     right: -15px;
+    margin-right: 2px;
     min-width: 18px;
     line-height: 18px;
     height: 18px;
-    width: 18px;
+  }
+  .ant-badge-multiple-words {
+    right: -27px;
   }
 
   &-popover {

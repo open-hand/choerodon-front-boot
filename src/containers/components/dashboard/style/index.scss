@@ -193,6 +193,9 @@ $c7n-boot-dashboard: #{$c7n-prefix}-boot-dashboard;
         vertical-align: middle;
       }
     }
+    a {
+      color: #000;
+    }
 
     @include button-link-masker();
   }

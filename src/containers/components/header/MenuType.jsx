@@ -242,7 +242,7 @@ export default class MenuType extends Component {
           dataSource={dataSource}
           filterBar={false}
           onRow={onTableRow}
-          pagination={false}
+          pagination={isNotRecent}
           rowSelection={rowSelection}
           {...props}
         />
@@ -334,7 +334,7 @@ export default class MenuType extends Component {
       return (
         <Tabs activeKey={tabSelect} onChange={this.handleTabChange}>
           <TabPane tab="最近" key="recent" className={`${prefixCls}-tab-body`}>
-            {this.renderTable(recentItem)}
+            {this.renderTable(recentItem, false)}
           </TabPane>
           <TabPane tab="全部" key="total" className={`${prefixCls}-tab-body`}>
             {this.renderTable(currentData, true)}
