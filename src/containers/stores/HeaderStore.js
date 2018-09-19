@@ -1,5 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import omit from 'object.omit';
+import queryString from 'query-string';
 import store from '../components/store';
 import axios from '../components/axios';
 
@@ -95,6 +96,17 @@ class HeaderStore {
     });
   }
 
+  axiosGetUserMsg(userId) {
+    const sorter = ['id', 'desc'];
+    return axios.get(`/notify/v1/notices/sitemsgs?${queryString.stringify({
+      user_id: userId,
+      read: false,
+      page: 0,
+      size: 20,
+      sort: sorter.join(','),
+    })}`);
+  }
+
   @action
   setProData(data) {
     this.proData = data.filter(item => item.enabled === true);
@@ -160,6 +172,11 @@ class HeaderStore {
   }
 
   @action
+  readMsg(data, userId) {
+    return axios.put(`/notify/v1/notices/sitemsgs/batch_read?user_id=${userId}`, JSON.stringify(data));
+  }
+
+  @action
   updateRecentItem(recent) {
     if (recent) {
       const recentItem = JSON.parse(localStorage.recentItem);
@@ -185,6 +202,14 @@ class HeaderStore {
       localStorage.recentItem = JSON.stringify(recentItem);
       this.recentItem = recentItem;
     }
+  }
+
+  @action setInboxData(data) {
+    this.inboxData = data;
+  }
+
+  @computed get getInboxData() {
+    return this.inboxData;
   }
 }
 

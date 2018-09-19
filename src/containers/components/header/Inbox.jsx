@@ -1,28 +1,122 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { Badge, Icon, Popover } from 'choerodon-ui';
+import { Badge, Icon, Popover, Button } from 'choerodon-ui';
 import WSHandler from '../ws/WSHandler';
-import { PREFIX_CLS } from '../../common/constants';
+import { PREFIX_CLS, WEBSOCKET_SERVER } from '../../common/constants';
+import warning from '../../../common/warning';
 
 const prefixCls = `${PREFIX_CLS}-boot-header-inbox`;
 const popoverPrefixCls = `${prefixCls}-popover`;
 
-@inject('HeaderStore')
+@inject('HeaderStore', 'AppState')
 @observer
 export default class Inbox extends Component {
+  state = {
+    iData: [],
+    count: 0,
+  };
+
+  ws = null;
+
+  hb = null;
+
+  // 前端发送心跳
+  heartBeat = (ws) => {
+    if (ws) {
+      ws.send(JSON.stringify({ type: 'heartBeat' }));
+    }
+  };
+
+  initSocket() {
+    const { AppState } = this.props;
+    const server = `${WEBSOCKET_SERVER}/choerodon:msg/sit-msg/${AppState.userInfo.id}`;
+    if (server) {
+      try {
+        const ws = new WebSocket(server);
+        ws.addEventListener('open', this.handleOpen);
+        ws.addEventListener('message', this.handleMessage);
+        ws.addEventListener('error', this.handleError);
+        ws.addEventListener('close', this.handleClose);
+        this.hb = setInterval(() => this.heartBeat(ws), 50000);
+        this.ws = ws;
+      } catch (e) {
+        warning(false, `WSProvider is stopped. Caused by <${e.message}>`);
+        this.ws = null;
+      }
+    }
+  }
+
+  handleMessage = (e) => {
+    const data = JSON.parse(e.data);
+    this.getUnreadMsg();
+    if (data.type === 'sit-msg') {
+      this.setState({
+        count: data.data,
+      });
+    }
+  };
+
+  handleClose = (e) => {
+    clearInterval(this.hb);
+    setTimeout(() => this.initSocket(), 3000);
+  };
+
+  componentWillMount() {
+    this.getUnreadMsg();
+    this.initSocket();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.hb);
+  }
+
+  cleanMsg = (msgId) => {
+    const { AppState, HeaderStore } = this.props;
+    const newData = [];
+    HeaderStore.readMsg([msgId], AppState.userInfo.id);
+    this.state.iData.forEach((v) => {
+      if (v.id !== msgId) newData.push(v);
+    });
+    this.setState({
+      iData: newData,
+    });
+  };
+
+  cleanAllMsg = () => {
+    const { AppState, HeaderStore } = this.props;
+    HeaderStore.readMsg(this.state.iData.map(({ id }) => id), AppState.userInfo.id);
+    this.setState({
+      iData: [],
+    });
+  };
+
+  getUnreadMsg() {
+    const { AppState, HeaderStore } = this.props;
+    HeaderStore.axiosGetUserMsg(AppState.getUserId).then((data) => {
+      this.setState({
+        // 把html页面转化为纯文本
+        iData: data.content.map(({ title, content, id }) => ({ title, id, content: content.replace(/\n|&nbsp|&lt|&gt|<[^>]+>| /g, '') })),
+      });
+    });
+  }
+
+  handleButtonClick = () => {
+    this.getUnreadMsg();
+  };
+
   renderMessages(inboxData) {
     if (inboxData.length > 0) {
       return (
         <ul>
           {
-            inboxData.map(({ title, text }) => (
+            inboxData.map(({ title, content, id }) => (
               <li>
                 <div>
-                  <label>{title}</label>
-                  <p>{text}</p>
+                  <label><Link to="/iam/user-msg?type=site">{title}</Link></label>
+                  <p>{content}</p>
                 </div>
-                <Icon type="cancel" />
+                <Icon type="cancel" onClick={() => this.cleanMsg(id)} />
               </li>
             ))
           }
@@ -38,16 +132,16 @@ export default class Inbox extends Component {
   }
 
   renderPopoverContent() {
-    const { inboxData } = this.props.HeaderStore;
+    const { iData } = this.state;
     return (
-      <div className={!inboxData.length && 'is-empty'}>
+      <div className={!iData.length && 'is-empty'}>
         <div className={`${popoverPrefixCls}-header`}>
           <span>通知</span>
-          <a>全部清空</a>
+          <a onClick={() => this.cleanAllMsg()}>全部清空</a>
         </div>
         <div className={`${popoverPrefixCls}-content`}>
           {
-            this.renderMessages(inboxData)
+            this.renderMessages(iData)
           }
         </div>
         <div className={`${popoverPrefixCls}-footer`}>
@@ -59,17 +153,20 @@ export default class Inbox extends Component {
 
   render() {
     return (
-      <WSHandler messageKey="org:1">
+      <WSHandler messageKey="" onMessage={data => this.handleMessage(data)}>
         {
-          data => (
+          (
             <Popover
               overlayClassName={popoverPrefixCls}
               arrowPointAtCenter
               placement="bottomRight"
               content={this.renderPopoverContent()}
+              trigger="click"
             >
-              <Badge className={prefixCls} count={data}>
-                <Icon type="notifications" />
+              <Badge className={prefixCls} count={this.state.count}>
+                <Button onClick={this.handleButtonClick} functype="flat" shape="circle">
+                  <Icon type="notifications" />
+                </Button>
               </Badge>
             </Popover>
           )
