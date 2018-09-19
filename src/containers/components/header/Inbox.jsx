@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { Badge, Icon, Popover, Button } from 'choerodon-ui';
 import WSHandler from '../ws/WSHandler';
-import { PREFIX_CLS, WEBSOCKET_SERVER } from '../../common/constants';
-import warning from '../../../common/warning';
+import { PREFIX_CLS } from '../../common/constants';
 
 const prefixCls = `${PREFIX_CLS}-boot-header-inbox`;
 const popoverPrefixCls = `${prefixCls}-popover`;
@@ -17,58 +16,11 @@ export default class Inbox extends Component {
     count: 0,
   };
 
-  ws = null;
-
-  hb = null;
-
-  // 前端发送心跳
-  heartBeat = (ws) => {
-    if (ws) {
-      ws.send(JSON.stringify({ type: 'heartBeat' }));
-    }
-  };
-
-  initSocket() {
-    const { AppState } = this.props;
-    const server = `${WEBSOCKET_SERVER}/choerodon:msg/sit-msg/${AppState.userInfo.id}`;
-    if (server) {
-      try {
-        const ws = new WebSocket(server);
-        ws.addEventListener('open', this.handleOpen);
-        ws.addEventListener('message', this.handleMessage);
-        ws.addEventListener('error', this.handleError);
-        ws.addEventListener('close', this.handleClose);
-        this.hb = setInterval(() => this.heartBeat(ws), 50000);
-        this.ws = ws;
-      } catch (e) {
-        warning(false, `WSProvider is stopped. Caused by <${e.message}>`);
-        this.ws = null;
-      }
-    }
-  }
-
-  handleMessage = (e) => {
-    const data = JSON.parse(e.data);
-    this.getUnreadMsg();
-    if (data.type === 'sit-msg') {
-      this.setState({
-        count: data.data,
-      });
-    }
-  };
-
-  handleClose = (e) => {
-    clearInterval(this.hb);
-    setTimeout(() => this.initSocket(), 3000);
-  };
-
   componentWillMount() {
     this.getUnreadMsg();
-    this.initSocket();
   }
 
   componentWillUnmount() {
-    clearInterval(this.hb);
   }
 
   cleanMsg = (msgId) => {
@@ -103,6 +55,13 @@ export default class Inbox extends Component {
 
   handleButtonClick = () => {
     this.getUnreadMsg();
+  };
+
+  handleMessage = (data) => {
+    this.getUnreadMsg();
+    this.setState({
+      count: data,
+    });
   };
 
   renderMessages(inboxData) {
@@ -152,8 +111,13 @@ export default class Inbox extends Component {
   }
 
   render() {
+    const { AppState } = this.props;
     return (
-      <WSHandler messageKey="" onMessage={data => this.handleMessage(data)}>
+      <WSHandler
+        messageKey={`choerodon:msg:sit-msg:${AppState.userInfo.id}`}
+        path={`choerodon:msg/sit-msg/${AppState.userInfo.id}`}
+        onMessage={this.handleMessage}
+      >
         {
           (
             <Popover
