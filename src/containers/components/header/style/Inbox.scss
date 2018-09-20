@@ -4,6 +4,7 @@
 $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
 
 .#{$c7n-boot-header-inbox} {
+  -webkit-transform: scale(0.75);
   button {
     .icon {
       color: #fff;
@@ -17,10 +18,18 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     margin-right: 2px;
     min-width: 18px;
     line-height: 18px;
+    font-size: 12px;
     height: 18px;
+    box-shadow: initial;
+    &.ant-badge-multiple-words {
+      float: left;
+      right: -23px;
+      left: 27px;
+    }
   }
   .ant-badge-multiple-words {
-    right: -27px;
+    right: -15px;
+    padding: 0 5px;
   }
 
   &-popover {

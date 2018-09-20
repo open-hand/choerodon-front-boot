@@ -141,11 +141,13 @@ export default class Inbox extends Component {
               visible={this.state.visible}
               onVisibleChange={this.handleVisibleChange}
             >
-              <Badge className={prefixCls} count={this.state.count}>
-                <Button onClick={this.handleButtonClick} functype="flat" shape="circle">
-                  <Icon type="notifications" />
-                </Button>
-              </Badge>
+              <a onClick={this.handleButtonClick} href="#">
+                <Badge className={prefixCls} count={this.state.count}>
+                  <Button onClick={this.handleButtonClick} functype="flat" shape="circle">
+                    <Icon type="notifications" />
+                  </Button>
+                </Badge>
+              </a>
             </Popover>
           )
         }
