@@ -36,7 +36,6 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       span {
         color: rgba(0, 0, 0, 0.54);
         font-size: 16px;
-        font-weight: bold;
       }
 
       a {
@@ -109,7 +108,6 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       line-height: 48px;
       text-align: center;
       font-size: 13px;
-      font-weight: bold;
       color: $primary-color;
 
       @include button-link-masker();

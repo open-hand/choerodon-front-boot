@@ -4,7 +4,13 @@ import PropTypes from 'prop-types';
 export default class WSHandler extends Component {
   static propTypes = {
     messageKey: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired, // 能从Provider获得指定path的连接
+    autoReconnect: PropTypes.bool, // 在WebSocket连接断开后要能自动重连
     onMessage: PropTypes.func,
+    onCreate: PropTypes.func,
+    onClose: PropTypes.func,
+    onError: PropTypes.func,
+    onRetry: PropTypes.func,
   };
 
   static contextTypes = {
@@ -33,26 +39,26 @@ export default class WSHandler extends Component {
   handleMessage = (data) => {
     const { onMessage } = this.props;
     if (typeof onMessage === 'function') {
-      onMessage(data);
+      onMessage(JSON.parse(data).data);
     }
     this.setState({
-      data,
+      data: JSON.parse(data).data,
     });
   };
 
   register(props, context) {
-    const { messageKey } = props;
+    const { messageKey, path } = props;
     const { ws } = context;
     if (ws) {
-      ws.register(messageKey, { type: 'test', payload: 'test' }, this.handleMessage);
+      ws.register(messageKey, { type: 'test', payload: 'test' }, this.handleMessage, path);
     }
   }
 
   unregister(props, context) {
-    const { messageKey } = props;
+    const { messageKey, path } = props;
     const { ws } = context;
     if (ws) {
-      ws.unregister(messageKey, this.handleMessage);
+      ws.unregister(messageKey, this.handleMessage, path);
     }
   }
 

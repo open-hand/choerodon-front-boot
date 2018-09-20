@@ -22,11 +22,11 @@ export default class WSProvider extends Component {
     };
   }
 
-  ws = null;
+  ws = new Map();
 
   windowBeforeUnloadListener = null;
 
-  map = {};
+  map = new Map();
 
   retry = false;
 
@@ -67,11 +67,13 @@ export default class WSProvider extends Component {
     this.pending.forEach(this.send);
   };
 
-  handleMessage = ({ key, data }) => {
-    const { onMessage } = this.props;
-    const handlers = this.map[key];
+  handleMessage = ({ data, currentTarget: { url } }) => {
+    const { key, data: message } = JSON.parse(data);
+    const { onMessage, server } = this.props;
+    const path = url.replace(`${server}/`, '');
+    const handlers = this.map.get(`${path}-${key}`);
     if (typeof onMessage === 'function') {
-      onMessage(data, key);
+      onMessage(message, key);
     }
     if (handlers) {
       handlers.forEach(handler => handler(data));
@@ -100,55 +102,78 @@ export default class WSProvider extends Component {
 
   destroySocket() {
     const { ws } = this;
-    if (ws) {
-      ws.removeEventListener('open', this.handleOpen);
-      ws.removeEventListener('message', this.handleMessage);
-      ws.removeEventListener('error', this.handleError);
-      ws.removeEventListener('close', this.handleClose);
-      ws.close();
-      this.ws = null;
+    if (ws.size > 0) {
+      ws.forEach((value) => {
+        value.removeEventListener('open', this.handleOpen);
+        value.removeEventListener('message', this.handleMessage);
+        value.removeEventListener('error', this.handleError);
+        value.removeEventListener('close', this.handleClose);
+        clearInterval(value.hb);
+        value.close();
+      });
+      this.ws.clear();
     }
   }
 
-  initSocket({ server }) {
-    if (server) {
+  /**
+   * 获得指定的连接
+   * @param server
+   * @param path
+   */
+  initSocket = ({ server }, path) => {
+    if (server && path) {
       try {
-        const ws = new WebSocket(server);
+        const ws = new WebSocket(`${server}/${path}`);
         ws.addEventListener('open', this.handleOpen);
-        ws.addEventListener('message', this.handleMessage);
+        ws.addEventListener('message', this.handleMessage.bind(this));
         ws.addEventListener('error', this.handleError);
         ws.addEventListener('close', this.handleClose);
-        this.ws = ws;
+        ws.hb = setInterval(() => this.heartBeat(path), 50000);
+        this.ws.set(path, ws);
       } catch (e) {
         warning(false, `WSProvider is stopped. Caused by <${e.message}>`);
-        this.ws = null;
+        this.ws.set(path, null);
       }
     }
-  }
+  };
 
-  send = (message) => {
+  // 前端发送心跳
+  heartBeat = (path) => {
+    this.send(JSON.stringify({ type: 'heartBeat' }), path);
+  };
+
+  send = (message, path) => {
     const { ws, pending } = this;
-    if (ws.readyState === 1) {
-      ws.send(message);
+    if (ws.get(path).readyState === 1) {
+      ws.get(path).send(message);
     } else if (pending.indexOf(message) === -1) {
       pending.push(message);
     }
   };
 
-  register(key, message, handler) {
-    if (this.ws) {
-      const handlers = this.map[key];
+  /**
+   *
+   * @param key
+   * @param message
+   * @param handler
+   * @param path
+   */
+  register(key, message, handler, path) {
+    const { server } = this.props;
+    if (this.ws.get(path)) {
+      const handlers = this.map.get(`${path}-${key}`);
       if (handlers) {
         if (handlers.indexOf(handler) === -1) {
           handlers.push(handler);
         }
-      } else {
-        this.map[key] = [handler];
       }
       this.send(JSON.stringify({
         key,
         ...message,
-      }));
+      }), path);
+    } else {
+      this.initSocket({ server }, path);
+      this.map.set(`${path}-${key}`, [handler]);
     }
   }
 
