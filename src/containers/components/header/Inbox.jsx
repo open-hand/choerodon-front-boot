@@ -14,6 +14,7 @@ export default class Inbox extends Component {
   state = {
     iData: [],
     count: 0,
+    visible: false,
   };
 
   componentWillMount() {
@@ -40,6 +41,7 @@ export default class Inbox extends Component {
     HeaderStore.readMsg(this.state.iData.map(({ id }) => id), AppState.userInfo.id);
     this.setState({
       iData: [],
+      visible: false,
     });
   };
 
@@ -64,15 +66,25 @@ export default class Inbox extends Component {
     });
   };
 
+  handleMessageClick = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleVisibleChange = (visible) => {
+    this.setState({ visible });
+  }
+
   renderMessages(inboxData) {
     if (inboxData.length > 0) {
       return (
         <ul>
           {
             inboxData.map(({ title, content, id }) => (
-              <li>
-                <div>
-                  <label><Link to="/iam/user-msg?type=site">{title}</Link></label>
+              <li key={id}>
+                <div onClick={() => this.handleMessageClick(id)}>
+                  <label><Link to={`/iam/user-msg?msgId=${id}`}>{title}</Link></label>
                   <p>{content}</p>
                 </div>
                 <Icon type="cancel" onClick={() => this.cleanMsg(id)} />
@@ -111,7 +123,7 @@ export default class Inbox extends Component {
   }
 
   render() {
-    const { AppState } = this.props;
+    const { AppState, HeaderStore } = this.props;
     return (
       <WSHandler
         messageKey={`choerodon:msg:sit-msg:${AppState.userInfo.id}`}
@@ -126,6 +138,8 @@ export default class Inbox extends Component {
               placement="bottomRight"
               content={this.renderPopoverContent()}
               trigger="click"
+              visible={this.state.visible}
+              onVisibleChange={this.handleVisibleChange}
             >
               <Badge className={prefixCls} count={this.state.count}>
                 <Button onClick={this.handleButtonClick} functype="flat" shape="circle">
