@@ -84,7 +84,7 @@ export default class Inbox extends Component {
             inboxData.map(({ title, content, id }) => (
               <li key={id}>
                 <div onClick={() => this.handleMessageClick(id)}>
-                  <label><Link to={`/iam/user-msg?msgId=${id}`}>{title}</Link></label>
+                  <label><Link to={`/iam/user-msg?type=site&msgId=${id}`}>{title}</Link></label>
                   <p>{content}</p>
                 </div>
                 <Icon type="cancel" onClick={() => this.cleanMsg(id)} />
