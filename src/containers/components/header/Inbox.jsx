@@ -127,7 +127,6 @@ export default class Inbox extends Component {
     return (
       <WSHandler
         messageKey={`choerodon:msg:sit-msg:${AppState.userInfo.id}`}
-        path={`choerodon:msg/sit-msg/${AppState.userInfo.id}`}
         onMessage={this.handleMessage}
       >
         {

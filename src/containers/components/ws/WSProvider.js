@@ -33,7 +33,6 @@ export default class WSProvider extends Component {
   pending = [];
 
   componentWillMount() {
-    this.initSocket(this.props);
     if (typeof window !== 'undefined') {
       this.windowBeforeUnloadListener = addEventListener(window, 'beforeunload', this.handleWindowBeforeUnload);
     }
@@ -41,13 +40,13 @@ export default class WSProvider extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.server !== this.props.server) {
-      this.destroySocket();
+      this.destroyAllSocket();
       this.initSocket(nextProps);
     }
   }
 
   componentWillUnmount() {
-    this.destroySocket();
+    this.destroyAllSocket();
     if (this.windowBeforeUnloadListener) {
       this.windowBeforeUnloadListener.remove();
       this.windowBeforeUnloadListener = null;
@@ -55,22 +54,23 @@ export default class WSProvider extends Component {
   }
 
   handleWindowBeforeUnload = () => {
-    this.destroySocket();
+    this.destroyAllSocket();
   };
 
-  handleOpen = () => {
+  handleOpen = (evt, path) => {
     const { onOpen } = this.props;
     if (typeof onOpen === 'function') {
       onOpen();
     }
     this.retry = false;
-    this.pending.forEach(this.send);
+    this.pending.forEach((data) => {
+      this.send(data, path);
+    });
   };
 
-  handleMessage = ({ data, currentTarget: { url } }) => {
+  handleMessage = ({ data }, path) => {
     const { key, data: message } = JSON.parse(data);
-    const { onMessage, server } = this.props;
-    const path = url.replace(`${server}/`, '');
+    const { onMessage } = this.props;
     const handlers = this.map.get(`${path}-${key}`);
     if (typeof onMessage === 'function') {
       onMessage(message, key);
@@ -80,16 +80,16 @@ export default class WSProvider extends Component {
     }
   };
 
-  handleError = (e) => {
-    const { onError, server } = this.props;
+  handleError = (e, path) => {
+    const { onError } = this.props;
     if (typeof onError === 'function') {
       onError(e);
     }
 
     if (!this.retry) {
       this.retry = true;
-      this.destroySocket();
-      this.initSocket(this.props);
+      this.destroySocketByPath(path);
+      this.initSocket(this.props, path);
     }
   };
 
@@ -100,7 +100,20 @@ export default class WSProvider extends Component {
     }
   };
 
-  destroySocket() {
+  destroySocketByPath(path) {
+    const { ws } = this;
+    if (ws.get(path)) {
+      ws.get(path).removeEventListener('open', evt => this.handleOpen(evt, path));
+      ws.get(path).removeEventListener('message', evt => this.handleMessage(evt, path));
+      ws.get(path).removeEventListener('error', evt => this.handleError(evt, path));
+      ws.get(path).removeEventListener('close', evt => this.handleClose(evt, path));
+      clearInterval(ws.get(path).hb);
+      ws.get(path).close();
+      ws.set(path, null);
+    }
+  }
+
+  destroyAllSocket() {
     const { ws } = this;
     if (ws.size > 0) {
       ws.forEach((value) => {
@@ -124,10 +137,10 @@ export default class WSProvider extends Component {
     if (server && path) {
       try {
         const ws = new WebSocket(`${server}/${path}`);
-        ws.addEventListener('open', this.handleOpen);
-        ws.addEventListener('message', this.handleMessage.bind(this));
-        ws.addEventListener('error', this.handleError);
-        ws.addEventListener('close', this.handleClose);
+        ws.addEventListener('open', evt => this.handleOpen(evt, path));
+        ws.addEventListener('message', evt => this.handleMessage(evt, path));
+        ws.addEventListener('error', evt => this.handleError(evt, path));
+        ws.addEventListener('close', evt => this.handleClose.bind(evt, path));
         ws.hb = setInterval(() => this.heartBeat(path), 50000);
         this.ws.set(path, ws);
       } catch (e) {
@@ -144,7 +157,7 @@ export default class WSProvider extends Component {
 
   send = (message, path) => {
     const { ws, pending } = this;
-    if (ws.get(path).readyState === 1) {
+    if (ws.get(path) && ws.get(path).readyState === 1) {
       ws.get(path).send(message);
     } else if (pending.indexOf(message) === -1) {
       pending.push(message);
@@ -152,9 +165,9 @@ export default class WSProvider extends Component {
   };
 
   /**
-   *
-   * @param key
-   * @param message
+   * 将handler注册到对应path的webSocket的handleMessage事件上，如果这个path没有建立连接，则建立连接，并发送订阅消息的请求。
+   * @param key 要注册的key
+   * @param message 订阅消息
    * @param handler
    * @param path
    */
@@ -166,14 +179,18 @@ export default class WSProvider extends Component {
         if (handlers.indexOf(handler) === -1) {
           handlers.push(handler);
         }
+      } else {
+        this.map.set(`${path}-${key}`, [handler]);
       }
       this.send(JSON.stringify({
-        key,
         ...message,
       }), path);
     } else {
       this.initSocket({ server }, path);
       this.map.set(`${path}-${key}`, [handler]);
+      this.send(JSON.stringify({
+        ...message,
+      }), path);
     }
   }
 

@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export default class WSHandler extends Component {
+  static defaultProps = {
+    path: 'choerodon:msg',
+  };
+
   static propTypes = {
     messageKey: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired, // 能从Provider获得指定path的连接
+    path: PropTypes.string, // 能从Provider获得指定path的连接
     autoReconnect: PropTypes.bool, // 在WebSocket连接断开后要能自动重连
     onMessage: PropTypes.func,
     onCreate: PropTypes.func,
@@ -50,7 +54,7 @@ export default class WSHandler extends Component {
     const { messageKey, path } = props;
     const { ws } = context;
     if (ws) {
-      ws.register(messageKey, { type: 'test', payload: 'test' }, this.handleMessage, path);
+      ws.register(messageKey, { type: 'sub', data: messageKey }, this.handleMessage, path);
     }
   }
 
