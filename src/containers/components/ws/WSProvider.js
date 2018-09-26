@@ -33,7 +33,6 @@ export default class WSProvider extends Component {
   pending = [];
 
   componentWillMount() {
-    this.initSocket(this.props);
     if (typeof window !== 'undefined') {
       this.windowBeforeUnloadListener = addEventListener(window, 'beforeunload', this.handleWindowBeforeUnload);
     }
@@ -124,10 +123,10 @@ export default class WSProvider extends Component {
     if (server && path) {
       try {
         const ws = new WebSocket(`${server}/${path}`);
-        ws.addEventListener('open', this.handleOpen);
+        ws.addEventListener('open', this.handleOpen.bind(this));
         ws.addEventListener('message', this.handleMessage.bind(this));
-        ws.addEventListener('error', this.handleError);
-        ws.addEventListener('close', this.handleClose);
+        ws.addEventListener('error', this.handleError.bind(this));
+        ws.addEventListener('close', this.handleClose.bind(this));
         ws.hb = setInterval(() => this.heartBeat(path), 50000);
         this.ws.set(path, ws);
       } catch (e) {
@@ -152,9 +151,9 @@ export default class WSProvider extends Component {
   };
 
   /**
-   *
-   * @param key
-   * @param message
+   * 将handler注册到对应path的webSocket的handleMessage事件上，如果这个path没有建立连接，则建立连接，并发送订阅消息的请求。
+   * @param key 要注册的key
+   * @param message 订阅消息
    * @param handler
    * @param path
    */
@@ -166,14 +165,20 @@ export default class WSProvider extends Component {
         if (handlers.indexOf(handler) === -1) {
           handlers.push(handler);
         }
+      } else {
+        this.map.set(`${path}-${key}`, [handler]);
       }
       this.send(JSON.stringify({
-        key,
         ...message,
       }), path);
     } else {
       this.initSocket({ server }, path);
       this.map.set(`${path}-${key}`, [handler]);
+      setTimeout(() => {
+        this.send(JSON.stringify({
+          ...message,
+        }), path);
+      }, 10);
     }
   }
 
