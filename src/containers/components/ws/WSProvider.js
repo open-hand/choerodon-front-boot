@@ -38,13 +38,6 @@ export default class WSProvider extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.server !== this.props.server) {
-      this.destroyAllSocket();
-      this.initSocket(nextProps);
-    }
-  }
-
   componentWillUnmount() {
     this.destroyAllSocket();
     if (this.windowBeforeUnloadListener) {
@@ -194,9 +187,9 @@ export default class WSProvider extends Component {
     }
   }
 
-  unregister(key, handler) {
+  unregister(key, handler, path) {
     if (this.ws) {
-      const handlers = this.map[key];
+      const handlers = this.map.get(`${path}-${key}`);
       if (handlers) {
         const index = handlers.indexOf(handler);
         if (index !== -1) {

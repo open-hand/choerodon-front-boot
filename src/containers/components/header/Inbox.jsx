@@ -50,7 +50,7 @@ export default class Inbox extends Component {
     HeaderStore.axiosGetUserMsg(AppState.getUserId).then((data) => {
       this.setState({
         // 把html页面转化为纯文本
-        iData: data.content.map(({ title, content, id }) => ({ title, id, content: content.replace(/\n|&nbsp|&lt|&gt|<[^>]+>| /g, '') })),
+        iData: data.content.map(({ title, content, id }) => ({ title, id, content: content.replace(/\n|&nbsp;|&lt|&gt|<[^>]+>| /g, '') })),
       });
     });
   }
