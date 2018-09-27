@@ -105,7 +105,7 @@ export default class Inbox extends Component {
   renderPopoverContent() {
     const { iData } = this.state;
     return (
-      <div className={!iData.length && 'is-empty'}>
+      <div className={!iData.length ? 'is-empty' : null}>
         <div className={`${popoverPrefixCls}-header`}>
           <span>通知</span>
           <a onClick={() => this.cleanAllMsg()}>全部清空</a>
@@ -126,7 +126,7 @@ export default class Inbox extends Component {
     const { AppState, HeaderStore } = this.props;
     return (
       <WSHandler
-        messageKey={`choerodon:msg:sit-msg:${AppState.userInfo.id}`}
+        messageKey={`choerodon:msg:site-msg:${AppState.userInfo.id}`}
         onMessage={this.handleMessage}
       >
         {
