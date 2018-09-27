@@ -78,6 +78,7 @@ const config = {
   },
   server: 'http://api.example.com', // API server
   fileServer: 'http://file.example.com', // File server
+  webSocketServer: 'ws://ws.example.com', // WebSocket server
   clientid: 'localhost',
   titlename: 'Choerodon', // HTML title
   favicon: 'favicon.ico', // Page favicon

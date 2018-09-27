@@ -5,11 +5,15 @@
 ## [0.7.4]
 
 ### 新增
+
 - 新增WSProvider, WSHandler组件, 用于提供websocket服务
+- 新增右上角通知按钮，用于接收消息通知
 
 ### 修改
 
-- 升级组件库choerodon-ui@0.3.9
+- 升级组件库choerodon-ui@0.4.0
+- dashboard和主页的链接互换
+- 组织和项目选择现在有了分页
 
 ### 修复
 
