@@ -1,95 +1,69 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { Badge, Icon, Popover, Button } from 'choerodon-ui';
+import { Badge, Button, Icon, Popover, Spin } from 'choerodon-ui';
 import WSHandler from '../ws/WSHandler';
 import { PREFIX_CLS } from '../../common/constants';
 
 const prefixCls = `${PREFIX_CLS}-boot-header-inbox`;
 const popoverPrefixCls = `${prefixCls}-popover`;
+const reg = /\n|&nbsp;|&lt|&gt|<[^>]+>| /g;
 
 @inject('HeaderStore', 'AppState')
 @observer
 export default class Inbox extends Component {
-  state = {
-    iData: [],
-    count: 0,
-    visible: false,
-  };
-
-  componentWillMount() {
-    this.getUnreadMsg();
-  }
-
-  componentWillUnmount() {
-  }
-
-  cleanMsg = (msgId) => {
+  cleanMsg = (e, data) => {
+    e.stopPropagation();
     const { AppState, HeaderStore } = this.props;
-    const newData = [];
-    HeaderStore.readMsg([msgId], AppState.userInfo.id);
-    this.state.iData.forEach((v) => {
-      if (v.id !== msgId) newData.push(v);
-    });
-    this.setState({
-      iData: newData,
-    });
+    HeaderStore.readMsg(AppState.userInfo.id, data);
   };
 
   cleanAllMsg = () => {
     const { AppState, HeaderStore } = this.props;
-    HeaderStore.readMsg(this.state.iData.map(({ id }) => id), AppState.userInfo.id);
-    this.setState({
-      iData: [],
-      visible: false,
-    });
+    HeaderStore.readMsg(AppState.userInfo.id);
+    HeaderStore.setInboxVisible(false);
   };
 
   getUnreadMsg() {
     const { AppState, HeaderStore } = this.props;
-    HeaderStore.axiosGetUserMsg(AppState.getUserId).then((data) => {
-      this.setState({
-        // 把html页面转化为纯文本
-        iData: data.content.map(({ title, content, id }) => ({ title, id, content: content.replace(/\n|&nbsp;|&lt|&gt|<[^>]+>| /g, '') })),
-      });
-    });
+    HeaderStore.axiosGetUserMsg(AppState.getUserId);
   }
 
   handleButtonClick = () => {
-    this.getUnreadMsg();
+    const { HeaderStore } = this.props;
+    if (!HeaderStore.inboxLoaded) {
+      this.getUnreadMsg();
+    }
   };
 
-  handleMessage = (data) => {
+  handleMessage = () => {
     this.getUnreadMsg();
-    this.setState({
-      count: data,
-    });
   };
 
   handleMessageClick = () => {
-    this.setState({
-      visible: false,
-    });
+    this.handleVisibleChange(false);
   };
 
   handleVisibleChange = (visible) => {
-    this.setState({ visible });
-  }
+    const { HeaderStore } = this.props;
+    HeaderStore.setInboxVisible(visible);
+  };
 
   renderMessages(inboxData) {
     if (inboxData.length > 0) {
       return (
         <ul>
           {
-            inboxData.map(({ title, content, id }) => (
-              <li key={id}>
-                <div onClick={() => this.handleMessageClick(id)}>
+            inboxData.map((data) => {
+              const { title, content, id } = data;
+              return (
+                <li key={id} onClick={this.handleMessageClick}>
                   <label><Link to={`/iam/user-msg?type=site&msgId=${id}`}>{title}</Link></label>
-                  <p>{content}</p>
-                </div>
-                <Icon type="cancel" onClick={() => this.cleanMsg(id)} />
-              </li>
-            ))
+                  <p>{content.replace(reg, '')}</p>
+                  <Icon type="cancel" onClick={e => this.cleanMsg(e, data)} />
+                </li>
+              );
+            })
           }
         </ul>
       );
@@ -103,19 +77,19 @@ export default class Inbox extends Component {
   }
 
   renderPopoverContent() {
-    const { iData } = this.state;
+    const { inboxData, inboxLoaded } = this.props.HeaderStore;
     return (
-      <div className={!iData.length ? 'is-empty' : null}>
+      <div className={!inboxData.length ? 'is-empty' : null}>
         <div className={`${popoverPrefixCls}-header`}>
           <span>通知</span>
           <a onClick={() => this.cleanAllMsg()}>全部清空</a>
         </div>
-        <div className={`${popoverPrefixCls}-content`}>
+        <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
           {
-            this.renderMessages(iData)
+            this.renderMessages(inboxData)
           }
-        </div>
-        <div className={`${popoverPrefixCls}-footer`}>
+        </Spin>
+        <div className={`${popoverPrefixCls}-footer`} onClick={this.handleMessageClick}>
           <Link to="/iam/user-msg?type=site">查看所有消息</Link>
         </div>
       </div>
@@ -124,29 +98,28 @@ export default class Inbox extends Component {
 
   render() {
     const { AppState, HeaderStore } = this.props;
+    const visible = HeaderStore.inboxVisible;
     return (
       <WSHandler
         messageKey={`choerodon:msg:site-msg:${AppState.userInfo.id}`}
         onMessage={this.handleMessage}
       >
         {
-          (
+          data => (
             <Popover
               overlayClassName={popoverPrefixCls}
               arrowPointAtCenter
               placement="bottomRight"
               content={this.renderPopoverContent()}
               trigger="click"
-              visible={this.state.visible}
+              visible={visible}
               onVisibleChange={this.handleVisibleChange}
             >
-              <a onClick={this.handleButtonClick} href="#">
-                <Badge className={prefixCls} count={this.state.count}>
-                  <Button onClick={this.handleButtonClick} functype="flat" shape="circle">
-                    <Icon type="notifications" />
-                  </Button>
-                </Badge>
-              </a>
+              <Badge onClick={this.handleButtonClick} className={prefixCls} count={data || 0}>
+                <Button functype="flat" shape="circle">
+                  <Icon type="notifications" />
+                </Button>
+              </Badge>
             </Popover>
           )
         }
