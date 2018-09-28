@@ -158,6 +158,7 @@ export default class MenuType extends Component {
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        width: '220px',
         render: (text, record) => (
           record.into === false ? (
             <span className={`${prefixCls}-disabled`}>
@@ -177,6 +178,7 @@ export default class MenuType extends Component {
         title: '编码',
         dataIndex: 'code',
         key: 'code',
+        width: '80px',
         render: (text, record) => {
           if (record.into === false) {
             return (
@@ -242,7 +244,9 @@ export default class MenuType extends Component {
           dataSource={dataSource}
           filterBar={false}
           onRow={onTableRow}
-          pagination={isNotRecent}
+          pagination={isNotRecent && dataSource.length > 10}
+          scroll={{ y: 360 }}
+          fixed
           rowSelection={rowSelection}
           {...props}
         />
