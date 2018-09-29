@@ -95,13 +95,14 @@ export default class WSProvider extends Component {
 
   destroySocketByPath(path) {
     const { ws } = this;
-    if (ws.get(path)) {
-      ws.get(path).removeEventListener('open', evt => this.handleOpen(evt, path));
-      ws.get(path).removeEventListener('message', evt => this.handleMessage(evt, path));
-      ws.get(path).removeEventListener('error', evt => this.handleError(evt, path));
-      ws.get(path).removeEventListener('close', evt => this.handleClose(evt, path));
-      clearInterval(ws.get(path).hb);
-      ws.get(path).close();
+    const w = ws.get(path);
+    if (w) {
+      clearInterval(w.hb);
+      w.removeEventListener('open', evt => this.handleOpen(evt, path));
+      w.removeEventListener('message', evt => this.handleMessage(evt, path));
+      w.removeEventListener('error', evt => this.handleError(evt, path));
+      w.removeEventListener('close', evt => this.handleClose(evt, path));
+      w.close();
       ws.set(path, null);
     }
   }

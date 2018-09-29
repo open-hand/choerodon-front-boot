@@ -12,6 +12,7 @@ import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter'
 import asyncLocaleProvider from '../{{ source }}/containers/components/util/asyncLocaleProvider';
 import { authorize, getAccessToken, setAccessToken, WEBSOCKET_SERVER } from '../{{ source }}/containers/common';
 import WSProvider from '../{{ source }}/containers/components/ws/WSProvider';
+import PermissionProvider from '../{{ source }}/containers/components/permission/PermissionProvider';
 import '../{{ source }}/containers/components/style';
 
 async function auth() {
@@ -43,13 +44,15 @@ class App extends Component {
       <UILocaleProviderAsync>
         <IntlProviderAsync>
           <Provider {...stores}>
-            <WSProvider server={WEBSOCKET_SERVER}>
-              <Router hashHistory={createBrowserHistory}>
-                <Switch>
-                  <Route path="/" component={Masters} />
-                </Switch>
-              </Router>
-            </WSProvider>
+            <PermissionProvider>
+              <WSProvider server={WEBSOCKET_SERVER}>
+                <Router hashHistory={createBrowserHistory}>
+                  <Switch>
+                    <Route path="/" component={Masters} />
+                  </Switch>
+                </Router>
+              </WSProvider>
+            </PermissionProvider>
           </Provider>
         </IntlProviderAsync>
       </UILocaleProviderAsync>
