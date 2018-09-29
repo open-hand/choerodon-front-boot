@@ -1,7 +1,7 @@
 module.exports = {
   routes: { test: './test/routeIndex' },
   server: 'https://api.choerodon.com.cn',
-  webSocketServer: 'ws://notify.staging.saas.hand-china.com',
+  webSocketServer: 'ws://notify.choerodon.com.cn',
   dashboard: {
     iam: {
       components: 'test/dashboard/*',

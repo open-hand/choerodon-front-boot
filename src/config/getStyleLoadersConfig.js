@@ -1,4 +1,12 @@
-export default (postcssOptions, modifyVarsOptions) => ([
+function normalizeToSassVariables(modifyVarsOptions) {
+  const { modifyVars, ...options } = modifyVarsOptions;
+  if (modifyVars) {
+    options.data = Object.keys(modifyVars).map(key => `$${key}: ${modifyVars[key]};`).join('');
+  }
+  return options;
+}
+
+export default (postcssOptions, loaderOptions) => ([
   {
     test: /\.css$/,
     use: [{
@@ -27,7 +35,7 @@ export default (postcssOptions, modifyVarsOptions) => ([
       },
       {
         loader: 'less-loader',
-        options: modifyVarsOptions,
+        options: loaderOptions,
       },
     ],
   },
@@ -46,7 +54,7 @@ export default (postcssOptions, modifyVarsOptions) => ([
       },
       {
         loader: 'sass-loader',
-        options: modifyVarsOptions,
+        options: normalizeToSassVariables(loaderOptions),
       },
     ],
   },

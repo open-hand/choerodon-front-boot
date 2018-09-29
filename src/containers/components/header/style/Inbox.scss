@@ -4,8 +4,9 @@
 $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
 
 .#{$c7n-boot-header-inbox} {
-  -webkit-transform: scale(0.75);
+  transform: scale(.8);
   button {
+    transform: scale(1.25);
     .icon {
       color: #fff;
       font-size: 23px;
@@ -13,23 +14,9 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     }
   }
   .ant-badge-count {
-    top: -5px;
-    right: -15px;
-    margin-right: 2px;
-    min-width: 18px;
-    line-height: 18px;
-    font-size: 12px;
-    height: 18px;
     box-shadow: initial;
-    &.ant-badge-multiple-words {
-      float: left;
-      right: -23px;
-      left: 27px;
-    }
-  }
-  .ant-badge-multiple-words {
-    right: -15px;
-    padding: 0 5px;
+    cursor: pointer;
+    top: -5px;
   }
 
   &-popover {
@@ -65,50 +52,39 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
         font-size: 13px;
         line-height: 20px;
         padding: 9px 20px;
-        div {
-          display: inline-block;
-          width: 236px;
-          overflow: hidden;
-          text-overflow: ellipsis;
+        a {
           vertical-align: middle;
-          a {
-            vertical-align: middle;
-            color: inherit;
-
-            &:before {
-              position: absolute;
-              background-color: transparent;
-              top: 0;
-              left: 0;
-              bottom: 0;
-              right: 50px;
-              content: '';
-            }
-          }
+          color: inherit;
         }
+
+        @include button-link-masker();
         &:hover {
           background-color: rgba(0, 0, 0, 0.02);
         }
       }
-      div {
-        label {
-          font-size: 13px;
-          line-height: 20px;
-          font-weight: 500;
-        }
-        p {
-          font-size: 10px;
-          margin: 0;
-          max-width: 216px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
+      label {
+        font-size: 13px;
+        line-height: 20px;
+        font-weight: 500;
+      }
+      p {
+        font-size: 12px;
+        margin: 0;
+        width: 262px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transform: scale(0.9);
+        transform-origin: 0;
       }
       .icon {
         color: #a3a3a3;
         font-size: 16px;
         cursor: pointer;
+        position: absolute;
+        left: 269px;
+        top: 20px;
+        z-index: 2;
       }
     }
     &-footer {

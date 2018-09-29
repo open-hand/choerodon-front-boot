@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import autoprefixer from 'autoprefixer';
 
 const defaultConfig = {
@@ -32,15 +32,10 @@ const defaultConfig = {
   clientid: 'localhost',
   titlename: 'Choerodon',
   favicon: 'favicon.ico',
-  theme: {
-    'primary-color': '#3F51B5',
-  },
   dashboard: false,
 };
 
-module.exports = function getChoerodonConfig(configFile) {
+export default function getChoerodonConfig(configFile) {
   const customizedConfig = fs.existsSync(configFile) ? require(configFile) : {};
-  const config = Object.assign({}, defaultConfig, customizedConfig);
-  // config.index = resolve.sync(config.index, { basedir: process.cwd() });
-  return config;
-};
+  return Object.assign({}, defaultConfig, customizedConfig);
+}

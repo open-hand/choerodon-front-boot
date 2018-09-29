@@ -7,6 +7,7 @@ import context from '../bin/common/context';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getEnterPointsConfig from './getEnterPointsConfig';
 import getWebpackCommonConfig from './getWebpackCommonConfig';
+import getDefaultTheme from './getDefaultTheme';
 
 const choerodonLib = join(__dirname, '..');
 
@@ -30,8 +31,8 @@ export default function updateWebpackConfig(mode, env) {
     postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
-    sourceMap: true,
-    modifyVars: theme,
+    sourceMap: mode === 'start',
+    modifyVars: Object.assign({}, getDefaultTheme(), theme),
   });
 
   let defaultEnterPoints;
