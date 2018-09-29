@@ -37,14 +37,14 @@ class Permission extends Component {
     this.triggerAccess();
   }
 
-  componentDidUpdate() {
-    this.triggerAccess();
+  componentDidUpdate(preProps, preState) {
+    this.triggerAccess(preState);
   }
 
-  triggerAccess() {
+  triggerAccess(preState = {}) {
     const { status } = this.state;
     const { onAccess } = this.props;
-    if (status === SUCCESS && typeof onAccess === 'function') {
+    if (status === SUCCESS && preState.status !== SUCCESS && typeof onAccess === 'function') {
       onAccess();
     }
   }
