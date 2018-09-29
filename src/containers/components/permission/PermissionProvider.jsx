@@ -6,14 +6,6 @@ import { FAILURE, SUCCESS } from './PermissionStatus';
 const DELAY = 500;
 
 export default class PermissionProvider extends Component {
-  static propTypes = {
-    server: PropTypes.string,
-    onOpen: PropTypes.func,
-    onClose: PropTypes.func,
-    onMessage: PropTypes.func,
-    onError: PropTypes.func,
-  };
-
   static childContextTypes = {
     permission: PropTypes.object,
   };
@@ -58,33 +50,38 @@ export default class PermissionProvider extends Component {
   }
 
   check(props, handler, flag) {
-    if (
-      this.judgeServices(props).every((item) => {
+    if (!props.service || props.service.length === 0) {
+      handler(SUCCESS);
+    } else {
+      const queue = new Set();
+      if (this.judgeServices(props).every((item) => {
         if (item) {
           const key = JSON.stringify(item);
           const status = this.permissions.get(key);
-          if (status) {
+          if (status === SUCCESS) {
             handler(status);
             return false;
+          } else if (status !== FAILURE) {
+            this.queue.add(key);
+            queue.add(key);
           }
-          this.queue.add(key);
         }
         return true;
       })
-      && this.queue.size > 0 && !flag
-    ) {
-      this.handlers.add([props, handler]);
-      this.start();
+      ) {
+        if (queue.size > 0 && !flag) {
+          this.handlers.add([props, handler]);
+          this.start();
+        } else {
+          handler(FAILURE);
+        }
+      }
     }
   }
 
   judgeServices({ service, type, organizationId, projectId }) {
-    if (service && service.length) {
-      return service
-        .map(code => this.judgeService(code, type, organizationId, projectId));
-    } else {
-      return [];
-    }
+    return service
+      .map(code => this.judgeService(code, type, organizationId, projectId));
   }
 
   judgeService(code, type, organizationId, projectId) {
