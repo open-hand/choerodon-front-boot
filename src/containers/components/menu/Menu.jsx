@@ -218,24 +218,15 @@ export default class CommonMenu extends Component {
 
   renderLeftMenu(child, selected, expanded) {
     if (child.length > 0) {
-      const { AppState, MenuStore } = this.props;
-      let homePath = '/';
-      if (dashboard) {
-        const { type, id, name, organizationId } = AppState.currentMenuType;
-        if (type && type !== 'site') {
-          homePath = `${homePath}?type=${type}&id=${id}&name=${name}`;
-          if (organizationId) {
-            homePath += `&organizationId=${organizationId}`;
-          }
-        }
-      }
+      const { MenuStore } = this.props;
+
       return (
         <div className={`common-menu-left ${expanded ? 'expanded' : ''}`}>
           <div
             className="common-menu-left-header"
             role="none"
           >
-            <Link to={homePath} onClick={this.collapseMenu}><Icon type="home" /><span>主页</span></Link>
+            <Link to="/" onClick={this.collapseMenu}><Icon type="home" /><span>主页</span></Link>
           </div>
           <div className="common-menu-right-content">
             <Menu

@@ -1,3 +1,5 @@
+@import "../../style/theme/default";
+
 .page-container {
   display: flex;
   flex-flow: column;
@@ -18,7 +20,7 @@
   padding-left: 25px;
 
   .back-btn {
-    color: #3f51b5;
+    color: $primary-color;
     margin: 0 3px 0 -12px;
     vertical-align: middle;
   }
@@ -90,7 +92,7 @@
     margin-bottom: 24px;
     span,
     a {
-      color: #3f51b5;
+      color: $primary-color;
       cursor: pointer;
     }
     a {

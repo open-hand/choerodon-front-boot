@@ -6,8 +6,6 @@ export default class Toolbar extends Component {
     render: PropTypes.func,
   };
 
-  context;
-
   shouldUpdate = true;
 
   componentWillMount() {

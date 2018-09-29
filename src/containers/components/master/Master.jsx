@@ -103,7 +103,7 @@ class Masters extends Component {
           </div>
           <div className="page-body">
             <div className="content-wrapper">
-              <div id="menu" className="c7n-menu">
+              <div id="menu">
                 <CommonMenu />
               </div>
               <div id="autoRouter" className="content">

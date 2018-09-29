@@ -1,4 +1,8 @@
-.master-head {
+@import "../../style/theme/default";
+
+$c7n-boot-header: #{$c7n-prefix}-boot-header;
+
+.#{$c7n-boot-header} {
   &-wrap {
     display: flex;
     align-items: center;
@@ -8,7 +12,7 @@
     box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16);
     position: relative;
     z-index: 999;
-    background-color: #3f51b5;
+    background-color: $primary-color;
     li {
       list-style-type: none;
       margin: auto 10px;

@@ -2,9 +2,9 @@ import React, { Children, cloneElement, Component, createElement, isValidElement
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import omit from 'object.omit';
-import PermissionWrapper from './PermissionWrapper';
+import { FAILURE, PENDING, SUCCESS } from './PermissionStatus';
 
-@inject('AppState', 'PermissionStore')
+@inject('AppState')
 @observer
 class Permission extends Component {
   static propTypes = {
@@ -17,17 +17,49 @@ class Permission extends Component {
     onAccess: PropTypes.func,
   };
 
+  static contextTypes = {
+    permission: PropTypes.object,
+  };
+
+  state = {
+    status: PENDING,
+  };
+
   componentWillMount() {
-    this.check(this.props);
+    this.check(this.props, this.context);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.check(nextProps);
+  componentWillReceiveProps(nextProps, nextContext) {
+    this.check(nextProps, nextContext);
   }
 
-  check(props) {
-    this.props.PermissionStore.check(this.getPermissionProps(props));
+  componentDidMount() {
+    this.triggerAccess();
   }
+
+  componentDidUpdate() {
+    this.triggerAccess();
+  }
+
+  triggerAccess() {
+    const { status } = this.state;
+    const { onAccess } = this.props;
+    if (status === SUCCESS && typeof onAccess === 'function') {
+      onAccess();
+    }
+  }
+
+  check(props, context) {
+    if (context.permission) {
+      context.permission.check(this.getPermissionProps(props), this.handlePermission);
+    }
+  }
+
+  handlePermission = (status) => {
+    this.setState({
+      status,
+    });
+  };
 
   getPermissionProps(props) {
     const { type: typeState = 'site', id = 0, projectId: projectIdState, organizationId: organizationIdState } = props.AppState.currentMenuType || {};
@@ -60,21 +92,17 @@ class Permission extends Component {
   }
 
   render() {
-    const { defaultChildren, children, noAccessChildren, onAccess, PermissionStore } = this.props;
+    const { defaultChildren, children, noAccessChildren } = this.props;
     const otherProps = omit(this.props, [
       'service', 'type', 'organizationId', 'projectId', 'defaultChildren',
-      'noAccessChildren', 'children', 'onAccess', 'PermissionStore', 'AppState',
+      'noAccessChildren', 'children', 'onAccess', 'AppState',
     ]);
-    const status = PermissionStore.access(this.getPermissionProps(this.props));
-    if (status === 'success') {
-      return (
-        <PermissionWrapper onAccess={onAccess}>
-          {this.extendProps(children, otherProps)}
-        </PermissionWrapper>
-      );
-    } else if (status === 'failure' && (noAccessChildren || defaultChildren)) {
+    const { status } = this.state;
+    if (status === SUCCESS) {
+      return this.extendProps(children, otherProps);
+    } else if (status === FAILURE && (noAccessChildren || defaultChildren)) {
       return this.extendProps(noAccessChildren || defaultChildren, otherProps);
-    } else if (status === 'pending' && defaultChildren) {
+    } else if (status === PENDING && defaultChildren) {
       return this.extendProps(defaultChildren, otherProps);
     } else {
       return null;

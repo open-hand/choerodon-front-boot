@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import { fileServer } from '../../common';
 
 export default class Avatar extends Component {
   render() {
-    const { src, children, className, style, ...props } = this.props;
+    const { src, children, className, style, prefixCls, ...props } = this.props;
     return (
       <div
-        className={classnames('user-preference-avatar', className)}
+        className={classNames(`${prefixCls}-avatar`, className)}
         style={
           {
             ...style,

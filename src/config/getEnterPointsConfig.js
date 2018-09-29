@@ -8,6 +8,7 @@ const enterPoints = {
   VERSION: 'localhost:version',
   TITLE_NAME: 'localhost:titlename',
   FILE_SERVER: 'localhost:fileserver',
+  WEBSOCKET_SERVER: 'localhost:wsserver',
 };
 
 export default function getEnterPointsConfig() {

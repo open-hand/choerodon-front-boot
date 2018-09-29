@@ -1,7 +1,9 @@
 import { action, computed, observable } from 'mobx';
 import omit from 'object.omit';
+import queryString from 'query-string';
 import store from '../components/store';
 import axios from '../components/axios';
+import { handleResponseError } from '../common';
 
 const ORGANIZATION_TYPE = 'organization';
 const PROJECT_TYPE = 'project';
@@ -40,6 +42,12 @@ class HeaderStore {
 
   @observable menuTypeVisible = false;
 
+  @observable inboxVisible = false;
+
+  @observable inboxData = [];
+
+  @observable inboxLoaded = false;
+
   @computed
   get getSelected() {
     return this.selected;
@@ -75,6 +83,11 @@ class HeaderStore {
     this.menuTypeVisible = menuTypeVisible;
   }
 
+  @action
+  setInboxVisible(inboxVisible) {
+    this.inboxVisible = inboxVisible;
+  }
+
   axiosGetOrgAndPro(userId) {
     return axios.all([
       axios.get(`/iam/v1/users/${userId}/organizations`),
@@ -91,6 +104,21 @@ class HeaderStore {
       this.setProData(projects);
       return data;
     });
+  }
+
+  axiosGetUserMsg(userId) {
+    return axios.get(`/notify/v1/notices/sitemsgs?${queryString.stringify({
+      user_id: userId,
+      read: false,
+      page: 0,
+      size: 20,
+      sort: 'id,desc',
+    })}`)
+      .then(action(({ content }) => {
+        this.inboxData = content || [];
+        this.inboxLoaded = true;
+      }))
+      .catch(handleResponseError);
   }
 
   @action
@@ -155,6 +183,25 @@ class HeaderStore {
       value => findDataIndex(this.orgData, value) !== -1
         || findDataIndex(this.proData, value) !== -1,
     );
+  }
+
+  @action
+  readMsg(userId, data) {
+    const body = (data ? [].concat(data) : this.inboxData).map(({ id }) => id);
+    this.clearMsg(data);
+    return axios.put(`/notify/v1/notices/sitemsgs/batch_read?user_id=${userId}`, JSON.stringify(body));
+  }
+
+  @action
+  clearMsg(data) {
+    if (data) {
+      const index = this.inboxData.indexOf(data);
+      if (index !== -1) {
+        this.inboxData.slice(1, index);
+      }
+    } else {
+      this.inboxData = [];
+    }
   }
 
   @action

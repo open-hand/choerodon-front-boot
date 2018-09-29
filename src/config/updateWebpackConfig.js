@@ -7,6 +7,7 @@ import context from '../bin/common/context';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getEnterPointsConfig from './getEnterPointsConfig';
 import getWebpackCommonConfig from './getWebpackCommonConfig';
+import getDefaultTheme from './getDefaultTheme';
 
 const choerodonLib = join(__dirname, '..');
 
@@ -26,12 +27,12 @@ export default function updateWebpackConfig(mode, env) {
   const webpackConfig = getWebpackCommonConfig(mode, env);
   const { choerodonConfig } = context;
   const {
-    theme, output, root, enterPoints, server, fileServer, clientid, local,
+    theme, output, root, enterPoints, server, fileServer, webSocketServer, clientid, local,
     postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
-    sourceMap: true,
-    modifyVars: theme,
+    sourceMap: mode === 'start',
+    modifyVars: Object.assign({}, getDefaultTheme(), theme),
   });
 
   let defaultEnterPoints;
@@ -53,6 +54,7 @@ export default function updateWebpackConfig(mode, env) {
       LOCAL: local,
       VERSION: '本地',
       FILE_SERVER: fileServer,
+      WEBSOCKET_SERVER: webSocketServer,
     };
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;
