@@ -76,8 +76,7 @@ export default class Inbox extends Component {
     }
   }
 
-  renderPopoverContent() {
-    const { inboxData, inboxLoaded } = this.props.HeaderStore;
+  renderPopoverContent(inboxData, inboxLoaded) {
     return (
       <div className={!inboxData.length ? 'is-empty' : null}>
         <div className={`${popoverPrefixCls}-header`}>
@@ -98,7 +97,7 @@ export default class Inbox extends Component {
 
   render() {
     const { AppState, HeaderStore } = this.props;
-    const visible = HeaderStore.inboxVisible;
+    const { inboxVisible, inboxLoaded, inboxData } = HeaderStore;
     return (
       <WSHandler
         messageKey={`choerodon:msg:site-msg:${AppState.userInfo.id}`}
@@ -110,9 +109,9 @@ export default class Inbox extends Component {
               overlayClassName={popoverPrefixCls}
               arrowPointAtCenter
               placement="bottomRight"
-              content={this.renderPopoverContent()}
+              content={this.renderPopoverContent(inboxData, inboxLoaded)}
               trigger="click"
-              visible={visible}
+              visible={inboxVisible}
               onVisibleChange={this.handleVisibleChange}
             >
               <Badge onClick={this.handleButtonClick} className={prefixCls} count={data || 0}>
