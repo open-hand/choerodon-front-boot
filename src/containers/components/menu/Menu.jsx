@@ -4,7 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
-import { dashboard, historyReplaceMenu } from '../../common';
+import { historyPushMenu } from '../../common';
 import './style';
 
 const { SubMenu, Item } = Menu;
@@ -184,7 +184,7 @@ export default class CommonMenu extends Component {
       });
       const { route, domian } = findFirstLeafMenu(selected);
       const link = this.getMenuLink(route);
-      historyReplaceMenu(history, link, domian);
+      historyPushMenu(history, link, domian);
     }
     this.collapseMenu();
   };
