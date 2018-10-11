@@ -40,18 +40,19 @@ const Masters = asyncRouter(() => import('../{{ source }}/containers/components/
 
 @observer
 class App extends Component {
+  getConfirmation = (message, callback) => {
+    confirm({
+      title: message,
+      onOk() {
+        callback(true);
+      },
+      onCancel() {
+        callback(false);
+      },
+    });
+  };
+
   render() {
-    const getConfirmation = (message, callback) => {
-      confirm({
-        title: message,
-        onOk() {
-          callback(true);
-        },
-        onCancel() { 
-          callback(false);
-        },
-      });
-    };
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, () => import(`../{{ source }}/containers/locale/${language}`), () => import(`react-intl/locale-data/${language.split('_')[0]}`));
     return (
@@ -60,7 +61,7 @@ class App extends Component {
           <Provider {...stores}>
             <PermissionProvider>
               <WSProvider server={WEBSOCKET_SERVER}>
-                <Router hashHistory={createBrowserHistory} getUserConfirmation={getConfirmation}>
+                <Router hashHistory={createBrowserHistory} getUserConfirmation={this.getConfirmation}>
                   <Switch>
                     <Route path="/" component={Masters} />
                   </Switch>
