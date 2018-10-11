@@ -4,8 +4,10 @@ import { render } from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { configure } from 'mobx';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { observer, Provider } from 'mobx-react';
 import queryString from 'query-string';
+import { Modal } from 'choerodon-ui';
 import stores from '../{{ source }}/containers/stores';
 import AppState from '../{{ source }}/containers/stores/AppState';
 import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter';
@@ -15,6 +17,7 @@ import WSProvider from '../{{ source }}/containers/components/ws/WSProvider';
 import PermissionProvider from '../{{ source }}/containers/components/permission/PermissionProvider';
 import '../{{ source }}/containers/components/style';
 
+const { confirm } = Modal;
 async function auth() {
   const { access_token: accessToken, token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
   if (accessToken) {
@@ -38,6 +41,17 @@ const Masters = asyncRouter(() => import('../{{ source }}/containers/components/
 @observer
 class App extends Component {
   render() {
+    const getConfirmation = (message, callback) => {
+      confirm({
+        title: message,
+        onOk() {
+          callback(true);
+        },
+        onCancel() { 
+          callback(false);
+        },
+      });
+    };
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, () => import(`../{{ source }}/containers/locale/${language}`), () => import(`react-intl/locale-data/${language.split('_')[0]}`));
     return (
@@ -46,7 +60,7 @@ class App extends Component {
           <Provider {...stores}>
             <PermissionProvider>
               <WSProvider server={WEBSOCKET_SERVER}>
-                <Router hashHistory={createBrowserHistory}>
+                <Router hashHistory={createBrowserHistory} getUserConfirmation={getConfirmation}>
                   <Switch>
                     <Route path="/" component={Masters} />
                   </Switch>
