@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { Button, Icon } from 'choerodon-ui';
 import MenuType from './MenuType';
 import Logo from './Logo';
 import Setting from './Setting';
@@ -7,6 +8,7 @@ import User from './User';
 import Inbox from './Inbox';
 import { PREFIX_CLS } from '../../common/constants';
 import './style';
+
 
 const prefixCls = `${PREFIX_CLS}-boot-header`;
 
@@ -17,6 +19,11 @@ class Header extends Component {
     const { AppState, HeaderStore, MenuStore } = this.props;
     MenuStore.loadMenuData({ type: 'site' }, false);
     HeaderStore.axiosGetOrgAndPro(AppState.getUserId);
+  }
+
+  handleGuideClick() {
+    const { AppState } = this.props;
+    AppState.setGuideExpanded(!AppState.getGuideExpanded);
   }
 
   render() {
@@ -39,6 +46,11 @@ class Header extends Component {
           }
         </ul>
         <ul className={`${prefixCls}-right`}>
+          <li>
+            <Button functype="flat" shape="circle" onClick={() => this.handleGuideClick()}>
+              <Icon type="book" />
+            </Button>
+          </li>
           <li>
             <Inbox />
           </li>

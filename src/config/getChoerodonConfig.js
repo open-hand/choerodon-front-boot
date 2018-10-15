@@ -33,6 +33,7 @@ const defaultConfig = {
   titlename: 'Choerodon',
   favicon: 'favicon.ico',
   dashboard: false,
+  guide: false,
 };
 
 export default function getChoerodonConfig(configFile) {

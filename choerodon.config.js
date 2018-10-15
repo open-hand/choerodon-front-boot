@@ -8,4 +8,10 @@ module.exports = {
       locale: 'test/locale/*',
     },
   },
+  guide: {
+    iam: {
+      components: 'test/guide/*',
+      locale: 'test/locale/*',
+    },
+  },
 };
