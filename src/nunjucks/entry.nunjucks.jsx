@@ -4,7 +4,6 @@ import { render } from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { configure } from 'mobx';
-import { FormattedMessage, injectIntl } from 'react-intl';
 import { observer, Provider } from 'mobx-react';
 import queryString from 'query-string';
 import { Modal } from 'choerodon-ui';
@@ -18,6 +17,7 @@ import PermissionProvider from '../{{ source }}/containers/components/permission
 import '../{{ source }}/containers/components/style';
 
 const { confirm } = Modal;
+const STRING_DEVIDER = '__@.@__';
 async function auth() {
   const { access_token: accessToken, token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
   if (accessToken) {
@@ -42,7 +42,8 @@ const Masters = asyncRouter(() => import('../{{ source }}/containers/components/
 class App extends Component {
   getConfirmation = (message, callback) => {
     confirm({
-      title: message,
+      title: message.split(STRING_DEVIDER)[0],
+      content: message.split(STRING_DEVIDER)[1],
       onOk() {
         callback(true);
       },
