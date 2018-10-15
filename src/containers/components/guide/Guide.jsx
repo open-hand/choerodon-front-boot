@@ -45,8 +45,9 @@ export default class Guide extends Component {
   }
 
   renderItem = (data) => {
-    const { guide: { guideLocale }, AppState } = this.props;
-    const localKey = 'iam/zh_CN';
+    const { guide: { guideLocale }, AppState, GuideStore } = this.props;
+
+    const localKey = Object.keys(guideLocale)[0];
     const getMessage = guideLocale[localKey];
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, getMessage);

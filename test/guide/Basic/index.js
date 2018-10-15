@@ -4,22 +4,12 @@ import { Button, Icon } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import Step from '../../../src/containers/components/guide/Step';
+import StepFooter from '../../../src/containers/components/guide/StepFooter';
 
 @inject('GuideStore')
 @injectIntl
 @observer
 export default class Basic extends Component {
-  handleNextClick = () => {
-    const { GuideStore } = this.props;
-    GuideStore.addCurrentStep();
-  };
-
-  handleBackClick = () => {
-    const { GuideStore } = this.props;
-    if (GuideStore.getCurrentStep === 0) GuideStore.setCurrentGuideComponent(false);
-    else GuideStore.setCurrentStep(GuideStore.getCurrentStep - 1);
-  };
-
   renderStep(current) {
     switch (current) {
       case 0:
@@ -100,17 +90,10 @@ export default class Basic extends Component {
     return (
       <div>
         <div style={{ width: '90%', margin: '0 auto' }}>
-          <Step current={GuideStore.getCurrentStep} total={7} />
+          <Step current={GuideStore.getCurrentStep} total={4} />
           {this.renderStep(GuideStore.getCurrentStep)}
         </div>
-        <div className="c7n-boot-guide-step-footer">
-          <Button onClick={() => this.handleBackClick()}>
-            返回
-          </Button>
-          <Button style={{ right: '0', marginLeft: '190px' }} onClick={() => this.handleNextClick()}>
-            继续
-          </Button>
-        </div>
+        <StepFooter total={4} />
       </div>
     );
   }

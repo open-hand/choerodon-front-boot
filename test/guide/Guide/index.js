@@ -3,7 +3,9 @@ import './index.scss';
 import { Button, Icon } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import Step from '../../../src/containers/components/guide/Step';
+import StepFooter from '../../../src/containers/components/guide/StepFooter';
 
 @inject('GuideStore')
 @injectIntl
@@ -30,7 +32,7 @@ export default class Guide extends Component {
             <p>组织是项目的上一级。通过组织您可以管理项目、用户。</p>
             <p>您可以使用组织创建表单来创建组织，创建后平台默认您是这个组织的组织管理员。</p>
             <ol>
-              <li>点击管理，进入组织管理页面。</li>
+              <li>点击<Link to="/iam/organization">管理</Link>，进入组织管理页面。</li>
               <li>点击创建组织，输入组织信息。</li>
             </ol>
           </div>
@@ -82,17 +84,10 @@ export default class Guide extends Component {
     return (
       <div>
         <div style={{ width: '90%', margin: '0 auto' }}>
-          <Step current={GuideStore.getCurrentStep} total={7} />
+          <Step current={GuideStore.getCurrentStep} total={4} />
           {this.renderStep(GuideStore.getCurrentStep)}
         </div>
-        <div className="c7n-boot-guide-step-footer">
-          <Button onClick={() => this.handleBackClick()}>
-            返回
-          </Button>
-          <Button style={{ right: '0', marginLeft: '190px' }} onClick={() => this.handleNextClick()}>
-            继续
-          </Button>
-        </div>
+        <StepFooter total={4} />
       </div>
     );
   }
