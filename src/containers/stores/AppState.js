@@ -14,6 +14,8 @@ class AppState {
 
   @observable expanded = false;
 
+  @observable guideExpanded = false;
+
   @observable userInfo = {};
 
   @observable debugger = false; // 调试模式
@@ -58,6 +60,16 @@ class AppState {
   @action
   setMenuExpanded(data) {
     this.expanded = data;
+  }
+
+  @computed
+  get getGuideExpanded() {
+    return this.guideExpanded;
+  }
+
+  @action
+  setGuideExpanded(data) {
+    this.guideExpanded = data;
   }
 
   @computed

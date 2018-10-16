@@ -1,13 +1,14 @@
 import React, { Component, createElement } from 'react';
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { Spin } from 'choerodon-ui';
+import { Spin, Steps } from 'choerodon-ui';
 import queryString from 'query-string';
 import CommonMenu from '../menu';
 import MasterHeader from '../header';
 import { dashboard, historyReplaceMenu } from '../../common';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 import './style';
+import Guide from '../guide/Guide';
 
 const spinStyle = {
   textAlign: 'center',
@@ -94,7 +95,7 @@ class Masters extends Component {
   }
 
   render() {
-    const { AppState, AutoRouter } = this.props;
+    const { AppState, AutoRouter, GuideRouter } = this.props;
     return (
       AppState.isAuth && AppState.currentMenuType ? (
         <div className="page-wrapper">
@@ -108,6 +109,9 @@ class Masters extends Component {
               </div>
               <div id="autoRouter" className="content">
                 <AutoRouter />
+              </div>
+              <div id="guide" className="guide">
+                <Guide guide={GuideRouter} />
               </div>
             </div>
           </div>

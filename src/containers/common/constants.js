@@ -12,3 +12,4 @@ export const FILE_SERVER = `${process.env.FILE_SERVER}`;
 export const WEBSOCKET_SERVER = `${process.env.WEBSOCKET_SERVER}`;
 export const HEADER_TITLE_NAME = `${process.env.HEADER_TITLE_NAME || 'Choerodon'}`;
 export const USE_DASHBOARD = JSON.parse(process.env.USE_DASHBOARD || 'false');
+export const USE_GUIDE = JSON.parse(process.env.USE_GUIDE || 'false');

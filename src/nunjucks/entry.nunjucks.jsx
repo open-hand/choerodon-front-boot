@@ -36,6 +36,7 @@ const UILocaleProviderAsync = asyncRouter(() => import('choerodon-ui/lib/locale-
 
 const Masters = asyncRouter(() => import('../{{ source }}/containers/components/master'), {
   AutoRouter: () => import('{{ routesPath }}'),
+  GuideRouter: () => import('{{ guidePath }}'),
 });
 
 @observer
