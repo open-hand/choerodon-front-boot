@@ -7,6 +7,8 @@ import classes from 'component-classes';
 import RenderInBody from './RenderInBody';
 import './style';
 
+let captureLock = false;
+
 function findParent(node, level) {
   if (level > 0 && node) {
     return findParent(node.parentNode, level - 1);
@@ -17,6 +19,20 @@ function findParent(node, level) {
 
 function findContainer(node) {
   return findParent(node, parent => classes(parent).has('page-content'));
+}
+
+function findEventCapture(dom) {
+  if (dom && dom.onclick === null) {
+    for (let i = 0; i < dom.childNodes.length; i += 1) {
+      if (dom.childNodes[i].onclick === null) {
+        return findEventCapture(dom.childNodes[i]);
+      } else {
+        return dom.childNodes[i];
+      }
+    }
+  } else {
+    return dom;
+  }
 }
 
 @observer
@@ -107,6 +123,11 @@ class Mask extends Component {
     this.setMask();
   };
 
+  handleClick = (e, domHighLight) => {
+    findEventCapture(domHighLight).click();
+    captureLock = false;
+    this.setState({ visible: false });
+  };
 
   getOverlay = () => {
     const { top, left, width, height, windowWidth, windowHeight, visible, domHighLight } = this.state;
@@ -127,7 +148,7 @@ class Mask extends Component {
         <div className={`${prefixCls}-overlay`} style={{ width, left, top: height + top, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
         <div className={`${prefixCls}-overlay`} style={{ width, left, top: 0, height: top, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
         <div className={classnames(`${prefixCls}-clickable`, visible ? `${prefixCls}-border` : '')} style={maskStyle} key="mask" />
-        <div className={`${prefixCls}-clickable-btn`} style={{ top, left, width, height, display: visible ? 'block' : 'none' }} onClick={() => { domHighLight.click(); this.setState({ visible: false }); }} />
+        <div className={`${prefixCls}-clickable-btn`} style={{ top, left, width, height, display: visible ? 'block' : 'none' }} onClick={e => this.handleClick(e, domHighLight)} />
       </div>
     );
     return maskElement;
