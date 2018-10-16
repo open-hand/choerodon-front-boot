@@ -6,13 +6,11 @@ import classes from 'component-classes';
 import RenderInBody from './RenderInBody';
 import './style';
 
-function findParent(node, cb) {
-  let parent = node.parentNode;
-  while (parent) {
-    if (cb(parent)) {
-      return parent;
-    }
-    parent = parent.parentNode;
+function findParent(node, level) {
+  if (level > 0 && node) {
+    return findParent(node.parentNode, level - 1);
+  } else {
+    return node;
   }
 }
 
@@ -26,8 +24,9 @@ class Mask extends Component {
     prefixCls: 'c7n-boot-guide-mask',
     visible: false,
     wrapperClassName: '',
-    highLight: 'c7n-boot-header-user-avatar',
+    highLight: '',
     idx: 0,
+    level: 0,
   };
 
   static propTypes = {
@@ -39,6 +38,7 @@ class Mask extends Component {
     indicator: PropTypes.node,
     highLight: PropTypes.string,
     idx: PropTypes.number,
+    level: PropTypes.number,
   };
 
   constructor(props) {
@@ -65,20 +65,36 @@ class Mask extends Component {
     });
   }
 
+  setMask = () => {
+    const domHighLight = findParent(document.getElementsByClassName(this.props.highLight)[this.props.idx], this.props.level);
+    if (domHighLight) {
+      const elementClient = domHighLight.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const windowWidth = window.innerWidth;
+      const { top, left, width, height } = elementClient;
+      this.setState({
+        top,
+        left,
+        width,
+        height,
+        windowHeight,
+        windowWidth,
+      });
+      window.addEventListener('resize', this.onWindowResize);
+    } else {
+      this.setState({
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+        windowHeight: window.innerHeight,
+        windowWidth: window.innerWidth,
+      });
+    }
+  };
+
   componentDidMount() {
-    const elementClient = document.getElementsByClassName(this.props.highLight)[this.props.idx].getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const windowWidth = window.innerWidth;
-    const { top, left, width, height } = elementClient;
-    this.setState({
-      top,
-      left,
-      width,
-      height,
-      windowHeight,
-      windowWidth,
-    });
-    window.addEventListener('resize', this.onWindowResize);
+    this.setMask();
   }
 
   componentWillUnmount() {
@@ -86,18 +102,7 @@ class Mask extends Component {
   }
 
   onWindowResize = () => {
-    const elementClient = document.getElementsByClassName(this.props.highLight)[this.props.idx].getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const windowWidth = window.innerWidth;
-    const { top, left, width, height } = elementClient;
-    this.setState({
-      top,
-      left,
-      width,
-      height,
-      windowHeight,
-      windowWidth,
-    });
+    this.setMask();
   };
 
 
@@ -114,22 +119,27 @@ class Mask extends Component {
     };
     const { prefixCls } = this.props;
     const maskElement = (
-      <div className={`${prefixCls}-overlay`} style={maskStyle} key="mask" />
+      <div>
+        <div className={`${prefixCls}-clickable`} onClick={() => { this.setState({ visible: false }); }} style={maskStyle} key="mask" />
+      </div>
     );
     return maskElement;
   };
 
   render() {
     const { visible } = this.state;
+    const { children } = this.props;
     return (
-      <RenderInBody>
-        {
-          visible
-            ? this.getOverlay()
-            : null
-        }
-      </RenderInBody>
-
+      <React.Fragment>
+        <a onClick={() => this.setState({ visible: true }, () => this.setMask())}> {children} </a>
+        <RenderInBody>
+          {
+            visible
+              ? this.getOverlay()
+              : null
+          }
+        </RenderInBody>
+      </React.Fragment>
     );
   }
 }

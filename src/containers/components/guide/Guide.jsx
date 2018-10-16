@@ -19,11 +19,10 @@ export default class Guide extends Component {
     const { guide: { guideComponents, guideLocale }, GuideStore } = this.props;
     const guideComponent = asyncRouter(guideComponents[current]);
     warning(current in guideComponents, `Guide Component<${current}> is missing.`);
-
-
+    const locale = current.substring(0, current.indexOf('/')).concat('/zh_CN');
     return (
       <div className="c7n-boot-guide-step">
-        <GuidePanel component={guideComponent} locale={guideLocale} current={current} />
+        <GuidePanel component={guideComponent} locale={guideLocale[locale]} current={current} />
       </div>
     );
   }
@@ -46,8 +45,8 @@ export default class Guide extends Component {
 
   renderItem = (data) => {
     const { guide: { guideLocale }, AppState, GuideStore } = this.props;
-
-    const localKey = Object.keys(guideLocale)[0];
+    // const localKey = Object.keys(guideLocale)[0];
+    const localKey = data.substring(0, data.indexOf('/')).concat('/zh_CN');
     const getMessage = guideLocale[localKey];
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, getMessage);
