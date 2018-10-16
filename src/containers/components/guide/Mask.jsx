@@ -1,5 +1,6 @@
 import React, { Component, createElement } from 'react';
 import ReactDOM from 'react-dom';
+import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import classes from 'component-classes';
@@ -79,6 +80,7 @@ class Mask extends Component {
         height,
         windowHeight,
         windowWidth,
+        domHighLight,
       });
       window.addEventListener('resize', this.onWindowResize);
     } else {
@@ -107,7 +109,7 @@ class Mask extends Component {
 
 
   getOverlay = () => {
-    const { top, left, width, height, windowWidth, windowHeight } = this.state;
+    const { top, left, width, height, windowWidth, windowHeight, visible, domHighLight } = this.state;
 
     const maskStyle = {
       borderTopWidth: top,
@@ -120,7 +122,12 @@ class Mask extends Component {
     const { prefixCls } = this.props;
     const maskElement = (
       <div>
-        <div className={`${prefixCls}-clickable`} onClick={() => { this.setState({ visible: false }); }} style={maskStyle} key="mask" />
+        <div className={`${prefixCls}-overlay`} style={{ width: left, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
+        <div className={`${prefixCls}-overlay`} style={{ left: left + width, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
+        <div className={`${prefixCls}-overlay`} style={{ width, left, top: height + top, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
+        <div className={`${prefixCls}-overlay`} style={{ width, left, top: 0, height: top, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
+        <div className={classnames(`${prefixCls}-clickable`, visible ? `${prefixCls}-border` : '')} style={maskStyle} key="mask" />
+        <div className={`${prefixCls}-clickable-btn`} style={{ top, left, width, height, display: visible ? 'block' : 'none' }} onClick={() => { domHighLight.click(); this.setState({ visible: false }); }} />
       </div>
     );
     return maskElement;
@@ -134,46 +141,12 @@ class Mask extends Component {
         <a onClick={() => this.setState({ visible: true }, () => this.setMask())}> {children} </a>
         <RenderInBody>
           {
-            visible
-              ? this.getOverlay()
-              : null
+            this.getOverlay()
           }
         </RenderInBody>
       </React.Fragment>
     );
   }
 }
-
-
-Mask.newInstance = function confirm(properties, callback) {
-  const { getContainer, ...props } = properties || {};
-  const div = document.createElement('div');
-  if (getContainer) {
-    const root = getContainer();
-    root.appendChild(div);
-  } else {
-    document.body.appendChild(div);
-  }
-  let called = false;
-  function ref(notification) {
-    if (called) {
-      return;
-    }
-    called = true;
-    callback({
-      notice(noticeProps) {
-        notification.add(noticeProps);
-      },
-      removeNotice(key) {
-        notification.remove(key);
-      },
-      component: notification,
-      destroy() {
-        ReactDOM.unmountComponentAtNode(div);
-        div.parentNode.removeChild(div);
-      },
-    });
-  }
-};
 
 export default Mask;
