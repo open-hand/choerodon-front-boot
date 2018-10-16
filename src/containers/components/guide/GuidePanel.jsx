@@ -14,10 +14,8 @@ export default class GuidePanel extends Component {
 
   render() {
     const { prefixCls, children, component, locale, AppState, current, GuideStore } = this.props;
-    const localKey = Object.keys(locale)[0];
-    const getMessage = locale[localKey];
     const language = AppState.currentLanguage;
-    const IntlProviderAsync = asyncLocaleProvider(language, getMessage);
+    const IntlProviderAsync = asyncLocaleProvider(language, locale);
 
     return (
       <IntlProviderAsync key={`${component.name}`}>
