@@ -57,13 +57,15 @@ class Masters extends Component {
   initFavicon() {
     const { AppState } = this.props;
     const link = document.createElement('link');
-    const oldLink = document.getElementById('dynamic-favicon');
+    const linkDom = document.getElementsByTagName('link');
+    if (linkDom) {
+      for (let i = 0; i < linkDom.length; i += 1) {
+        if (linkDom[i].getAttribute('rel') === 'shortcut icon') document.head.removeChild(linkDom[i]);
+      }
+    }
     link.id = 'dynamic-favicon';
     link.rel = 'shortcut icon';
     link.href = AppState.getSiteInfo.favicon || 'favicon.ico';
-    if (oldLink) {
-      document.head.removeChild(oldLink);
-    }
     document.head.appendChild(link);
     document.getElementsByTagName('title')[0].innerText = AppState.getSiteInfo.systemTitle || Choerodon.HEADER_TITLE_NAME;
   }
