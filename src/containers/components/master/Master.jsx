@@ -52,6 +52,11 @@ class Masters extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.initMenuType(nextProps);
+    this.initFavicon();
+  }
+
+  componentDidMount() {
+    this.initFavicon();
   }
 
   initFavicon() {
