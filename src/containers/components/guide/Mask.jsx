@@ -1,9 +1,7 @@
-import React, { Component, createElement } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react';
 import classnames from 'classnames';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import classes from 'component-classes';
 import RenderInBody from './RenderInBody';
 import './style';
 
@@ -14,24 +12,6 @@ function findParent(node, level) {
     return findParent(node.parentNode, level - 1);
   } else {
     return node;
-  }
-}
-
-function findContainer(node) {
-  return findParent(node, parent => classes(parent).has('page-content'));
-}
-
-function findEventCapture(dom) {
-  if (dom && dom.onclick === null) {
-    for (let i = 0; i < dom.childNodes.length; i += 1) {
-      if (dom.childNodes[i].onclick === null) {
-        return findEventCapture(dom.childNodes[i]);
-      } else {
-        return dom.childNodes[i];
-      }
-    }
-  } else {
-    return dom;
   }
 }
 
@@ -65,16 +45,6 @@ class Mask extends Component {
       visible,
     };
   }
-
-  getHighLightElement = () => {
-    const { highLight, idx, prefixCls, tip, wrapperClassName, children, ...restProps } = this.props;
-    const element = document.getElementsByClassName(highLight)[idx];
-    const clientRect = element.getBoundingClientRect();
-    const highLightElement = (
-      <div className={`${prefixCls}-highLight`} key="highlight" style={{ left: clientRect.left, top: clientRect.top }} />
-    );
-    return highLightElement;
-  };
 
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -123,8 +93,8 @@ class Mask extends Component {
     this.setMask();
   };
 
-  handleClick = (e, domHighLight) => {
-    findEventCapture(domHighLight).click();
+  handleClick = (e) => {
+    document.getElementsByClassName(this.props.highLight)[this.props.idx].click();
     captureLock = false;
     this.setState({ visible: false });
   };
