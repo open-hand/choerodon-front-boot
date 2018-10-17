@@ -74,6 +74,7 @@ export {
   API_HOST,
   FILE_SERVER,
   WEBSOCKET_SERVER,
+  STRING_DEVIDER,
   fileServer,
   setCookie,
   getCookie,

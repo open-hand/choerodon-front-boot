@@ -17,7 +17,6 @@ import PermissionProvider from '../{{ source }}/containers/components/permission
 import '../{{ source }}/containers/components/style';
 
 const { confirm } = Modal;
-const STRING_DEVIDER = '__@.@__';
 async function auth() {
   const { access_token: accessToken, token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
   if (accessToken) {
@@ -43,8 +42,8 @@ const Masters = asyncRouter(() => import('../{{ source }}/containers/components/
 class App extends Component {
   getConfirmation = (message, callback) => {
     confirm({
-      title: message.split(STRING_DEVIDER)[0],
-      content: message.split(STRING_DEVIDER)[1],
+      title: message.split(Choerodon.STRING_DEVIDER)[0],
+      content: message.split(Choerodon.STRING_DEVIDER)[1],
       onOk() {
         callback(true);
       },
