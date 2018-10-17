@@ -30,8 +30,6 @@ const defaultConfig = {
   fileServer: 'http://file.example.com',
   webSocketServer: 'ws://ws.example.com',
   clientid: 'localhost',
-  titlename: 'Choerodon',
-  favicon: 'favicon.ico',
   dashboard: false,
   guide: false,
 };
