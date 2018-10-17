@@ -3,7 +3,7 @@ import url from 'url';
 import { authorize, logout } from './authorize';
 import { getAccessToken, removeAccessToken, setAccessToken } from './accessToken';
 import { getCookie, removeCookie, setCookie } from './cookie';
-import { ACCESS_TOKEN, AUTH_URL, FILE_SERVER, LOCAL, USE_DASHBOARD, WEBSOCKET_SERVER, USE_GUIDE } from './constants';
+import { ACCESS_TOKEN, AUTH_URL, FILE_SERVER, LOCAL, USE_DASHBOARD, WEBSOCKET_SERVER, USE_GUIDE, STRING_DEVIDER } from './constants';
 import { getMessage, intl } from './intl';
 import checkPassword from './checkPassword';
 import warning from '../../common/warning';
@@ -73,6 +73,7 @@ export {
   AUTH_URL,
   FILE_SERVER,
   WEBSOCKET_SERVER,
+  STRING_DEVIDER,
   fileServer,
   setCookie,
   getCookie,
