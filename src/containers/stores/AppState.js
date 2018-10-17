@@ -18,6 +18,8 @@ class AppState {
 
   @observable userInfo = {};
 
+  @observable siteInfo = {};
+
   @observable debugger = false; // 调试模式
 
   @observable isUser = false;
@@ -50,6 +52,16 @@ class AppState {
   @action
   setUserInfo(user) {
     this.userInfo = user;
+  }
+
+  @action
+  setSiteInfo(site) {
+    this.siteInfo = site;
+  }
+
+  @computed
+  get getSiteInfo() {
+    return this.siteInfo;
   }
 
   @computed
@@ -112,6 +124,8 @@ class AppState {
   }
 
   loadUserInfo = () => axios.get('/iam/v1/users/self');
+
+  loadSiteInfo = () => axios.get('/iam/v1/system/setting');
 }
 
 const appState = new AppState();

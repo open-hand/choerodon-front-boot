@@ -47,10 +47,25 @@ function parseQueryToMenuType(search) {
 class Masters extends Component {
   componentWillMount() {
     this.initMenuType(this.props);
+    this.initFavicon();
   }
 
   componentWillReceiveProps(nextProps) {
     this.initMenuType(nextProps);
+  }
+
+  initFavicon() {
+    const { AppState } = this.props;
+    const link = document.createElement('link');
+    const oldLink = document.getElementById('dynamic-favicon');
+    link.id = 'dynamic-favicon';
+    link.rel = 'shortcut icon';
+    link.href = AppState.getSiteInfo.favicon || 'favicon.ico';
+    if (oldLink) {
+      document.head.removeChild(oldLink);
+    }
+    document.head.appendChild(link);
+    document.getElementsByTagName('title')[0].innerText = AppState.getSiteInfo.systemTitle || Choerodon.HEADER_TITLE_NAME;
   }
 
 

@@ -54,6 +54,12 @@ class App extends Component {
     });
   };
 
+  componentWillMount() {
+    AppState.loadSiteInfo().then((data) => {
+      AppState.setSiteInfo(data);
+    });
+  }
+
   render() {
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, () => import(`../{{ source }}/containers/locale/${language}`), () => import(`react-intl/locale-data/${language.split('_')[0]}`));

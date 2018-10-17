@@ -91,10 +91,10 @@ export default function updateWebpackConfig(mode, env) {
   customizedWebpackConfig.plugins.push(
     new webpack.DefinePlugin(defines),
     new HtmlWebpackPlugin({
-      title: process.env.TITLE_NAME || titlename,
+      // title: process.env.TITLE_NAME || titlename,
       template: getFilePath(htmlTemplate),
       inject: true,
-      favicon: getFilePath(favicon),
+      // favicon: getFilePath(favicon),
       minify: {
         html5: true,
         collapseWhitespace: true,
