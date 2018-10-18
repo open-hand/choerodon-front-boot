@@ -72,7 +72,9 @@ class Masters extends Component {
     link.rel = 'shortcut icon';
     link.href = AppState.getSiteInfo.favicon || 'favicon.ico';
     document.head.appendChild(link);
-    document.getElementsByTagName('title')[0].innerText = AppState.getSiteInfo.systemTitle || Choerodon.HEADER_TITLE_NAME;
+    if (AppState.getSiteInfo.systemTitle) {
+      document.getElementsByTagName('title')[0].innerText = AppState.getSiteInfo.systemTitle;
+    }
   }
 
 
