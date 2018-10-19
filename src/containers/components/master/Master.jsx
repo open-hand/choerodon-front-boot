@@ -47,12 +47,10 @@ function parseQueryToMenuType(search) {
 class Masters extends Component {
   componentWillMount() {
     this.initMenuType(this.props);
-    this.initFavicon();
   }
 
   componentWillReceiveProps(nextProps) {
     this.initMenuType(nextProps);
-    this.initFavicon();
   }
 
   componentDidMount() {
