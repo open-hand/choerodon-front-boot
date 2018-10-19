@@ -20,7 +20,7 @@ export default class Guide extends Component {
     warning(current in guideComponents, `Guide Component<${current}> is missing.`);
     const locale = current.substring(0, current.indexOf('/')).concat('/zh_CN');
     return (
-      <div className="c7n-boot-guide-step" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block' }}>
+      <div className="c7n-boot-guide-step" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block', width: '300px' }}>
         <GuidePanel component={guideComponent} locale={guideLocale[locale]} current={current} />
       </div>
     );
@@ -64,7 +64,7 @@ export default class Guide extends Component {
     const { guide: { guideComponents }, AppState } = this.props;
 
     return (
-      <div className="c7n-boot-guide-overflow" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block' }}>
+      <div className="c7n-boot-guide-overflow" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block', width: '280px' }}>
         <div className="c7n-boot-guide-title">
           <h2>开始学习教程</h2>
           <p>通过教程了解choerodon产品和服务</p>
