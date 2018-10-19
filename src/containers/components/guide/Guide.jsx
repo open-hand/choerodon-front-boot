@@ -15,12 +15,12 @@ import asyncLocaleProvider from '../util/asyncLocaleProvider';
 @observer
 export default class Guide extends Component {
   renderGuideStep(current) {
-    const { guide: { guideComponents, guideLocale }, GuideStore } = this.props;
+    const { guide: { guideComponents, guideLocale }, AppState } = this.props;
     const guideComponent = asyncRouter(guideComponents[current]);
     warning(current in guideComponents, `Guide Component<${current}> is missing.`);
     const locale = current.substring(0, current.indexOf('/')).concat('/zh_CN');
     return (
-      <div className="c7n-boot-guide-step">
+      <div className="c7n-boot-guide-step" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block' }}>
         <GuidePanel component={guideComponent} locale={guideLocale[locale]} current={current} />
       </div>
     );
@@ -61,10 +61,10 @@ export default class Guide extends Component {
   };
 
   renderGuideIndex() {
-    const { guide: { guideComponents } } = this.props;
+    const { guide: { guideComponents }, AppState } = this.props;
 
     return (
-      <div className="c7n-boot-guide-overflow">
+      <div className="c7n-boot-guide-overflow" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block' }}>
         <div className="c7n-boot-guide-title">
           <h2>开始学习教程</h2>
           <p>通过教程了解choerodon产品和服务</p>
