@@ -1,8 +1,7 @@
 import React, { Component, createElement } from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import { Button } from 'choerodon-ui';
-import Step from './Step';
+import { Icon } from 'choerodon-ui';
 import asyncRouter from '../util/asyncRouter';
 import GuidePanel from './GuidePanel';
 import GuideItem from './GuideItem';
@@ -28,16 +27,20 @@ export default class Guide extends Component {
   }
 
   renderFooter() {
-    const { AppState } = this.props;
+    const { AppState, GuideStore } = this.props;
     return (
       <div
         className="c7n-boot-guide-footer"
-        onClick={() => this.props.AppState.setGuideExpanded(false)}
+        onClick={() => {
+          AppState.setGuideExpanded(false);
+          GuideStore.setCurrentGuideComponent(false);
+          GuideStore.setCurrentStep(0);
+        }}
         style={{ display: AppState.getGuideExpanded ? null : 'none' }}
       >
         <div className="c7n-boot-guide-line" />
         <div className="c7n-boot-guide-close">
-          X 关闭教程
+          <Icon type="close" /> 关闭教程
         </div>
       </div>
     );

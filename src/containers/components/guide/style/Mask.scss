@@ -16,6 +16,20 @@ $c7n-boot-guide-mask: #{$c7n-prefix}-boot-guide-mask;
     left: 0;
   }
 
+  &-invalid {
+    color: rgba(0, 0, 0, 0.56);
+    cursor: auto;
+    border-bottom: dashed;
+    &:hover {
+      color: rgba(0, 0, 0, 0.56);
+      border-bottom: dashed;
+    }
+  }
+
+  &-valid {
+    border-bottom: dashed;
+  }
+
   &-clickable {
     z-index: 9999;
     opacity: 1;

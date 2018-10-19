@@ -61,20 +61,23 @@ class Masters extends Component {
 
   initFavicon() {
     const { AppState } = this.props;
-    const link = document.createElement('link');
-    const linkDom = document.getElementsByTagName('link');
-    if (linkDom) {
-      for (let i = 0; i < linkDom.length; i += 1) {
-        if (linkDom[i].getAttribute('rel') === 'shortcut icon') document.head.removeChild(linkDom[i]);
+    AppState.loadSiteInfo().then((data) => {
+      const link = document.createElement('link');
+      const linkDom = document.getElementsByTagName('link');
+      if (linkDom) {
+        for (let i = 0; i < linkDom.length; i += 1) {
+          if (linkDom[i].getAttribute('rel') === 'shortcut icon') document.head.removeChild(linkDom[i]);
+        }
       }
-    }
-    link.id = 'dynamic-favicon';
-    link.rel = 'shortcut icon';
-    link.href = AppState.getSiteInfo.favicon || 'favicon.ico';
-    document.head.appendChild(link);
-    if (AppState.getSiteInfo.systemTitle) {
-      document.getElementsByTagName('title')[0].innerText = AppState.getSiteInfo.systemTitle;
-    }
+      link.id = 'dynamic-favicon';
+      link.rel = 'shortcut icon';
+      link.href = data.favicon || 'favicon.ico';
+      document.head.appendChild(link);
+      if (data.systemTitle) {
+        document.getElementsByTagName('title')[0].innerText = data.systemTitle;
+      }
+      AppState.setSiteInfo(data);
+    });
   }
 
 

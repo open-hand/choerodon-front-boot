@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 import RenderInBody from './RenderInBody';
 import './style';
@@ -15,6 +15,7 @@ function findParent(node, level) {
   }
 }
 
+@inject('AppState')
 @observer
 class Mask extends Component {
   static defaultProps = {
@@ -24,6 +25,8 @@ class Mask extends Component {
     highLight: '',
     idx: 0,
     level: 0,
+    mode: 'mask',
+    route: '',
   };
 
   static propTypes = {
@@ -36,6 +39,11 @@ class Mask extends Component {
     highLight: PropTypes.string,
     idx: PropTypes.number,
     level: PropTypes.number,
+    mode: PropTypes.string,
+    route: PropTypes.string,
+    siteLevel: PropTypes.string,
+    onLeave: PropTypes.func,
+    onEnter: PropTypes.func,
   };
 
   constructor(props) {
@@ -43,6 +51,7 @@ class Mask extends Component {
     const { visible } = props;
     this.state = {
       visible,
+      clickAble: false,
     };
   }
 
@@ -67,6 +76,7 @@ class Mask extends Component {
         windowHeight,
         windowWidth,
         domHighLight,
+        clickAble: this.checkIsClickable(),
       });
       window.addEventListener('resize', this.onWindowResize);
     } else {
@@ -77,15 +87,18 @@ class Mask extends Component {
         height: 0,
         windowHeight: window.innerHeight,
         windowWidth: window.innerWidth,
+        clickAble: this.checkIsClickable(),
       });
     }
   };
 
   componentDidMount() {
+    window.addEventListener('hashchange', this.setMask);
     this.setMask();
   }
 
   componentWillUnmount() {
+    window.removeEventListener('hashchange', this.setMask);
     window.removeEventListener('resize', this.onWindowResize);
   }
 
@@ -93,11 +106,54 @@ class Mask extends Component {
     this.setMask();
   };
 
-  handleClick = (e) => {
+  handleEnter = (e) => {
     document.getElementsByClassName(this.props.highLight)[this.props.idx].click();
     captureLock = false;
     this.setState({ visible: false });
+    if (this.props.onEnter) this.props.onEnter(e);
   };
+
+
+  handleLeave = (e) => {
+    this.setState({ visible: false });
+    if (this.props.onLeave) this.props.onLeave(e);
+  };
+
+  handleMaskClick = (e) => {
+    const { mode } = this.props;
+    if (this.checkIsClickable()) {
+      switch (mode) {
+        case 'click':
+          document.getElementsByClassName(this.props.highLight)[this.props.idx].click();
+          break;
+        case 'mask':
+          this.setState({ visible: true }, () => this.setMask());
+          break;
+        default:
+          this.setState({ visible: true }, () => this.setMask());
+          break;
+      }
+    }
+  };
+
+  checkSiteLevel = () => {
+    const { AppState, siteLevel } = this.props;
+    if (siteLevel) {
+      return siteLevel === AppState.menuType.type || !AppState.menuType.type;
+    }
+    return true;
+  };
+
+  checkRoute = () => {
+    const { route } = this.props;
+    // const { hash } =
+    if (route) {
+      return route === document.location.hash.substring(1, document.location.hash.indexOf('?') === -1 ? document.location.hash.length : document.location.hash.indexOf('?'));
+    }
+    return true;
+  };
+
+  checkIsClickable = () => this.checkRoute() && this.checkSiteLevel();
 
   getOverlay = () => {
     const { top, left, width, height, windowWidth, windowHeight, visible, domHighLight } = this.state;
@@ -113,23 +169,22 @@ class Mask extends Component {
     const { prefixCls } = this.props;
     const maskElement = (
       <div>
-        <div className={`${prefixCls}-overlay`} style={{ width: left, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
-        <div className={`${prefixCls}-overlay`} style={{ left: left + width, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
-        <div className={`${prefixCls}-overlay`} style={{ width, left, top: height + top, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
-        <div className={`${prefixCls}-overlay`} style={{ width, left, top: 0, height: top, display: visible ? 'block' : 'none' }} onClick={() => { this.setState({ visible: false }); }} />
+        <div className={`${prefixCls}-overlay`} style={{ width: left, display: visible ? 'block' : 'none' }} onClick={e => this.handleLeave(e)} />
+        <div className={`${prefixCls}-overlay`} style={{ left: left + width, display: visible ? 'block' : 'none' }} onClick={e => this.handleLeave(e)} />
+        <div className={`${prefixCls}-overlay`} style={{ width, left, top: height + top, display: visible ? 'block' : 'none' }} onClick={e => this.handleLeave(e)} />
+        <div className={`${prefixCls}-overlay`} style={{ width, left, top: 0, height: top, display: visible ? 'block' : 'none' }} onClick={e => this.handleLeave(e)} />
         <div className={classnames(`${prefixCls}-clickable`, visible ? `${prefixCls}-border` : '')} style={maskStyle} key="mask" />
-        <div className={`${prefixCls}-clickable-btn`} style={{ top, left, width, height, display: visible ? 'block' : 'none' }} onClick={e => this.handleClick(e, domHighLight)} />
+        <div className={`${prefixCls}-clickable-btn`} style={{ top, left, width, height, display: visible ? 'block' : 'none' }} onClick={e => this.handleEnter(e, domHighLight)} />
       </div>
     );
     return maskElement;
   };
 
   render() {
-    const { visible } = this.state;
-    const { children } = this.props;
+    const { children, prefixCls } = this.props;
     return (
       <React.Fragment>
-        <a onClick={() => this.setState({ visible: true }, () => this.setMask())}> {children} </a>
+        <a onClick={e => this.handleMaskClick(e)} className={classnames(this.state.clickAble ? `${prefixCls}-valid` : `${prefixCls}-invalid`)}> {children} </a>
         <RenderInBody>
           {
             this.getOverlay()
