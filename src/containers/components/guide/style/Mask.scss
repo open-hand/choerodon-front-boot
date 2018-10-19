@@ -19,15 +19,15 @@ $c7n-boot-guide-mask: #{$c7n-prefix}-boot-guide-mask;
   &-invalid {
     color: rgba(0, 0, 0, 0.56);
     cursor: auto;
-    border-bottom: dashed;
+    border-bottom: 1px dashed;
     &:hover {
       color: rgba(0, 0, 0, 0.56);
-      border-bottom: dashed;
+      border-bottom: 1px dashed;
     }
   }
 
   &-valid {
-    border-bottom: dashed;
+    border-bottom: 1px dashed;
   }
 
   &-clickable {
