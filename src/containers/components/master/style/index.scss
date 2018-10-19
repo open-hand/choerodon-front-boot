@@ -22,6 +22,8 @@
       flex: 1 1 0;
       background-color: white;
       position: relative;
+      overflow: auto;
+      overflow-x: hidden;
     }
 
     .guide {

@@ -1,8 +1,7 @@
 import React, { Component, createElement } from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import { Button } from 'choerodon-ui';
-import Step from './Step';
+import { Icon } from 'choerodon-ui';
 import asyncRouter from '../util/asyncRouter';
 import GuidePanel from './GuidePanel';
 import GuideItem from './GuideItem';
@@ -16,28 +15,32 @@ import asyncLocaleProvider from '../util/asyncLocaleProvider';
 @observer
 export default class Guide extends Component {
   renderGuideStep(current) {
-    const { guide: { guideComponents, guideLocale }, GuideStore } = this.props;
+    const { guide: { guideComponents, guideLocale }, AppState } = this.props;
     const guideComponent = asyncRouter(guideComponents[current]);
     warning(current in guideComponents, `Guide Component<${current}> is missing.`);
     const locale = current.substring(0, current.indexOf('/')).concat('/zh_CN');
     return (
-      <div className="c7n-boot-guide-step">
+      <div className="c7n-boot-guide-step" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block', width: '300px' }}>
         <GuidePanel component={guideComponent} locale={guideLocale[locale]} current={current} />
       </div>
     );
   }
 
   renderFooter() {
-    const { AppState } = this.props;
+    const { AppState, GuideStore } = this.props;
     return (
       <div
         className="c7n-boot-guide-footer"
-        onClick={() => this.props.AppState.setGuideExpanded(false)}
+        onClick={() => {
+          AppState.setGuideExpanded(false);
+          GuideStore.setCurrentGuideComponent(false);
+          GuideStore.setCurrentStep(0);
+        }}
         style={{ display: AppState.getGuideExpanded ? null : 'none' }}
       >
         <div className="c7n-boot-guide-line" />
         <div className="c7n-boot-guide-close">
-          X 关闭教程
+          <Icon type="close" /> 关闭教程
         </div>
       </div>
     );
@@ -58,10 +61,10 @@ export default class Guide extends Component {
   };
 
   renderGuideIndex() {
-    const { guide: { guideComponents } } = this.props;
+    const { guide: { guideComponents }, AppState } = this.props;
 
     return (
-      <div className="c7n-boot-guide-overflow">
+      <div className="c7n-boot-guide-overflow" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block', width: '280px' }}>
         <div className="c7n-boot-guide-title">
           <h2>开始学习教程</h2>
           <p>通过教程了解choerodon产品和服务</p>
