@@ -30,7 +30,7 @@ export default class Basic extends Component {
               <li>项目角色分配</li>
             </ul>
           </div>
-        )
+        );
       case 1:
         return (
           <div>
