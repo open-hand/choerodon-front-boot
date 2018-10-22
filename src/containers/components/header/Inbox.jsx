@@ -7,7 +7,8 @@ import { PREFIX_CLS } from '../../common/constants';
 
 const prefixCls = `${PREFIX_CLS}-boot-header-inbox`;
 const popoverPrefixCls = `${prefixCls}-popover`;
-const reg = /\n|&nbsp;|&lt|&gt|<[^>]+>| /g;
+/* eslint-disable-next-line */
+const reg = /\n|&nbsp;|&lt|&gt|<[^a\/][^>]*>|<\/[^a][^>]*>/g;
 
 @inject('HeaderStore', 'AppState')
 @observer
@@ -59,7 +60,8 @@ export default class Inbox extends Component {
               return (
                 <li key={id} onClick={this.handleMessageClick}>
                   <label><Link to={`/iam/user-msg?type=site&msgId=${id}`}>{title}</Link></label>
-                  <p>{content.replace(reg, '')}</p>
+                  <p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />
+                  {/*<p>{content.replace(reg, '')}</p>*/}
                   <Icon type="cancel" onClick={e => this.cleanMsg(e, data)} />
                 </li>
               );

@@ -1,4 +1,4 @@
-'use strict';
+
 
 const path = require('path');
 const gulp = require('gulp');
@@ -41,6 +41,12 @@ function compile() {
   rimraf.sync(libDir);
   compileAssets();
   compileFile();
+}
+
+function copyTo(dir) {
+  rimraf.sync(dir);
+  gulp.src('lib/**/*')
+    .pipe(gulp.dest(dir));
 }
 
 function getBabelCommonConfig() {
@@ -97,4 +103,8 @@ gulp.task('compile', () => {
 
 gulp.task('compile-bin', () => {
   compileBin();
+});
+
+gulp.task('copy', () => {
+  copyTo('/Users/binjiechen/choerodon-front-iam/iam/node_modules/choerodon-front-boot/lib');
 });
