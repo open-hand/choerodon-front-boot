@@ -137,6 +137,7 @@
     "lint-staged:es": "eslint test ./choerodon.config.js",
     "clean": "rimraf lib",
     "compile": "gulp compile",
+    "copy": "gulp copy",
     "prepublish": "npm run compile",
     "postpublish": "npm run clean"
   },
