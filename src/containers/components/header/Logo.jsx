@@ -42,7 +42,7 @@ export default class Logo extends Component {
         {
           pathname === '/' && !search
             ? <div className={classnames(`${prefixCls}`, systemName ? null : `${prefixCls}-default-logo`)}>{systemName}</div>
-            : <Link to={homePath} className={classnames(`${prefixCls}`, systemName ? null : `${prefixCls}-default-logo`)}>{systemName}</Link>
+            : <Link to={homePath} className={classnames(`${prefixCls}`, systemName ? null : `${prefixCls}-default-logo`)} style={{ textDecoration: 'none' }}>{systemName}</Link>
         }
       </div>
     );
