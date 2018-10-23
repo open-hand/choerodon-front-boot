@@ -7,6 +7,7 @@ import { configure } from 'mobx';
 import { observer, Provider } from 'mobx-react';
 import queryString from 'query-string';
 import { Modal } from 'choerodon-ui';
+import noaccess from '../{{ source }}/containers/components/error-pages/403';
 import stores from '../{{ source }}/containers/stores';
 import AppState from '../{{ source }}/containers/stores/AppState';
 import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter';
@@ -29,6 +30,21 @@ const Masters = asyncRouter(() => import('../{{ source }}/containers/components/
 const Outward = asyncRouter(() => import('../{{ source }}/containers/components/outward'), {
   AutoRouter: () => import('{{ routesPath }}'),
 });
+
+async function auth() {
+  const { access_token: accessToken, token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
+  // const accessToken = queryString.parse(window.location.hash)['/access_token'];
+  if (accessToken) {
+    setAccessToken(accessToken, tokenType, expiresIn);
+    // 去除url中的accessToken
+    window.location.href = window.location.href.replace(/[&?]redirectFlag.*/g, '');
+  } else if (!getAccessToken()) {
+    authorize();
+    return false;
+  }
+  AppState.setUserInfo(await AppState.loadUserInfo());
+  return true;
+}
 
 @observer
 class App extends Component {
@@ -71,7 +87,10 @@ class App extends Component {
                 <WSProvider server={WEBSOCKET_SERVER}>
                   <Router hashHistory={createBrowserHistory} getUserConfirmation={this.getConfirmation}>
                     <Switch>
-                      <Route path="/" component={Masters} />
+                      <Route
+                        path="/"
+                        component={auth() ? Masters : noaccess}
+                      />
                     </Switch>
                   </Router>
                 </WSProvider>

@@ -7,9 +7,6 @@ import CommonMenu from '../menu';
 import MasterHeader from '../header';
 import AppState from '../../stores/AppState';
 import { dashboard, historyReplaceMenu } from '../../common';
-import { authorize, getAccessToken, setAccessToken } from '../../common';
-
-
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 import './style';
 import Guide from '../guide/Guide';
@@ -45,27 +42,12 @@ function parseQueryToMenuType(search) {
   return menuType;
 }
 
-async function auth() {
-  const { token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
-  const accessToken = queryString.parse(window.location.hash)['/access_token'];
-  if (accessToken) {
-    setAccessToken(accessToken, tokenType, expiresIn);
-  } else if (!getAccessToken()) {
-    authorize();
-    return false;
-  }
-  AppState.setUserInfo(await AppState.loadUserInfo());
-  return true;
-}
-
 @withRouter
 @inject('AppState', 'MenuStore', 'HeaderStore')
 @observer
 class Masters extends Component {
   componentWillMount() {
-    if (auth()) {
-      this.initMenuType(this.props);
-    }
+    this.initMenuType(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
