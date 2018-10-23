@@ -17,20 +17,6 @@ import PermissionProvider from '../{{ source }}/containers/components/permission
 import '../{{ source }}/containers/components/style';
 
 const { confirm } = Modal;
-async function auth() {
-  const { access_token: accessToken, token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
-  if (accessToken) {
-    setAccessToken(accessToken, tokenType, expiresIn);
-    // 去除url中的accessToken
-    window.location.href = window.location.href.replace(/[&?]redirectFlag.*/g, '');
-  } else if (!getAccessToken()) {
-    authorize();
-    return false;
-  }
-  AppState.setUserInfo(await AppState.loadUserInfo());
-  return true;
-}
-
 const UILocaleProviderAsync = asyncRouter(() => import('choerodon-ui/lib/locale-provider'), {
   locale: () => import(`choerodon-ui/lib/locale-provider/${AppState.currentLanguage}.js`),
 });
@@ -38,6 +24,10 @@ const UILocaleProviderAsync = asyncRouter(() => import('choerodon-ui/lib/locale-
 const Masters = asyncRouter(() => import('../{{ source }}/containers/components/master'), {
   AutoRouter: () => import('{{ routesPath }}'),
   GuideRouter: () => import('{{ guidePath }}'),
+});
+
+const Outward = asyncRouter(() => import('../{{ source }}/containers/components/outward'), {
+  AutoRouter: () => import('{{ routesPath }}'),
 });
 
 @observer
@@ -58,28 +48,44 @@ class App extends Component {
   render() {
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, () => import(`../{{ source }}/containers/locale/${language}`), () => import(`react-intl/locale-data/${language.split('_')[0]}`));
-    return (
-      <UILocaleProviderAsync>
-        <IntlProviderAsync>
-          <Provider {...stores}>
-            <PermissionProvider>
-              <WSProvider server={WEBSOCKET_SERVER}>
-                <Router hashHistory={createBrowserHistory} getUserConfirmation={this.getConfirmation}>
-                  <Switch>
-                    <Route path="/" component={Masters} />
-                  </Switch>
-                </Router>
-              </WSProvider>
-            </PermissionProvider>
-          </Provider>
-        </IntlProviderAsync>
-      </UILocaleProviderAsync>
-    );
+    if (window.location.hash === '#/iam/outward-register-org') {
+      return (
+        <UILocaleProviderAsync>
+          <IntlProviderAsync>
+            <Provider {...stores}>
+              <Router hashHistory={createBrowserHistory} getUserConfirmation={this.getConfirmation}>
+                <Switch>
+                  <Route path="/" component={Outward} />
+                </Switch>
+              </Router>
+            </Provider>
+          </IntlProviderAsync>
+        </UILocaleProviderAsync>
+      );
+    } else {
+      return (
+        <UILocaleProviderAsync>
+          <IntlProviderAsync>
+            <Provider {...stores}>
+              <PermissionProvider>
+                <WSProvider server={WEBSOCKET_SERVER}>
+                  <Router hashHistory={createBrowserHistory} getUserConfirmation={this.getConfirmation}>
+                    <Switch>
+                      <Route path="/" component={Masters} />
+                    </Switch>
+                  </Router>
+                </WSProvider>
+              </PermissionProvider>
+            </Provider>
+          </IntlProviderAsync>
+        </UILocaleProviderAsync>
+      );
+    }
   }
 }
 
-if (auth()) {
-  configure({ enforceActions: 'observed' });
+// if (auth()) {
+configure({ enforceActions: 'observed' });
 
-  render(<App />, document.getElementById('app'));
-}
+render(<App />, document.getElementById('app'));
+// }
