@@ -3,7 +3,7 @@ import url from 'url';
 import { authorize, logout } from './authorize';
 import { getAccessToken, removeAccessToken, setAccessToken } from './accessToken';
 import { getCookie, removeCookie, setCookie } from './cookie';
-import { ACCESS_TOKEN, AUTH_URL, FILE_SERVER, LOCAL, USE_DASHBOARD, WEBSOCKET_SERVER } from './constants';
+import { ACCESS_TOKEN, AUTH_URL, FILE_SERVER, LOCAL, USE_DASHBOARD, WEBSOCKET_SERVER, USE_GUIDE, STRING_DEVIDER, API_HOST } from './constants';
 import { getMessage, intl } from './intl';
 import checkPassword from './checkPassword';
 import warning from '../../common/warning';
@@ -45,6 +45,7 @@ function randomString(len = 32) {
 }
 
 function historyPushMenu(history, path, domain, method = 'push') {
+  method = 'push';
   if (!domain || LOCAL) {
     history[method](path);
   } else if (!path) {
@@ -70,8 +71,10 @@ function fileServer(path) {
 export {
   ACCESS_TOKEN,
   AUTH_URL,
+  API_HOST,
   FILE_SERVER,
   WEBSOCKET_SERVER,
+  STRING_DEVIDER,
   fileServer,
   setCookie,
   getCookie,
@@ -91,5 +94,6 @@ export {
   historyReplaceMenu,
   authorize,
   USE_DASHBOARD as dashboard,
+  USE_GUIDE as guide,
   warning,
 };

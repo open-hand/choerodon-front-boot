@@ -28,7 +28,7 @@ export default function updateWebpackConfig(mode, env) {
   const { choerodonConfig } = context;
   const {
     theme, output, root, enterPoints, server, fileServer, webSocketServer, clientid, local,
-    postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard,
+    postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard, guide,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
@@ -73,6 +73,7 @@ export default function updateWebpackConfig(mode, env) {
   const mergedEnterPoints = {
     NODE_ENV: env,
     USE_DASHBOARD: !!dashboard,
+    USE_GUIDE: !!guide,
     ...defaultEnterPoints,
     ...enterPoints(mode, env),
   };

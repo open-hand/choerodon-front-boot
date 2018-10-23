@@ -1,13 +1,15 @@
 import React, { Component, createElement } from 'react';
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { Spin } from 'choerodon-ui';
+import { Spin, Steps } from 'choerodon-ui';
 import queryString from 'query-string';
 import CommonMenu from '../menu';
 import MasterHeader from '../header';
+import AppState from '../../stores/AppState';
 import { dashboard, historyReplaceMenu } from '../../common';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 import './style';
+import Guide from '../guide/Guide';
 
 const spinStyle = {
   textAlign: 'center',
@@ -52,9 +54,33 @@ class Masters extends Component {
     this.initMenuType(nextProps);
   }
 
+  componentDidMount() {
+    this.initFavicon();
+  }
+
+  initFavicon() {
+    AppState.loadSiteInfo().then((data) => {
+      const link = document.createElement('link');
+      const linkDom = document.getElementsByTagName('link');
+      if (linkDom) {
+        for (let i = 0; i < linkDom.length; i += 1) {
+          if (linkDom[i].getAttribute('rel') === 'shortcut icon') document.head.removeChild(linkDom[i]);
+        }
+      }
+      link.id = 'dynamic-favicon';
+      link.rel = 'shortcut icon';
+      link.href = data.favicon || 'favicon.ico';
+      document.head.appendChild(link);
+      if (data.systemTitle) {
+        document.getElementsByTagName('title')[0].innerText = data.systemTitle;
+      }
+      AppState.setSiteInfo(data);
+    });
+  }
+
 
   initMenuType(props) {
-    const { location, AppState, MenuStore, HeaderStore, history } = props;
+    const { location, MenuStore, HeaderStore, history } = props;
     const { pathname, search } = location;
     let isUser = false;
     let needLoad = false;
@@ -94,30 +120,41 @@ class Masters extends Component {
   }
 
   render() {
-    const { AppState, AutoRouter } = this.props;
-    return (
-      AppState.isAuth && AppState.currentMenuType ? (
+    const { AutoRouter, GuideRouter } = this.props;
+    if (this.props.location.pathname === '/iam/outward-register-org') {
+      return (
         <div className="page-wrapper">
-          <div className="page-header">
-            <MasterHeader />
-          </div>
-          <div className="page-body">
-            <div className="content-wrapper">
-              <div id="menu">
-                <CommonMenu />
-              </div>
-              <div id="autoRouter" className="content">
-                <AutoRouter />
+          <AutoRouter />
+        </div>
+      );
+    } else {
+      return (
+        AppState.isAuth && AppState.currentMenuType ? (
+          <div className="page-wrapper">
+            <div className="page-header">
+              <MasterHeader />
+            </div>
+            <div className="page-body">
+              <div className="content-wrapper">
+                <div id="menu">
+                  <CommonMenu />
+                </div>
+                <div id="autoRouter" className="content">
+                  <AutoRouter />
+                </div>
+                <div id="guide" className="guide">
+                  <Guide guide={GuideRouter} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div style={spinStyle}>
-          <Spin />
-        </div>
-      )
-    );
+        ) : (
+          <div style={spinStyle}>
+            <Spin />
+          </div>
+        )
+      );
+    }
   }
 }
 

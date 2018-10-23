@@ -14,7 +14,11 @@ class AppState {
 
   @observable expanded = false;
 
+  @observable guideExpanded = false;
+
   @observable userInfo = {};
+
+  @observable siteInfo = {};
 
   @observable debugger = false; // 调试模式
 
@@ -50,6 +54,16 @@ class AppState {
     this.userInfo = user;
   }
 
+  @action
+  setSiteInfo(site) {
+    this.siteInfo = site;
+  }
+
+  @computed
+  get getSiteInfo() {
+    return this.siteInfo;
+  }
+
   @computed
   get getMenuExpanded() {
     return this.expanded;
@@ -58,6 +72,16 @@ class AppState {
   @action
   setMenuExpanded(data) {
     this.expanded = data;
+  }
+
+  @computed
+  get getGuideExpanded() {
+    return this.guideExpanded;
+  }
+
+  @action
+  setGuideExpanded(data) {
+    this.guideExpanded = data;
   }
 
   @computed
@@ -100,6 +124,8 @@ class AppState {
   }
 
   loadUserInfo = () => axios.get('/iam/v1/users/self');
+
+  loadSiteInfo = () => axios.get('/iam/v1/system/setting');
 }
 
 const appState = new AppState();

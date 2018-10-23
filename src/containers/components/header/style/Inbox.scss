@@ -26,15 +26,15 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     }
     &-header {
       padding: 0 16px;
-      line-height: 41px;
-      height: 41px;
+      line-height: 50px;
+      height: 50px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);
       span {
         color: rgba(0, 0, 0, 0.54);
         font-size: 16px;
       }
 
-      a {
+      > a {
         float: right;
         color: $primary-color;
       }
@@ -52,9 +52,11 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
         font-size: 13px;
         line-height: 20px;
         padding: 9px 20px;
-        a {
-          vertical-align: middle;
-          color: inherit;
+        > label {
+          > a {
+            vertical-align: middle;
+            color: inherit;
+          }
         }
 
         @include button-link-masker();

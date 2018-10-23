@@ -30,9 +30,10 @@ const defaultConfig = {
   fileServer: 'http://file.example.com',
   webSocketServer: 'ws://ws.example.com',
   clientid: 'localhost',
-  titlename: 'Choerodon',
+  titlename: 'Choerodon | 企业级数字服务平台',
   favicon: 'favicon.ico',
   dashboard: false,
+  guide: false,
 };
 
 export default function getChoerodonConfig(configFile) {

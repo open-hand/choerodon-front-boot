@@ -1,4 +1,4 @@
-'use strict';
+
 
 const path = require('path');
 const gulp = require('gulp');
@@ -43,6 +43,12 @@ function compile() {
   compileFile();
 }
 
+function copyTo(dir) {
+  rimraf.sync(dir);
+  gulp.src('lib/**/*')
+    .pipe(gulp.dest(dir));
+}
+
 function getBabelCommonConfig() {
   const plugins = [
     require.resolve('babel-plugin-syntax-dynamic-import'),
@@ -79,7 +85,7 @@ function babelify(js, dir = '') {
   const stream = js.pipe(babel(babelConfig));
   return stream
     .pipe(through2.obj(function (file, encoding, next) {
-      const matches = file.path.match(/(routes|dashboard)\.nunjucks\.js/);
+      const matches = file.path.match(/(routes|dashboard|guide)\.nunjucks\.(js|jsx)/);
       if (matches) {
         const content = file.contents.toString(encoding);
         file.contents = Buffer.from(content
@@ -97,4 +103,8 @@ gulp.task('compile', () => {
 
 gulp.task('compile-bin', () => {
   compileBin();
+});
+
+gulp.task('copy', () => {
+  copyTo('/Users/binjiechen/choerodon-front-iam/iam/node_modules/choerodon-front-boot/lib');
 });

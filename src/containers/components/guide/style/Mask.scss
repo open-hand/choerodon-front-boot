@@ -1,0 +1,61 @@
+@import "../../style/theme/default";
+
+$c7n-boot-guide-mask: #{$c7n-prefix}-boot-guide-mask;
+
+.#{c7n-boot-guide-mask} {
+  &-overlay {
+    z-index: 9999;
+    opacity: 1;
+    transition: all 0.3s ease-out;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  &-invalid {
+    color: rgba(0, 0, 0, 0.56);
+    cursor: auto;
+    border-bottom: 1px dashed;
+    &:hover {
+      color: rgba(0, 0, 0, 0.56);
+      border-bottom: 1px dashed;
+    }
+  }
+
+  &-valid {
+    border-bottom: 1px dashed;
+  }
+
+  &-clickable {
+    z-index: 9999;
+    opacity: 1;
+    transition: all 0.3s ease-out;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    &-btn {
+      pointer-events: auto;
+      position: fixed;
+      cursor: pointer;
+      z-index: 9999999;
+    }
+  }
+
+  &-border {
+    border: 0 solid rgba(0, 0, 0, 0.42);
+  }
+
+  &-showGuide {
+    z-index: 9999999 !important;
+    position: fixed;
+  }
+}

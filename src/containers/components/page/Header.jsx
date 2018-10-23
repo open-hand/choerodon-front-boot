@@ -25,7 +25,8 @@ export default class PageHeader extends Component {
     let backBtn = '';
     if (backPath) {
       backBtn = (
-        <div>
+        // 清除从父元素继承的 CSS 样式
+        <div style={{ lineHeight: '39px' }}>
           <Tooltip
             title={getMessage('返回', 'return')}
             placement="bottom"
