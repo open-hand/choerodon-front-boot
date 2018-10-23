@@ -21,6 +21,8 @@ async function auth() {
   const { access_token: accessToken, token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
   if (accessToken) {
     setAccessToken(accessToken, tokenType, expiresIn);
+    // 去除url中的accessToken
+    window.location.href = window.location.href.replace(/[&?]redirectFlag.*/g, '');
   } else if (!getAccessToken()) {
     authorize();
     return false;
