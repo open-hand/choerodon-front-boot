@@ -5,7 +5,11 @@ import { Spin, Steps } from 'choerodon-ui';
 import queryString from 'query-string';
 import CommonMenu from '../menu';
 import MasterHeader from '../header';
+import AppState from '../../stores/AppState';
 import { dashboard, historyReplaceMenu } from '../../common';
+import { authorize, getAccessToken, setAccessToken } from '../../common';
+
+
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
 import './style';
 import Guide from '../guide/Guide';
@@ -41,12 +45,27 @@ function parseQueryToMenuType(search) {
   return menuType;
 }
 
+async function auth() {
+  const { token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
+  const accessToken = queryString.parse(window.location.hash)['/access_token'];
+  if (accessToken) {
+    setAccessToken(accessToken, tokenType, expiresIn);
+  } else if (!getAccessToken()) {
+    authorize();
+    return false;
+  }
+  AppState.setUserInfo(await AppState.loadUserInfo());
+  return true;
+}
+
 @withRouter
 @inject('AppState', 'MenuStore', 'HeaderStore')
 @observer
 class Masters extends Component {
   componentWillMount() {
-    this.initMenuType(this.props);
+    if (auth()) {
+      this.initMenuType(this.props);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,7 +77,6 @@ class Masters extends Component {
   }
 
   initFavicon() {
-    const { AppState } = this.props;
     AppState.loadSiteInfo().then((data) => {
       const link = document.createElement('link');
       const linkDom = document.getElementsByTagName('link');
@@ -71,7 +89,6 @@ class Masters extends Component {
       link.rel = 'shortcut icon';
       link.href = data.favicon || 'favicon.ico';
       document.head.appendChild(link);
-      data.defaultTitle = document.getElementsByTagName('title')[0].innerText;
       if (data.systemTitle) {
         document.getElementsByTagName('title')[0].innerText = data.systemTitle;
       }
@@ -81,7 +98,7 @@ class Masters extends Component {
 
 
   initMenuType(props) {
-    const { location, AppState, MenuStore, HeaderStore, history } = props;
+    const { location, MenuStore, HeaderStore, history } = props;
     const { pathname, search } = location;
     let isUser = false;
     let needLoad = false;
@@ -121,33 +138,41 @@ class Masters extends Component {
   }
 
   render() {
-    const { AppState, AutoRouter, GuideRouter } = this.props;
-    return (
-      AppState.isAuth && AppState.currentMenuType ? (
+    const { AutoRouter, GuideRouter } = this.props;
+    if (this.props.location.pathname === '/iam/outward-register-org') {
+      return (
         <div className="page-wrapper">
-          <div className="page-header">
-            <MasterHeader />
-          </div>
-          <div className="page-body">
-            <div className="content-wrapper">
-              <div id="menu">
-                <CommonMenu />
-              </div>
-              <div id="autoRouter" className="content">
-                <AutoRouter />
-              </div>
-              <div id="guide" className="guide">
-                <Guide guide={GuideRouter} />
+          <AutoRouter />
+        </div>
+      );
+    } else {
+      return (
+        AppState.isAuth && AppState.currentMenuType ? (
+          <div className="page-wrapper">
+            <div className="page-header">
+              <MasterHeader />
+            </div>
+            <div className="page-body">
+              <div className="content-wrapper">
+                <div id="menu">
+                  <CommonMenu />
+                </div>
+                <div id="autoRouter" className="content">
+                  <AutoRouter />
+                </div>
+                <div id="guide" className="guide">
+                  <Guide guide={GuideRouter} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div style={spinStyle}>
-          <Spin />
-        </div>
-      )
-    );
+        ) : (
+          <div style={spinStyle}>
+            <Spin />
+          </div>
+        )
+      );
+    }
   }
 }
 
