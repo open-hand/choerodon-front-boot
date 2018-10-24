@@ -33,7 +33,6 @@ const Outward = asyncRouter(() => import('../{{ source }}/containers/components/
 
 async function auth() {
   const { access_token: accessToken, token_type: tokenType, expires_in: expiresIn } = queryString.parse(window.location.hash);
-  // const accessToken = queryString.parse(window.location.hash)['/access_token'];
   if (accessToken) {
     setAccessToken(accessToken, tokenType, expiresIn);
     // 去除url中的accessToken
@@ -103,8 +102,6 @@ class App extends Component {
   }
 }
 
-// if (auth()) {
 configure({ enforceActions: 'observed' });
 
 render(<App />, document.getElementById('app'));
-// }
