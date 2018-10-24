@@ -76,6 +76,7 @@ if __name__ == '__main__':
     parser.add_argument('-u','--user', help='databse user', dest="user", default="choerodon")
     parser.add_argument('-s','--secret', help='databse password', dest="passwd", default="123456")
     parser.add_argument('-t','--type', help='mysql/oracle', dest="dbType", default="mysql")
+    parser.add_argument('-d','--delete', type=bool, help='enable delete menu', dest="delete", default=True)
     args = parser.parse_args()
 
     options = os.environ.get('DASHBOARD_OPTIONS') if os.environ.get('DASHBOARD_OPTIONS') else args.options
@@ -98,6 +99,7 @@ if __name__ == '__main__':
         user = os.environ.get('DB_USER') if os.environ.get('DB_USER') else args.user
         passwd = os.environ.get('DB_PASS') if os.environ.get('DB_PASS') else args.passwd
         dbType = os.environ.get('DB_TYPE') if os.environ.get('DB_TYPE') else args.dbType
+        delete = os.environ.get('ENABLE_DELETE') if os.environ.get('ENABLE_DELETE') else args.delete
 
         if dbType == "mysql":
             config = {
@@ -125,6 +127,8 @@ if __name__ == '__main__':
         dashboardOperate.insertDashboard(contentConfig)
         dashboardOperate.insertDashbaordTl(contentConfig)
         dashboardOperate.insertDashboardRole(contentConfig)
+        if delete == True:
+            dashboardOperate.deleteDashboard(contentConfig)
         dashboardOperate.close()
         ymlFile.close()
 
