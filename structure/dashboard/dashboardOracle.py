@@ -22,6 +22,8 @@ class DashboardOracle(Dashboard):
             table = "IAM_DASHBOARD"
             for i in dashboards:
                 dashboard = dashboards[i]
+                if "delete" in dashboard and (dashboard["delete"] == True):
+                    continue
                 Id = self.returnId(table, dashboard["code"], dashboard["namespace"])
                 if Id:
                     sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', NAMESPACE='{namespace}'"
