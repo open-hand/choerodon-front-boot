@@ -48,6 +48,28 @@ class HeaderStore {
 
   @observable inboxLoaded = false;
 
+  @observable currentMsgType = 'msg';
+
+  @computed
+  get getUnreadMsg() {
+    return this.inboxData.filter(v => v.type === 'msg');
+  }
+
+  @computed
+  get getUnreadNotice() {
+    return this.inboxData.filter(v => v.type === 'notice');
+  }
+
+  @computed
+  get getCurrentMsgType() {
+    return this.currentMsgType;
+  }
+
+  @action
+  setCurrentMsgType(newType) {
+    this.currentMsgType = newType;
+  }
+
   @computed
   get getSelected() {
     return this.selected;
@@ -111,7 +133,7 @@ class HeaderStore {
       user_id: userId,
       read: false,
       page: 0,
-      size: 20,
+      size: 100,
       sort: 'id,desc',
     })}`)
       .then(action(({ content }) => {
