@@ -20,15 +20,56 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
   }
 
   &-popover {
-    width: 300px;
+    width: 330px;
     .is-empty {
       background-color: rgba(0, 0, 0, 0.03);
     }
+    .ant-tabs-nav-scroll {
+      padding-left: 16px;
+    }
+    .ant-tabs-bar {
+      margin-bottom: 0;
+    }
     &-header {
-      padding: 0 16px;
-      line-height: 50px;
-      height: 50px;
+      padding: 0 0;
+      line-height: 41px;
+      background-color: rgba(0, 0, 0, 0.04);
+      // height: 41px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      .ant-tabs-bar {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      }
+      .ant-tabs-extra-content {
+        margin-right: 16px;
+        > .ant-btn-circle {
+          color: #3f51b5;
+        }
+      }
+      .ant-card-meta-title {
+        width: 190px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-bottom: 2px !important;
+        > a {
+          font-size: 13px;
+          color: #000;
+          text-decoration: none;
+          font-weight: normal;
+        }
+      }
+      .ant-card-meta-description {
+        width: 190px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        color: #000;
+        > p {
+          width: 211px;
+        }
+      }
+      .ant-card-meta-detail {
+        padding: 7px 0;
+      }
       span {
         color: rgba(0, 0, 0, 0.54);
         font-size: 16px;
@@ -39,9 +80,23 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
         color: $primary-color;
       }
     }
+    &-card {
+      width: 298px;
+      height: 52px;
+      margin: 8px auto;
+      background: #fff;
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.20), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+      .ant-card-body {
+        padding: 5px 16px;
+      }
+      .ant-avatar {
+        margin: 7px auto;
+      }
+    }
     &-content {
       overflow: auto;
-      height: 228px;
+      overflow-x: hidden;
+      height: 256px;
       ul {
         padding: 0;
         list-style: none;
@@ -90,11 +145,11 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       }
     }
     &-footer {
-      background-color: #fff;
-      border-top: 1px solid rgba(0, 0, 0, 0.12);
+      background-color: rgba(0, 0, 0, 0.04);
       line-height: 48px;
       text-align: center;
-      font-size: 13px;
+      font-size: 16px;
+      font-weight: 500;
       color: $primary-color;
 
       @include button-link-masker();

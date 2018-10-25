@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { Badge, Button, Icon, Popover, Spin } from 'choerodon-ui';
+import { Badge, Button, Icon, Popover, Spin, Tabs, Card, Avatar, Tooltip } from 'choerodon-ui';
 import WSHandler from '../ws/WSHandler';
 import { PREFIX_CLS } from '../../common/constants';
 
 const prefixCls = `${PREFIX_CLS}-boot-header-inbox`;
 const popoverPrefixCls = `${prefixCls}-popover`;
+
 /* eslint-disable-next-line */
 const reg = /\n|&nbsp;|&lt|&gt|<[^a\/][^>]*>|<\/[^a][^>]*>/g;
+const { TabPane } = Tabs;
+const { Meta } = Card;
 
 @inject('HeaderStore', 'AppState')
 @observer
@@ -41,7 +44,7 @@ export default class Inbox extends Component {
     this.getUnreadMsg();
   };
 
-  handleMessageClick = () => {
+  handleMessageClick = (e) => {
     this.handleVisibleChange(false);
   };
 
@@ -56,14 +59,19 @@ export default class Inbox extends Component {
         <ul>
           {
             inboxData.map((data) => {
-              const { title, content, id } = data;
+              const { title, content, id, sendByUser: { imageUrl, loginName, realName } } = data;
               return (
-                <li key={id} onClick={this.handleMessageClick}>
-                  <label><Link to={`/iam/user-msg?type=site&msgId=${id}`}>{title}</Link></label>
-                  <p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />
-                  {/*<p>{content.replace(reg, '')}</p>*/}
-                  <Icon type="cancel" onClick={e => this.cleanMsg(e, data)} />
-                </li>
+                <Card
+                  className={`${popoverPrefixCls}-card`}
+                  bordered={false}
+                >
+                  <Meta
+                    avatar={<Tooltip title={`${loginName} ${realName}`}><Avatar src={imageUrl} style={{ userSelect: 'none' }}>{realName[0]}</Avatar></Tooltip>}
+                    title={<Link onClick={this.handleMessageClick} to={`/iam/user-msg?type=site&msgId=${id}`}><div>{title}</div></Link>}
+                    description={<p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />}
+                  />
+                  <Icon type="close" fontSize="20px" onClick={e => this.cleanMsg(e, data)} />
+                </Card>
               );
             })
           }
@@ -78,18 +86,48 @@ export default class Inbox extends Component {
     }
   }
 
+  renderRemoveAll() {
+    return (
+      <Tooltip
+        title="清空全部"
+        placement="right"
+      >
+        <Button
+          size="small"
+          onClick={this.cleanAllMsg}
+          shape="circle"
+          icon="delete"
+        />
+      </Tooltip>
+    );
+  }
+
   renderPopoverContent(inboxData, inboxLoaded) {
+    const { HeaderStore } = this.props;
     return (
       <div className={!inboxData.length ? 'is-empty' : null}>
-        <div className={`${popoverPrefixCls}-header`}>
-          <span>通知</span>
-          <a onClick={() => this.cleanAllMsg()}>全部清空</a>
-        </div>
-        <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
-          {
-            this.renderMessages(inboxData)
-          }
-        </Spin>
+        <Tabs
+          defaultActiveKey="msg"
+          className={`${popoverPrefixCls}-header`}
+          tabBarExtraContent={this.renderRemoveAll()}
+        >
+          <TabPane tab="消息" key="msg">
+            <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
+              {
+                this.renderMessages(HeaderStore.getUnreadMsg)
+              }
+            </Spin>
+          </TabPane>
+          <TabPane tab="通知" key="notice">
+            <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
+              {
+                this.renderMessages(HeaderStore.getUnreadNotice)
+              }
+            </Spin>
+          </TabPane>
+          <Icon type="book" />
+        </Tabs>
+
         <div className={`${popoverPrefixCls}-footer`} onClick={this.handleMessageClick}>
           <Link to="/iam/user-msg?type=site">查看所有消息</Link>
         </div>

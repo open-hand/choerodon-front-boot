@@ -47,12 +47,12 @@ class Header extends Component {
         </ul>
         <ul className={`${prefixCls}-right`}>
           <li>
-            <Button functype="flat" shape="circle" onClick={() => this.handleGuideClick()}>
-              <Icon type="book" />
-            </Button>
+            <Inbox />
           </li>
           <li>
-            <Inbox />
+            <Button functype="flat" shape="circle" onClick={() => this.handleGuideClick()}>
+              <Icon type="school" />
+            </Button>
           </li>
           <li>
             <User imgUrl={imgUrl} />
