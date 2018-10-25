@@ -54,19 +54,39 @@ export default class Inbox extends Component {
   };
 
   renderMessages(inboxData) {
+    const { AppState } = this.props;
     if (inboxData.length > 0) {
       return (
         <ul>
           {
             inboxData.map((data) => {
-              const { title, content, id, sendByUser: { imageUrl, loginName, realName } } = data;
+              const { title, content, id, sendByUser } = data;
+              let avatar;
+              if (sendByUser !== null) {
+                const { imageUrl, loginName, realName } = sendByUser;
+                avatar = (
+                  <Tooltip title={`${loginName} ${realName}`}>
+                    <Avatar src={imageUrl} style={{ userSelect: 'none' }}>
+                      {realName[0]}
+                    </Avatar>
+                  </Tooltip>
+                );
+              } else {
+                avatar = (
+                  <Tooltip title={AppState.siteInfo.systemName || 'Choerodon'}>
+                    <Avatar src={AppState.siteInfo.favicon || './favicon.ico'} style={{ userSelect: 'none' }}>
+                      {(AppState.siteInfo.systemName && AppState.siteInfo.systemName[0]) || 'Choerodon'}
+                    </Avatar>
+                  </Tooltip>
+                );
+              }
               return (
                 <Card
                   className={`${popoverPrefixCls}-card`}
                   bordered={false}
                 >
                   <Meta
-                    avatar={<Tooltip title={`${loginName} ${realName}`}><Avatar src={imageUrl} style={{ userSelect: 'none' }}>{realName[0]}</Avatar></Tooltip>}
+                    avatar={avatar}
                     title={<Link onClick={this.handleMessageClick} to={`/iam/user-msg?type=site&msgId=${id}`}><div>{title}</div></Link>}
                     description={<p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />}
                   />
