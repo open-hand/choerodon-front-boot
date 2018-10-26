@@ -49,6 +49,7 @@ async function auth() {
 class App extends Component {
   getConfirmation = (message, callback) => {
     confirm({
+      className: 'c7n-iam-confirm-modal',
       title: message.split(Choerodon.STRING_DEVIDER)[0],
       content: message.split(Choerodon.STRING_DEVIDER)[1],
       onOk() {
