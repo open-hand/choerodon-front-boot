@@ -33,11 +33,11 @@ export default class StepFooter extends Component {
     const { GuideStore, total } = this.props;
     return (
       <div className="c7n-boot-guide-step-footer">
-        <Button onClick={() => this.handleBackClick()}>
+        <Button funcType="raised" onClick={() => this.handleBackClick()}>
           返回
         </Button>
-        <Button style={{ float: 'right' }} onClick={() => this.handleNextClick()}>
-          {GuideStore.getCurrentStep < total ? '继续' : '返回教程'}
+        <Button type="primary" funcType="raised" style={{ float: 'right' }} onClick={() => this.handleNextClick()}>
+          {GuideStore.getCurrentStep < total ? '继续' : '所有教程'}
         </Button>
       </div>
     );
