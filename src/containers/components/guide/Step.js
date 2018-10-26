@@ -11,8 +11,8 @@ export default class Step extends Component {
     const { current, total } = this.props;
     const stepWidth = 276 * current / total;
     return (
-      <div style={{ width: '276px', height: '6px', marginTop: '12px', marginBottom: '20px', background: 'rgba(0,0,0,0.08)' }}>
-        <div style={{ width: stepWidth, height: '6px', marginTop: '12px', marginBottom: '20px', background: '#00BFA5' }} />
+      <div style={{ width: '276px', height: '4px', marginTop: '12px', marginBottom: '20px', background: 'rgba(0,0,0,0.08)' }}>
+        <div style={{ width: stepWidth, height: '4px', marginTop: '12px', marginBottom: '20px', background: '#00BFA5' }} />
       </div>
     );
   }

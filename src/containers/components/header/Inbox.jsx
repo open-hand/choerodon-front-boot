@@ -60,14 +60,14 @@ export default class Inbox extends Component {
         <ul>
           {
             inboxData.map((data) => {
-              const { title, content, id, sendByUser } = data;
+              const { title, content, id, sendByUser, type } = data;
               let avatar;
               if (sendByUser !== null) {
                 const { imageUrl, loginName, realName } = sendByUser;
                 avatar = (
                   <Tooltip title={`${loginName} ${realName}`}>
-                    <Avatar src={imageUrl} style={{ userSelect: 'none' }}>
-                      {realName[0]}
+                    <Avatar src={imageUrl} style={{ userSelect: 'none', width: '24px', height: '24px', marginTop: '14px' }}>
+                      <span style={{ left: 'calc(50%-8px)' }}>{realName[0]}</span>
                     </Avatar>
                   </Tooltip>
                 );
@@ -87,10 +87,10 @@ export default class Inbox extends Component {
                 >
                   <Meta
                     avatar={avatar}
-                    title={<Link onClick={this.handleMessageClick} to={`/iam/user-msg?type=site&msgId=${id}`}><div>{title}</div></Link>}
+                    title={<Link onClick={this.handleMessageClick} to={`/iam/user-msg?type=site&msgId=${id}&msgType=${type}`}><div>{title}</div></Link>}
                     description={<p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />}
                   />
-                  <Icon type="close" fontSize="20px" onClick={e => this.cleanMsg(e, data)} />
+                  <Icon type="close" style={{ fontSize: '20px', top: '16px', color: 'rgba(0,0,0,0.65)' }} onClick={e => this.cleanMsg(e, data)} />
                 </Card>
               );
             })
