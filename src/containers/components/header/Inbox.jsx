@@ -149,7 +149,7 @@ export default class Inbox extends Component {
         </Tabs>
 
         <div className={`${popoverPrefixCls}-footer`} onClick={this.handleMessageClick}>
-          <Link to="/iam/user-msg?type=site">查看所有消息</Link>
+          <Link to="/iam/user-msg?type=site">查看所有消息通知</Link>
         </div>
       </div>
     );
