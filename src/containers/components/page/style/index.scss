@@ -95,8 +95,14 @@
       color: $primary-color;
       cursor: pointer;
     }
-    a {
+    a:link {
+      text-decoration: none;
+    }
+    a:hover {
       text-decoration: underline;
+    }
+    a:visited {
+      text-decoration: none;
     }
     .icon {
       font-size: inherit;
