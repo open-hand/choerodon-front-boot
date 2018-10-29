@@ -66,7 +66,7 @@ export default class Inbox extends Component {
                 const { imageUrl, loginName, realName } = sendByUser;
                 avatar = (
                   <Tooltip title={`${loginName} ${realName}`}>
-                    <Avatar src={imageUrl} style={{ userSelect: 'none', width: '24px', height: '24px', marginTop: '14px' }}>
+                    <Avatar src={imageUrl} size="small" style={{ userSelect: 'none', marginTop: '14px' }}>
                       <span style={{ left: 'calc(50%-8px)' }}>{realName[0]}</span>
                     </Avatar>
                   </Tooltip>
@@ -131,21 +131,20 @@ export default class Inbox extends Component {
           className={`${popoverPrefixCls}-header`}
           tabBarExtraContent={this.renderRemoveAll()}
         >
-          <TabPane tab="消息" key="msg">
+          <TabPane tab={`消息(${HeaderStore.getUnreadMsg.length})`} key="msg">
             <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
               {
                 this.renderMessages(HeaderStore.getUnreadMsg)
               }
             </Spin>
           </TabPane>
-          <TabPane tab="通知" key="notice">
+          <TabPane tab={`通知(${HeaderStore.getUnreadNotice.length})`} key="notice">
             <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
               {
                 this.renderMessages(HeaderStore.getUnreadNotice)
               }
             </Spin>
           </TabPane>
-          <Icon type="book" />
         </Tabs>
 
         <div className={`${popoverPrefixCls}-footer`} onClick={this.handleMessageClick}>

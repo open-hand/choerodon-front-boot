@@ -59,6 +59,7 @@ class Mask extends Component {
     this.setState({
       visible: nextProps.visible,
     });
+    this.setMask();
   }
 
   setMask = () => {
