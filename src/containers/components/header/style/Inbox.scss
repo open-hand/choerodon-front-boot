@@ -30,12 +30,18 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     .ant-tabs-bar {
       margin-bottom: 0;
     }
+    .ant-popover-inner {
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.20), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    }
     &-header {
       padding: 0 0;
       line-height: 41px;
       background-color: rgba(0, 0, 0, 0.04);
       // height: 41px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      .ant-tabs-tab {
+        font-weight: 500;
+      }
       .ant-tabs-bar {
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
       }
@@ -83,7 +89,7 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     &-card {
       width: 298px;
       height: 52px;
-      margin: 8px auto;
+      margin: 8px 16px;
       background: #fff;
       box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.20), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
       .ant-card-body {
@@ -149,7 +155,7 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       background-color: rgba(0, 0, 0, 0.04);
       line-height: 48px;
       text-align: center;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 500;
       color: $primary-color;
 
