@@ -74,7 +74,7 @@ export default class Inbox extends Component {
               } else {
                 avatar = (
                   <Tooltip title={AppState.siteInfo.systemName || 'Choerodon'}>
-                    <Avatar src={AppState.siteInfo.favicon || './favicon.ico'} style={{ userSelect: 'none' }}>
+                    <Avatar size="small" src={AppState.siteInfo.favicon || './favicon.ico'} style={{ userSelect: 'none' }}>
                       {(AppState.siteInfo.systemName && AppState.siteInfo.systemName[0]) || 'Choerodon'}
                     </Avatar>
                   </Tooltip>

@@ -5,6 +5,8 @@ class GuideStore {
 
   @observable currentStep = 0;
 
+  @observable loading = new Map();
+
   @computed get getCurrentGuideComponent() {
     return this.currentGuideComponent;
   }
@@ -19,6 +21,14 @@ class GuideStore {
 
   @action setCurrentStep(step) {
     this.currentStep = step;
+  }
+
+  @computed get getLoading() {
+    return this.loading;
+  }
+
+  @action setLoading(current) {
+    this.loading.set(current, false);
   }
 
   @action addCurrentStep() {
