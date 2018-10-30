@@ -67,7 +67,7 @@ export default class Inbox extends Component {
                 avatar = (
                   <Tooltip title={`${loginName} ${realName}`}>
                     <Avatar src={imageUrl} size="small" style={{ userSelect: 'none', marginTop: '14px' }}>
-                      <span style={{ left: 'calc(50%-8px)' }}>{realName[0]}</span>
+                      {realName[0].toUpperCase()}
                     </Avatar>
                   </Tooltip>
                 );
