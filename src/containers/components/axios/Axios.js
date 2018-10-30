@@ -6,6 +6,8 @@ import { authorize } from '../../common/authorize';
 import { getAccessToken, removeAccessToken } from '../../common/accessToken';
 import { API_HOST } from '../../common/constants';
 
+const regTokenExpired = /(PERMISSION_ACCESS_TOKEN_NULL|PERMISSION_ACCESS_TOKEN_EXPIRED)/;
+
 // axios 配置
 axios.defaults.timeout = 30000;
 axios.defaults.baseURL = API_HOST;
@@ -48,6 +50,13 @@ axios.interceptors.response.use(
         case 401: {
           removeAccessToken();
           authorize();
+          break;
+        }
+        case 403: {
+          if (regTokenExpired.test(response.data)) {
+            removeAccessToken();
+            authorize();
+          }
           break;
         }
         default:
