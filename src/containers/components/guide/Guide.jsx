@@ -1,7 +1,7 @@
 import React, { Component, createElement } from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import { Icon } from 'choerodon-ui';
+import { Icon, Spin } from 'choerodon-ui';
 import asyncRouter from '../util/asyncRouter';
 import GuidePanel from './GuidePanel';
 import GuideItem from './GuideItem';
@@ -15,14 +15,16 @@ import asyncLocaleProvider from '../util/asyncLocaleProvider';
 @observer
 export default class Guide extends Component {
   renderGuideStep(current) {
-    const { guide: { guideComponents, guideLocale }, AppState } = this.props;
-    const guideComponent = asyncRouter(guideComponents[current]);
+    const { guide: { guideComponents, guideLocale }, AppState, GuideStore } = this.props;
+    const guideComponent = asyncRouter(guideComponents[current], null, null, () => { GuideStore.setLoading(current); });
     warning(current in guideComponents, `Guide Component<${current}> is missing.`);
     const locale = current.substring(0, current.indexOf('/')).concat('/zh_CN');
     return (
-      <div className="c7n-boot-guide-step" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block', width: '300px' }}>
-        <GuidePanel component={guideComponent} locale={guideLocale[locale]} current={current} />
-      </div>
+      <Spin spinning={AppState.getGuideExpanded && GuideStore.getLoading.get(current) !== false}>
+        <div className="c7n-boot-guide-step" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block', width: '300px' }}>
+          <GuidePanel component={guideComponent} locale={guideLocale[locale]} current={current} />
+        </div>
+      </Spin>
     );
   }
 

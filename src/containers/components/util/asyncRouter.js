@@ -8,7 +8,7 @@ import 'rxjs/add/observable/zip';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromPromise';
 
-export default function asyncRouter(getComponent, getInjects, extProps) {
+export default function asyncRouter(getComponent, getInjects, extProps, callback) {
   return class AsyncRoute extends Component {
     state = {
       Cmp: null,
@@ -55,7 +55,7 @@ export default function asyncRouter(getComponent, getInjects, extProps) {
         Observable.zip(...streams)
           .takeUntil(subject)
           .subscribe(([Cmp, ...injects]) => {
-            this.setState({ Cmp, injects });
+            this.setState({ Cmp, injects }, () => { if (callback) callback(); });
             subject.unsubscribe();
           });
       }
