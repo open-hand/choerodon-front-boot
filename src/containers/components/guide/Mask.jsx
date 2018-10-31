@@ -45,6 +45,7 @@ class Mask extends Component {
     siteLevel: PropTypes.string,
     onLeave: PropTypes.func,
     onEnter: PropTypes.func,
+    onCheck: PropTypes.func,
   };
 
   constructor(props) {
@@ -122,7 +123,7 @@ class Mask extends Component {
   };
 
   handleMaskClick = (e) => {
-    const { mode } = this.props;
+    const { mode, onCheck } = this.props;
     if (this.checkIsClickable()) {
       switch (mode) {
         case 'click':
@@ -130,6 +131,11 @@ class Mask extends Component {
           break;
         case 'mask':
           this.setState({ visible: true }, () => this.setMask());
+          break;
+        case 'checkMask':
+          if (onCheck && onCheck(findParent(document.getElementsByClassName(this.props.highLight)[this.props.idx], this.props.level))) {
+            this.setState({ visible: true }, () => this.setMask());
+          }
           break;
         default:
           this.setState({ visible: true }, () => this.setMask());
