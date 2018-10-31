@@ -22,6 +22,7 @@ class Mask extends Component {
     prefixCls: 'c7n-boot-guide-mask',
     visible: false,
     wrapperClassName: '',
+    className: '',
     highLight: '',
     idx: 0,
     level: 0,
@@ -182,10 +183,10 @@ class Mask extends Component {
   };
 
   render() {
-    const { children, prefixCls } = this.props;
+    const { children, prefixCls, className } = this.props;
     return (
       <React.Fragment>
-        <a onClick={e => this.handleMaskClick(e)} className={classnames(this.state.clickAble ? `${prefixCls}-valid` : `${prefixCls}-invalid`)}> {children} </a>
+        <a onClick={e => this.handleMaskClick(e)} className={classnames(this.state.clickAble ? `${prefixCls}-valid` : `${prefixCls}-invalid`, className)}> {children} </a>
         <RenderInBody>
           {
             this.getOverlay()
