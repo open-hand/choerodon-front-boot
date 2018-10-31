@@ -32,6 +32,7 @@ class AutoGuide extends Component {
     siteLevel: PropTypes.string,
     onLeave: PropTypes.func,
     onEnter: PropTypes.func,
+    onStart: PropTypes.func,
   };
 
   checkSiteLevel = () => {
@@ -63,7 +64,8 @@ class AutoGuide extends Component {
   };
 
   handleStart = () => {
-    const { time } = this.props;
+    const { time, onStart } = this.props;
+    if (onStart) onStart();
     if (this.checkIsClickable()) {
       this.execGuide();
       const timer = setInterval(() => {
