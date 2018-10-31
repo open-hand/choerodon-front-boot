@@ -69,7 +69,7 @@ export default class Guide extends Component {
       <div className="c7n-boot-guide-overflow" style={{ display: !AppState.getGuideExpanded ? 'none' : 'block', width: '280px' }}>
         <div className="c7n-boot-guide-title">
           <h2>开始学习教程</h2>
-          <p>通过教程了解choerodon产品和服务</p>
+          <p>通过教程了解Choerodon产品和服务</p>
           <div className="c7n-boot-guide-line" />
         </div>
         <div className="c7n-boot-guide-content">

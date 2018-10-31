@@ -16,7 +16,7 @@ export default class GuideItem extends Component {
     return (
       <li key={intl.formatMessage({ id: `guide.${prefix}.title` })}>
         <div className="c7n-boot-guide-item" onClick={() => this.handleGuideClick(data)}>
-          <Icon type={intl.formatMessage({ id: `guide.${prefix}.icon` })} style={{ fontSize: '24px' }} />
+          <Icon type={intl.formatMessage({ id: `guide.${prefix}.icon` })} style={{ fontSize: '24px', color: 'rgba(0,0,0,0.65)' }} />
           <h4>{intl.formatMessage({ id: `guide.${prefix}.title` })}</h4>
           <p>{intl.formatMessage({ id: `guide.${prefix}.description` })}</p>
         </div>

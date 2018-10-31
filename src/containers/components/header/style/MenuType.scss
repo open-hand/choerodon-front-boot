@@ -44,6 +44,11 @@ $c7n-boot-header-menu-type: #{$c7n-prefix}-boot-header-menu-type;
       &-selection-column {
         display: none;
       }
+      &-row {
+        .ant-table-row-expand-icon + .ant-table-row-expand-icon {
+          display: none;
+        }
+      }
     }
     .ant-tabs-tabpane .ant-table {
       margin-top: 0;

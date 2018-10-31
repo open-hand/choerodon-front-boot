@@ -165,13 +165,16 @@ export default class MenuType extends Component {
               {text}
             </span>
           ) : (
-            <a
-              role="none"
-              onClick={this.selectState.bind(this, record)}
-            >
-              <Icon type={record.type === 'project' ? 'project' : 'domain'} />
-              {text}
-            </a>
+            <React.Fragment>
+              <span className="ant-table-row-expand-icon ant-table-row-spaced" />
+              <a
+                role="none"
+                onClick={this.selectState.bind(this, record)}
+              >
+                <Icon type={record.type === 'project' ? 'project' : 'domain'} />
+                {text}
+              </a>
+            </React.Fragment>
           )
         ),
       }, {
