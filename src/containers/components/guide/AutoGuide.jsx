@@ -100,6 +100,8 @@ class AutoGuide extends Component {
   };
 
   handleFinalClick = () => {
+    const { timer } = this.state;
+    if (timer) clearInterval(timer);
     this.setState({
       current: -1,
     });
