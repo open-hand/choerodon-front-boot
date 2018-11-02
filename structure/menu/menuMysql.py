@@ -95,7 +95,6 @@ class MenuMysql(Menu):
     def insertMenuPermission(self, table, data):
         try:
             dataMenu = data["menu"]
-            dataLanguageChinese = data["language"]["Chinese"]
             for service in dataMenu.keys():
                 centerLevel = []
                 for level in self.levelArray:
@@ -155,15 +154,49 @@ class MenuMysql(Menu):
                 for level in self.levelArray:
                     menuId = self.returnMenuId('IAM_MENU', service, level)
                     if menuId:
-                      sql = "SELECT ID FROM {table} WHERE ID={id}".format(
-                          table=table,
-                          id=menuId["ID"])
-                      count = self.cursor.execute(sql)
-                      if count == 0:
-                          self.insertMenuTl(table, 'en_US', menuId["ID"], dataLanguageEnglish[service])
-                          self.insertMenuTl(table, 'zh_CN', menuId["ID"], dataLanguageChinese[service])
-                      else:
-                          self.updateMenuTl(table, 'en_US', menuId["ID"], dataLanguageEnglish[service])
-                          self.updateMenuTl(table, 'zh_CN', menuId["ID"], dataLanguageChinese[service])
+                        sql = "SELECT ID FROM {table} WHERE ID={id}".format(
+                            table=table,
+                            id=menuId["ID"])
+                        count = self.cursor.execute(sql)
+                        if count == 0:
+                            self.insertMenuTl(table, 'en_US', menuId["ID"], dataLanguageEnglish[service])
+                            self.insertMenuTl(table, 'zh_CN', menuId["ID"], dataLanguageChinese[service])
+                        else:
+                            self.updateMenuTl(table, 'en_US', menuId["ID"], dataLanguageEnglish[service])
+                            self.updateMenuTl(table, 'zh_CN', menuId["ID"], dataLanguageChinese[service])
+        except:
+            self.dealFault()
+
+    def insertDir(self, data):
+        try:
+            table = "IAM_MENU"
+            for dir in data:
+                if "delete" in dir and (dir["delete"] == True):
+                    continue
+                
+                dirId = self.judgeTrueForDir(table, dir["code"], dir["level"])
+                if dirId == 0:
+                    parent = self.returnMenuId(table, dir["parent"], dir["level"])
+                    if parent == None or ('ID' not in parent):
+                        continue
+                    sql = "INSERT INTO {table} (CODE, NAME, FD_LEVEL, PARENT_ID, TYPE, IS_DEFAULT, ICON, SORT) VALUES ('{code}', '{name}', '{level}', {parent_id}, 'dir', 0, '{icon}', '{sort}')".format(
+                        table=table,
+                        code=dir["code"],
+                        name=dir["name"],
+                        level=dir["level"],
+                        icon=dir["icon"],
+                        sort=dir["sort"],
+                        parent_id=parent["ID"])
+                    self.cursor.execute(sql)
+                    dirId = self.cursor.lastrowid
+                    self.insertMenuTl("IAM_MENU_TL", 'en_US', dirId, dir["enName"])
+                    self.insertMenuTl("IAM_MENU_TL", 'zh_CN', dirId, dir["name"])
+                    
+                for sub in dir["subMenu"]:
+                    sql = "UPDATE {table} SET PARENT_ID = {dir_id} WHERE CODE='{subCode}'".format(
+                        table=table,
+                        dir_id=dirId,
+                        subCode=sub)
+                    self.cursor.execute(sql)
         except:
             self.dealFault()

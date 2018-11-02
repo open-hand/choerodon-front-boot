@@ -46,6 +46,19 @@ class Menu(object):
         count = self.cursor.execute(sql)
         return count == 0
 
+    def judgeTrueForDir(self, table, code, level):
+        sql = "SELECT ID FROM {table} WHERE CODE='{code}' AND FD_LEVEL='{level}' AND TYPE='dir'".format(
+            table=table,
+            code=code,
+            level=level)
+        self.cursor.execute(sql)
+        parent_id = self.cursor.fetchone()
+        # print count
+        if parent_id:
+            return parent_id["ID"]
+        else:
+            return 0
+
     # delete menu by menu_id
     def deleteByMenuId(self, code, level):
         menuId = self.returnMenuId('IAM_MENU', code, level)
@@ -77,7 +90,6 @@ class Menu(object):
     def deleteMenu(self, data):
         try:
             dataMenu = data["menu"]
-            dataLanguageChinese = data["language"]["Chinese"]
             for root in dataMenu:
                 centerLevel = []
                 for level in self.levelArray:
@@ -98,6 +110,29 @@ class Menu(object):
                     for menuList in dataMenu[service][level]:
                         if "delete" in dataMenu[service][level][menuList] and dataMenu[service][level][menuList]["delete"] == True:
                             self.deleteByMenuId(menuList, level)
+        except:
+            self.dealFault()
+
+    def deleteDir(self, data):
+        try:
+            table = "IAM_MENU"
+            for dir in data:
+                if "delete" in dir and (dir["delete"] == True):
+                   dirId = self.judgeTrueForDir(table, dir["code"], dir["level"])
+                   print dirId
+                   if dirId != 0:
+                        parent = self.returnMenuId(table, dir["parent"], dir["level"])
+                        print parent
+                        sql = "DELETE FROM IAM_MENU_TL WHERE ID={menuId}".format(menuId=dirId)
+                        self.cursor.execute(sql)
+                        for sub in dir["subMenu"]:
+                            sql = "UPDATE {table} SET PARENT_ID = {parentId} WHERE CODE='{subCode}'".format(
+                                table=table,
+                                parentId=parent["ID"],
+                                subCode=sub)
+                            self.cursor.execute(sql)
+                        sql = "DELETE FROM {table} WHERE ID='{menuId}'".format(table=table, menuId=dirId)
+                        self.cursor.execute(sql)
         except:
             self.dealFault()
 

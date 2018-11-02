@@ -20,7 +20,8 @@ pathDir = {
     "languagezhDir": '{baseDirs}/{value}/src/app/{value}/config/language/zh.yml',
 }
 newPathDir = {
-    "wholeConfig": '{baseDirs}/menu.yml'
+    "wholeConfig": '{baseDirs}/menu.yml',
+    "dirConfig": '{baseDirs}/dirMenu.yml'
 }
 levelArray = ["site","organization", "project", "user"]
 serviceCode = 'choerodon.code'
@@ -98,7 +99,7 @@ def menuDirYml(menuYmlContent, moduleDir):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-o','--options', help='option name: yml / sql', required=True)
+    parser.add_argument('-o','--options', help='option name: yml / sql / dir', required=True)
     parser.add_argument('-m','--modules', nargs='+', help='module name')
     parser.add_argument('-i','--ip', help='databse host', dest="host", default="localhost")
     parser.add_argument('-p','--port', type=int, help='databse port', dest="port", default=3306)
@@ -157,5 +158,28 @@ if __name__ == '__main__':
         menuOperate.insertMenuPermission('IAM_MENU_PERMISSION', contentConfig)
         if delete == True:
             menuOperate.deleteMenu(contentConfig)
+        menuOperate.close()
+        ymlFile.close()
+    elif (cmp(options, "dir") == 0) :
+        try:
+            dirConfig = newPathDir["dirConfig"].format(baseDirs=baseDirs)
+            ymlFile = open(dirConfig)
+            contentConfig = yaml.load(ymlFile)
+        except:
+            print "No such file or directory: " + newPathDir["dirConfig"].format(baseDirs=baseDirs)
+            sys.exit(1)
+        if dbType == "mysql":
+            config = {
+                'host': host,
+                'port': int(port),
+                'user': user,
+                'passwd': passwd
+            }
+            operate = __import__('menuMysql')
+            menuOperate = operate.MenuMysql(config, os.getenv("DB_NAME", "iam_service"), attrs)
+        
+        menuOperate.insertDir(contentConfig)
+        if delete == True:
+            menuOperate.deleteDir(contentConfig)
         menuOperate.close()
         ymlFile.close()
