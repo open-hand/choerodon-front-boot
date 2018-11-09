@@ -7,6 +7,7 @@ import Setting from './Setting';
 import User from './User';
 import Inbox from './Inbox';
 import { PREFIX_CLS } from '../../common/constants';
+import Favorites from '../favorites';
 import './style';
 
 
@@ -46,6 +47,9 @@ class Header extends Component {
           }
         </ul>
         <ul className={`${prefixCls}-right`}>
+          <li>
+            <Favorites />
+          </li>
           <li>
             <Button functype="flat" shape="circle" onClick={() => this.handleGuideClick()}>
               <Icon type="school" />

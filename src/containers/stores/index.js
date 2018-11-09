@@ -3,6 +3,7 @@ import HeaderStore from './HeaderStore';
 import MenuStore from './MenuStore';
 import GuideStore from './GuideStore';
 import DashboardStore from './DashboardStore';
+import FavoritesStore from './FavoritesStore';
 import { dashboard } from '../common';
 
 const stores = {
@@ -10,6 +11,7 @@ const stores = {
   HeaderStore,
   MenuStore,
   GuideStore,
+  FavoritesStore,
 };
 if (dashboard) {
   stores.DashboardStore = DashboardStore;
