@@ -18,7 +18,7 @@ const formItemLayout = {
     sm: { span: 10 },
   },
 };
-const defaultColors = ['#6193ed', '#dc5d4e', '#66ae6a', '#f5bd48', '#784ae2', '#5c82db'];
+const defaultColors = ['#2196F3', '#E8453C', '#4CAF50', '#FFC107', '#692AE8', '#FF8B15', '#E91E63', '#00BCD4'];
 
 
 @Form.create({
@@ -149,7 +149,7 @@ export default class CreateModal extends Component {
                 {
                   required: true,
                   whitespace: true,
-                  message: 'asd',
+                  message: '请输入名称',
                 },
               ],
               initialValue: 'name-initialValue',
@@ -173,7 +173,7 @@ export default class CreateModal extends Component {
                 {
                   required: true,
                   whitespace: true,
-                  message: 'url needs',
+                  message: '请输入url',
                 },
               ],
               initialValue: 'url-initialValue',
@@ -194,7 +194,6 @@ export default class CreateModal extends Component {
             })(
               <IconSelect
                 label="图标"
-                getPopupContainer={() => document.getElementsByClassName('ant-modal-body')[document.getElementsByClassName('ant-modal-body').length - 1]}
                 showArrow
               />,
             )
@@ -206,8 +205,8 @@ export default class CreateModal extends Component {
 
   handleOk = () => {
     const { form, intl, onOk, FavoritesStore } = this.props;
-    if (onOk) onOk();
     form.validateFields((error, values, modify) => {
+      if (onOk) onOk(error);
       Object.keys(values).forEach((key) => {
         // 去除form提交的数据中的全部前后空格
         if (typeof values[key] === 'string') values[key] = values[key].trim();
@@ -217,7 +216,7 @@ export default class CreateModal extends Component {
           const len = FavoritesStore.getFavorites.length;
           const createData = {
             ...values,
-            sort: len > 0 ? FavoritesStore.getFavorites[len - 1].sort + 1 : 1,
+            sort: (len > 0 ? FavoritesStore.getFavorites.reduce((previousValue, current) => (previousValue > current.sort ? previousValue : current.sort), -999999) : 1) + 1,
           };
           FavoritesStore.createFavorite(createData);
         } else {
@@ -242,7 +241,6 @@ export default class CreateModal extends Component {
         maskClosable={false}
         onOk={this.handleOk}
         onText="添加"
-        destroyOnClose
       >
         {this.renderContainer()}
         {FavoritesStore.getType === 'edit' ? this.renderColorModify() : null}
