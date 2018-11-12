@@ -84,6 +84,12 @@ export default class Dashboard extends Component {
     this.props.DashboardStore.setEditing(true);
   };
 
+  handleCancel = () => {
+    const { DashboardStore } = this.props;
+    DashboardStore.setEditing(false);
+    DashboardStore.loadDashboardData();
+  }
+
   handleComplete = () => {
     const { DashboardStore } = this.props;
     if (DashboardStore.dirty) {
@@ -150,13 +156,22 @@ export default class Dashboard extends Component {
       >
         {
           editing ? (
-            <Button
-              icon="check"
-              className={`${PREFIX_CLS}-header-button`}
-              onClick={this.handleComplete}
-            >
-              <FormattedMessage id="boot.dashboard.complete" />
-            </Button>
+            <React.Fragment>
+              <Button
+                icon="check"
+                className={`${PREFIX_CLS}-header-button`}
+                onClick={this.handleComplete}
+              >
+                <FormattedMessage id="boot.dashboard.complete" />
+              </Button>
+              <Button
+                icon="close"
+                className={`${PREFIX_CLS}-header-button`}
+                onClick={this.handleCancel}
+              >
+                <FormattedMessage id="boot.cancel" />
+              </Button>
+            </React.Fragment>
           ) : (
             <Button
               icon="mode_edit"
