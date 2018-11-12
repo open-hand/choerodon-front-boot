@@ -181,7 +181,7 @@ export default class CreateModal extends Component {
               <Input
                 autoComplete="off"
                 label="url"
-                maxLength={32}
+                maxLength={2048}
                 showLengthInfo={false}
               />,
             )
@@ -213,12 +213,16 @@ export default class CreateModal extends Component {
       });
       if (!error) {
         if (FavoritesStore.getType === 'create') {
-          const len = FavoritesStore.getFavorites.length;
-          const createData = {
-            ...values,
-            sort: (len > 0 ? FavoritesStore.getFavorites.reduce((previousValue, current) => (previousValue > current.sort ? previousValue : current.sort), -999999) : 1) + 1,
-          };
-          FavoritesStore.createFavorite(createData);
+          if (FavoritesStore.getFavorites.some(v => v.url === values.url)) {
+            Choerodon.prompt('添加成功');
+          } else {
+            const len = FavoritesStore.getFavorites.length;
+            const createData = {
+              ...values,
+              sort: (len > 0 ? FavoritesStore.getFavorites.reduce((previousValue, current) => (previousValue > current.sort ? previousValue : current.sort), -999999) : 1) + 1,
+            };
+            FavoritesStore.createFavorite(createData);
+          }
         } else {
           FavoritesStore.updateFavorite(values);
         }

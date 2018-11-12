@@ -58,10 +58,6 @@ class DashboardStore {
   @action
   loadDashboardData() {
     const { currentMenuType: { id = '0', type = 'site' } } = AppState;
-    const dashboardData = this.dashboardData(type, id);
-    if (dashboardData.length) {
-      return Promise.resolve(dashboardData);
-    }
     this.loading = true;
     return axios.get(`/iam/v1/home/dashboard?level=${type}&source_id=${id}`)
       .then(action((data) => {

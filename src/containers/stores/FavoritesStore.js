@@ -110,7 +110,7 @@ class FavoritesStore {
           value: `${document.location.href}`,
         },
         icon: {
-          value: `${MenuStore.activeMenu ? MenuStore.activeMenu.icon : 'cancel'}`,
+          value: `${MenuStore.activeMenu ? MenuStore.activeMenu.icon : 'home'}`,
         },
         color: {
           value: this.getNextColor,
@@ -123,12 +123,12 @@ class FavoritesStore {
   get getUrlName() {
     if (document.location.hash.substring(1, document.location.hash.indexOf('?') === -1 ? document.location.hash.length : document.location.hash.indexOf('?')) === '/') {
       switch (AppState.menuType.type) {
-        case 'site':
-          return 'Choerodon主页';
+        case 'organization':
+          return `${AppState.menuType.name}的首页`;
         case 'project':
-          return `${AppState.menuType.name}的dashboard`;
+          return `${AppState.menuType.name}的首页`;
         default:
-          return `${AppState.menuType.name}的dashboard`;
+          return 'Choerodon首页';
       }
     } else {
       switch (AppState.menuType.type) {
