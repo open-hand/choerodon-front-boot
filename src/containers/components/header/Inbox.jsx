@@ -87,7 +87,7 @@ export default class Inbox extends Component {
                 >
                   <Meta
                     avatar={avatar}
-                    title={<Link onClick={this.handleMessageClick} to={`/iam/user-msg?type=site&msgId=${id}&msgType=${type}`}><div>{title}</div></Link>}
+                    title={<a onClick={() => { window.open(`/#/iam/user-msg?type=site&msgId=${id}&msgType=${type}`); }}><div>{title}</div></a>}
                     description={<p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />}
                   />
                   <Icon type="close" style={{ fontSize: '20px', top: '16px', color: 'rgba(0,0,0,0.65)' }} onClick={e => this.cleanMsg(e, data)} />
@@ -108,17 +108,30 @@ export default class Inbox extends Component {
 
   renderRemoveAll() {
     return (
-      <Tooltip
-        title="清空全部"
-        placement="right"
-      >
-        <Button
-          size="small"
-          onClick={this.cleanAllMsg}
-          shape="circle"
-          icon="delete"
-        />
-      </Tooltip>
+      <React.Fragment>
+        <Tooltip
+          title="清空全部"
+          placement="right"
+        >
+          <Button
+            size="small"
+            onClick={this.cleanAllMsg}
+            shape="circle"
+            icon="delete_sweep"
+          />
+        </Tooltip>
+        <Tooltip
+          title="设置"
+          placement="right"
+        >
+          <Button
+            size="small"
+            onClick={this.cleanAllMsg}
+            shape="circle"
+            icon="settings"
+          />
+        </Tooltip>
+      </React.Fragment>
     );
   }
 
