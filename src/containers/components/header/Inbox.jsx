@@ -33,6 +33,10 @@ export default class Inbox extends Component {
     HeaderStore.axiosGetUserMsg(AppState.getUserId);
   }
 
+  openSettings = () => {
+    window.open('/#/iam/receive-setting?type=site');
+  };
+
   handleButtonClick = () => {
     const { HeaderStore } = this.props;
     if (!HeaderStore.inboxLoaded) {
@@ -126,7 +130,7 @@ export default class Inbox extends Component {
         >
           <Button
             size="small"
-            onClick={this.cleanAllMsg}
+            onClick={this.openSettings}
             shape="circle"
             icon="settings"
           />
