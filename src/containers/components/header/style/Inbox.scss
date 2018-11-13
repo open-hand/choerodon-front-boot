@@ -21,10 +21,7 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
   }
 
   &-popover {
-    width: 330px;
-    .is-empty {
-      background-color: rgba(0, 0, 0, 0.03);
-    }
+    width: 320px;
     .ant-tabs-nav-scroll {
       padding-left: 16px;
     }
@@ -37,11 +34,15 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     &-header {
       padding: 0 0;
       line-height: 41px;
-      background-color: rgba(0, 0, 0, 0.04);
       // height: 41px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-      .ant-tabs-tab {
+      .ant-tabs-nav .ant-tabs-tab {
         font-weight: 500;
+        height: 48.5px;
+        color: rgba(0, 0, 0, 0.65);
+        font-size: 15px;
+        &-active {
+          color: #3f51b5;
+        }
       }
       .ant-tabs-bar {
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -49,7 +50,11 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       .ant-tabs-extra-content {
         margin-right: 16px;
         > .ant-btn-circle {
-          color: #3f51b5;
+          color: rgba(0, 0, 0, 0.65);
+          margin-top: 9px;
+          > i {
+            font-size: 20px;
+          }
         }
       }
       .ant-card-meta-title {
@@ -61,21 +66,34 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
           font-size: 13px;
           color: #000;
           text-decoration: none;
-          font-weight: normal;
+          font-weight: 500;
         }
       }
       .ant-card-meta-description {
         width: 190px;
         text-overflow: ellipsis;
         white-space: nowrap;
-        overflow: hidden;
         color: #000;
-        > p {
-          width: 211px;
+        > p:nth-child(1) {
+          overflow: hidden;
+          width: 216px;
+          display: inline-block;
+          transform: scale(0.8333);
+          color: #787c87;
+        }
+        > p:nth-child(2) {
+          overflow: initial;
+          margin-left: -26px;
+          position: absolute;
+          width: 60px;
+          text-align: right;
+          display: inline-block;
+          transform: scale(0.8333);
+          color: #787c87;
         }
       }
       .ant-card-meta-detail {
-        padding: 7px 0;
+        padding: 12px 0;
       }
       span {
         color: rgba(0, 0, 0, 0.54);
@@ -88,13 +106,27 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       }
     }
     &-card {
-      width: 298px;
-      height: 52px;
-      margin: 8px 16px;
+      width: 320px;
+      height: 60px;
+      // margin: 8px 16px;
       background: #fff;
-      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.20), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+      &:hover {
+        .ant-card-body {
+          > .icon {
+            display: inline;
+          }
+        }
+        background-color: rgba(241, 243, 244, 0.60);
+      }
       .ant-card-body {
+        > .icon {
+          display: none;
+          color: rgba(0, 0, 0, 0.36);
+        }
         padding: 5px 16px;
+      }
+      .ant-card-meta-avatar {
+        padding-right: 11px;
       }
       .ant-avatar {
         margin: 7px auto;
@@ -103,14 +135,13 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     &-content {
       overflow: auto;
       overflow-x: hidden;
-      height: 256px;
+      height: 308.5px;
       ul {
         padding: 0;
         list-style: none;
-        margin-top: 12px;
+        margin-top: 2px;
       }
       li {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
         position: relative;
         font-size: 13px;
         line-height: 20px;
@@ -153,12 +184,15 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
       }
     }
     &-footer {
-      background-color: rgba(0, 0, 0, 0.04);
       line-height: 48px;
       text-align: center;
       font-size: 14px;
       font-weight: 500;
       color: $primary-color;
+      > button {
+        width: 120px;
+        margin-bottom: 16px;
+      }
 
       @include button-link-masker();
     }
@@ -168,7 +202,7 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     }
   }
   &-empty {
-    margin-top: 42px;
+    margin-top: 71.5px;
     margin-bottom: 42px;
     padding-top: 124px;
     text-align: center;

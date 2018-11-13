@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import TimeAgo from 'timeago-react';
 import { inject, observer } from 'mobx-react';
 import { Badge, Button, Icon, Popover, Spin, Tabs, Card, Avatar, Tooltip } from 'choerodon-ui';
 import WSHandler from '../ws/WSHandler';
@@ -64,13 +64,13 @@ export default class Inbox extends Component {
         <ul>
           {
             inboxData.map((data) => {
-              const { title, content, id, sendByUser, type } = data;
+              const { title, content, id, sendByUser, type, sendTime } = data;
               let avatar;
               if (sendByUser !== null) {
                 const { imageUrl, loginName, realName } = sendByUser;
                 avatar = (
                   <Tooltip title={`${loginName} ${realName}`}>
-                    <Avatar src={imageUrl} size="small" style={{ userSelect: 'none', marginTop: '14px' }}>
+                    <Avatar src={imageUrl} style={{ userSelect: 'none', marginTop: '14px' }}>
                       {realName[0].toUpperCase()}
                     </Avatar>
                   </Tooltip>
@@ -78,7 +78,7 @@ export default class Inbox extends Component {
               } else {
                 avatar = (
                   <Tooltip title={AppState.siteInfo.systemName || 'Choerodon'}>
-                    <Avatar size="small" src={AppState.siteInfo.favicon || './favicon.ico'} style={{ userSelect: 'none', marginTop: '14px' }}>
+                    <Avatar src={AppState.siteInfo.favicon || './favicon.ico'} style={{ userSelect: 'none', marginTop: '14px' }}>
                       {(AppState.siteInfo.systemName && AppState.siteInfo.systemName[0]) || 'Choerodon'}
                     </Avatar>
                   </Tooltip>
@@ -92,9 +92,19 @@ export default class Inbox extends Component {
                   <Meta
                     avatar={avatar}
                     title={<a onClick={() => { window.open(`/#/iam/user-msg?type=site&msgId=${id}&msgType=${type}`); }}><div>{title}</div></a>}
-                    description={<p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />}
+                    description={(
+                      <React.Fragment>
+                        <p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />
+                        <p>
+                          <TimeAgo
+                            datetime={sendTime}
+                            locale={Choerodon.getMessage('zh_CN', 'en')}
+                          />
+                        </p>
+                      </React.Fragment>
+                    )}
                   />
-                  <Icon type="close" style={{ fontSize: '20px', top: '16px', color: 'rgba(0,0,0,0.65)' }} onClick={e => this.cleanMsg(e, data)} />
+                  <Icon type="cancel" style={{ fontSize: '20px', top: '12px', left: '281px' }} onClick={e => this.cleanMsg(e, data)} />
                 </Card>
               );
             })
@@ -112,30 +122,17 @@ export default class Inbox extends Component {
 
   renderRemoveAll() {
     return (
-      <React.Fragment>
-        <Tooltip
-          title="清空全部"
-          placement="right"
-        >
-          <Button
-            size="small"
-            onClick={this.cleanAllMsg}
-            shape="circle"
-            icon="delete_sweep"
-          />
-        </Tooltip>
-        <Tooltip
-          title="设置"
-          placement="right"
-        >
-          <Button
-            size="small"
-            onClick={this.openSettings}
-            shape="circle"
-            icon="settings"
-          />
-        </Tooltip>
-      </React.Fragment>
+      <Tooltip
+        title="清空全部"
+        placement="right"
+      >
+        <Button
+          onClick={this.cleanAllMsg}
+          shape="circle"
+          icon="delete_sweep"
+          style={{ fontSize: 20 }}
+        />
+      </Tooltip>
     );
   }
 
@@ -148,14 +145,14 @@ export default class Inbox extends Component {
           className={`${popoverPrefixCls}-header`}
           tabBarExtraContent={this.renderRemoveAll()}
         >
-          <TabPane tab={`消息(${HeaderStore.getUnreadMsg.length})`} key="msg">
+          <TabPane tab="消息" key="msg">
             <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
               {
                 this.renderMessages(HeaderStore.getUnreadMsg)
               }
             </Spin>
           </TabPane>
-          <TabPane tab={`通知(${HeaderStore.getUnreadNotice.length})`} key="notice">
+          <TabPane tab="通知" key="notice">
             <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
               {
                 this.renderMessages(HeaderStore.getUnreadNotice)
@@ -165,7 +162,19 @@ export default class Inbox extends Component {
         </Tabs>
 
         <div className={`${popoverPrefixCls}-footer`} onClick={this.handleMessageClick}>
-          <Link to="/iam/user-msg?type=site">查看所有消息通知</Link>
+          <Button
+            funcType="raised"
+            type="primary"
+            onClick={() => window.open('/#/iam/user-msg?type=site')}
+          >所有消息
+          </Button>
+          <Button
+            funcType="raised"
+            onClick={() => window.open('/#/iam/receive-setting?type=site')}
+            style={{ marginLeft: 16, color: '#3F51B5' }}
+          >消息设置
+          </Button>
+          {/* <Link to="/iam/user-msg?type=site">查看所有消息通知</Link> */}
         </div>
       </div>
     );
