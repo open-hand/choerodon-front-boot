@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import addEventListener from 'choerodon-ui/lib/rc-components/util/Dom/addEventListener';
 import warning from '../../../common/warning';
 
+const TIMEOUT_TIME = 50000;
+
 export default class WSProvider extends Component {
   static propTypes = {
     server: PropTypes.string,
@@ -81,17 +83,28 @@ export default class WSProvider extends Component {
 
     if (!this.retry) {
       this.retry = true;
-      this.destroySocketByPath(path);
-      this.initSocket(this.props, path);
+      setTimeout(() => {
+        this.destroySocketByPath(path);
+        this.initSocket(this.props, path);
+      }, TIMEOUT_TIME);
     }
   };
 
-  handleClose = () => {
+  handleClose = (e, path) => {
     const { onClose } = this.props;
     if (typeof onClose === 'function') {
       onClose();
     }
+
+    if (!this.retry) {
+      this.retry = true;
+      setTimeout(() => {
+        this.destroySocketByPath(path);
+        this.initSocket(this.props, path);
+      }, TIMEOUT_TIME);
+    }
   };
+
 
   destroySocketByPath(path) {
     const { ws } = this;
@@ -128,14 +141,15 @@ export default class WSProvider extends Component {
    * @param path
    */
   initSocket = ({ server }, path) => {
+    this.retry = false;
     if (server && path) {
       try {
         const ws = new WebSocket(`${server}/${path}`);
         ws.addEventListener('open', evt => this.handleOpen(evt, path));
         ws.addEventListener('message', evt => this.handleMessage(evt, path));
         ws.addEventListener('error', evt => this.handleError(evt, path));
-        ws.addEventListener('close', evt => this.handleClose.bind(evt, path));
-        ws.hb = setInterval(() => this.heartBeat(path), 50000);
+        ws.addEventListener('close', evt => this.handleClose(evt, path));
+        ws.hb = setInterval(() => this.heartBeat(path), TIMEOUT_TIME);
         this.ws.set(path, ws);
       } catch (e) {
         warning(false, `WSProvider is stopped. Caused by <${e.message}>`);

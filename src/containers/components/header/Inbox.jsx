@@ -172,7 +172,7 @@ export default class Inbox extends Component {
             funcType="raised"
             onClick={() => window.open('/#/iam/receive-setting?type=site')}
             style={{ marginLeft: 16, color: '#3F51B5' }}
-          >消息设置
+          >接收设置
           </Button>
           {/* <Link to="/iam/user-msg?type=site">查看所有消息通知</Link> */}
         </div>
