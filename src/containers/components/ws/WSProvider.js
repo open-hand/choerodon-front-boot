@@ -34,6 +34,8 @@ export default class WSProvider extends Component {
 
   pending = [];
 
+  needReRegister = false;
+
   componentWillMount() {
     if (typeof window !== 'undefined') {
       this.windowBeforeUnloadListener = addEventListener(window, 'beforeunload', this.handleWindowBeforeUnload);
@@ -57,7 +59,10 @@ export default class WSProvider extends Component {
     if (typeof onOpen === 'function') {
       onOpen();
     }
-    this.retry = false;
+    if (this.needReRegister) {
+      this.reRegister();
+      this.retry = false;
+    }
     this.pending.forEach((data) => {
       this.send(data, path);
     });
@@ -84,6 +89,8 @@ export default class WSProvider extends Component {
     if (!this.retry) {
       this.retry = true;
       setTimeout(() => {
+        this.retry = false;
+        this.needReRegister = true;
         this.destroySocketByPath(path);
         this.initSocket(this.props, path);
       }, TIMEOUT_TIME);
@@ -99,6 +106,8 @@ export default class WSProvider extends Component {
     if (!this.retry) {
       this.retry = true;
       setTimeout(() => {
+        this.retry = false;
+        this.needReRegister = true;
         this.destroySocketByPath(path);
         this.initSocket(this.props, path);
       }, TIMEOUT_TIME);
@@ -141,7 +150,6 @@ export default class WSProvider extends Component {
    * @param path
    */
   initSocket = ({ server }, path) => {
-    this.retry = false;
     if (server && path) {
       try {
         const ws = new WebSocket(`${server}/${path}`);
@@ -201,6 +209,13 @@ export default class WSProvider extends Component {
       }), path);
     }
   }
+
+  reRegister = () => {
+    this.needReRegister = false;
+    [...this.map.keys()].forEach((key) => {
+      this.pending.push(JSON.stringify({ type: 'sub', data: key.slice(key.split('-')[0].length + 1) }));
+    });
+  };
 
   unregister(key, handler, path) {
     if (this.ws) {
