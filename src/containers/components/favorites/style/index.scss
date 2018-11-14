@@ -56,8 +56,11 @@ $c7n-boot-favorites: #{$c7n-prefix}-boot-favorites;
       white-space: nowrap;
       overflow: hidden;
       &:hover {
-        background: rgba(33, 32, 36, 0.06);
+        background: rgba(0, 0, 0, 0.06);
         color: #000;
+        .c7n-boot-favorites-popover-item-icon {
+          background: rgba(0, 0, 0, 0.06);
+        }
         .#{$c7n-boot-favorites}-popover-item-icon {
           > i:nth-child(2) {
             display: inline-block;
@@ -77,7 +80,7 @@ $c7n-boot-favorites: #{$c7n-prefix}-boot-favorites;
       }
       margin-bottom: 16px;
       &-icon {
-        background: rgba(0, 0, 0, 0.06);
+        background: #f6f6f6;
         border-radius: 24px;
         width: 48px;
         height: 48px;
