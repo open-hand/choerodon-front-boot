@@ -97,7 +97,7 @@ export default class Inbox extends Component {
                         <p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />
                         <p>
                           <TimeAgo
-                            datetime={sendTime}
+                            datetime={sendTime.slice(0, sendTime.length - 3)}
                             locale={Choerodon.getMessage('zh_CN', 'en')}
                           />
                         </p>
