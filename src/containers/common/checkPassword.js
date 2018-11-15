@@ -6,7 +6,7 @@ export default function checkPassword(passwordPolicy, value, callback, userName)
       enablePassword: check, minLength, maxLength,
       uppercaseCount: upcount, specialCharCount: spcount,
       lowercaseCount: lowcount, notUsername: notEqualsUsername,
-      regularExpression: regexCheck,
+      regularExpression: regexCheck, digitsCount: digitsLowCount,
     } = passwordPolicy;
     if (value && (check)) {
       let len = 0;
@@ -14,6 +14,7 @@ export default function checkPassword(passwordPolicy, value, callback, userName)
       let sp;
       let up = 0;
       let low = 0;
+      let digit = 0;
       for (let i = 0; i < value.length; i += 1) {
         const a = value.charAt(i);
         if (a.match(/[^\x00-\xff]/ig) != null) {
@@ -35,6 +36,10 @@ export default function checkPassword(passwordPolicy, value, callback, userName)
         const lows = value.match(/[a-z]/g);
         low = lows ? lows.length : 0;
       }
+      if (/[0-9]/i.test(value)) {
+        const digits = value.match(/[0-9]/g);
+        digit = digits ? digits.length : 0;
+      }
       if (minLength && (len < minLength)) {
         callback(getMessage(`密码长度至少为${minLength}`, `Password length is at least ${minLength}`));
         return;
@@ -53,6 +58,10 @@ export default function checkPassword(passwordPolicy, value, callback, userName)
       }
       if (notEqualsUsername && value === userName) {
         callback(getMessage('密码不能与账号相同', 'password can not equal with the userName'));
+        return;
+      }
+      if (digitsLowCount > digit) {
+        callback(getMessage(`数字数目至少为${digitsLowCount}`, 'password can not equal with the userName'));
         return;
       }
       if (regexCheck) {
