@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import TimeAgo from 'timeago-react';
 import { inject, observer } from 'mobx-react';
+import timeago from 'timeago.js';
 import { Badge, Button, Icon, Popover, Spin, Tabs, Card, Avatar, Tooltip } from 'choerodon-ui';
 import WSHandler from '../ws/WSHandler';
 import { PREFIX_CLS } from '../../common/constants';
 
 const prefixCls = `${PREFIX_CLS}-boot-header-inbox`;
 const popoverPrefixCls = `${prefixCls}-popover`;
+timeago.register('zh_CN', require('./locale/zh_CN'));
 
 /* eslint-disable-next-line */
 const reg = /\n|&nbsp;|&lt|&gt|<[^a\/][^>]*>|<\/[^a][^>]*>/g;
@@ -145,14 +147,14 @@ export default class Inbox extends Component {
           className={`${popoverPrefixCls}-header`}
           tabBarExtraContent={this.renderRemoveAll()}
         >
-          <TabPane tab="消息" key="msg">
+          <TabPane tab={`消息(${HeaderStore.getUnreadMsg.length})`} key="msg">
             <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
               {
                 this.renderMessages(HeaderStore.getUnreadMsg)
               }
             </Spin>
           </TabPane>
-          <TabPane tab="通知" key="notice">
+          <TabPane tab={`通知(${HeaderStore.getUnreadNotice.length})`} key="notice">
             <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
               {
                 this.renderMessages(HeaderStore.getUnreadNotice)
