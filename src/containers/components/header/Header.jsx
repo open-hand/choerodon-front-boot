@@ -58,7 +58,7 @@ class Header extends Component {
           <li>
             <Inbox />
           </li>
-          <li>
+          <li style={{ marginLeft: 30 }}>
             <User imgUrl={imgUrl} />
           </li>
         </ul>

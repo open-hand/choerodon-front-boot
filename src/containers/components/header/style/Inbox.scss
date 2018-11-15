@@ -10,14 +10,15 @@ $c7n-boot-header-inbox: #{$c7n-prefix}-boot-header-inbox;
     .icon {
       transform: scale(0.8);
       color: #fff;
-      font-size: 23px;
+      font-size: 25px !important;
       border-radius: 50%;
     }
   }
   .ant-badge-count {
     box-shadow: initial;
     cursor: pointer;
-    top: -5px;
+    top: -4px;
+    left: 35px;
   }
 
   &-popover {
