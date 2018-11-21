@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import timeago from 'timeago.js';
 import { Badge, Button, Icon, Popover, Spin, Tabs, Card, Avatar, Tooltip } from 'choerodon-ui';
 import WSHandler from '../ws/WSHandler';
+import MouseOverWrapper from '../mouseOverWrapper';
 import { PREFIX_CLS } from '../../common/constants';
 
 const prefixCls = `${PREFIX_CLS}-boot-header-inbox`;
@@ -93,7 +94,7 @@ export default class Inbox extends Component {
                 >
                   <Meta
                     avatar={avatar}
-                    title={<a onClick={() => { window.open(`/#/iam/user-msg?type=site&msgId=${id}&msgType=${type}`); }}><div>{title}</div></a>}
+                    title={<a onClick={() => { window.open(`/#/iam/user-msg?type=site&msgId=${id}&msgType=${type}`); }}><MouseOverWrapper width={190} text={title}>{title}</MouseOverWrapper></a>}
                     description={(
                       <React.Fragment>
                         <p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />
