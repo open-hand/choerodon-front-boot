@@ -71,6 +71,7 @@ class Masters extends Component {
       link.rel = 'shortcut icon';
       link.href = data.favicon || 'favicon.ico';
       document.head.appendChild(link);
+      data.defaultTitle = document.getElementsByTagName('title')[0].innerText;
       if (data.systemTitle) {
         document.getElementsByTagName('title')[0].innerText = data.systemTitle;
       }
