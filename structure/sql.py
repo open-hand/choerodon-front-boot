@@ -30,7 +30,6 @@ def judgeTrue(table, *args):
         equaldata=args[1])
     cursor.execute(sql)
     count = cursor.execute(sql)
-    # print count
     if count == 0:
         return True
     else:

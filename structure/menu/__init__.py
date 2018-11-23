@@ -5,6 +5,7 @@ import os
 import yaml
 import sys
 import argparse
+import logging
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -40,9 +41,11 @@ def writeYml(modules, newPathDir, language=None):
         "menu": menuYml(modules, pathDir["menuDirs"])
     }
     ymlString = newPathDir.format(baseDirs = baseDirs, language = language)
+    logging.info("Begin write menu data into: " + ymlString)
     ymlFile = open(ymlString, 'w+')
     ymlFile.write(json.dumps(whole))
     ymlFile.close()
+    logging.info("End write menu data into: " + ymlString)
 # get dir
 def adjustString(dirString, value=None):
     endString = dirString.format(baseDirs = baseDirs, value = value)
@@ -57,6 +60,7 @@ def adjustContent(modules, dirName):
 
 # 读取中英yml文件
 def languageYml(modules, languageDir):
+    logging.info("Loading menu language data from modules: " + "".join(modules))
     centerObj = {}
     languageContent = adjustContent(modules, languageDir)
     for i in modules:
@@ -68,6 +72,7 @@ def languageYml(modules, languageDir):
 
 # 读取menuYml数据文件
 def menuYml(modules, path):
+    logging.info("Loading menu data from modules: " + "".join(modules))
     centerObj = {}
     menuYmlContent = adjustContent(modules, path)
     for i in modules:
@@ -98,6 +103,8 @@ def menuDirYml(menuYmlContent, moduleDir):
     return centerLevel
 
 if __name__ == '__main__':
+    logging.basicConfig(format='[%(levelname)s] %(asctime)s [%(threadName)s:%(thread)d] [%(pathname)s:%(funcName)s:%(lineno)d] -- %(message)s', level=logging.DEBUG)
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('-o','--options', help='option name: yml / sql / dir', required=True)
     parser.add_argument('-m','--modules', nargs='+', help='module name')
@@ -120,19 +127,25 @@ if __name__ == '__main__':
     dbType = os.environ.get('DB_TYPE') if os.environ.get('DB_TYPE') else args.dbType
 
     if cmp(options, "yml") == 0:
+        logging.info("Begin parsing yaml")
         modules = args.modules
-
+        logging.info("Contains the following modules: " + "".join(modules))
         writeYml(modules, newPathDir["wholeConfig"])
     elif (cmp(options, "sql") == 0) :
+        logging.info("Begin init menu config")
         try:
             wholeConfig = newPathDir["wholeConfig"].format(baseDirs=baseDirs)
+            logging.info("Begin parsing menu yaml from: " + wholeConfig)
             ymlFile = open(wholeConfig)
+            logging.info("Begin Loading menu data")
             contentConfig = yaml.load(ymlFile)
         except:
-            print "No such file or directory: " + newPathDir["wholeConfig"].format(baseDirs=baseDirs)
+            logging.error("Parsing menu yaml error!")
+            logging.error("No such file or directory:" + newPathDir["wholeConfig"].format(baseDirs=baseDirs))
             sys.exit(1)
 
         if dbType == "mysql":
+            logging.info("The db driver is mysql")
             config = {
                 'host': host,
                 'port': int(port),
@@ -142,6 +155,7 @@ if __name__ == '__main__':
             operate = __import__('menuMysql')
             menuOperate = operate.MenuMysql(config, os.getenv("DB_NAME", "iam_service"), attrs)
         elif dbType == "oracle":
+            logging.info("The db driver is oracle")
             config = {
                 'host': host,
                 'port': int(port),
@@ -151,24 +165,39 @@ if __name__ == '__main__':
             }
             operate = __import__('menuOracle')
             menuOperate = operate.MenuOracle(config, os.getenv("DB_NAME", "iam_service"), attrs)
+        
+        logging.info("Db driver load success")
 
+        logging.info("Insert into IAM_MEUN")
         menuOperate.insertMenuTable('IAM_MENU', contentConfig)
+
+        logging.info("Insert into IAM_MEUN_TL")
         menuOperate.insertMenuTlTable('IAM_MENU_TL', contentConfig)
         menuOperate.insertServiceTlTable('IAM_MENU_TL', contentConfig)
+
+        logging.info("Insert into IAM_MENU_PERMISSION")
         menuOperate.insertMenuPermission('IAM_MENU_PERMISSION', contentConfig)
+
         if delete == True:
+            logging.info("Delete invalid menus")
             menuOperate.deleteMenu(contentConfig)
         menuOperate.close()
         ymlFile.close()
+        logging.info("End init menu config")
     elif (cmp(options, "dir") == 0) :
+        logging.info("Begin init dir config")
         try:
             dirConfig = newPathDir["dirConfig"].format(baseDirs=baseDirs)
+            logging.info("Begin parsing dir yaml from: " + dirConfig)
             ymlFile = open(dirConfig)
+            logging.info("Begin Loading dir data")
             contentConfig = yaml.load(ymlFile)
         except:
-            print "No such file or directory: " + newPathDir["dirConfig"].format(baseDirs=baseDirs)
+            logging.error("Parsing dir yaml error!")
+            logging.error("No such file or directory:" + newPathDir["dirConfig"].format(baseDirs=baseDirs))
             sys.exit(1)
         if dbType == "mysql":
+            logging.info("The db driver is mysql")
             config = {
                 'host': host,
                 'port': int(port),
@@ -178,8 +207,15 @@ if __name__ == '__main__':
             operate = __import__('menuMysql')
             menuOperate = operate.MenuMysql(config, os.getenv("DB_NAME", "iam_service"), attrs)
         
+        logging.info("Db driver load success")
+
+        logging.info("Insert dir data into database")        
         menuOperate.insertDir(contentConfig)
         if delete == True:
+            logging.info("Delete invalid dir data")
             menuOperate.deleteDir(contentConfig)
         menuOperate.close()
         ymlFile.close()
+        logging.info("End init dir config")
+    else:
+        logging.error("Argument -o/--options must be yml, sql or dir")

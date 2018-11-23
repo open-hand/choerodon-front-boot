@@ -53,7 +53,6 @@ class Menu(object):
             level=level)
         self.cursor.execute(sql)
         parent_id = self.cursor.fetchone()
-        # print count
         if parent_id:
             return parent_id["ID"]
         else:
@@ -119,10 +118,8 @@ class Menu(object):
             for dir in data:
                 if "delete" in dir and (dir["delete"] == True):
                    dirId = self.judgeTrueForDir(table, dir["code"], dir["level"])
-                   print dirId
                    if dirId != 0:
                         parent = self.returnMenuId(table, dir["parent"], dir["level"])
-                        print parent
                         sql = "DELETE FROM IAM_MENU_TL WHERE ID={menuId}".format(menuId=dirId)
                         self.cursor.execute(sql)
                         for sub in dir["subMenu"]:
