@@ -4,8 +4,9 @@ import json
 import os
 import yaml
 import sys
-reload(sys)
 import argparse
+import logging
+reload(sys)
 sys.setdefaultencoding('utf8')
 
 __author__="fan@choerodon.io"
@@ -31,9 +32,11 @@ def writeYml(modules, newPathDir, language=None):
         }
     }
     ymlString = newPathDir.format(baseDirs = baseDirs, language = language)
+    logging.info("Begin write dashboard data into: " + ymlString)
     ymlFile = open(ymlString, 'w+')
     ymlFile.write(json.dumps(whole))
     ymlFile.close()
+    logging.info("End write dashboard data into: " + ymlString)
 
 # get dir
 def adjustString(dirString, value=None):
@@ -48,6 +51,7 @@ def adjustContent(modules, dirName):
     return content
 # get dashboard yml data
 def dashboardYml(modules, path):
+    logging.info("Loading dashboard data from modules: " + "".join(modules))
     centerObj = {}
     dashboardContent = adjustContent(modules, path)
     for i in modules:
@@ -68,6 +72,8 @@ def languageYml(modules, languageDir):
     return centerObj
 
 if __name__ == '__main__':
+    logging.basicConfig(format='[%(levelname)s] %(asctime)s [%(threadName)s:%(thread)d] [%(pathname)s:%(funcName)s:%(lineno)d] -- %(message)s', level=logging.DEBUG)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-o','--options', help='option name: yml / sql', required=True)
     parser.add_argument('-m','--modules', nargs='+', help='module name')
@@ -81,17 +87,21 @@ if __name__ == '__main__':
 
     options = os.environ.get('DASHBOARD_OPTIONS') if os.environ.get('DASHBOARD_OPTIONS') else args.options
     if cmp(options, "yml") == 0:
+        logging.info("Begin parsing yaml")
         modules = args.modules
-        # create dashbaord config yml
+        logging.info("Contains the following modules: " + "".join(modules))
         writeYml(modules, newPathDir["wholeConfig"])
     elif (cmp(options, "sql") == 0) :
-
+        logging.info("Begin init dashboard config")
         try:
-            wholeConfig = newPathDir["wholeConfig"].format(baseDirs=baseDirs);
+            wholeConfig = newPathDir["wholeConfig"].format(baseDirs=baseDirs)
+            logging.info("Begin parsing dashboard yaml from: " + wholeConfig)
             ymlFile = open(wholeConfig)
+            logging.info("Begin Loading dashboard data")
             contentConfig = yaml.load(ymlFile)
         except:
-            print "No such file or directory: " + newPathDir["wholeConfig"].format(baseDirs=baseDirs)
+            logging.error("Parsing menu yaml error!")
+            logging.error("No such file or directory:" + newPathDir["wholeConfig"].format(baseDirs=baseDirs))
             sys.exit(1)
         
         host = os.environ.get('DB_HOST') if os.environ.get('DB_HOST') else args.host
@@ -102,6 +112,8 @@ if __name__ == '__main__':
         delete = os.environ.get('ENABLE_DELETE') if os.environ.get('ENABLE_DELETE') else args.delete
 
         if dbType == "mysql":
+            logging.info("The db driver is mysql")
+
             config = {
                 'host': host,
                 'port': int(port),
@@ -112,7 +124,8 @@ if __name__ == '__main__':
             dashboardOperate = operate.DashboardMysql(config, os.getenv("DB_NAME", "iam_service"))
 
         elif dbType == "oracle":
-            
+            logging.info("The db driver is oracle")
+
             config = {
                 'host': host,
                 'port': int(port),
@@ -123,14 +136,22 @@ if __name__ == '__main__':
             operate = __import__('dashboardOracle')
             dashboardOperate = operate.DashboardOracle(config, os.getenv("DB_NAME", "iam_service"))
 
-        # insert dashboard into db
+        logging.info("Db driver load success")
+
+        logging.info("Insert into IAM_DASHBOARD")
         dashboardOperate.insertDashboard(contentConfig)
+
+        logging.info("Insert into IAM_DASHBOARD_TL")
         dashboardOperate.insertDashbaordTl(contentConfig)
+
+        logging.info("Insert into IAM_DASHBOARD_ROLE")
         dashboardOperate.insertDashboardRole(contentConfig)
+
         if delete == True:
+            logging.info("Delete invalid dashboards")
             dashboardOperate.deleteDashboard(contentConfig)
         dashboardOperate.close()
         ymlFile.close()
 
     else:
-        print "argument -o/--options must be yml or sql"
+        logging.error("Argument -o/--options must be yml or sql")

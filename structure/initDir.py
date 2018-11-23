@@ -23,7 +23,6 @@ def judgeTrue(table, code, level):
     cursor.execute(sql)
     count = cursor.execute(sql)
     parent_id = cursor.fetchone()
-    # print count
     if parent_id:
         return parent_id["ID"]
     else:
