@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer, inject } from 'mobx-react';
+import { Tooltip } from 'choerodon-ui';
 import PropTypes from 'prop-types';
 import RenderInBody from './RenderInBody';
 import './style';
@@ -192,7 +193,11 @@ class Mask extends Component {
     const { children, prefixCls, className } = this.props;
     return (
       <React.Fragment>
-        <a onClick={e => this.handleMaskClick(e)} className={classnames(this.state.clickAble ? `${prefixCls}-valid` : `${prefixCls}-invalid`, className)}> {children} </a>
+        {
+          this.state.clickAble
+            ? <a onClick={e => this.handleMaskClick(e)} className={classnames(`${prefixCls}-valid`, className)}> {children} </a>
+            : <Tooltip getTooltipContainer={that => that} title="请执行上一步操作" placement="topLeft"><a onClick={e => this.handleMaskClick(e)} className={classnames(`${prefixCls}-invalid`, className)}> {children} </a></Tooltip>
+        }
         <RenderInBody>
           {
             this.getOverlay()
