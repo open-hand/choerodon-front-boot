@@ -7,11 +7,30 @@
 
   &-banner {
     width: 100%;
-    height: calc(100% - 110px);
-    margin-bottom: 31px;
+    height: 60%;
+    // margin-bottom: 31px;
     background-image: url('./404.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;
+
+    &-text {
+      text-align: center;
+      > span {
+        font-weight: 500;
+        font-size: 24px;
+        color: #000;
+        text-align: right;
+        margin-right: 10px;
+      }
+
+      button {
+        line-height: 24px;
+        top: -4px;
+         > span {
+           color: #3f51b5;
+         }
+      }
+    }
   }
 }
