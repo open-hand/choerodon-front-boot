@@ -1,6 +1,6 @@
 .c7n-404-page {
   padding-top: 110px;
-  width: 612px;
+  width: 800px;
   margin: 0 auto;
   text-align: right;
   height: 100%;
@@ -16,8 +16,9 @@
 
     &-text {
       text-align: center;
+      margin-top: 32px;
       > span {
-        font-weight: 500;
+        font-weight: 400;
         font-size: 24px;
         color: #000;
         text-align: right;

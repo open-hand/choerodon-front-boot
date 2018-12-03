@@ -247,8 +247,8 @@ export default class MenuType extends Component {
           dataSource={dataSource}
           filterBar={false}
           onRow={onTableRow}
-          pagination={isNotRecent && dataSource.length > 10}
-          scroll={{ y: 360 }}
+          pagination={isNotRecent && dataSource.length > 30 ? { defaultPageSize: 30 } : false}
+          scroll={{ y: isNotRecent && dataSource.length > 30 ? 300 : 330 }}
           fixed
           rowSelection={rowSelection}
           {...props}

@@ -15,7 +15,7 @@ $c7n-boot-header-menu-type: #{$c7n-prefix}-boot-header-menu-type;
   }
   &-tab-body,
   &-table-wrapper {
-    height: 440px;
+    height: 390px;
     overflow: auto;
   }
   &-table-wrapper {
@@ -52,7 +52,7 @@ $c7n-boot-header-menu-type: #{$c7n-prefix}-boot-header-menu-type;
     }
     .ant-tabs-tabpane .ant-table {
       margin-top: 0;
-      height: 380px;
+      height: 330px;
     }
   }
   &-empty {
