@@ -94,7 +94,7 @@ export default class Inbox extends Component {
                 >
                   <Meta
                     avatar={avatar}
-                    title={<a onClick={() => { window.open(`/#/iam/user-msg?type=site&msgId=${id}&msgType=${type}`); }}><MouseOverWrapper width={190} text={title}>{title}</MouseOverWrapper></a>}
+                    title={<a onClick={(e) => { this.cleanMsg(e, data); window.open(`/#/iam/user-msg?type=site&msgId=${id}&msgType=${type}`); }}><MouseOverWrapper width={190} text={title}>{title}</MouseOverWrapper></a>}
                     description={(
                       <React.Fragment>
                         <p dangerouslySetInnerHTML={{ __html: `${content.replace(reg, '')}` }} />
