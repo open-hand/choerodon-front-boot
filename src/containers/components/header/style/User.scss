@@ -86,6 +86,8 @@ $c7n-boot-header-user: #{$c7n-prefix}-boot-header-user;
     width: 30px;
     height: 30px;
     line-height: 30px;
+    cursor: pointer;
+    user-select: none;
     border-radius: 50%;
     font-size: 18px;
     font-weight: bold;
