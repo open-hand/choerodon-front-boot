@@ -10,41 +10,67 @@ $c7n-boot-header-user: #{$c7n-prefix}-boot-header-user;
     top: 40px !important;
     right: 25px;
     left: auto !important;
-
+    .ant-popover-inner-content {
+      padding: 0;
+    }
+    &-menu {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.20);
+      margin-top: 2px;
+      padding-bottom: 7px;
+      &-item {
+        text-align: left;
+        padding: 0 !important;
+        > i {
+          margin-left: 20px;
+          color: rgba(0, 0, 0, 0.65);
+        }
+      }
+    }
     &-content {
-      padding: 8px 0;
+      padding-top: 8px;
       text-align: center;
 
       .#{c7n-boot-header-user}-avatar {
-        width: 80px;
-        height: 80px;
+        width: 40px;
+        height: 40px;
         line-height: 80px;
         font-size: 40px;
+        float: left;
+        margin-left: 20px;
+        margin-top: 12px;
       }
     }
     &-title {
-      font-weight: bold;
-      font-size: 18px;
+      margin-left: 20px;
+      margin-top: 12px;
       color: #000;
-      margin: 12px 0;
+      height: 50px;
+      span {
+        float: left;
+        margin-left: 15px;
+        line-height: 20px;
+      }
+      span:nth-child(2) {
+        display: inline-block;
+        color: rgba(0, 0, 0, 0.54);
+      }
     }
-
-    &-text {
-      font-size: 13px;
-      color: #000;
-      line-height: 20px;
-      margin-top: 4px;
-    }
-
-    &-button-group {
-      margin-top: 20px;
-      white-space: nowrap;
-
-      button {
-        height: 32px;
-
-        & + button {
-          margin-left: 16px;
+    &-logout {
+      height: 50px;
+      > li {
+        cursor: pointer;
+        height: 50px;
+        line-height: 50px;
+        vertical-align: center;
+        text-align: left;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.04);
+        }
+        > i {
+          margin-right: 10px;
+          margin-left: 20px;
+          vertical-align: sub;
+          color: rgba(0, 0, 0, 0.65);
         }
       }
     }
@@ -65,7 +91,6 @@ $c7n-boot-header-user: #{$c7n-prefix}-boot-header-user;
     color: $primary-color;
     text-transform: uppercase;
     text-align: center;
-    cursor: pointer;
     vertical-align: middle;
   }
 }
