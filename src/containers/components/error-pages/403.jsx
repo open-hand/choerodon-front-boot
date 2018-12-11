@@ -8,11 +8,14 @@ export default class NoAccess extends Component {
     return (
       <div className="c7n-403-page">
         <div className="c7n-403-page-banner" />
-        <Link to="/">
-          <Button funcType="raised" type="primary">
-            返回首页
-          </Button>
-        </Link>
+        <div className="c7n-403-page-banner-text">
+          <span>抱歉 ，您访问的页面不存在！</span>
+          <Link to="/">
+            <Button funcType="raised" type="default">
+              返回首页
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
