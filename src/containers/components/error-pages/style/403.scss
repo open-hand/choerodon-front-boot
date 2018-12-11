@@ -1,17 +1,37 @@
 .c7n-403-page {
-  padding-top: 191px;
-  width: 704px;
+  padding-top: 110px;
+  width: 800px;
   margin: 0 auto;
   text-align: right;
   height: 100%;
 
   &-banner {
     width: 100%;
-    height: calc(100% - 110px);
-    margin-bottom: 31px;
+    height: 60%;
+    // margin-bottom: 31px;
     background-image: url('./403.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;
+
+    &-text {
+      text-align: center;
+      margin-top: 32px;
+      > span {
+        font-weight: 400;
+        font-size: 24px;
+        color: #000;
+        text-align: right;
+        margin-right: 10px;
+      }
+
+      button {
+        line-height: 24px;
+        top: -4px;
+        > span {
+          color: #3f51b5;
+        }
+      }
+    }
   }
 }
