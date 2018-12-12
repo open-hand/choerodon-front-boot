@@ -25,6 +25,7 @@ class DashboardOracle(Dashboard):
                 if "delete" in dashboard and (dashboard["delete"] == True):
                     continue
                 Id = self.returnId(table, dashboard["code"], dashboard["namespace"])
+                enabled = 0 if "enabled" in dashboard and (dashboard["enabled"] == False) else 1
                 if Id:
                     sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}'"
                     sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
@@ -34,7 +35,7 @@ class DashboardOracle(Dashboard):
                         level=dashboard["level"],
                         icon=dashboard["icon"],
                         sort=dashboard["sort"],
-                        enabled=dashboard["enabled"].astype('int'))
+                        enabled=enabled)
                     self.cursor.execute(sql)
                 else:
                     sql = "INSERT INTO {table} (ID, CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT, IS_ENABLED) VALUES (IAM_DASHBOARD_S.nextval, '{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}', '{enabled}')"
@@ -48,7 +49,7 @@ class DashboardOracle(Dashboard):
                         icon=dashboard["icon"],
                         namespace=dashboard["namespace"],
                         sort=dashboard["sort"],
-                        enabled=dashboard["enabled"].astype('int'))
+                        enabled=enabled)
                     self.cursor.execute(sql)
         except:
             self.dealFault()
