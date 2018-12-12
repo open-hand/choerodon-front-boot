@@ -26,17 +26,18 @@ class DashboardMysql(Dashboard):
                     continue
                 Id = self.returnId(table, dashboard["code"], dashboard["namespace"])
                 if Id:
-                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', NAMESPACE='{namespace}'"
+                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}'"
                     sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
                         table=table,
                         code=dashboard["code"],
                         namespace=dashboard["namespace"],
                         level=dashboard["level"],
                         icon=dashboard["icon"],
-                        sort=dashboard["sort"])
+                        sort=dashboard["sort"],
+                        enabled=dashboard["enabled"].astype('int'))
                     self.cursor.execute(sql)
                 else:
-                    sql = "INSERT INTO {table} (CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT) VALUES ('{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}')"
+                    sql = "INSERT INTO {table} (CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT, IS_ENABLED) VALUES ('{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}', '{enabled}')"
                     sql = sql.format(
                         table=table,
                         code=dashboard["code"],
@@ -46,7 +47,8 @@ class DashboardMysql(Dashboard):
                         description=dashboard["description"],
                         icon=dashboard["icon"],
                         namespace=dashboard["namespace"],
-                        sort=dashboard["sort"])
+                        sort=dashboard["sort"],
+                        enabled=dashboard["enabled"].astype('int'))
                     self.cursor.execute(sql)
         except:
             self.dealFault()
