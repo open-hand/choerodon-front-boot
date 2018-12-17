@@ -1,6 +1,6 @@
 {
   "name": "choerodon-front-boot",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Tools to build website for Choerodon",
   "main": "lib/containers/components/index.js",
   "homepage": "http://choerodon.io/",
@@ -96,7 +96,7 @@
     "react-hot-loader": "^3.1.1",
     "react-intl": "^2.3.0",
     "react-router-dom": "^4.1.1",
-    "timeago-react": "^2.0.0",
+    "timeago-react": "2.0.0",
     "resolve": "^1.1.7",
     "rimraf": "2.4.3",
     "run-sequence": "^1.2.2",
