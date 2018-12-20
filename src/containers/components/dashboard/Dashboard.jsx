@@ -1,148 +1,79 @@
 import React, { Component, createElement } from 'react';
-import { Button, Col, Icon, Row, Spin } from 'choerodon-ui';
-import { action } from 'mobx';
+import { Button, Col, Icon, Row, Spin, Switch } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import classNames from 'classnames';
-import Column from './Column';
 import Page from '../page';
+import Dragact from './dragact/dragact';
 import Header from '../page/Header';
 import Content from '../page/Content';
 import './style';
+import asyncRouter from '../util/asyncRouter';
+import asyncLocaleProvider from '../util/asyncLocaleProvider';
+import CardProvider from './CardProvider';
 
-const COLUMN_COUNT = 3;
+const cache = {};
 
-function normalizeColumns(items) {
-  const columns = new Array(COLUMN_COUNT).fill().map(() => []);
-  items.slice().sort(({ sort }, { sort: sort2 }) => sort - sort2).forEach((item) => {
-    columns[(item.sort - 1) % COLUMN_COUNT].push(item);
-  });
-  return columns;
-}
-
-function resortColumn(column, columnIndex) {
-  if (column.length > 0) {
-    column.forEach(action((data, index) => {
-      const sort = index * COLUMN_COUNT + columnIndex + 1;
-      data.sort = sort;
-      return sort;
-    }));
+function getCachedIntlProvider(key, language, getMessage) {
+  if (!cache[key]) {
+    cache[key] = asyncLocaleProvider(language, getMessage);
   }
+  return cache[key];
 }
 
+function getCachedRouter(key, componentImport) {
+  if (!cache[key]) {
+    cache[key] = asyncRouter(componentImport);
+  }
+  return cache[key];
+}
 const PREFIX_CLS = 'c7n-boot-dashboard';
 
-const dragCard = {
-  data: null,
-  column: null,
-  sort: null,
-};
+const getblockStyle = isDragging => ({
+  background: isDragging ? 'rgba(255,255,255,0.60)' : '#fff',
+});
 
-function clearDragCard() {
-  Object.assign(dragCard, {
-    data: null,
-    column: null,
-    sort: null,
-  });
-}
-
-const animations = {
-  length: 0,
-  runLength: 0,
-  callback: null,
-};
-
-@inject('DashboardStore')
+@inject('DashboardStore', 'AppState')
 @injectIntl
 @observer
 export default class Dashboard extends Component {
+  dragactNode;
+
+  state = {
+    edit: false,
+    screenWidth: 1366,
+  };
+
   fetchData = () => {
     this.props.DashboardStore.loadDashboardData();
   };
 
+
   componentWillMount() {
     this.fetchData();
+    this.onResizeWindow();
+    window.addEventListener('resize', this.onResizeWindow);
   }
 
   componentWillReceiveProps() {
     this.fetchData();
   }
 
-  handleAnimateEnd = (callback) => {
-    animations.runLength += 1;
-    if (callback) {
-      animations.callback = callback;
+  shouldComponentUpdate() {
+    const { DashboardStore: { getDashboardData: items } } = this.props;
+    if (items.length === 0) {
+      return false;
     }
-    if (animations.length === animations.runLength && animations.callback) {
-      animations.callback();
-      animations.runLength = 0;
-      animations.callback = null;
-    }
-  };
-
-  handleEdit = () => {
-    this.props.DashboardStore.setEditing(true);
-  };
-
-  handleCancel = () => {
-    const { DashboardStore } = this.props;
-    DashboardStore.setEditing(false);
-    DashboardStore.loadDashboardData();
+    return true;
   }
 
-  handleComplete = () => {
-    const { DashboardStore } = this.props;
-    if (DashboardStore.dirty) {
-      DashboardStore.updateDashboardData().then(() => {
-        this.handleEditSuccess();
-      });
-    } else {
-      this.handleEditSuccess();
-    }
-  };
-
-  handleEditSuccess() {
-    const { DashboardStore, intl } = this.props;
-    DashboardStore.setEditing(false);
-    Choerodon.prompt(intl.formatMessage({ id: 'boot.dashboard.success' }));
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResizeWindow);
   }
 
-  handleDragStart = (data, column, sort) => {
-    Object.assign(dragCard, {
-      data,
-      column,
-      sort,
-    });
-    this.forceUpdate();
-  };
-
-  handleDragEnd = () => {
-    clearDragCard();
-    this.forceUpdate();
-  };
-
-  handleDrop = (data, column, side, sort) => {
-    const { data: dragData, column: dragColumn, sort: dragSort } = dragCard;
-    if (dragData && dragColumn && column) {
-      dragColumn.splice(dragColumn.indexOf(dragData), 1);
-      const index = column.indexOf(dragData);
-      if (index > -1) {
-        column.splice(index, 1);
-      }
-      if (data && side) {
-        const newIndex = column.indexOf(data) + (side === 'bottom' ? 1 : 0);
-        column.splice(newIndex, 0, dragData);
-      } else {
-        column.push(dragData);
-      }
-      resortColumn(dragColumn, dragSort);
-      resortColumn(column, sort);
-      clearDragCard();
-      const { DashboardStore, intl } = this.props;
-      DashboardStore.updateDashboardData().then(() => {
-        Choerodon.prompt(intl.formatMessage({ id: 'boot.dashboard.success' }));
-      });
-    }
+  handleOnDragEnd = () => {
+    const newLayout = this.dragactNode.getLayout();
+    const parsedLayout = JSON.stringify(newLayout);
+    localStorage.setItem('layout', parsedLayout);
   };
 
   renderHeader(editing) {
@@ -160,14 +91,14 @@ export default class Dashboard extends Component {
               <Button
                 icon="check"
                 className={`${PREFIX_CLS}-header-button`}
-                onClick={this.handleComplete}
+                onClick={() => this.handleEdit(editing)}
               >
                 <FormattedMessage id="boot.dashboard.complete" />
               </Button>
               <Button
                 icon="close"
                 className={`${PREFIX_CLS}-header-button`}
-                onClick={this.handleCancel}
+                onClick={() => this.handleEdit(editing)}
               >
                 <FormattedMessage id="boot.cancel" />
               </Button>
@@ -176,7 +107,7 @@ export default class Dashboard extends Component {
             <Button
               icon="mode_edit"
               className={`${PREFIX_CLS}-header-button`}
-              onClick={this.handleEdit}
+              onClick={() => this.handleEdit(editing)}
             >
               <FormattedMessage id="boot.dashboard.customize" />
             </Button>
@@ -186,44 +117,113 @@ export default class Dashboard extends Component {
     );
   }
 
-  renderColumns() {
-    const { DashboardStore: { getDashboardData: items }, dashboardLocale, dashboardComponents } = this.props;
-    const columns = normalizeColumns(items);
-    animations.length = items.length;
-    return Object.keys(columns).map(key => (
-      <Col key={key} span={8}>
-        <Column
-          prefixCls={PREFIX_CLS}
-          column={columns[key]}
-          sort={key}
-          components={dashboardComponents}
-          locale={dashboardLocale}
-          dragData={dragCard.data}
-          onDragStart={this.handleDragStart}
-          onDragEnd={this.handleDragEnd}
-          onDrop={this.handleDrop}
-          onAnimateEnd={this.handleAnimateEnd}
-        />
-      </Col>
-    ));
+  handleEdit = (editing) => {
+    this.setState({ edit: !editing });
+  };
+
+  onResizeWindow = () => {
+    const newWidth = document.body.clientWidth - 40;
+    const { screenWidth } = this.state;
+    if (newWidth !== screenWidth) this.setState({ screenWidth: newWidth });
+  };
+
+
+  renderItem(item) {
+    const { AppState, dashboardLocale, dashboardComponents } = this.props;
+    const { dashboardCode, dashboardNamespace } = item;
+    const language = AppState.currentLanguage;
+    const key = `${dashboardNamespace}/${dashboardCode}`;
+    const localeKey = `${dashboardNamespace}/${language}`;
+    const getMessage = dashboardLocale[localeKey];
+    const card = dashboardComponents[key] && createElement(getCachedRouter(`router-${key}`, dashboardComponents[key]));
+    if (card && getMessage) {
+      const IntlProviderAsync = getCachedIntlProvider(`locale-${localeKey}`, language, getMessage);
+      return (
+        <IntlProviderAsync key={`${item.key}`}>
+          {card}
+        </IntlProviderAsync>
+      );
+      // return card;
+    } else return card;
   }
 
   render() {
-    const { DashboardStore: { editing, loading } } = this.props;
-    const classString = classNames({
-      [`${PREFIX_CLS}-dragging`]: !!dragCard.data,
-      [`${PREFIX_CLS}-editing`]: editing,
-    });
+    const { edit, screenWidth } = this.state;
+    const { DashboardStore: { getDashboardData: items } } = this.props;
 
     return (
-      <Page className={PREFIX_CLS}>
-        {this.renderHeader(editing)}
-        <Content className={classString}>
-          <Spin spinning={loading}>
-            <Row type="flex" gutter={20}>
-              {this.renderColumns()}
-            </Row>
-          </Spin>
+      <Page className="c7n-boot-dashboard">
+        {this.renderHeader(edit)}
+        <Content className="c7n-boot-dashboard-content">
+          {items.length > 0 ? (
+            <Dragact
+              layout={items} // 必填项
+              col={12} // 必填项
+              width={screenWidth} // 必填项
+              rowHeight={80} // 必填项
+              margin={[20, 20]} // 必填项
+              className="c7n-boot-dashboard-drag-layout" // 必填项
+              style={{ background: '#fff' }} // 非必填项
+              ref={(node) => { this.dragactNode = node; }}
+              onDragEnd={this.handleOnDragEnd}
+              placeholder
+            >
+              {(item, provided) => (
+                <CardProvider>
+                  {
+                      toolbar => (
+                        <div
+                          {...provided.props}
+                          {...(edit ? provided.dragHandle : null)}
+                          style={{
+                            ...provided.props.style,
+                            ...getblockStyle(provided.isDragging),
+                            overflow: 'hidden',
+                            cursor: edit ? 'grab' : 'inherit',
+                          }}
+                          className="c7n-boot-dashboard-card"
+                        >
+                          <header
+                            className="c7n-boot-dashboard-card-title"
+                            style={{
+                              pointerEvent: edit ? 'none' : '',
+                            }}
+                          >
+                            <h1>
+                              <Icon type={item.dashboardIcon} />
+                              <span>
+                                {item.dashboardTitle}
+                              </span>
+                              {!edit ? toolbar : null}
+                              {edit ? (<Icon type="delete" onClick={this.handleDelete} />) : null}
+                            </h1>
+                          </header>
+                          {/* {provided.isDragging ? '正在抓取' : '停放'} */}
+                          <div style={{ pointerEvents: edit ? 'none' : 'all' }}>
+                            {this.renderItem(item)}
+                          </div>
+                          {edit ? (
+                            <span
+                              {...provided.resizeHandle}
+                              style={{
+                                position: 'absolute',
+                                width: 20,
+                                height: 20,
+                                right: 4,
+                                bottom: 4,
+                                cursor: 'se-resize',
+                                borderRight: '4px solid rgba(15,15,15,0.2)',
+                                borderBottom: '4px solid rgba(15,15,15,0.2)',
+                              }}
+                            />
+                          ) : null}
+                        </div>
+                      )
+                    }
+                </CardProvider>
+              )}
+            </Dragact>
+          ) : null}
         </Content>
       </Page>
     );

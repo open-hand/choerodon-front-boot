@@ -7,7 +7,7 @@ import { correctLayout } from './util/correction';
 import { stringJoin } from './utils';
 import { layoutItemForkey, syncLayout } from './util/initiate';
 
-import './style.css';
+import './style.scss';
 
 export default class Dragact extends React.Component {
   constructor(props) {

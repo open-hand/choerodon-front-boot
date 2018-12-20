@@ -51,8 +51,16 @@ class DashboardStore {
 
   @computed
   get getDashboardData() {
+    let i = -1;
     const { currentMenuType: { id = '0', type = 'site' } } = AppState;
-    return this.dashboardData(type, id);
+    return this.dashboardData(type, id).map((v) => {
+      if (v.w && v.w !== 0) {
+        return { key: v.id };
+      } else {
+        i += 1;
+        return { GridX: (i % 3) * 4, GridY: (i * 10), w: 4, h: 4, key: v.id, ...v };
+      }
+    });
   }
 
   @action
