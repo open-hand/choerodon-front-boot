@@ -39,7 +39,6 @@ export default class Dashboard extends Component {
   dragactNode;
 
   state = {
-    edit: false,
     screenWidth: 1366,
   };
 
@@ -60,10 +59,7 @@ export default class Dashboard extends Component {
 
   shouldComponentUpdate() {
     const { DashboardStore: { getDashboardData: items } } = this.props;
-    if (items.length === 0) {
-      return false;
-    }
-    return true;
+    return items.length !== 0;
   }
 
   componentWillUnmount() {
@@ -71,10 +67,21 @@ export default class Dashboard extends Component {
   }
 
   handleOnDragEnd = () => {
+    const { AppState, DashboardStore } = this.props;
+    const { currentMenuType: { id = '0', type = 'site' } } = AppState;
     const newLayout = this.dragactNode.getLayout();
     const parsedLayout = JSON.stringify(newLayout);
     localStorage.setItem('layout', parsedLayout);
+    DashboardStore.setDashboardData(newLayout, type, id);
   };
+
+  handleCancel = () => {
+    this.props.DashboardStore.resetDashboardData();
+  };
+
+  handleSave = () => {
+    this.props.DashboardStore.updateDashboardData();
+  }
 
   renderHeader(editing) {
     return (
@@ -91,14 +98,14 @@ export default class Dashboard extends Component {
               <Button
                 icon="check"
                 className={`${PREFIX_CLS}-header-button`}
-                onClick={() => this.handleEdit(editing)}
+                onClick={() => this.handleSave()}
               >
                 <FormattedMessage id="boot.dashboard.complete" />
               </Button>
               <Button
                 icon="close"
                 className={`${PREFIX_CLS}-header-button`}
-                onClick={() => this.handleEdit(editing)}
+                onClick={() => this.handleCancel()}
               >
                 <FormattedMessage id="boot.cancel" />
               </Button>
@@ -107,7 +114,7 @@ export default class Dashboard extends Component {
             <Button
               icon="mode_edit"
               className={`${PREFIX_CLS}-header-button`}
-              onClick={() => this.handleEdit(editing)}
+              onClick={() => this.handleEdit()}
             >
               <FormattedMessage id="boot.dashboard.customize" />
             </Button>
@@ -117,8 +124,8 @@ export default class Dashboard extends Component {
     );
   }
 
-  handleEdit = (editing) => {
-    this.setState({ edit: !editing });
+  handleEdit = () => {
+    this.props.DashboardStore.setEditing(true);
   };
 
   onResizeWindow = () => {
@@ -143,17 +150,17 @@ export default class Dashboard extends Component {
           {card}
         </IntlProviderAsync>
       );
-      // return card;
     } else return card;
   }
 
   render() {
-    const { edit, screenWidth } = this.state;
-    const { DashboardStore: { getDashboardData: items } } = this.props;
+    const { screenWidth } = this.state;
+    const { DashboardStore: { getDashboardData: items, editing } } = this.props;
+
 
     return (
       <Page className="c7n-boot-dashboard">
-        {this.renderHeader(edit)}
+        {this.renderHeader(editing)}
         <Content className="c7n-boot-dashboard-content">
           {items.length > 0 ? (
             <Dragact
@@ -174,19 +181,19 @@ export default class Dashboard extends Component {
                       toolbar => (
                         <div
                           {...provided.props}
-                          {...(edit ? provided.dragHandle : null)}
+                          {...(editing ? provided.dragHandle : null)}
                           style={{
                             ...provided.props.style,
                             ...getblockStyle(provided.isDragging),
                             overflow: 'hidden',
-                            cursor: edit ? 'grab' : 'inherit',
+                            cursor: editing ? 'grab' : 'inherit',
                           }}
                           className="c7n-boot-dashboard-card"
                         >
                           <header
                             className="c7n-boot-dashboard-card-title"
                             style={{
-                              pointerEvent: edit ? 'none' : '',
+                              pointerEvent: editing ? 'none' : '',
                             }}
                           >
                             <h1>
@@ -194,15 +201,15 @@ export default class Dashboard extends Component {
                               <span>
                                 {item.dashboardTitle}
                               </span>
-                              {!edit ? toolbar : null}
-                              {edit ? (<Icon type="delete" onClick={this.handleDelete} />) : null}
+                              {!editing ? toolbar : null}
+                              {editing ? (<Icon type="delete" onClick={this.handleDelete} />) : null}
                             </h1>
                           </header>
                           {/* {provided.isDragging ? '正在抓取' : '停放'} */}
-                          <div style={{ pointerEvents: edit ? 'none' : 'all' }}>
+                          <div style={{ pointerEvents: editing ? 'none' : 'all' }}>
                             {this.renderItem(item)}
                           </div>
-                          {edit ? (
+                          {editing ? (
                             <span
                               {...provided.resizeHandle}
                               style={{

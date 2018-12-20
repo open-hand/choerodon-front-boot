@@ -10,6 +10,12 @@ class DashboardStore {
     project: {},
   };
 
+  @observable originDashboardGroup = {
+    site: { 0: [] },
+    organization: {},
+    project: {},
+  };
+
   @observable editing = false;
 
   @observable loading = false;
@@ -49,13 +55,25 @@ class DashboardStore {
     this.dirty = false;
   }
 
+  @action
+  resetDashboardData() {
+    // 深拷贝
+    this.dashboardGroup = JSON.parse(JSON.stringify(this.originDashboardGroup));
+    this.editing = false;
+  }
+
+  @action
+  setOriginDashboardData(data, childType, id) {
+    set(this.originDashboardGroup[childType], id, data);
+  }
+
   @computed
   get getDashboardData() {
     let i = -1;
     const { currentMenuType: { id = '0', type = 'site' } } = AppState;
     return this.dashboardData(type, id).map((v) => {
       if (v.w && v.w !== 0) {
-        return { key: v.id };
+        return { key: v.id, ...v };
       } else {
         i += 1;
         return { GridX: (i % 3) * 4, GridY: (i * 10), w: 4, h: 4, key: v.id, ...v };
@@ -72,6 +90,7 @@ class DashboardStore {
         this.loading = false;
         if (!data.failed) {
           this.setDashboardData(data, type, id);
+          this.setOriginDashboardData(data, type, id);
         }
         return data;
       }))
@@ -84,12 +103,14 @@ class DashboardStore {
   @action
   updateDashboardData() {
     this.loading = true;
+    this.editing = false;
     const { currentMenuType: { id = '0', type = 'site' } } = AppState;
     return axios.post(`/iam/v1/home/dashboard?level=${type}&source_id=${id}`, JSON.stringify(this.dashboardData(type, id)))
       .then(action((data) => {
         this.loading = false;
         if (!data.failed) {
           this.setDashboardData(data, type, id);
+          this.setOriginDashboardData(data, type, id);
         }
         return data;
       }))
@@ -101,6 +122,10 @@ class DashboardStore {
 
   dashboardData(type, id) {
     return get(this.dashboardGroup[type], id) || [];
+  }
+
+  originDashboardData(type, id) {
+    return get(this.originDashboardGroup[type], id) || [];
   }
 }
 
