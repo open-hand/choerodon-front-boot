@@ -23,7 +23,7 @@ $c7n-boot-dashboard: #{$c7n-prefix}-boot-dashboard;
       font-weight: 500;
       line-height: 22px;
     }
-    i {
+    .icon-check_circle {
       font-size: 18px;
       color: rgb(82, 102, 212);
       position: absolute;
@@ -52,7 +52,7 @@ $c7n-boot-dashboard: #{$c7n-prefix}-boot-dashboard;
       .c7n-boot-dashboard-card {
         border: 6px solid #5266d4;
       }
-      i {
+      .icon-check_circle {
         display: inline-block;
       }
     }
