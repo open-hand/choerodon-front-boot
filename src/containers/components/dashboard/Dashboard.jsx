@@ -319,7 +319,7 @@ export default class Dashboard extends Component {
                             </h1>
                           </header>
                           {/* {provided.isDragging ? '正在抓取' : '停放'} */}
-                          <div style={{ pointerEvents: editing ? 'none' : 'all' }}>
+                          <div style={{ pointerEvents: editing ? 'none' : 'all', height: '100%' }}>
                             {this.renderItem(item)}
                           </div>
                           {editing ? (

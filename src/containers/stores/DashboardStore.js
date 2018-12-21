@@ -95,7 +95,7 @@ class DashboardStore {
     const { currentMenuType: { id = '0', type = 'site' } } = AppState;
     return this.dashboardData(type, id).filter(v => v.visible === true).map((v) => {
       const { height: h, width: w, positionX: GridX, positionY: GridY } = v.positionDTO || { height: null, width: null, positionX: null, positionY: null };
-      if (h && h !== 0) {
+      if (h && h !== 0 && w && w !== 0) {
         return { GridX, GridY, w, h, key: `${v.id}-${v.dashboardCode}`, ...v };
       } else {
         i += 1;
@@ -110,7 +110,7 @@ class DashboardStore {
     const { currentMenuType: { id = '0', type = 'site' } } = AppState;
     return this.dashboardData(type, id).filter(v => v.visible === false).map((v) => {
       const { height: h, width: w, positionX: GridX, positionY: GridY } = v.positionDTO || { height: null, width: null, positionX: null, positionY: null };
-      if (h && h !== 0) {
+      if (h && h !== 0 && w && w !== 0) {
         return { GridX, GridY, w, h, key: `${v.id}-${v.dashboardCode}`, ...v };
       } else {
         i += 1;
