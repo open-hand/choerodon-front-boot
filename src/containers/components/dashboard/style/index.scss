@@ -23,7 +23,7 @@ $c7n-boot-dashboard: #{$c7n-prefix}-boot-dashboard;
       font-weight: 500;
       line-height: 22px;
     }
-    i {
+    .icon-check_circle {
       font-size: 18px;
       color: rgb(82, 102, 212);
       position: absolute;
@@ -52,7 +52,7 @@ $c7n-boot-dashboard: #{$c7n-prefix}-boot-dashboard;
       .c7n-boot-dashboard-card {
         border: 6px solid #5266d4;
       }
-      i {
+      .icon-check_circle {
         display: inline-block;
       }
     }
@@ -129,6 +129,8 @@ $c7n-boot-dashboard: #{$c7n-prefix}-boot-dashboard;
     background-color: #fff;
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .20), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
     border-radius: 2px;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
       box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.20), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);

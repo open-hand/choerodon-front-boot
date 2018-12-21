@@ -257,7 +257,7 @@ export default class Dashboard extends Component {
             {this.renderPreviewItem(item)}
           </Item>
         )) : (
-          <Item style={{ height: 480 }} key={-1}>
+          <Item style={{ height: 112, textAlign: 'center', marginTop: 30, color: 'rgba(0,0,0,0.54)', background: '#fff' }} key={-1}>
           暂无可添加的卡片
           </Item>
         )}
@@ -319,7 +319,7 @@ export default class Dashboard extends Component {
                             </h1>
                           </header>
                           {/* {provided.isDragging ? '正在抓取' : '停放'} */}
-                          <div style={{ pointerEvents: editing ? 'none' : 'all' }}>
+                          <div style={{ pointerEvents: editing ? 'none' : 'all', height: '100%' }}>
                             {this.renderItem(item)}
                           </div>
                           {editing ? (
