@@ -11,13 +11,17 @@ export default class Announcement extends Component {
     visible: true,
   };
 
+  componentWillMount() {
+    // console.log('componentWillMount');
+  }
+
   render() {
     const { visible } = this.state;
     return (
       <Fragment>
         <ToolBar>
           {
-            visible && <Action data={[]} />
+            visible && (<div>这是一个 title上的规范</div>)
           }
         </ToolBar>
         <div className="c7n-iam-dashboard-announcement">

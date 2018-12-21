@@ -55,6 +55,7 @@
     "no-param-reassign": "off",
     "no-trailing-spaces": "off",
     "no-unused-vars": "off",
+    "no-void": "off",
     "object-curly-newline": "off",
     "react/destructuring-assignment": "off",
     "react/forbid-prop-types": "off",
