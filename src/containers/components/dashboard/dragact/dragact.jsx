@@ -347,10 +347,10 @@ export default class Dragact extends React.Component {
             onDragStart={this.onDragStart}
             onDragEnd={this.onDragEnd}
             isUserMove={
-                        renderItem.isUserMove !== void 666
-                          ? renderItem.isUserMove
-                          : false
-                    }
+              renderItem && renderItem.isUserMove !== void 666
+                ? renderItem.isUserMove
+                : false
+            }
             UniqueKey={child.key}
             onResizing={this.onResizing}
             onResizeStart={this.onResizeStart}
@@ -360,9 +360,9 @@ export default class Dragact extends React.Component {
           >
             {(GridItemProvided, dragHandle, resizeHandle) => this.props.children(child, {
               isDragging:
-                                renderItem.isUserMove !== void 666
-                                  ? renderItem.isUserMove
-                                  : false,
+                renderItem && renderItem.isUserMove !== void 666
+                  ? renderItem.isUserMove
+                  : false,
               props: GridItemProvided,
               dragHandle,
               resizeHandle,

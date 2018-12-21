@@ -1,5 +1,5 @@
 import React, { Component, createElement } from 'react';
-import { Button, Col, Icon, Row, Spin, Switch } from 'choerodon-ui';
+import { Button, Col, Icon, Row, Spin, Modal, Menu } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import Page from '../page';
@@ -10,6 +10,8 @@ import './style';
 import asyncRouter from '../util/asyncRouter';
 import asyncLocaleProvider from '../util/asyncLocaleProvider';
 import CardProvider from './CardProvider';
+
+const { Item } = Menu;
 
 const cache = {};
 
@@ -72,7 +74,7 @@ export default class Dashboard extends Component {
     const newLayout = this.dragactNode.getLayout();
     const parsedLayout = JSON.stringify(newLayout);
     localStorage.setItem('layout', parsedLayout);
-    DashboardStore.setDashboardData(newLayout, type, id);
+    DashboardStore.saveDashboardLaydout(newLayout, type, id);
   };
 
   handleCancel = () => {
@@ -81,7 +83,11 @@ export default class Dashboard extends Component {
 
   handleSave = () => {
     this.props.DashboardStore.updateDashboardData();
-  }
+  };
+
+  handleReset = () => {
+    this.props.DashboardStore.resetDashboard();
+  };
 
   renderHeader(editing) {
     return (
@@ -109,6 +115,20 @@ export default class Dashboard extends Component {
               >
                 <FormattedMessage id="boot.cancel" />
               </Button>
+              <Button
+                icon="compare_arrows"
+                className={`${PREFIX_CLS}-header-button`}
+                onClick={() => this.handleReset()}
+              >
+                <FormattedMessage id="boot.reset" />
+              </Button>
+              <Button
+                icon="playlist_add"
+                className={`${PREFIX_CLS}-header-button`}
+                onClick={() => this.props.DashboardStore.setModalVisible(true)}
+              >
+                <FormattedMessage id="boot.append" />
+              </Button>
             </React.Fragment>
           ) : (
             <Button
@@ -126,6 +146,10 @@ export default class Dashboard extends Component {
 
   handleEdit = () => {
     this.props.DashboardStore.setEditing(true);
+  };
+
+  handleDelete = (id) => {
+    this.props.DashboardStore.setCardVisibleById(id, false);
   };
 
   onResizeWindow = () => {
@@ -153,31 +177,120 @@ export default class Dashboard extends Component {
     } else return card;
   }
 
+  renderPreviewItem(item) {
+    const { AppState, dashboardLocale, dashboardComponents } = this.props;
+    const { dashboardCode, dashboardNamespace } = item;
+    const language = AppState.currentLanguage;
+    const key = `${dashboardNamespace}/${dashboardCode}`;
+    const localeKey = `${dashboardNamespace}/${language}`;
+    const getMessage = dashboardLocale[localeKey];
+    const card = dashboardComponents[key] && createElement(getCachedRouter(`router-${key}`, dashboardComponents[key]));
+    let content;
+    if (card && getMessage) {
+      const IntlProviderAsync = getCachedIntlProvider(`locale-${localeKey}`, language, getMessage);
+      content = (
+        <IntlProviderAsync key={`${item.key}`}>
+          {card}
+        </IntlProviderAsync>
+      );
+    } else {
+      content = card;
+    }
+    return (
+      <CardProvider>
+        {
+          toolbar => (
+            <div
+              style={{ width: 433, height: 267, top: -77, left: -105, transform: 'scale(0.3)', overflow: 'hidden', pointerEvents: 'none', position: 'absolute' }}
+              className="c7n-boot-dashboard-card"
+            >
+              <header
+                className="c7n-boot-dashboard-card-title"
+              >
+                <h1>
+                  <Icon type={item.dashboardIcon} />
+                  <span>
+                    {item.dashboardTitle}
+                  </span>
+                  {toolbar}
+                </h1>
+              </header>
+              {/* {provided.isDragging ? '正在抓取' : '停放'} */}
+              <div>
+                {content}
+              </div>
+            </div>
+          )
+        }
+      </CardProvider>
+    );
+  }
+
+  handleSelectCard = (e) => {
+    this.selectedCard = e.key;
+  };
+
+  handleCreate = (e) => {
+    if (this.selectedCard && this.selectedCard !== -1) {
+      this.props.DashboardStore.setCardVisibleById(this.selectedCard, true);
+      this.props.DashboardStore.setModalVisible(false);
+    }
+    this.selectedCard = null;
+  };
+
+  renderModalContent() {
+    const { DashboardStore: { getHiddenDashboardData: items, editing, creating, visible }, intl } = this.props;
+
+    return (
+      <Menu
+        mode="inline"
+        className="c7n-boot-dashboard-preview"
+        onClick={this.handleSelectCard}
+      >
+        {items.length > 0 ? items.map(item => (
+          <Item style={{ height: 112 }} key={item.id}>
+            <div className="info">
+              <div className="title">{item.dashboardTitle}</div>
+              <p className="description">{item.dashboardDescription}</p>
+              <Icon type="check_circle" />
+            </div>
+            {this.renderPreviewItem(item)}
+          </Item>
+        )) : (
+          <Item style={{ height: 480 }} key={-1}>
+          暂无可添加的卡片
+          </Item>
+        )}
+      </Menu>
+    );
+  }
+
   render() {
     const { screenWidth } = this.state;
-    const { DashboardStore: { getDashboardData: items, editing } } = this.props;
+    const { DashboardStore: { getDashboardData: items, editing, creating, visible, loading }, intl } = this.props;
 
 
     return (
       <Page className="c7n-boot-dashboard">
         {this.renderHeader(editing)}
         <Content className="c7n-boot-dashboard-content">
-          {items.length > 0 ? (
-            <Dragact
-              layout={items} // 必填项
-              col={12} // 必填项
-              width={screenWidth} // 必填项
-              rowHeight={80} // 必填项
-              margin={[20, 20]} // 必填项
-              className="c7n-boot-dashboard-drag-layout" // 必填项
-              style={{ background: '#fff' }} // 非必填项
-              ref={(node) => { this.dragactNode = node; }}
-              onDragEnd={this.handleOnDragEnd}
-              placeholder
-            >
-              {(item, provided) => (
-                <CardProvider>
-                  {
+          <Spin spinning={loading}>
+            {items.length > 0 ? (
+              <Dragact
+                layout={items} // 必填项
+                col={12} // 必填项
+                width={screenWidth} // 必填项
+                rowHeight={80} // 必填项
+                margin={[20, 20]} // 必填项
+                className="c7n-boot-dashboard-drag-layout" // 必填项
+                style={{ background: '#fff' }} // 非必填项
+                ref={(node) => { this.dragactNode = node; }}
+                onDragEnd={this.handleOnDragEnd}
+                placeholder
+              >
+                {(item, provided) => (
+                  <CardProvider>
+                    {
                       toolbar => (
                         <div
                           {...provided.props}
@@ -202,7 +315,7 @@ export default class Dashboard extends Component {
                                 {item.dashboardTitle}
                               </span>
                               {!editing ? toolbar : null}
-                              {editing ? (<Icon type="delete" onClick={this.handleDelete} />) : null}
+                              {editing ? (<Icon type="delete" onClick={() => this.handleDelete(item.id)} />) : null}
                             </h1>
                           </header>
                           {/* {provided.isDragging ? '正在抓取' : '停放'} */}
@@ -210,27 +323,42 @@ export default class Dashboard extends Component {
                             {this.renderItem(item)}
                           </div>
                           {editing ? (
-                            <span
+                            <Icon
+                              type="call_made"
                               {...provided.resizeHandle}
                               style={{
                                 position: 'absolute',
-                                width: 20,
-                                height: 20,
-                                right: 4,
-                                bottom: 4,
+                                right: 6,
+                                bottom: 6,
+                                fontSize: 12,
                                 cursor: 'se-resize',
-                                borderRight: '4px solid rgba(15,15,15,0.2)',
-                                borderBottom: '4px solid rgba(15,15,15,0.2)',
+                                color: 'rgba(0,0,0,0.54)',
+                                transform: 'rotate(90deg)',
                               }}
                             />
                           ) : null}
                         </div>
                       )
                     }
-                </CardProvider>
-              )}
-            </Dragact>
-          ) : null}
+                  </CardProvider>
+                )}
+              </Dragact>
+            ) : null}
+            <Modal
+              bodyStyle={{ height: '500px', overflowX: 'hidden' }}
+              title="添加卡片"
+              visible={visible}
+              closable={false}
+              width={600}
+              className="c7n-boot-dashboard-create"
+            // maskClosable={!APITestStore.modalSaving}
+              onCancel={() => { this.props.DashboardStore.setModalVisible(false); }}
+              onOk={this.handleCreate}
+              okText={intl.formatMessage({ id: 'boot.append' })}
+            >
+              {this.renderModalContent()}
+            </Modal>
+          </Spin>
         </Content>
       </Page>
     );

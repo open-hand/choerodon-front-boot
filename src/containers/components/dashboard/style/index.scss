@@ -4,6 +4,71 @@
 $c7n-boot-dashboard: #{$c7n-prefix}-boot-dashboard;
 
 .#{$c7n-boot-dashboard} {
+  &-create {
+    .ant-modal-content {
+      padding-left: 0;
+      padding-right: 0;
+      .ant-modal-header {
+        margin-left: 24px;
+      }
+    }
+    .info {
+      margin-left: 178px;
+      margin-top: 16px;
+    }
+    .title {
+      font-size: 16px;
+      color: rgba(0, 0, 0, 0.87);
+      text-align: left;
+      font-weight: 500;
+      line-height: 22px;
+    }
+    i {
+      font-size: 18px;
+      color: rgb(82, 102, 212);
+      position: absolute;
+      left: 150px;
+      top: 13px;
+      z-index: 10;
+      display: none;
+    }
+    .description {
+      font-size: 13px;
+      color: rgba(0, 0, 0, 0.65);
+      text-align: left;
+      line-height: 20px;
+      margin-top: 6px;
+      width: 350px;
+      white-space: normal;
+    }
+    .ant-modal-footer {
+      margin-right: 24px;
+    }
+    .c7n-boot-dashboard-card {
+      box-shadow: 0 12px 18px 0 rgba(31, 31, 31, 0.05), 0 0 6px 0 rgba(31, 31, 31, 0.20);
+      border-radius: 6px;
+    }
+    .ant-menu-item-selected {
+      .c7n-boot-dashboard-card {
+        border: 6px solid #5266d4;
+      }
+      i {
+        display: inline-block;
+      }
+    }
+  }
+  &-preview {
+    border-right: 0;
+    margin-top: 20px;
+
+    .ant-menu-item-selected {
+      color: #000;
+    }
+    .ant-modal-body {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
   .ant-spin-nested-loading {
     width: 100%;
     flex: 1 1 0;

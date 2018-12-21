@@ -25,6 +25,8 @@ const zh_CN = {
   'boot.detail': '详情',
   'boot.enable': '启用',
   'boot.disable': '停用',
+  'boot.reset': '重置',
+  'boot.append': '添加',
 
   // status
   // success
