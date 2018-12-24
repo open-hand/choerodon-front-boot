@@ -6,7 +6,7 @@ from Menu import Menu
 
 class MenuMysql(Menu):
     
-    def __init__(self, config, schema, attrs):
+    def __init__(self, config, schema, attrs, debug):
         dbConfig = {
             'charset': 'utf8',
             'cursorclass': pymysql.cursors.DictCursor
@@ -17,6 +17,11 @@ class MenuMysql(Menu):
         self.db.select_db(schema)
         self.cursor = self.db.cursor()
         self.attrs = attrs
+        self.logger = logging.getLogger()
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     # insert IAM_MENU
     def insertMenuTable(self, table, data):
@@ -39,11 +44,11 @@ class MenuMysql(Menu):
                                 icon=dataMenu[root]["icon"],
                                 sort=dataMenu[root]["sort"])
                             self.cursor.execute(sql)
-                            logging.debug("sql: [" + sql + "]")
+                            self.logger.debug("sql: [" + sql + "]")
                         else:
                             sql = "UPDATE {table} SET CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}'"
                             if self.attrs and ('sort' in self.attrs):
-                                sql = sql + ", SORT='{sort}'";
+                                sql = sql + ", SORT='{sort}'"
                             sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
                                 table=table,
                                 code=root,
@@ -52,7 +57,7 @@ class MenuMysql(Menu):
                                 icon=dataMenu[root]["icon"],
                                 sort=dataMenu[root]["sort"])
                             self.cursor.execute(sql)
-                            logging.debug("sql: [" + sql + "]")
+                            self.logger.debug("sql: [" + sql + "]")
             for service in dataMenu:
                 centerLevel = []
                 for level in self.levelArray:
@@ -75,7 +80,7 @@ class MenuMysql(Menu):
                                         route=dataMenu[service][level][menuList]["Routes"],
                                         sort=dataMenu[service][level][menuList]["sort"])
                                     self.cursor.execute(sql)
-                                    logging.debug("sql: [" + sql + "]")
+                                    self.logger.debug("sql: [" + sql + "]")
                             else:
                                 if serviceId and ('ID' in serviceId):
                                     sql = "UPDATE {table} set CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}', ROUTE='{route}'"
@@ -93,7 +98,7 @@ class MenuMysql(Menu):
                                         route=dataMenu[service][level][menuList]["Routes"],
                                         sort=dataMenu[service][level][menuList]["sort"])
                                     self.cursor.execute(sql)
-                                    logging.debug("sql: [" + sql + "]")
+                                    self.logger.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
     # insert IAM_MENU_PERMISSION
@@ -115,13 +120,13 @@ class MenuMysql(Menu):
                             if menuId:
                                 sql = "SELECT ID FROM IAM_MENU_PERMISSION WHERE MENU_ID={menuId} AND PERMISSION_CODE='{permission_code}'".format(menuId=menuId["ID"],permission_code=permission)
                                 self.cursor.execute(sql)
-                                logging.debug("sql: [" + sql + "]")
+                                self.logger.debug("sql: [" + sql + "]")
 
                                 count = self.cursor.execute(sql)
                                 if count == 0:
                                     sql = "INSERT INTO {table} (MENU_ID, PERMISSION_CODE) VALUES ('{menuId}','{permission_code}')".format(table=table,menuId=menuId["ID"],permission_code=permission)
                                     self.cursor.execute(sql)
-                                    logging.debug("sql: [" + sql + "]")
+                                    self.logger.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
     # insert IAM_MENU_TL
@@ -142,7 +147,7 @@ class MenuMysql(Menu):
                         if menuId:
                             sql = "SELECT ID FROM {table} WHERE ID={menuId}".format(table=table,menuId=menuId["ID"])
                             self.cursor.execute(sql)
-                            logging.debug("sql: [" + sql + "]")
+                            self.logger.debug("sql: [" + sql + "]")
 
                             count = self.cursor.execute(sql)
                             if count == 0:
@@ -167,7 +172,7 @@ class MenuMysql(Menu):
                         sql = "SELECT ID FROM {table} WHERE ID={id}".format(
                             table=table,
                             id=menuId["ID"])
-                        logging.debug("sql: [" + sql + "]")
+                        self.logger.debug("sql: [" + sql + "]")
 
                         count = self.cursor.execute(sql)
                         if count == 0:
@@ -200,7 +205,7 @@ class MenuMysql(Menu):
                         sort=dir["sort"],
                         parent_id=parent["ID"])
                     self.cursor.execute(sql)
-                    logging.debug("sql: [" + sql + "]")
+                    self.logger.debug("sql: [" + sql + "]")
 
                     dirId = self.cursor.lastrowid
                     self.insertMenuTl("IAM_MENU_TL", 'en_US', dirId, dir["enName"])
@@ -212,6 +217,6 @@ class MenuMysql(Menu):
                         dir_id=dirId,
                         subCode=sub)
                     self.cursor.execute(sql)
-                    logging.debug("sql: [" + sql + "]")
+                    self.logger.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
