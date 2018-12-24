@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import traceback
 import sys
+import logging
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -27,6 +28,7 @@ class Menu(object):
         sql = "SELECT ID FROM {table} WHERE CODE = '{code}' AND FD_LEVEL = '{level}'".format(table=table,code=code, level=level)
         self.cursor.execute(sql)
         Id = self.cursor.fetchone()
+        logging.debug("sql: [" + sql + "]")
         return Id
     # judge menu exist
     def judgeTrue(self, table, *args):
@@ -43,6 +45,7 @@ class Menu(object):
             content=args[0],
             equaldata=args[1])
         self.cursor.execute(sql)
+        logging.debug("sql: [" + sql + "]")
         count = self.cursor.execute(sql)
         return count == 0
 
@@ -52,6 +55,7 @@ class Menu(object):
             code=code,
             level=level)
         self.cursor.execute(sql)
+        logging.debug("sql: [" + sql + "]")
         parent_id = self.cursor.fetchone()
         if parent_id:
             return parent_id["ID"]
@@ -64,12 +68,20 @@ class Menu(object):
         if menuId:
             sql = "DELETE FROM IAM_MENU_TL WHERE ID={menuId}".format(menuId=menuId["ID"])
             self.cursor.execute(sql)
+            logging.debug("sql: [" + sql + "]")
+
             sql = "DELETE FROM IAM_MENU_PERMISSION WHERE MENU_ID={menuId}".format(menuId=menuId["ID"])
             self.cursor.execute(sql)
+            logging.debug("sql: [" + sql + "]")
+
             sql = "UPDATE IAM_MENU SET PARENT_ID=0 WHERE PARENT_ID='{parent_id}'".format(parent_id=menuId["ID"])
             self.cursor.execute(sql)
+            logging.debug("sql: [" + sql + "]")
+
             sql = "DELETE FROM IAM_MENU WHERE ID='{menuId}'".format(menuId=menuId["ID"])
             self.cursor.execute(sql)
+            logging.debug("sql: [" + sql + "]")
+
 
     def insertMenuTl(self, table, lang, id, name):
         sql = "INSERT INTO {table} (LANG, ID, NAME) VALUES ('{lang}','{id}','{name}')".format(
@@ -78,6 +90,8 @@ class Menu(object):
             id=id,
             name=name)
         self.cursor.execute(sql)
+        logging.debug("sql: [" + sql + "]")
+
     def updateMenuTl(self, table, lang, id, name):
         sql = "UPDATE {table} SET ID='{id}', NAME='{name}' WHERE ID={id} AND LANG='{lang}'".format(
             table=table,
@@ -85,6 +99,7 @@ class Menu(object):
             id=id,
             name=name)
         self.cursor.execute(sql)
+        logging.debug("sql: [" + sql + "]")
 
     def deleteMenu(self, data):
         try:
@@ -122,14 +137,19 @@ class Menu(object):
                         parent = self.returnMenuId(table, dir["parent"], dir["level"])
                         sql = "DELETE FROM IAM_MENU_TL WHERE ID={menuId}".format(menuId=dirId)
                         self.cursor.execute(sql)
+                        logging.debug("sql: [" + sql + "]")
+
                         for sub in dir["subMenu"]:
                             sql = "UPDATE {table} SET PARENT_ID = {parentId} WHERE CODE='{subCode}'".format(
                                 table=table,
                                 parentId=parent["ID"],
                                 subCode=sub)
                             self.cursor.execute(sql)
+                            logging.debug("sql: [" + sql + "]")
+                            
                         sql = "DELETE FROM {table} WHERE ID='{menuId}'".format(table=table, menuId=dirId)
                         self.cursor.execute(sql)
+                        logging.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
 

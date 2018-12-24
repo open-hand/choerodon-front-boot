@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pymysql
+import logging
 from Dashboard import Dashboard
 
 class DashboardMysql(Dashboard):
@@ -26,8 +27,9 @@ class DashboardMysql(Dashboard):
                     continue
                 Id = self.returnId(table, dashboard["code"], dashboard["namespace"])
                 enabled = 0 if "enabled" in dashboard and (dashboard["enabled"] == False) else 1
+                position = dashboard["enabled"] if "position" in dashboard else ""
                 if Id:
-                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}'"
+                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}', POSITION='{position}'"
                     sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
                         table=table,
                         code=dashboard["code"],
@@ -35,13 +37,12 @@ class DashboardMysql(Dashboard):
                         level=dashboard["level"],
                         icon=dashboard["icon"],
                         sort=dashboard["sort"],
-                        enabled=enabled)
+                        enabled=enabled,
+                        position=position)
                     self.cursor.execute(sql)
+                    logging.debug("sql: [" + sql + "]")
                 else:
-                    
-                    if "enabled" in dashboard and (dashboard["enabled"] == False):
-                        enabled = 1
-                    sql = "INSERT INTO {table} (CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT, IS_ENABLED) VALUES ('{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}', '{enabled}')"
+                    sql = "INSERT INTO {table} (CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT, IS_ENABLED, POSITION) VALUES ('{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}', '{enabled}', '{position}')"
                     sql = sql.format(
                         table=table,
                         code=dashboard["code"],
@@ -52,8 +53,10 @@ class DashboardMysql(Dashboard):
                         icon=dashboard["icon"],
                         namespace=dashboard["namespace"],
                         sort=dashboard["sort"],
-                        enabled=enabled)
+                        enabled=enabled,
+                        position=position)
                     self.cursor.execute(sql)
+                    logging.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
     def insertDashbaordTl(self, data):
@@ -70,6 +73,7 @@ class DashboardMysql(Dashboard):
                             table=table,
                             id=Id["ID"])
                     count = self.cursor.execute(sql)
+                    logging.debug("sql: [" + sql + "]")
                     if count == 0:
                         self.insertTl(table, 'en_US', Id["ID"], dataLanguageEnglish[i])
                         self.insertTl(table, 'zh_CN', Id["ID"], dataLanguageChinese[i])
@@ -99,6 +103,7 @@ class DashboardMysql(Dashboard):
                                     roleId=roleId["ID"]
                                 )
                                 self.cursor.execute(sql)
+                                logging.debug("sql: [" + sql + "]")
                                 select = self.cursor.fetchone()   
                                 if not select:
                                     sql = "INSERT INTO {table} (DASHBOARD_ID, ROLE_ID) VALUES ('{dashboardId}', '{roleId}')".format(
@@ -107,5 +112,6 @@ class DashboardMysql(Dashboard):
                                         roleId=roleId["ID"]
                                     )
                                     self.cursor.execute(sql)
+                                    logging.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
