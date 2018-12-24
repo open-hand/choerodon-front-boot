@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import cx_Oracle
 import os
+import logging
 from Menu import Menu
 
 class MenuOracle(Menu):
@@ -34,6 +35,7 @@ class MenuOracle(Menu):
             content=args[0],
             equaldata=args[1])
         self.cursor.execute(sql)
+        logging.debug("sql: [" + sql + "]")
         count = self.cursor.fetchone()
         return count[0] == 0
 
@@ -43,12 +45,19 @@ class MenuOracle(Menu):
         if menuId:
             sql = "DELETE FROM IAM_MENU_TL WHERE ID={menuId}".format(menuId=menuId[0])
             self.cursor.execute(sql)
+            logging.debug("sql: [" + sql + "]")
+
             sql = "DELETE FROM IAM_MENU_PERMISSION WHERE MENU_ID={menuId}".format(menuId=menuId[0])
             self.cursor.execute(sql)
+            logging.debug("sql: [" + sql + "]")
+
             sql = "UPDATE IAM_MENU SET PARENT_ID=0 WHERE PARENT_ID='{parent_id}'".format(parent_id=menuId[0])
             self.cursor.execute(sql)
+            logging.debug("sql: [" + sql + "]")
+
             sql = "DELETE FROM IAM_MENU WHERE ID='{menuId}'".format(menuId=menuId[0])
             self.cursor.execute(sql)
+            logging.debug("sql: [" + sql + "]")
 
     # insert IAM_MENU
     def insertMenuTable(self, table, data):
@@ -71,6 +80,7 @@ class MenuOracle(Menu):
                                 icon=dataMenu[root]["icon"],
                                 sort=dataMenu[root]["sort"])
                             self.cursor.execute(sql)
+                            logging.debug("sql: [" + sql + "]")
                         else:
                             sql = "UPDATE {table} SET CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}'"
                             if self.attrs and ('sort' in self.attrs):
@@ -83,6 +93,7 @@ class MenuOracle(Menu):
                                 icon=dataMenu[root]["icon"],
                                 sort=dataMenu[root]["sort"])
                             self.cursor.execute(sql)
+                            logging.debug("sql: [" + sql + "]")
             for service in dataMenu:
                 centerLevel = []
                 for level in self.levelArray:
@@ -105,6 +116,7 @@ class MenuOracle(Menu):
                                         route=dataMenu[service][level][menuList]["Routes"],
                                         sort=dataMenu[service][level][menuList]["sort"])
                                     self.cursor.execute(sql)
+                                    logging.debug("sql: [" + sql + "]")
                             else:
                                 if serviceId:
                                     sql = "UPDATE {table} SET CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}', ROUTE='{route}'"
@@ -122,13 +134,13 @@ class MenuOracle(Menu):
                                         route=dataMenu[service][level][menuList]["Routes"],
                                         sort=dataMenu[service][level][menuList]["sort"])
                                     self.cursor.execute(sql)
+                                    logging.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
     # insert IAM_MENU_PERMISSION
     def insertMenuPermission(self, table, data):
         try:
             dataMenu = data["menu"]
-            dataLanguageChinese = data["language"]["Chinese"]
             for service in dataMenu.keys():
                 centerLevel = []
                 for level in self.levelArray:
@@ -147,6 +159,8 @@ class MenuOracle(Menu):
                                     menuId=menuId[0],
                                     permission_code=permission)
                                 self.cursor.execute(sql)
+                                logging.debug("sql: [" + sql + "]")
+
                                 count = self.cursor.fetchone()
                                 if count[0] == 0:
                                     sql = "INSERT INTO {table} (ID, MENU_ID, PERMISSION_CODE) VALUES (IAM_PERMISSION_S.nextval, '{menuId}','{permission_code}')".format(
@@ -154,6 +168,7 @@ class MenuOracle(Menu):
                                         menuId=menuId[0],
                                         permission_code=permission)
                                     self.cursor.execute(sql)
+                                    logging.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
     # insert IAM_MENU_TL
@@ -174,6 +189,8 @@ class MenuOracle(Menu):
                         if menuId:
                             sql = "SELECT COUNT(ID) FROM {table} WHERE ID={menuId}".format(table=table,menuId=menuId[0])
                             self.cursor.execute(sql)
+                            logging.debug("sql: [" + sql + "]")
+
                             count = self.cursor.fetchone()
                             if count[0] == 0:
                                 self.insertMenuTl(table, 'en_US', menuId[0], dataLanguageEnglish[menuList])
@@ -198,6 +215,8 @@ class MenuOracle(Menu):
                           table=table,
                           id=menuId[0])
                       self.cursor.execute(sql)
+                      logging.debug("sql: [" + sql + "]")
+                      
                       count = self.cursor.fetchone()
                       if count[0] == 0:
                           self.insertMenuTl(table, 'en_US', menuId[0], dataLanguageEnglish[service])
