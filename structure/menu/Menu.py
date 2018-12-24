@@ -11,6 +11,7 @@ class Menu(object):
     db = {}
     cursor = {}
     attrs = ""
+    logger = logging.getLogger()
 
     # return menu level
     def returnLevel(self, data):
@@ -28,7 +29,7 @@ class Menu(object):
         sql = "SELECT ID FROM {table} WHERE CODE = '{code}' AND FD_LEVEL = '{level}'".format(table=table,code=code, level=level)
         self.cursor.execute(sql)
         Id = self.cursor.fetchone()
-        logging.debug("sql: [" + sql + "]")
+        self.logger.debug("sql: [" + sql + "]")
         return Id
     # judge menu exist
     def judgeTrue(self, table, *args):
@@ -45,7 +46,7 @@ class Menu(object):
             content=args[0],
             equaldata=args[1])
         self.cursor.execute(sql)
-        logging.debug("sql: [" + sql + "]")
+        self.logger.debug("sql: [" + sql + "]")
         count = self.cursor.execute(sql)
         return count == 0
 
@@ -55,7 +56,7 @@ class Menu(object):
             code=code,
             level=level)
         self.cursor.execute(sql)
-        logging.debug("sql: [" + sql + "]")
+        self.logger.debug("sql: [" + sql + "]")
         parent_id = self.cursor.fetchone()
         if parent_id:
             return parent_id["ID"]
@@ -68,19 +69,19 @@ class Menu(object):
         if menuId:
             sql = "DELETE FROM IAM_MENU_TL WHERE ID={menuId}".format(menuId=menuId["ID"])
             self.cursor.execute(sql)
-            logging.debug("sql: [" + sql + "]")
+            self.logger.debug("sql: [" + sql + "]")
 
             sql = "DELETE FROM IAM_MENU_PERMISSION WHERE MENU_ID={menuId}".format(menuId=menuId["ID"])
             self.cursor.execute(sql)
-            logging.debug("sql: [" + sql + "]")
+            self.logger.debug("sql: [" + sql + "]")
 
             sql = "UPDATE IAM_MENU SET PARENT_ID=0 WHERE PARENT_ID='{parent_id}'".format(parent_id=menuId["ID"])
             self.cursor.execute(sql)
-            logging.debug("sql: [" + sql + "]")
+            self.logger.debug("sql: [" + sql + "]")
 
             sql = "DELETE FROM IAM_MENU WHERE ID='{menuId}'".format(menuId=menuId["ID"])
             self.cursor.execute(sql)
-            logging.debug("sql: [" + sql + "]")
+            self.logger.debug("sql: [" + sql + "]")
 
 
     def insertMenuTl(self, table, lang, id, name):
@@ -90,7 +91,7 @@ class Menu(object):
             id=id,
             name=name)
         self.cursor.execute(sql)
-        logging.debug("sql: [" + sql + "]")
+        self.logger.debug("sql: [" + sql + "]")
 
     def updateMenuTl(self, table, lang, id, name):
         sql = "UPDATE {table} SET ID='{id}', NAME='{name}' WHERE ID={id} AND LANG='{lang}'".format(
@@ -99,7 +100,7 @@ class Menu(object):
             id=id,
             name=name)
         self.cursor.execute(sql)
-        logging.debug("sql: [" + sql + "]")
+        self.logger.debug("sql: [" + sql + "]")
 
     def deleteMenu(self, data):
         try:
@@ -137,7 +138,7 @@ class Menu(object):
                         parent = self.returnMenuId(table, dir["parent"], dir["level"])
                         sql = "DELETE FROM IAM_MENU_TL WHERE ID={menuId}".format(menuId=dirId)
                         self.cursor.execute(sql)
-                        logging.debug("sql: [" + sql + "]")
+                        self.logger.debug("sql: [" + sql + "]")
 
                         for sub in dir["subMenu"]:
                             sql = "UPDATE {table} SET PARENT_ID = {parentId} WHERE CODE='{subCode}'".format(
@@ -145,11 +146,11 @@ class Menu(object):
                                 parentId=parent["ID"],
                                 subCode=sub)
                             self.cursor.execute(sql)
-                            logging.debug("sql: [" + sql + "]")
+                            self.logger.debug("sql: [" + sql + "]")
                             
                         sql = "DELETE FROM {table} WHERE ID='{menuId}'".format(table=table, menuId=dirId)
                         self.cursor.execute(sql)
-                        logging.debug("sql: [" + sql + "]")
+                        self.logger.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
 

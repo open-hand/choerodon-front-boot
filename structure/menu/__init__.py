@@ -115,6 +115,7 @@ if __name__ == '__main__':
     parser.add_argument('-a','--attrs', help='enable update attrs, it can include sort & parent_id, you can use "port,parent_id" to update menu attrs', dest="attrs", default="")
     parser.add_argument('-d','--delete', type=bool, help='enable delete menu', dest="delete", default=False)
     parser.add_argument('-t','--type', help='mysql/oracle', dest="dbType", default="mysql")
+    parser.add_argument('-x', '--debug', type=bool, help='enable debug log', dest="debug", default=False)
     args = parser.parse_args()
 
     options = os.environ.get('MENU_OPTIONS') if os.environ.get('MENU_OPTIONS') else args.options
@@ -125,6 +126,7 @@ if __name__ == '__main__':
     attrs = os.environ.get('UP_ATTRS') if os.environ.get('UP_ATTRS') else args.attrs
     delete = os.environ.get('ENABLE_DELETE') if os.environ.get('ENABLE_DELETE') else args.delete
     dbType = os.environ.get('DB_TYPE') if os.environ.get('DB_TYPE') else args.dbType
+    debug = os.environ.get('ENABLE_DEBUG') if os.environ.get('ENABLE_DEBUG') else args.debug
 
     if cmp(options, "yml") == 0:
         logging.info("Begin parsing yaml")
@@ -153,7 +155,7 @@ if __name__ == '__main__':
                 'passwd': passwd
             }
             operate = __import__('menuMysql')
-            menuOperate = operate.MenuMysql(config, os.getenv("DB_NAME", "iam_service"), attrs)
+            menuOperate = operate.MenuMysql(config, os.getenv("DB_NAME", "iam_service"), attrs, debug)
         elif dbType == "oracle":
             logging.info("The db driver is oracle")
             config = {
@@ -164,7 +166,7 @@ if __name__ == '__main__':
                 'sid':'xe'
             }
             operate = __import__('menuOracle')
-            menuOperate = operate.MenuOracle(config, os.getenv("DB_NAME", "iam_service"), attrs)
+            menuOperate = operate.MenuOracle(config, os.getenv("DB_NAME", "iam_service"), attrs, debug)
         
         logging.info("Db driver load success")
 
