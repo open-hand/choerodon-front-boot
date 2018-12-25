@@ -83,6 +83,7 @@ if __name__ == '__main__':
     parser.add_argument('-s','--secret', help='databse password', dest="passwd", default="123456")
     parser.add_argument('-t','--type', help='mysql/oracle', dest="dbType", default="mysql")
     parser.add_argument('-d','--delete', type=bool, help='enable delete menu', dest="delete", default=True)
+    parser.add_argument('-x', '--debug', type=bool, help='enable debug log', dest="debug", default=False)
     args = parser.parse_args()
 
     options = os.environ.get('DASHBOARD_OPTIONS') if os.environ.get('DASHBOARD_OPTIONS') else args.options
@@ -110,6 +111,7 @@ if __name__ == '__main__':
         passwd = os.environ.get('DB_PASS') if os.environ.get('DB_PASS') else args.passwd
         dbType = os.environ.get('DB_TYPE') if os.environ.get('DB_TYPE') else args.dbType
         delete = os.environ.get('ENABLE_DELETE') if os.environ.get('ENABLE_DELETE') else args.delete
+        debug = os.environ.get('ENABLE_DEBUG') if os.environ.get('ENABLE_DEBUG') else args.debug
 
         if dbType == "mysql":
             logging.info("The db driver is mysql")
@@ -121,7 +123,7 @@ if __name__ == '__main__':
                 'passwd': passwd
             }
             operate = __import__('dashboardMysql')
-            dashboardOperate = operate.DashboardMysql(config, os.getenv("DB_NAME", "iam_service"))
+            dashboardOperate = operate.DashboardMysql(config, os.getenv("DB_NAME", "iam_service"), debug)
 
         elif dbType == "oracle":
             logging.info("The db driver is oracle")
@@ -134,7 +136,7 @@ if __name__ == '__main__':
                 'sid':'xe'
             }
             operate = __import__('dashboardOracle')
-            dashboardOperate = operate.DashboardOracle(config, os.getenv("DB_NAME", "iam_service"))
+            dashboardOperate = operate.DashboardOracle(config, os.getenv("DB_NAME", "iam_service"), debug)
 
         logging.info("Db driver load success")
 

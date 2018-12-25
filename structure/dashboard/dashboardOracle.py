@@ -2,18 +2,25 @@
 # -*- coding: utf-8 -*-
 import cx_Oracle
 import os
+import json
+import logging
 from Dashboard import Dashboard
 
 class DashboardOracle(Dashboard):
     db = {}
     cursor = {}
-    def __init__(self, config, schema):
+    def __init__(self, config, schema, debug):
         os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
         config["dsn"] = cx_Oracle.makedsn(host=config["host"], port=config["port"], sid=config["sid"])
-        self.db = cx_Oracle.connect(user=config["user"], password=config["password"], dsn=config["dsn"])   #用自己的实际数据库用户名、密码、主机ip地址 替换即可
+        self.db = cx_Oracle.connect(user=config["user"], password=config["password"], dsn=config["dsn"])
         self.db.current_schema = schema
         self.db.autocommit = 1
         self.cursor = self.db.cursor()
+        self.logger = logging.getLogger()
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def insertDashboard(self, data):
         try:
@@ -26,8 +33,9 @@ class DashboardOracle(Dashboard):
                     continue
                 Id = self.returnId(table, dashboard["code"], dashboard["namespace"])
                 enabled = 0 if "enabled" in dashboard and (dashboard["enabled"] == False) else 1
+                position = json.dumps(dashboard["position"]) if "position" in dashboard else ""
                 if Id:
-                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}'"
+                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}', POSITION='{position}'"
                     sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
                         table=table,
                         code=dashboard["code"],
@@ -35,10 +43,12 @@ class DashboardOracle(Dashboard):
                         level=dashboard["level"],
                         icon=dashboard["icon"],
                         sort=dashboard["sort"],
-                        enabled=enabled)
+                        enabled=enabled,
+                        position=position)
                     self.cursor.execute(sql)
+                    self.logger.debug("sql: [" + sql + "]")
                 else:
-                    sql = "INSERT INTO {table} (ID, CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT, IS_ENABLED) VALUES (IAM_DASHBOARD_S.nextval, '{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}', '{enabled}')"
+                    sql = "INSERT INTO {table} (ID, CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT, IS_ENABLED, POSITION) VALUES (IAM_DASHBOARD_S.nextval, '{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}', '{enabled}', '{position}')"
                     sql = sql.format(
                         table=table,
                         code=dashboard["code"],
@@ -49,8 +59,10 @@ class DashboardOracle(Dashboard):
                         icon=dashboard["icon"],
                         namespace=dashboard["namespace"],
                         sort=dashboard["sort"],
-                        enabled=enabled)
+                        enabled=enabled,
+                        posiotion=position)
                     self.cursor.execute(sql)
+                    self.logger.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
     def insertDashbaordTl(self, data):
@@ -67,6 +79,7 @@ class DashboardOracle(Dashboard):
                             table=table,
                             id=Id[0])
                     self.cursor.execute(sql)
+                    self.logger.debug("sql: [" + sql + "]")
                     count = self.cursor.fetchone()
                     if count[0] == 0:
                         self.insertTl(table, 'en_US', Id[0], dataLanguageEnglish[i])
@@ -87,8 +100,9 @@ class DashboardOracle(Dashboard):
                     if "roles" in dashboard:
                         roles = dashboard["roles"]
                         for role in roles:
-                            sql = "SELECT ID FROM IAM_ROLE WHERE CODE='{code}' AND FD_LEVEL='{level}'".format(code=role, level=dashboard["level"]);
+                            sql = "SELECT ID FROM IAM_ROLE WHERE CODE='{code}' AND FD_LEVEL='{level}'".format(code=role, level=dashboard["level"])
                             self.cursor.execute(sql)
+                            self.logger.debug("sql: [" + sql + "]")
                             roleId = self.cursor.fetchone()
                             if roleId:
                                 sql = "SELECT ID FROM IAM_DASHBOARD_ROLE WHERE DASHBOARD_ID='{dashboardId}' AND ROLE_ID='{roleId}'".format(
@@ -97,6 +111,7 @@ class DashboardOracle(Dashboard):
                                     roleId=roleId[0]
                                 )
                                 self.cursor.execute(sql)
+                                self.logger.debug("sql: [" + sql + "]")
                                 select = self.cursor.fetchone()   
                                 if not select:
                                     sql = "INSERT INTO {table} (ID, DASHBOARD_ID, ROLE_ID) VALUES (IAM_DASHBOARD_ROLE_S.nextval'{dashboardId}', '{roleId}')".format(
@@ -105,5 +120,6 @@ class DashboardOracle(Dashboard):
                                         roleId=roleId[0]
                                     )
                                     self.cursor.execute(sql)
+                                    self.logger.debug("sql: [" + sql + "]")
         except:
             self.dealFault()
