@@ -190,7 +190,7 @@ export default class Dragger extends React.Component {
         clearInterval(timer);
         timer = 0;
         this.setState({// 恢复的时候，要设定所有数据是当前的数据
-          y: y,
+          y,
           lastY: y,
           originY: event.clientY,
           originX: event.clientX,
