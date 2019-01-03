@@ -14,6 +14,7 @@ export default class Action extends Component {
   state = {};
 
   handleClick = (arg) => {
+    arg.domEvent.stopPropagation();
     const { action } = arg.item.props;
     if (typeof action === 'function') {
       action();
