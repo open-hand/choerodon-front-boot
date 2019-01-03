@@ -49,7 +49,7 @@ export default class UserPreferences extends Component {
     const realData = MenuStore.menuGroup && MenuStore.menuGroup.user.slice()[0] && MenuStore.menuGroup.user.slice()[0].subMenus.filter(item => !blackList.has(item.code));
     const AppBarIconRight = (
       <div className={`${prefixCls}-popover-content`}>
-        <Avatar src={imageUrl} prefixCls={prefixCls}>
+        <Avatar src={imageUrl} prefixCls={prefixCls} onClick={() => { window.location = '/#/iam/user-info?type=site'; }}>
           {realName && realName.charAt(0)}
         </Avatar>
         <div className={`${prefixCls}-popover-title`}>
