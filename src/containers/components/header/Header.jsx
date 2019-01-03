@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router';
 import { Button, Icon } from 'choerodon-ui';
 import MenuType from './MenuType';
 import Logo from './Logo';
@@ -13,6 +14,7 @@ import './style';
 
 const prefixCls = `${PREFIX_CLS}-boot-header`;
 
+@withRouter
 @inject('AppState', 'HeaderStore', 'MenuStore')
 @observer
 class Header extends Component {
@@ -20,6 +22,10 @@ class Header extends Component {
     const { AppState, HeaderStore, MenuStore } = this.props;
     MenuStore.loadMenuData({ type: 'site' }, false);
     HeaderStore.axiosGetOrgAndPro(AppState.getUserId);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    localStorage.setItem('historyPath', nextProps.location.pathname + nextProps.location.search);
   }
 
   handleGuideClick() {

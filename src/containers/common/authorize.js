@@ -24,7 +24,6 @@ export function logout() {
     logoutUrl += `?${ACCESS_TOKEN}=${getCookieToken()}`;
   }
   removeAccessToken();
-  localStorage.clear();
   sessionStorage.clear();
   window.location = logoutUrl;
 }
