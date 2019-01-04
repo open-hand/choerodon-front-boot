@@ -146,7 +146,7 @@ class DashboardStore {
           this.setDashboardData(data, type, id);
           this.setOriginDashboardData(data, type, id);
           if (data[0].id === null) {
-            this.updateDashboardData();
+            this.updateDashboardData(true);
           }
         }
         return data;
@@ -158,7 +158,7 @@ class DashboardStore {
   }
 
   @action
-  updateDashboardData() {
+  updateDashboardData(isFirst) {
     this.loading = true;
     this.editing = false;
     const { currentMenuType: { id = '0', type = 'site' } } = AppState;
@@ -168,7 +168,7 @@ class DashboardStore {
         if (!data.failed) {
           this.setDashboardData(data, type, id);
           this.setOriginDashboardData(data, type, id);
-          Choerodon.prompt('保存成功');
+          if (!isFirst) Choerodon.prompt('保存成功');
         }
         return data;
       }))
