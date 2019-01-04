@@ -56,9 +56,10 @@ class Masters extends Component {
 
   componentDidMount() {
     const { pathname } = this.props.location;
+    const { getUserId } = this.props.AppState;
     this.initFavicon();
-    if (pathname.includes('access_token') && pathname.includes('token_type')) {
-      window.location = `/#${localStorage.getItem('historyPath')}`;
+    if (pathname.includes('access_token') && pathname.includes('token_type') && localStorage.getItem(`historyPath-${getUserId}`)) {
+      window.location = `/#${localStorage.getItem(`historyPath-${getUserId}`)}`;
     }
   }
 
