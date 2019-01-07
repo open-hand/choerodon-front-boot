@@ -57,6 +57,7 @@ export default function getWebpackCommonConfig(mode, env) {
     new webpack.ProvidePlugin({
       Choerodon: isDev ? join(process.cwd(), 'src/containers/common') : join(__dirname, '../containers/common'),
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
   ];
 
   if (env === 'production') {
