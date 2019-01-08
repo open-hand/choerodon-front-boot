@@ -5,6 +5,8 @@ import { action, computed, get, observable, set } from 'mobx';
 import axios from '../components/axios';
 import AppState from './AppState';
 
+const BATCH_SIZE = 30;
+
 function getMenuType(menuType = AppState.currentMenuType, isUser = AppState.isTypeUser) {
   return isUser ? 'user' : menuType.type;
 }
@@ -60,7 +62,7 @@ class MenuStore {
       this.statistics[level][code] = { count: 1, name };
     }
     this.counter += 1;
-    if (this.counter > 10) {
+    if (this.counter > BATCH_SIZE) {
       this.uploadStatistics();
       this.counter = 0;
     }
