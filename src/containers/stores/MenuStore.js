@@ -5,6 +5,8 @@ import { action, computed, get, observable, set } from 'mobx';
 import axios from '../components/axios';
 import AppState from './AppState';
 
+const BATCH_SIZE = 30;
+
 function getMenuType(menuType = AppState.currentMenuType, isUser = AppState.isTypeUser) {
   return isUser ? 'user' : menuType.type;
 }
@@ -43,6 +45,38 @@ class MenuStore {
   @observable isUser = null;
 
   @observable id = null;
+
+  statistics = {};
+
+  counter = 0;
+
+  click(code, level, name) {
+    if (level in this.statistics) {
+      if (code in this.statistics[level]) {
+        this.statistics[level][code].count += 1;
+      } else {
+        this.statistics[level][code] = { count: 1, name };
+      }
+    } else {
+      this.statistics[level] = {};
+      this.statistics[level][code] = { count: 1, name };
+    }
+    this.counter += 1;
+    if (this.counter > BATCH_SIZE) {
+      this.uploadStatistics();
+      this.counter = 0;
+    }
+    localStorage.setItem('rawStatistics', JSON.stringify(this.statistics));
+  }
+
+  uploadStatistics() {
+    const postData = Object.keys(this.statistics).map(type => ({ level: type, menus: Object.keys(this.statistics[type]).map(code => ({ code, ...this.statistics[type][code] })) }));
+    axios.post('/manager/v1/statistic/menu_click/save', JSON.stringify(postData)).then((data) => {
+      if (!data.failed) {
+        this.statistics = {};
+      }
+    });
+  }
 
   @action
   setCollapsed(collapsed) {

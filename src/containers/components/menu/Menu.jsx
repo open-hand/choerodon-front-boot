@@ -17,6 +17,9 @@ export default class CommonMenu extends Component {
 
   componentWillMount() {
     this.loadMenu(this.props);
+    if (localStorage.getItem('rawStatistics')) {
+      this.props.MenuStore.statistics = JSON.parse(localStorage.getItem('rawStatistics'));
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -72,6 +75,7 @@ export default class CommonMenu extends Component {
       const link = (
         <Link
           to={this.getMenuLink(route)}
+          onClick={() => this.props.MenuStore.click(data.code, data.level, data.name)}
           style={{
             marginLeft: parseInt(num, 10) * 20,
           }}
@@ -166,11 +170,12 @@ export default class CommonMenu extends Component {
   }
 
   handleClick = (e) => {
-    const { MenuStore } = this.props;
+    const { MenuStore, AppState } = this.props;
     const child = MenuStore.getMenuData;
     const selected = this.findSelectedMenuByCode(child, e.key);
     const paths = e.keyPath && e.keyPath.reverse()[0]; // 去掉boot的
     const selectedRoot = paths ? child.find(({ code }) => code === paths) : selected;
+    MenuStore.click(e.key, AppState.menuType.type, e.domEvent.currentTarget.innerText);
     if (selected) {
       const { history } = this.props;
       MenuStore.treeReduce(selectedRoot, (menu, parents, index) => {
