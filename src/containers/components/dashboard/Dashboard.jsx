@@ -1,5 +1,6 @@
 import React, { Component, createElement } from 'react';
 import { Button, Col, Icon, Row, Spin, Modal, Menu } from 'choerodon-ui';
+import { Prompt } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import Page from '../page';
@@ -57,6 +58,7 @@ export default class Dashboard extends Component {
 
   componentWillReceiveProps() {
     this.fetchData();
+    this.props.DashboardStore.setEditing(false);
   }
 
   shouldComponentUpdate() {
@@ -66,6 +68,7 @@ export default class Dashboard extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResizeWindow);
+    this.props.DashboardStore.setEditing(false);
   }
 
   handleOnDragEnd = () => {
@@ -268,12 +271,13 @@ export default class Dashboard extends Component {
   render() {
     const { screenWidth } = this.state;
     const { DashboardStore: { getDashboardData: items, editing, creating, visible, loading }, intl } = this.props;
-
+    const promptMsg = `离开此页${Choerodon.STRING_DEVIDER}此页面修改项尚未保存，确定要离开此页面？`;
 
     return (
       <Page className="c7n-boot-dashboard">
         {this.renderHeader(editing)}
         <Content className="c7n-boot-dashboard-content">
+          <Prompt message={promptMsg} wrapper="c7n-iam-confirm-modal" when={editing} />
           <Spin spinning={loading}>
             {items.length > 0 ? (
               <Dragact
@@ -355,6 +359,7 @@ export default class Dashboard extends Component {
               onCancel={() => { this.props.DashboardStore.setModalVisible(false); }}
               onOk={this.handleCreate}
               okText={intl.formatMessage({ id: 'boot.append' })}
+              destroyOnClose
             >
               {this.renderModalContent()}
             </Modal>
