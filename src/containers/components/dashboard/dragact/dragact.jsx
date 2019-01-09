@@ -296,6 +296,7 @@ export default class Dragact extends React.Component {
           layout: compacted,
           mapLayout,
         });
+        this.recalculateLayout(nextProps.layout, nextProps.col);
       } else {
         this.recalculateLayout(nextProps.layout, nextProps.col);
       }

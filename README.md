@@ -146,8 +146,8 @@ A `language/en.yml` file like this:
 
 Then, you can run the script to initialize the menu.
 ```
-$python ./{1}/node_modules/choerodon-front-boot/structure/configAuto.py {1}
-$python ./{1}/node_modules/choerodon-front-boot/structure/sql.py [-i HOST] [-p PORT] [-u USER] [-s PASSWD] [-a ATTRS] [-d DELETE]
+$python ./{1}/node_modules/choerodon-front-boot/structure/menu/__init__.py -o yml -m {1}
+$python ./{1}/node_modules/choerodon-front-boot/structure/menu/__init__.py -o sql -m {1} [-i HOST] [-p PORT] [-u USER] [-s PASSWD] [-a ATTRS] [-d DELETE]
 ```
 `{1}` is your module name.
 
@@ -184,9 +184,15 @@ A `language/en.yml` file like this:
 ```
 
 Then, you can run the script to initialize the dashboard.
+(0.7.0 - 0.9.0)
 ```
 $python ./{1}/node_modules/choerodon-front-boot/structure/dashboard.py -o yml -m {1}
-$python ./{1}/node_modules/choerodon-front-boot/structure/dashboard.py -o sql [-i HOST] [-p PORT] [-u USER] [-s PASSWD]
+$python ./{1}/node_modules/choerodon-front-boot/structure/dashboard.py -o sql -m {1} [-i HOST] [-p PORT] [-u USER] [-s PASSWD]
+```
+(0.9.0+)
+```
+$python ./{1}/node_modules/choerodon-front-boot/structure/dashboard/__init__.py -o yml -m {1}
+$python ./{1}/node_modules/choerodon-front-boot/structure/dashboard/__init__.py -o sql [-i HOST] [-p PORT] [-u USER] [-s PASSWD]
 ```
 `{1}` is your module name.
 
