@@ -34,8 +34,9 @@ class DashboardMysql(Dashboard):
                 Id = self.returnId(table, dashboard["code"], dashboard["namespace"])
                 enabled = 0 if "enabled" in dashboard and (dashboard["enabled"] == False) else 1
                 position = json.dumps(dashboard["position"]) if "position" in dashboard else ""
+                needRoles = 1 if "needRoles" in dashboard and (dashboard["needRoles"] == True) else 0
                 if Id:
-                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}', POSITION='{position}'"
+                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}', POSITION='{position}', NEED_ROLES='{needRoles}'"
                     sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
                         table=table,
                         code=dashboard["code"],
@@ -44,11 +45,12 @@ class DashboardMysql(Dashboard):
                         icon=dashboard["icon"],
                         sort=dashboard["sort"],
                         enabled=enabled,
-                        position=position)
+                        position=position,
+                        needRoles=needRoles)
                     self.cursor.execute(sql)
                     self.logger.debug("sql: [ %s ]", sql)
                 else:
-                    sql = "INSERT INTO {table} (CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT, IS_ENABLED, POSITION) VALUES ('{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}', '{enabled}', '{position}')"
+                    sql = "INSERT INTO {table} (CODE, NAME, FD_LEVEL, TITLE, DESCRIPTION, ICON, NAMESPACE, SORT, IS_ENABLED, POSITION, NEED_ROLES) VALUES ('{code}', '{name}', '{level}', '{title}', '{description}', '{icon}', '{namespace}', '{sort}', '{enabled}', '{position}', '{needRoles}')"
                     sql = sql.format(
                         table=table,
                         code=dashboard["code"],
@@ -60,7 +62,8 @@ class DashboardMysql(Dashboard):
                         namespace=dashboard["namespace"],
                         sort=dashboard["sort"],
                         enabled=enabled,
-                        position=position)
+                        position=position,
+                        needRoles=needRoles)
                     self.cursor.execute(sql)
                     self.logger.debug("sql: [" + sql + "]")
         except:
