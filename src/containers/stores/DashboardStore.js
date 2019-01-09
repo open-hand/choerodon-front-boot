@@ -3,6 +3,9 @@ import axios from '../components/axios';
 import { handleResponseError } from '../common';
 import AppState from './AppState';
 
+/* eslint-disable-next-line */
+const INF = 1073741824;
+
 class DashboardStore {
   @observable dashboardGroup = {
     site: { 0: [] },
@@ -126,9 +129,9 @@ class DashboardStore {
       if (v.id.toString() === cardId.toString()) {
         v.visible = visible;
         v.positionDTO.positionX = 0;
-        v.positionDTO.positionY = 1000; // 要放在最后面
+        v.positionDTO.positionY = INF; // 要放在最后面
         v.GridX = 0;
-        v.GridY = 1000;
+        v.GridY = INF;
         return v;
       } else {
         return { ...v };
