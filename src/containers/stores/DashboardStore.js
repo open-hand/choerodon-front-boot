@@ -4,7 +4,7 @@ import { handleResponseError } from '../common';
 import AppState from './AppState';
 
 /* eslint-disable-next-line */
-const INF = 1073741824;
+const INF = 10000;
 
 class DashboardStore {
   @observable dashboardGroup = {
