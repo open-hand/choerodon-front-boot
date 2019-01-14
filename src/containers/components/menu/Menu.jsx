@@ -66,7 +66,7 @@ export default class CommonMenu extends Component {
           });
         }
         if (MenuStore.activeMenu && this.props.location.pathname !== '/') {
-          document.getElementsByTagName('title')[0].innerText = `${MenuStore.activeMenu.name} – ${MenuStore.activeMenu.parentName} - ${AppState.menuType.type !== 'site' ? `${AppState.menuType.name} - ` : ''} ${AppState.getSiteInfo.systemTitle || AppState.getSiteInfo.defaultTitle}`;
+          document.getElementsByTagName('title')[0].innerText = `${MenuStore.activeMenu.name} – ${MenuStore.activeMenu.parentName} – ${AppState.menuType.type !== 'site' ? `${AppState.menuType.name} – ` : ''} ${AppState.getSiteInfo.systemTitle || AppState.getSiteInfo.defaultTitle}`;
         }
       });
     }
