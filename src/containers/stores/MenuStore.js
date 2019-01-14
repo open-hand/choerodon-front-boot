@@ -174,6 +174,7 @@ class MenuStore {
       if (node[childrenName] && node[childrenName].length > 0) {
         return this.treeReduce(node, callback, childrenName, newParents);
       }
+      node.parentName = parents[0].name;
       return callback(node, parents, index);
     });
   }
