@@ -207,7 +207,7 @@ if __name__ == '__main__':
                 'passwd': passwd
             }
             operate = __import__('menuMysql')
-            menuOperate = operate.MenuMysql(config, os.getenv("DB_NAME", "iam_service"), attrs)
+            menuOperate = operate.MenuMysql(config, os.getenv("DB_NAME", "iam_service"), attrs, debug)
         
         logging.info("Db driver load success")
 
