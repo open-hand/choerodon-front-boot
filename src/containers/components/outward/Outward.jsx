@@ -37,7 +37,7 @@ class Outward extends Component {
 
   render() {
     const { AutoRouter } = this.props;
-    if (this.props.location.pathname === '/iam/outward-register-org') {
+    if (this.props.location.pathname === '/organization/register-organization') {
       return (
         <div className="page-wrapper">
           <AutoRouter />
