@@ -64,7 +64,7 @@ class App extends Component {
   render() {
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, () => import(`../{{ source }}/containers/locale/${language}`), () => import(`react-intl/locale-data/${language.split('_')[0]}`));
-    if (window.location.hash === '#/iam/outward-register-org') {
+    if (window.location.hash === '#/organization/register-organization') {
       return (
         <UILocaleProviderAsync>
           <IntlProviderAsync>

@@ -127,7 +127,7 @@ class Masters extends Component {
 
   render() {
     const { AutoRouter, GuideRouter } = this.props;
-    if (this.props.location.pathname === '/iam/outward-register-org') {
+    if (this.props.location.pathname === '/organization/register-organization') {
       return (
         <div className="page-wrapper">
           <AutoRouter />
