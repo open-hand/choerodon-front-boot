@@ -56,6 +56,11 @@ export default class Dashboard extends Component {
     window.addEventListener('resize', this.onResizeWindow);
   }
 
+  componentDidMount() {
+    const { AppState } = this.props;
+    document.getElementsByTagName('title')[0].innerText = `${AppState.getSiteInfo.systemTitle || AppState.getSiteInfo.defaultTitle}`;
+  }
+
   componentWillReceiveProps() {
     this.fetchData();
     this.props.DashboardStore.setEditing(false);
