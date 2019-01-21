@@ -34,6 +34,10 @@ export default class WSProvider extends Component {
 
   pending = [];
 
+  /**
+   * 是否需要重新注册，一般webSocket重连之后都需要重新注册handler重新订阅消息
+   * @type {boolean}
+   */
   needReRegister = false;
 
   componentWillMount() {
@@ -220,6 +224,8 @@ export default class WSProvider extends Component {
   unregister(key, handler, path) {
     if (this.ws) {
       const handlers = this.map.get(`${path}-${key}`);
+      // 给后端发送取消订阅的消息
+      this.send(JSON.stringify({ type: 'unsub', data: key }), path);
       if (handlers) {
         const index = handlers.indexOf(handler);
         if (index !== -1) {
