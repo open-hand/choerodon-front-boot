@@ -5,6 +5,7 @@ import { Spin, Steps } from 'choerodon-ui';
 import queryString from 'query-string';
 import CommonMenu from '../menu';
 import MasterHeader from '../header';
+import AnnouncementBanner from '../header/AnnouncementBanner';
 import AppState from '../../stores/AppState';
 import { dashboard, historyReplaceMenu } from '../../common';
 import findFirstLeafMenu from '../util/findFirstLeafMenu';
@@ -59,6 +60,7 @@ class Masters extends Component {
     const { getUserId } = this.props.AppState;
     this.initFavicon();
     if (pathname.includes('access_token') && pathname.includes('token_type') && localStorage.getItem(`historyPath-${getUserId}`)) {
+      localStorage.removeItem('lastClosedId');
       window.location = `/#${localStorage.getItem(`historyPath-${getUserId}`)}`;
     }
   }
@@ -138,6 +140,7 @@ class Masters extends Component {
         AppState.isAuth && AppState.currentMenuType ? (
           <div className="page-wrapper">
             <div className="page-header">
+              <AnnouncementBanner />
               <MasterHeader />
             </div>
             <div className="page-body">
