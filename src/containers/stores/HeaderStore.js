@@ -156,7 +156,7 @@ class HeaderStore {
   axiosGetNewSticky() {
     return axios.get('/notify/v1/system_notice/new_sticky').then(action((data) => {
       this.announcement = data;
-      if (!localStorage.lastClosedId || localStorage.lastClosedId !== `${data.id}`) {
+      if (data && data.id && (!localStorage.lastClosedId || localStorage.lastClosedId !== `${data.id}`)) {
         this.announcementClosed = false;
       }
     })).catch(handleResponseError);
