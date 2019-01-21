@@ -50,6 +50,16 @@ class HeaderStore {
 
   @observable currentMsgType = 'msg';
 
+  @observable announcement = {};
+
+  @observable announcementClosed = true;
+
+  @action
+  closeAnnouncement() {
+    this.announcementClosed = true;
+    window.localStorage.setItem('lastClosedId', `${this.announcement.id}`);
+  }
+
   @computed
   get getUnreadMsg() {
     return this.inboxData.filter(v => v.type === 'msg');
@@ -141,6 +151,15 @@ class HeaderStore {
         this.inboxLoaded = true;
       }))
       .catch(handleResponseError);
+  }
+
+  axiosGetNewSticky() {
+    return axios.get('/notify/v1/system_notice/new_sticky').then(action((data) => {
+      this.announcement = data;
+      if (!localStorage.lastClosedId || localStorage.lastClosedId !== `${data.id}`) {
+        this.announcementClosed = false;
+      }
+    })).catch(handleResponseError);
   }
 
   @action

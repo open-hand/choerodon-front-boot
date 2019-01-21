@@ -56,7 +56,7 @@ export default class Guide extends Component {
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, getMessage);
     return (
-      <IntlProviderAsync>
+      <IntlProviderAsync key={`${data}`}>
         <GuideItem data={data} />
       </IntlProviderAsync>
     );

@@ -1,0 +1,31 @@
+$c7n-boot-header-banner: #{$c7n-prefix}-boot-header-banner;
+
+.#{$c7n-boot-header-banner} {
+  height: 52px;
+  display: flex;
+  &-buttons {
+    float: right;
+    display: inline;
+    margin-right: 12px;
+    margin-top: 10px;
+    button {
+      margin-left: 12px;
+    }
+  }
+  &-info {
+    line-height: 20px;
+    margin-top: 16px;
+    display: flex;
+    width: calc(100% - 202px);
+    span {
+      margin-left: 18px;
+      width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    i {
+      margin-left: 20px;
+    }
+  }
+}
