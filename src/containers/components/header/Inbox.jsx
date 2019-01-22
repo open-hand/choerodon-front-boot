@@ -43,12 +43,13 @@ export default class Inbox extends Component {
   handleButtonClick = () => {
     const { HeaderStore } = this.props;
     if (!HeaderStore.inboxLoaded) {
+      HeaderStore.setInboxLoading(true);
       this.getUnreadMsg();
     }
   };
 
   handleMessage = () => {
-    this.getUnreadMsg();
+    this.props.HeaderStore.setInboxLoaded(false);
   };
 
   handleMessageClick = (e) => {
@@ -145,7 +146,7 @@ export default class Inbox extends Component {
     );
   }
 
-  renderPopoverContent(inboxData, inboxLoaded) {
+  renderPopoverContent(inboxData, inboxLoading) {
     const { HeaderStore } = this.props;
     return (
       <div className={!inboxData.length ? 'is-empty' : null}>
@@ -155,14 +156,14 @@ export default class Inbox extends Component {
           tabBarExtraContent={this.renderRemoveAll()}
         >
           <TabPane tab={`消息(${HeaderStore.getUnreadMsg.length})`} key="msg">
-            <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
+            <Spin spinning={inboxLoading} wrapperClassName={`${popoverPrefixCls}-content`}>
               {
                 this.renderMessages(HeaderStore.getUnreadMsg)
               }
             </Spin>
           </TabPane>
           <TabPane tab={`通知(${HeaderStore.getUnreadNotice.length})`} key="notice">
-            <Spin spinning={!inboxLoaded} wrapperClassName={`${popoverPrefixCls}-content`}>
+            <Spin spinning={inboxLoading} wrapperClassName={`${popoverPrefixCls}-content`}>
               {
                 this.renderMessages(HeaderStore.getUnreadNotice)
               }
@@ -191,7 +192,7 @@ export default class Inbox extends Component {
 
   render() {
     const { AppState, HeaderStore } = this.props;
-    const { inboxVisible, inboxLoaded, inboxData } = HeaderStore;
+    const { inboxVisible, inboxLoaded, inboxData, inboxLoading } = HeaderStore;
     return (
       <WSHandler
         messageKey={`choerodon:msg:site-msg:${AppState.userInfo.id}`}
@@ -203,7 +204,7 @@ export default class Inbox extends Component {
               overlayClassName={popoverPrefixCls}
               arrowPointAtCenter
               placement="bottomRight"
-              content={this.renderPopoverContent(inboxData, inboxLoaded)}
+              content={this.renderPopoverContent(inboxData, inboxLoading)}
               trigger="click"
               visible={inboxVisible}
               onVisibleChange={this.handleVisibleChange}

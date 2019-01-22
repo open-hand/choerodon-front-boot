@@ -54,6 +54,18 @@ class HeaderStore {
 
   @observable announcementClosed = true;
 
+  @observable inboxLoading = true;
+
+  @action
+  setInboxLoaded(flag) {
+    this.inboxLoaded = flag;
+  }
+
+  @action
+  setInboxLoading(flag) {
+    this.inboxLoading = flag;
+  }
+
   @action
   closeAnnouncement() {
     this.announcementClosed = true;
@@ -148,9 +160,12 @@ class HeaderStore {
     })}`)
       .then(action(({ content }) => {
         this.inboxData = content || [];
+        this.inboxLoading = false;
         this.inboxLoaded = true;
       }))
-      .catch(handleResponseError);
+      .catch(handleResponseError).finally(() => {
+        this.inboxLoading = false;
+      });
   }
 
   axiosGetNewSticky() {
@@ -238,7 +253,8 @@ class HeaderStore {
     if (data) {
       const index = this.inboxData.indexOf(data);
       if (index !== -1) {
-        this.inboxData.slice(1, index);
+        this.inboxData.splice(index, 1);
+        this.inboxData = [...this.inboxData];
       }
     } else {
       this.inboxData = [];
