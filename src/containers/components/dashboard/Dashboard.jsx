@@ -58,7 +58,9 @@ export default class Dashboard extends Component {
 
   componentDidMount() {
     const { AppState } = this.props;
-    document.getElementsByTagName('title')[0].innerText = `${AppState.getSiteInfo.systemTitle || AppState.getSiteInfo.defaultTitle}`;
+    setTimeout(() => {
+      document.getElementsByTagName('title')[0].innerText = `${AppState.getSiteInfo.systemTitle || AppState.getSiteInfo.defaultTitle}`;
+    }, 500);
   }
 
   componentWillReceiveProps() {
