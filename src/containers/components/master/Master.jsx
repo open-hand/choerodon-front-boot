@@ -60,7 +60,6 @@ class Masters extends Component {
     const { getUserId } = this.props.AppState;
     this.initFavicon();
     if (pathname.includes('access_token') && pathname.includes('token_type') && localStorage.getItem(`historyPath-${getUserId}`)) {
-      localStorage.removeItem('lastClosedId');
       window.location = `/#${localStorage.getItem(`historyPath-${getUserId}`)}`;
     }
   }
