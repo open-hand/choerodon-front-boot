@@ -34,7 +34,7 @@ export default class AnnouncementBanner extends Component {
         >
           <div className={`${prefixCls}-info`}>
             <Icon type="info" style={{ fontSize: 20, color: '#ff2825' }} />
-            <span>{content && content.replace(imgPartten, '[图片]').replace(htmlTagParttrn, '')}</span>
+            <span dangerouslySetInnerHTML={{ __html: content && content.replace(imgPartten, '[图片]').replace(htmlTagParttrn, '') }} />
           </div>
           <div className={`${prefixCls}-buttons`}>
             <Button onClick={this.handleClose}>关闭提示</Button>
