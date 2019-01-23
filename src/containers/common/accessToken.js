@@ -30,6 +30,7 @@ export function setAccessToken(token, tokenType, expiresIn) {
   if (!LOCAL && !localReg.test(window.location.host) && getCookie(ACCESS_DOMAIN) === null) {
     option.domain = COOKIE_SERVER;
   }
+  window.localStorage.removeItem('lastClosedId');
   setCookie(ACCESS_TOKEN, token, option);
   setCookie(TOKEN_TYPE, tokenType, option);
   cachedToken = token;

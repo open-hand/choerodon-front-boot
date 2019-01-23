@@ -62,7 +62,8 @@ class MenuStore {
       this.statistics[level][code] = { count: 1, name };
     }
     this.counter += 1;
-    if (this.counter > BATCH_SIZE) {
+    const postData = Object.keys(this.statistics).map(type => ({ level: type, menus: Object.keys(this.statistics[type]).map(mCode => ({ mCode, ...this.statistics[type][mCode] })) }));
+    if (postData.reduce((p, cur) => p + cur.menus.reduce((menusP, menusCur) => menusP + menusCur.count, 0), 0) >= BATCH_SIZE) {
       this.uploadStatistics();
       this.counter = 0;
     }
