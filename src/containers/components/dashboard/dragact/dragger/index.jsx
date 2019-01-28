@@ -400,7 +400,7 @@ export default class Dragger extends React.Component {
       const provided = {
         style: {
           ...style,
-          touchAction: 'none!important',
+          touchAction: 'none',
           transform: `translate3d(${x}px,${y}px,0px)`,
           width: w,
           height: h,
