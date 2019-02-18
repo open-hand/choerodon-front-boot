@@ -17,6 +17,7 @@ import WSProvider from '../{{ source }}/containers/components/ws/WSProvider';
 import PermissionProvider from '../{{ source }}/containers/components/permission/PermissionProvider';
 import '../{{ source }}/containers/components/style';
 
+const outwardPath = ['#/organization/register-organization', '#/organization/register-organization/agreement'];
 const { confirm } = Modal;
 const UILocaleProviderAsync = asyncRouter(() => import('choerodon-ui/lib/locale-provider'), {
   locale: () => import(`choerodon-ui/lib/locale-provider/${AppState.currentLanguage}.js`),
@@ -64,7 +65,7 @@ class App extends Component {
   render() {
     const language = AppState.currentLanguage;
     const IntlProviderAsync = asyncLocaleProvider(language, () => import(`../{{ source }}/containers/locale/${language}`), () => import(`react-intl/locale-data/${language.split('_')[0]}`));
-    if (window.location.hash === '#/organization/register-organization') {
+    if (outwardPath.includes(window.location.hash)) {
       return (
         <UILocaleProviderAsync>
           <IntlProviderAsync>
