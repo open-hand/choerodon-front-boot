@@ -5,6 +5,7 @@ import { authorize } from '../../common';
 import './style';
 import AppState from '../../stores/AppState';
 
+const outwardPath = ['/organization/register-organization', '/organization/register-organization/agreement'];
 @withRouter
 @inject('AppState')
 @observer
@@ -37,7 +38,7 @@ class Outward extends Component {
 
   render() {
     const { AutoRouter } = this.props;
-    if (this.props.location.pathname === '/organization/register-organization') {
+    if (outwardPath.includes(this.props.location.pathname)) {
       return (
         <div className="page-wrapper">
           <AutoRouter />
