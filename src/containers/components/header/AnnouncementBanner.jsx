@@ -33,7 +33,7 @@ export default class AnnouncementBanner extends Component {
           className={classNames(`${prefixCls}`, className)}
         >
           <div className={`${prefixCls}-info`}>
-            <Icon type="info" style={{ fontSize: 20, color: '#ff2825' }} />
+            <Icon type="info" style={{ fontSize: 24, color: '#d50000' }} />
             <span dangerouslySetInnerHTML={{ __html: content && content.replace(imgPartten, '[图片]').replace(htmlTagParttrn, '') }} />
           </div>
           <div className={`${prefixCls}-buttons`}>
