@@ -36,12 +36,13 @@ class DashboardOracle(Dashboard):
                 position = json.dumps(dashboard["position"]) if "position" in dashboard else ""
                 needRoles = 1 if "needRoles" in dashboard and (dashboard["needRoles"] == True) else 0
                 if Id:
-                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}', POSITION='{position}', NEED_ROLES='{needRoles}'"
+                    sql = "UPDATE {table} SET CODE='{code}', FD_LEVEL='{level}', DESCRIPTION='{description}', ICON='{icon}', SORT='{sort}', IS_ENABLED='{enabled}', NAMESPACE='{namespace}', POSITION='{position}', NEED_ROLES='{needRoles}'"
                     sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
                         table=table,
                         code=dashboard["code"],
                         namespace=dashboard["namespace"],
                         level=dashboard["level"],
+                        description=dashboard["description"],
                         icon=dashboard["icon"],
                         sort=dashboard["sort"],
                         enabled=enabled,

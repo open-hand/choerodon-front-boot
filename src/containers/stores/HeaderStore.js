@@ -236,8 +236,19 @@ class HeaderStore {
         .map(recent => omit(recent, 'children'));
     }
     return recents.filter(
-      value => findDataIndex(this.orgData, value) !== -1
-        || findDataIndex(this.proData, value) !== -1,
+      (value) => {
+        let idx = -1;
+        switch (value.type) {
+          case ORGANIZATION_TYPE:
+            idx = findDataIndex(this.orgData, value);
+            return idx !== -1 && this.orgData[idx].into;
+          case PROJECT_TYPE:
+            idx = findDataIndex(this.proData, value);
+            return idx !== -1;
+          default:
+            return false;
+        }
+      },
     );
   }
 
