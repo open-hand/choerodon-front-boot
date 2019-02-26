@@ -33,6 +33,7 @@ export default function updateWebpackConfig(mode, env) {
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
     modifyVars: Object.assign({}, getDefaultTheme(), theme),
+    javascriptEnabled: true,
   });
 
   let defaultEnterPoints;
