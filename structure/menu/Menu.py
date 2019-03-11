@@ -154,6 +154,18 @@ class Menu(object):
         except:
             self.dealFault()
 
+    def updateMenuCategory(self, table, code, level, category):
+        try:
+            sql = "UPDATE {table} set CATEGORY='{category}' WHERE CODE = '{code}' AND FD_LEVEL = '{level}'".format(
+                table=table,
+                code=code,
+                level=level,
+                category=category)
+            self.cursor.execute(sql)
+            self.logger.debug("sql: [" + sql + "]")
+        except:
+            self.dealFault()
+
     def dealFault(self):
         traceback.print_exc()
         self.db.rollback()

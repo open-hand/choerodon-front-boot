@@ -81,6 +81,9 @@ class MenuMysql(Menu):
                                         sort=dataMenu[service][level][menuList]["sort"])
                                     self.cursor.execute(sql)
                                     self.logger.debug("sql: [" + sql + "]")
+                                if 'category' in dataMenu[service][level][menuList]:
+                                    self.updateMenuCategory(table, menuList, level, dataMenu[service][level][menuList]["category"])
+                                    
                             else:
                                 if serviceId and ('ID' in serviceId):
                                     sql = "UPDATE {table} set CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}', ROUTE='{route}'"
@@ -206,6 +209,9 @@ class MenuMysql(Menu):
                         parent_id=parent["ID"])
                     self.cursor.execute(sql)
                     self.logger.debug("sql: [" + sql + "]")
+                    
+                    if 'category' in dir:
+                        self.updateMenuCategory(table, dir["code"], dir["level"], dir["category"])
 
                     dirId = self.cursor.lastrowid
                     self.insertMenuTl("IAM_MENU_TL", 'en_US', dirId, dir["enName"])
