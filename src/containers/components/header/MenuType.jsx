@@ -151,6 +151,32 @@ export default class MenuType extends Component {
     });
   };
 
+  getIconType = (record) => {
+    if (record.type === 'project') {
+      switch (record.category) {
+        case 'AGILE': return 'project';
+        case 'PROGRAM': return 'project_program';
+        case 'ANALYTICAL': return 'project_program_analyze';
+        default: return 'project';
+      }
+    } else {
+      return 'domain';
+    }
+  };
+
+  getTypeString = (record) => {
+    if (record.type === 'project') {
+      switch (record.category) {
+        case 'AGILE': return '敏捷项目';
+        case 'PROGRAM': return '普通项目群';
+        case 'ANALYTICAL': return '分析型项目群';
+        default: return 'project';
+      }
+    } else {
+      return '组织'; // style fix
+    }
+  };
+
   renderTable(dataSource, isNotRecent) {
     const { HeaderStore } = this.props;
     if (dataSource && dataSource.length) {
@@ -171,7 +197,7 @@ export default class MenuType extends Component {
                 role="none"
                 onClick={this.selectState.bind(this, record)}
               >
-                <Icon type={record.type === 'project' ? 'project' : 'domain'} />
+                <Icon type={this.getIconType(record)} />
                 {text}
               </a>
             </React.Fragment>
@@ -181,7 +207,7 @@ export default class MenuType extends Component {
         title: '编码',
         dataIndex: 'code',
         key: 'code',
-        width: '80px',
+        width: '120px',
         render: (text, record) => {
           if (record.into === false) {
             return (
@@ -196,15 +222,16 @@ export default class MenuType extends Component {
         title: '类型',
         dataIndex: 'type',
         key: 'type',
+        width: 116,
         render: (text, record) => {
           if (record.into === false) {
             return (
               <span className={`${prefixCls}-disabled`}>
-                {text === 'organization' ? '组织' : '项目'}
+                {this.getTypeString(record)}
               </span>
             );
           }
-          return text === 'organization' ? '组织' : '项目';
+          return this.getTypeString(record);
         },
       }];
       const selected = HeaderStore.getSelected;
