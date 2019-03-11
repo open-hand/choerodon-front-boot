@@ -122,6 +122,9 @@ class MenuOracle(Menu):
                                         sort=dataMenu[service][level][menuList]["sort"])
                                     self.cursor.execute(sql)
                                     self.logger.debug("sql: [" + sql + "]")
+                                    
+                                    if 'category' in dataMenu[service][level][menuList]:
+                                        self.updateMenuCategory(table, menuList, level, dataMenu[service][level][menuList]["category"])
                             else:
                                 if serviceId:
                                     sql = "UPDATE {table} SET CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}', ROUTE='{route}'"
