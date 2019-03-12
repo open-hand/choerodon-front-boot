@@ -112,7 +112,7 @@ if __name__ == '__main__':
     parser.add_argument('-p','--port', type=int, help='databse port', dest="port", default=3306)
     parser.add_argument('-u','--user', help='databse user', dest="user", default="choerodon")
     parser.add_argument('-s','--secret', help='databse password', dest="passwd", default="123456")
-    parser.add_argument('-a','--attrs', help='enable update attrs, it can include sort & parent_id, you can use "port,parent_id" to update menu attrs', dest="attrs", default="")
+    parser.add_argument('-a','--attrs', help='enable update attrs, it can include sort & parent_id, you can use "sort,parent_id" to update menu attrs', dest="attrs", default="")
     parser.add_argument('-d','--delete', type=bool, help='enable delete menu', dest="delete", default=False)
     parser.add_argument('-t','--type', help='mysql/oracle', dest="dbType", default="mysql")
     parser.add_argument('-x', '--debug', type=bool, help='enable debug log', dest="debug", default=False)

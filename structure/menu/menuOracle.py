@@ -108,41 +108,40 @@ class MenuOracle(Menu):
                 for level in centerLevel:
                     for menuList in dataMenu[service][level]:
                         serviceId = self.returnMenuId(table, service, level)
-                        if dataMenu[service][level][menuList]:
+                        if dataMenu[service][level][menuList] and (serviceId and ('ID' in serviceId)):
                             if self.judgeTrue(table, 'CODE', menuList):
-                                if serviceId:
-                                    sql = "INSERT INTO {table} (ID, CODE, NAME, FD_LEVEL, PARENT_ID, TYPE, IS_DEFAULT, ICON, ROUTE, SORT) VALUES (IAM_MENU_S.nextval, '{code}', '{name}', '{level}', '{parent_id}', 'menu', 1, '{icon}', '{route}', '{sort}')".format(
-                                        table=table,
-                                        code=menuList,
-                                        name=dataLanguageChinese[menuList],
-                                        level=level,
-                                        parent_id=serviceId[0],
-                                        icon=dataMenu[service][level][menuList]["icon"],
-                                        route=dataMenu[service][level][menuList]["Routes"],
-                                        sort=dataMenu[service][level][menuList]["sort"])
-                                    self.cursor.execute(sql)
-                                    self.logger.debug("sql: [" + sql + "]")
-                                    
-                                    if 'category' in dataMenu[service][level][menuList]:
-                                        self.updateMenuCategory(table, menuList, level, dataMenu[service][level][menuList]["category"])
+                                sql = "INSERT INTO {table} (ID, CODE, NAME, FD_LEVEL, PARENT_ID, TYPE, IS_DEFAULT, ICON, ROUTE, SORT) VALUES (IAM_MENU_S.nextval, '{code}', '{name}', '{level}', '{parent_id}', 'menu', 1, '{icon}', '{route}', '{sort}')".format(
+                                    table=table,
+                                    code=menuList,
+                                    name=dataLanguageChinese[menuList],
+                                    level=level,
+                                    parent_id=serviceId[0],
+                                    icon=dataMenu[service][level][menuList]["icon"],
+                                    route=dataMenu[service][level][menuList]["Routes"],
+                                    sort=dataMenu[service][level][menuList]["sort"])
+                                self.cursor.execute(sql)
+                                self.logger.debug("sql: [" + sql + "]")
+
                             else:
-                                if serviceId:
-                                    sql = "UPDATE {table} SET CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}', ROUTE='{route}'"
-                                    if self.attrs and ('sort' in self.attrs):
-                                        sql = sql + ", SORT='{sort}'";
-                                    if self.attrs and ('parent_id' in self.attrs):
-                                        sql = sql + ", PARENT_ID='{parent_id}'";
-                                    sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
-                                        table=table,
-                                        code=menuList,
-                                        name=dataLanguageChinese[menuList],
-                                        level=level,
-                                        parent_id=serviceId[0],
-                                        icon=dataMenu[service][level][menuList]["icon"],
-                                        route=dataMenu[service][level][menuList]["Routes"],
-                                        sort=dataMenu[service][level][menuList]["sort"])
-                                    self.cursor.execute(sql)
-                                    self.logger.debug("sql: [" + sql + "]")
+                                sql = "UPDATE {table} SET CODE='{code}', NAME='{name}', FD_LEVEL='{level}', ICON='{icon}', ROUTE='{route}'"
+                                if self.attrs and ('sort' in self.attrs):
+                                    sql = sql + ", SORT='{sort}'";
+                                if self.attrs and ('parent_id' in self.attrs):
+                                    sql = sql + ", PARENT_ID='{parent_id}'";
+                                sql = (sql + " WHERE CODE='{code}' AND FD_LEVEL='{level}'").format(
+                                    table=table,
+                                    code=menuList,
+                                    name=dataLanguageChinese[menuList],
+                                    level=level,
+                                    parent_id=serviceId[0],
+                                    icon=dataMenu[service][level][menuList]["icon"],
+                                    route=dataMenu[service][level][menuList]["Routes"],
+                                    sort=dataMenu[service][level][menuList]["sort"])
+                                self.cursor.execute(sql)
+                                self.logger.debug("sql: [" + sql + "]")
+                                                                
+                            if 'category' in dataMenu[service][level][menuList]:
+                                self.updateMenuCategory(table, menuList, level, dataMenu[service][level][menuList]["category"])
         except:
             self.dealFault()
     # insert IAM_MENU_PERMISSION
