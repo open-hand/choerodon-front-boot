@@ -22,9 +22,12 @@ const outwardPath = ['/organization/register-organization', '/organization/regis
 function parseQueryToMenuType(search) {
   const menuType = {};
   if (search) {
-    const { type, name, id, organizationId } = queryString.parse(search);
+    const { type, name, id, organizationId, category } = queryString.parse(search);
     if (type) {
       menuType.type = type;
+    }
+    if (category) {
+      menuType.category = category;
     }
     if (name) {
       menuType.name = name;

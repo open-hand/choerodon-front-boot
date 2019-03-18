@@ -92,7 +92,7 @@ export default class MenuType extends Component {
   // 选择组织和项目数据
   selectState = (value) => {
     const { AppState, HeaderStore, MenuStore, history } = this.props;
-    const { id, name, type, organizationId } = value;
+    const { id, name, type, organizationId, category } = value;
     HeaderStore.setRecentItem(value);
     MenuStore.loadMenuData({ type, id }, false).then((menus) => {
       let route;
@@ -104,7 +104,7 @@ export default class MenuType extends Component {
         domain = menuDomain;
       }
       if (route) {
-        path = `/?type=${type}&id=${id}&name=${encodeURIComponent(name)}`;
+        path = `/?type=${type}&id=${id}&name=${encodeURIComponent(name)}${category ? `&category=${category}` : ''}`;
         if (organizationId) {
           path += `&organizationId=${organizationId}`;
         }
@@ -152,7 +152,7 @@ export default class MenuType extends Component {
   };
 
   getIconType = (record) => {
-    if (record.type === 'project') {
+    if (record && record.type === 'project') {
       switch (record.category) {
         case 'AGILE': return 'project';
         case 'PROGRAM': return 'project_program';
@@ -408,7 +408,7 @@ export default class MenuType extends Component {
   render() {
     const { handlesearch, searchValue } = this.state;
     const {
-      AppState: { currentMenuType: { name: selectTitle = '选择项目', type } },
+      AppState: { currentMenuType: { name: selectTitle = '选择项目', type, category } },
       HeaderStore: { menuTypeVisible: visible },
     } = this.props;
     const buttonClass = classnames(`${prefixCls}-button`, { active: type === 'organization' || type === 'project' });
@@ -421,7 +421,7 @@ export default class MenuType extends Component {
           funcType="flat"
           onClick={this.showModal}
         >
-          {buttonIcon && <Icon type={buttonIcon} />}
+          {buttonIcon && <Icon type={this.getIconType({ category, type })} />}
           {selectTitle}
           <Icon type="arrow_drop_down" />
         </Button>
