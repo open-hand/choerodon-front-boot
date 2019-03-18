@@ -137,7 +137,7 @@ export default class CommonMenu extends Component {
 
   getMenuLink(route) {
     const { AppState } = this.props;
-    const { id, name, type, organizationId } = AppState.currentMenuType;
+    const { id, name, type, organizationId, category } = AppState.currentMenuType;
     let search = '';
     switch (type) {
       case 'site':
@@ -147,7 +147,7 @@ export default class CommonMenu extends Component {
         break;
       case 'organization':
       case 'project':
-        search = `?type=${type}&id=${id}&name=${encodeURIComponent(name)}`;
+        search = `?type=${type}&id=${id}&name=${encodeURIComponent(name)}&category=${category}`;
         if (organizationId) {
           search += `&organizationId=${organizationId}`;
         }

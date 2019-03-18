@@ -109,6 +109,7 @@ class AppState {
     sessionStorage.menType = JSON.stringify(type);
     sessionStorage.selectData = JSON.stringify(type);
     sessionStorage.type = type.type;
+    sessionStorage.category = type.category;
     this.menuType = type;
   }
 
