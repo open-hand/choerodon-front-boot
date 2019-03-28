@@ -23,11 +23,21 @@ $c7n-boot-header-menu-type: #{$c7n-prefix}-boot-header-menu-type;
   }
   &-modal {
     .ant-table {
+      .ant-table-row-level-0 {
+        a {
+          max-width: 250px;
+        }
+      }
+      .ant-table-row-level-1 {
+        a {
+          max-width: 230px;
+        }
+      }
       a {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 250px;
+        // max-width: 250px;
         display: inline-block;
         color: #000;
         &:hover {
@@ -61,6 +71,11 @@ $c7n-boot-header-menu-type: #{$c7n-prefix}-boot-header-menu-type;
   }
   &-disabled {
     color: rgba(0, 0, 0, 0.36);
+    display: inline-block;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   &-toolbar {
     display: flex;
