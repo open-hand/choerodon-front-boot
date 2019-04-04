@@ -29,6 +29,7 @@ const defaultConfig = {
   server: 'http://api.example.com',
   fileServer: 'http://file.example.com',
   webSocketServer: 'ws://ws.example.com',
+  apimGateway: 'http://apim.example.com',
   clientid: 'localhost',
   titlename: 'Choerodon | 企业级数字服务平台',
   favicon: 'favicon.ico',
