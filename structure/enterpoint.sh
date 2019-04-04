@@ -10,7 +10,7 @@ find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:cookieServer
 find /usr/share/nginx/html -name '*.html' | xargs sed -i "s localhost:titlename $PRO_TITLE_NAME g"
 find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:fileserver $PRO_FILE_SERVER g"
 find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:wsserver $PRO_WEBSOCKET_SERVER g"
-find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:apimgateway $PRO_WEBSOCKET_SERVER g"
+find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:apimgateway $PRO_APIM_GATEWAY g"
 
 exec "$@"
 
