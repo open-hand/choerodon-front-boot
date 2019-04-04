@@ -9,6 +9,7 @@ const enterPoints = {
   TITLE_NAME: 'localhost:titlename',
   FILE_SERVER: 'localhost:fileserver',
   WEBSOCKET_SERVER: 'localhost:wsserver',
+  APIM_GATEWAY: 'localhost:apimgateway',
 };
 
 export default function getEnterPointsConfig() {
