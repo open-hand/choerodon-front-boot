@@ -4,6 +4,7 @@ export const TOKEN_TYPE = 'token_type';
 export const ACCESS_DOMAIN = 'domain';
 export const STRING_DEVIDER = '__@.@__';
 export const API_HOST = `${process.env.API_HOST}`;
+export const APIM_GATEWAY = `${process.env.APIM_GATEWAY}`;
 export const AUTH_HOST = `${process.env.AUTH_HOST}`;
 export const CLIENT_ID = `${process.env.CLIENT_ID}`;
 export const AUTH_URL = `${AUTH_HOST}/oauth/authorize?response_type=token&client_id=${CLIENT_ID}&state=`;

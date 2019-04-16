@@ -28,7 +28,7 @@ export default function updateWebpackConfig(mode, env) {
   const { choerodonConfig } = context;
   const {
     theme, output, root, enterPoints, server, fileServer, webSocketServer, clientid, local,
-    postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard, guide,
+    postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard, guide, apimGateway,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
@@ -56,6 +56,7 @@ export default function updateWebpackConfig(mode, env) {
       VERSION: '本地',
       FILE_SERVER: fileServer,
       WEBSOCKET_SERVER: webSocketServer,
+      APIM_GATEWAY: apimGateway,
     };
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;
