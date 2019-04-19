@@ -1,7 +1,8 @@
 import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import openBrowser from 'react-dev-utils/openBrowser';
+// import openBrowser from 'react-dev-utils/openBrowser';
+import OpenBrowserPlugin from 'open-browser-webpack-plugin';
 import updateWebpackConfig from '../config/updateWebpackConfig';
 import context from './common/context';
 import generateEntryFile from './common/generateEntryFile';
@@ -11,6 +12,7 @@ import installSubmoduleDependencies from './common/installSubmoduleDependencies'
 
 function run(mainPackage, dev) {
   const { choerodonConfig: { entryName, devServerConfig, output, port } } = context;
+
   generateEntryFile(
     mainPackage,
     entryName,
@@ -19,6 +21,7 @@ function run(mainPackage, dev) {
 
   const webpackConfig = updateWebpackConfig('start', 'development');
   webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
+  webpackConfig.plugins.push(new OpenBrowserPlugin({ url: `http://localhost:${port}` }));
   const serverOptions = {
     quiet: true,
     hot: true,
@@ -43,7 +46,9 @@ function run(mainPackage, dev) {
   const server = new WebpackDevServer(compiler, serverOptions);
   server.listen(
     port, '0.0.0.0',
-    () => openBrowser(`http://localhost:${port}`),
+    () => {
+      // openBrowser(`http://localhost:${port}`)
+    },
   );
 }
 
