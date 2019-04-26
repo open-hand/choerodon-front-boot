@@ -13,6 +13,7 @@ const jsFileName = '[name].[hash:8].js';
 const jsChunkFileName = 'chunks/[name].[chunkhash:5].chunk.js';
 const cssFileName = '[name].[contenthash:8].css';
 const assetFileName = 'assets/[name].[hash:8].[ext]';
+let processTimer;
 
 function getAssetLoader(mimetype, limit = 10000) {
   return {
@@ -43,14 +44,31 @@ export default function getWebpackCommonConfig(mode, env) {
     new CaseSensitivePathsPlugin(),
     new webpack.ProgressPlugin((percentage, msg, addInfo) => {
       const stream = process.stderr;
-      if (stream.isTTY && percentage < 0.71) {
-        stream.cursorTo(0);
-        stream.write(`📦  ${chalk.magenta(msg)} (${chalk.magenta(addInfo)})`);
-        stream.clearLine(1);
-      } else if (percentage === 1) {
-        /* eslint-disable */
-        console.log(chalk.green('\nwebpack: bundle build is now finished.'));
-        /* eslint-enable */
+      if (stream.isTTY) {
+        if (stream.isTTY && percentage < 0.71) {
+          stream.cursorTo(0);
+          stream.write(`📦  ${chalk.magenta(msg)} (${chalk.magenta(addInfo)})`);
+          stream.clearLine(1);
+        } else if (percentage === 1) {
+          // eslint-disable-next-line no-console
+          console.log(chalk.green('\nwebpack: bundle build is now finished.'));
+        }
+      } else {
+        const outputStr = '📦  bundleing!';
+        if (percentage !== 1 && !processTimer) {
+          // eslint-disable-next-line no-console
+          console.log(`📦  bundleing!  ${new Date()}`);
+          processTimer = setInterval(() => {
+            // eslint-disable-next-line no-console
+            console.log(`📦  bundleing!  ${new Date()}`);
+          }, 1000 * 30);
+        } else if (percentage === 1) {
+          // eslint-disable-next-line no-console
+          console.log(chalk.green('\nwebpack: bundle build is now finished.'));
+          if (processTimer) {
+            clearInterval(processTimer);
+          }
+        }
       }
     }),
     new FriendlyErrorsWebpackPlugin(),
