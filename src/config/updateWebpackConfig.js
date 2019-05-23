@@ -8,6 +8,8 @@ import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getEnterPointsConfig from './getEnterPointsConfig';
 import getWebpackCommonConfig from './getWebpackCommonConfig';
 import getDefaultTheme from './getDefaultTheme';
+import getPackagePath from '../bin/common/getPackagePath';
+import getProjectType from '../bin/common/getProjectType';
 
 const choerodonLib = join(__dirname, '..');
 
@@ -24,16 +26,19 @@ function getFilePath(file) {
 }
 
 export default function updateWebpackConfig(mode, env) {
+  const pkgPath = getPackagePath();
+  const pkg = require(pkgPath);
+  const { isChoerodon, projectType } = getProjectType();
   const webpackConfig = getWebpackCommonConfig(mode, env);
   const { choerodonConfig } = context;
   const {
-    theme, output, root, enterPoints, server, fileServer, webSocketServer, clientid, local,
-    postcssConfig, entryName, titlename, htmlTemplate, favicon, dashboard, guide, apimGateway,
+    theme, output, root, enterPoints, server, webSocketServer, local,
+    postcssConfig, entryName, titlename, htmlTemplate, favicon, menuTheme,
+    clientid, dashboard, resourcesLevel, apimGateway,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
-    modifyVars: Object.assign({}, getDefaultTheme(), theme),
-    javascriptEnabled: true,
+    modifyVars: Object.assign({}, getDefaultTheme(env), theme),
   });
 
   let defaultEnterPoints;
@@ -50,17 +55,17 @@ export default function updateWebpackConfig(mode, env) {
     });
     defaultEnterPoints = {
       API_HOST: server,
-      AUTH_HOST: `${server}/oauth`,
+      AUTH_HOST: isChoerodon ? `${server}/oauth` : server,
       CLIENT_ID: clientid,
       LOCAL: local,
       VERSION: '本地',
-      FILE_SERVER: fileServer,
+      TITLE_NAME: titlename,
       WEBSOCKET_SERVER: webSocketServer,
       APIM_GATEWAY: apimGateway,
     };
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;
-    webpackConfig.output.path = join(process.cwd(), output);
+    webpackConfig.output.path = join(process.cwd(), 'src', 'main', 'resources', 'lib', output);
     styleLoadersConfig.forEach((config) => {
       webpackConfig.module.rules.push({
         test: config.test,
@@ -69,13 +74,27 @@ export default function updateWebpackConfig(mode, env) {
         }),
       });
     });
-    defaultEnterPoints = getEnterPointsConfig();
+    if (isChoerodon) {
+      defaultEnterPoints = getEnterPointsConfig();
+    } else {
+      defaultEnterPoints = {
+        API_HOST: server,
+        AUTH_HOST: server,
+        LOCAL: local,
+        VERSION: '本地',
+        TITLE_NAME: titlename,
+        WEBSOCKET_SERVER: '',
+      };
+    }
   }
   /* eslint-enable no-param-reassign */
   const mergedEnterPoints = {
     NODE_ENV: env,
+    MENU_THEME: menuTheme,
     USE_DASHBOARD: !!dashboard,
-    USE_GUIDE: !!guide,
+    SERVICES_CONFIG: JSON.stringify(pkg.servicesConfig || []),
+    RESOURCES_LEVEL: Array.isArray(resourcesLevel) ? resourcesLevel.join(',') : resourcesLevel,
+    TYPE: projectType,
     ...defaultEnterPoints,
     ...enterPoints(mode, env),
   };
@@ -90,12 +109,18 @@ export default function updateWebpackConfig(mode, env) {
   }
   const entryPath = join(choerodonLib, '..', 'tmp', `entry.${entryName}.js`);
   customizedWebpackConfig.entry[entryName] = entryPath;
+  if (!isChoerodon) {
+    const entryWithoutSiderPath = join(choerodonLib, '..', 'tmp', 'entry.withoutsider.js');
+    customizedWebpackConfig.entry.withoutsider = entryWithoutSiderPath;
+  }
   customizedWebpackConfig.plugins.push(
     new webpack.DefinePlugin(defines),
     new HtmlWebpackPlugin({
       title: process.env.TITLE_NAME || titlename,
       template: getFilePath(htmlTemplate),
+      // fileName: 'index.html',
       inject: true,
+      chunks: ['vendor', entryName],
       favicon: getFilePath(favicon),
       minify: {
         html5: true,
@@ -107,5 +132,25 @@ export default function updateWebpackConfig(mode, env) {
       },
     }),
   );
+  if (!isChoerodon) {
+    customizedWebpackConfig.plugins.push(
+      new HtmlWebpackPlugin({
+        title: process.env.TITLE_NAME || titlename,
+        template: getFilePath(htmlTemplate),
+        chunks: ['vendor', 'withoutsider'],
+        filename: 'withoutsider.html',
+        inject: true,
+        favicon: getFilePath(favicon),
+        minify: {
+          html5: true,
+          collapseWhitespace: true,
+          removeComments: true,
+          removeTagWhitespace: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+        },
+      }),
+    );
+  }
   return customizedWebpackConfig;
 }

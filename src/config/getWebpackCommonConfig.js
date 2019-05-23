@@ -5,23 +5,27 @@ import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import chalk from 'chalk';
+import getProjectType from '../bin/common/getProjectType';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getTSCommonConfig from './getTSCommonConfig';
 import context from '../bin/common/context';
+import getPackagePath from '../bin/common/getPackagePath';
 
-const jsFileName = '[name].[hash:8].js';
-const jsChunkFileName = 'chunks/[name].[chunkhash:5].chunk.js';
-const cssFileName = '[name].[contenthash:8].css';
-const assetFileName = 'assets/[name].[hash:8].[ext]';
+const jsFileName = 'dis/[name].[hash:8].js';
+const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
+const cssFileName = 'dis/[name].[contenthash:8].css';
+const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 let processTimer;
 
-function getAssetLoader(mimetype, limit = 10000) {
+function getAssetLoader(env, mimetype, limit = 10000) {
+  const { isChoerodon, isSingle } = getProjectType();
   return {
     loader: 'url-loader',
     options: {
       limit,
       mimetype,
       name: assetFileName,
+      publicPath: env === 'production' && (!isChoerodon) ? '/lib/dist/' : undefined,
     },
   };
 }
@@ -34,6 +38,7 @@ export default function getWebpackCommonConfig(mode, env) {
   const plugins = [
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
+      filename: 'dis/[name].[hash:5].js',
       minChunks: Infinity,
     }),
     new ExtractTextPlugin({
@@ -75,7 +80,6 @@ export default function getWebpackCommonConfig(mode, env) {
     new webpack.ProvidePlugin({
       Choerodon: isDev ? join(process.cwd(), 'src/containers/common') : join(__dirname, '../containers/common'),
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
   ];
 
   if (env === 'production') {
@@ -141,27 +145,27 @@ export default function getWebpackCommonConfig(mode, env) {
         },
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader('application/font-woff'),
+          use: getAssetLoader(env, 'application/font-woff'),
         },
         {
           test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader('application/font-woff'),
+          use: getAssetLoader(env, 'application/font-woff'),
         },
         {
           test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader('application/octet-stream'),
+          use: getAssetLoader(env, 'application/octet-stream'),
         },
         {
           test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader('application/vnd.ms-fontobject'),
+          use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader('image/svg+xml'),
+          use: getAssetLoader(env, 'image/svg+xml'),
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
-          use: getAssetLoader(),
+          use: getAssetLoader(env),
         },
         {
           test: /\.json$/,

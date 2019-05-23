@@ -1,0 +1,144 @@
+.tab-bar-wrap {
+  a {
+    text-decoration: none;
+  }
+
+  .tab-bar-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 40px;
+    background: #f0f0f0;
+
+    .tab {
+      display: inline-flex;
+      position: relative;
+      align-items: center;
+      height: 40px;
+      // padding-left: 15.5px;
+      // padding-right: 13.5px;
+      font-size: 14px;
+      line-height: 40px;
+      // border-top: 3px solid transparent;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgba(0, 0, 0, 0.54);
+      background: #fff;
+
+      .li-wrapper {
+        background: #f0f0f0;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 1px;
+        height: 20px;
+        border-right: 1px solid rgba(0, 0, 0, 0.54);
+      }
+
+      .icon-wrapper {
+        width: 50px;
+        height: 40px;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      .icon {
+        position: absolute;
+        right: 13.5px;
+        top: 0;
+        // display: none;
+        line-height: 40px;
+      }
+
+      &:hover {
+        .icon {
+          // display: block;
+        }
+      }
+    }
+
+    .tab-active {
+      background: #fff;
+      // border-top-color: #3f51b5;
+      color: #000;
+
+      &::before {
+        content: '';
+        display: none;
+      }
+
+      .li-wrapper {
+        background: #fff;
+      }
+    }
+
+    .tab-active-before {
+      .li-wrapper {
+        border-radius: 0 0 4px 0;
+
+        .icon-wrapper {
+          border-radius: 0 0 4px 0;
+        }
+      }
+    }
+
+    .tab-active-after {
+      .li-wrapper {
+        border-radius: 0 0 0 4px;
+
+        .icon-wrapper {
+          border-radius: 0 0 0 4px;
+        }
+      }
+    }
+
+    .tab-active + .tab::before {
+      content: '';
+      display: none;
+    }
+
+    .tab:first-child::before {
+      content: '';
+      display: none;
+    }
+
+    .tab-hover:hover {
+      // background: #f8f8f8;
+
+      .icon-wrapper {
+        background: linear-gradient(to right, rgba(221, 221, 221, 0), #f8f8f8 40%, #f8f8f8) !important;
+      }
+
+      .li-wrapper {
+        background: #f8f8f8;
+      }
+    }
+  }
+
+  .tab-bar-without-tab {
+    height: 48px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 0 20px;
+    line-height: 48px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .action {
+      color: #3f51b5;
+      cursor: pointer;
+
+      span {
+        font-size: 13px;
+        line-height: 15px;
+      }
+    }
+  }
+}

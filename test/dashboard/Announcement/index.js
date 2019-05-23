@@ -2,9 +2,9 @@ import React, { Component, Fragment } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Icon } from 'choerodon-ui';
 import './index.scss';
-import NavBar from '../../../src/containers/components/dashboard/Navbar';
-import ToolBar from '../../../src/containers/components/dashboard/Toolbar';
-import Action from '../../../src/containers/components/action';
+import NavBar from '../../../src/containers/components/c7n/dashboard/Navbar';
+import ToolBar from '../../../src/containers/components/c7n/dashboard/Toolbar';
+import Action from '../../../src/containers/components/c7n/action';
 
 export default class Announcement extends Component {
   state = {

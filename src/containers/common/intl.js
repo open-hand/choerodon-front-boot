@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppState from '../stores/AppState';
+import AppState from '../stores/c7n/AppState';
 
 /**
  * 多语言

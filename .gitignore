@@ -34,3 +34,7 @@ testwork/test/test
 
 *.pyc
 *.spec
+
+target
+
+src/main

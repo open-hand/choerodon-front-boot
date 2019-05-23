@@ -1,0 +1,103 @@
+@import "~choerodon-ui/lib/style/themes/default";
+
+.menu-content {
+  width: 250px;
+  height: c(calc(100vh - 48px));
+  background: #fafafa;
+  border-right: 1px solid #d3d3d3;
+  display: flex;
+  flex-direction: column;
+  transition: width .25s;
+
+  .menu-head {
+    height: 48px;
+    line-height: 48px;
+    padding: 0 20px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.65);
+
+    .icon {
+      line-height: inherit;
+      vertical-align: top;
+
+      & + span {
+        display: inline-block;
+        margin-left: 14px;
+      }
+    }
+
+    .menu-head-collapsed {
+      display: none !important;
+    }
+  }
+
+  .menu-head-dark {
+    color: @menu-dark-color;
+
+    &:hover {
+      color: @menu-dark-highlight-color;
+    }
+  }
+
+  .menu-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .c7n-hap-menu {
+      background: transparent;
+    }
+
+    .c7n-menu {
+      background: transparent !important;
+
+      .icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin-right: 17px;
+      }
+
+      &-item,
+      &-submenu > .c7n-menu-submenu-title {
+        padding: 0 15px;
+      }
+    }
+
+    .c7n-menu-inline-collapsed {
+      width: 50px !important;
+    }
+  }
+
+  .menu-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    height: 58px;
+    line-height: 57px;
+    padding: 0 20px;
+    cursor: pointer;
+  }
+
+  .c7n-hap-menu-submenu-title-selected {
+    // color: rgba(0, 0, 0, 0.65);
+  }
+}
+
+.menu-collapsed {
+  width: 50px;
+
+  .menu-head,
+  .menu-footer {
+    padding: 0 15px;
+  }
+
+  .c7n-menu {
+    &-submenu > .c7n-menu-submenu-title {
+      padding: 0 15px!important;
+    }
+  }
+}
+
+.menu-content-dark {
+  background: @menu-dark-bg;
+  color: @menu-dark-color;
+}

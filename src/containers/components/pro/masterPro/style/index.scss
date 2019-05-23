@@ -1,0 +1,50 @@
+.master-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+
+  .master-body {
+    flex: 1;
+    display: flex;
+
+    .master-content-wrapper {
+      background-color: #fff;
+      position: relative;
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      height: 100%;
+
+      .master-content-container {
+        flex: 1;
+        flex-direction: column;
+        background-color: #fff;
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 100%;
+
+        .master-container {
+          display: flex;
+          flex-flow: column;
+          flex-grow: 1;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+
+          .master-content {
+            flex-grow: 1;
+            overflow: auto;
+            margin: 0 !important;
+            position: relative;
+
+            & > div {
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="40px" height="36px" viewBox="0 0 40 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>browser</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="首页" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-220.000000, -914.000000)" fill-rule="nonzero" id="开发手册">
+            <g transform="translate(200.000000, 864.000000)">
+                <g id="Group" transform="translate(0.000000, 32.000000)">
+                    <g id="browser" transform="translate(20.000000, 18.000000)">
+                        <path d="M37.8679365,35.4730159 L2.13206349,35.4730159 C0.968095238,35.4730159 0.0244444444,34.5295238 0.0244444444,33.3653968 L0.0244444444,2.26396825 C0.0244444444,1.1 0.967936508,0.156349206 2.13206349,0.156349206 L37.8674603,0.156349206 C39.0314286,0.156349206 39.9750794,1.09984127 39.9750794,2.26396825 L39.9750794,33.3650794 C39.9753968,34.5292063 39.0315873,35.4730159 37.8679365,35.4730159 Z" id="Shape" fill="#4B87EA"></path>
+                        <path d="M39.9753968,5.61031746 L0.0246031746,5.61031746 L0.0246031746,2.26396825 C0.0246031746,1.1 0.968095238,0.156349206 2.13222222,0.156349206 L37.867619,0.156349206 C39.0315873,0.156349206 39.9752381,1.09984127 39.9752381,2.26396825 L39.9753968,5.61031746 Z" id="Shape" fill="#A9A9A9"></path>
+                        <path d="M0.0246031746,20.6642857 L0.0246031746,33.3650794 C0.0246031746,34.5290476 0.968095238,35.4726984 2.13222222,35.4726984 L19.9333333,35.4726984 L19.9333333,20.6642857 L0.0246031746,20.6642857 Z" id="Shape" fill="#EFEFEF"></path>
+                        <path d="M39.9755556,20.6642857 L19.9334921,20.6642857 L19.9334921,35.4726984 L37.8679365,35.4726984 C39.0319048,35.4726984 39.9755556,34.5292063 39.9755556,33.3650794 L39.9755556,20.6642857 Z" id="Shape" fill="#396BD7"></path>
+                        <g id="Group" transform="translate(2.698413, 1.904762)" fill="#FFFFFF">
+                            <circle id="Oval" cx="0.935396825" cy="0.905079365" r="1"></circle>
+                            <circle id="Oval" cx="4.4515873" cy="0.905079365" r="1"></circle>
+                        </g>
+                        <g id="Group" transform="translate(3.492063, 23.333333)" fill="#CCCCCC">
+                            <rect id="Rectangle-path" x="0.0158730159" y="0.0731746032" width="12.9430159" height="1.59809524"></rect>
+                            <rect id="Rectangle-path" x="0.0158730159" y="3.81095238" width="12.9430159" height="1.59809524"></rect>
+                            <rect id="Rectangle-path" x="0.0158730159" y="7.54619048" width="12.9430159" height="1.59809524"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

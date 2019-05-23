@@ -2,15 +2,21 @@ import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import openBrowser from 'react-dev-utils/openBrowser';
-import updateWebpackConfig from '../config/updateWebpackConfig';
 import context from './common/context';
-import generateEntryFile from './common/generateEntryFile';
-import getPackagePath from './common/getPackagePath';
 import initialize from './common/initialize';
-import installSubmoduleDependencies from './common/installSubmoduleDependencies';
+import getProjectType from './common/getProjectType';
+import getPackagePath from './common/getPackagePath';
+import generateEntryFile from './common/generateEntryFile';
+import updateWebpackConfig from '../config/updateWebpackConfig';
+import installSubmoduleDependencies from './common/installSubmoduleDependenciesAndServicesConfig';
 
+/**
+ * generateEntryFile and start webpack-dev-server
+ * @param {*} mainPackage workspace pkg.json object
+ * @param {*} dev 
+ */
 function run(mainPackage, dev) {
-  const { choerodonConfig: { entryName, devServerConfig, output, port } } = context;
+  const { choerodonConfig: { entryName, devServerConfig, output, port, proxyTarget } } = context;
   generateEntryFile(
     mainPackage,
     entryName,
@@ -23,10 +29,21 @@ function run(mainPackage, dev) {
     quiet: true,
     hot: true,
     ...devServerConfig,
-    contentBase: path.join(process.cwd(), output),
+    // contentBase: path.join(process.cwd(), output),
+    contentBase: path.join(process.cwd(), 'src', 'main', 'resources', 'lib', output),
     historyApiFallback: true,
     host: 'localhost',
   };
+  const { isChoerodon } = getProjectType();
+  if (!isChoerodon) {
+    serverOptions.proxy = [{
+      context: ['**', '!/', '!/dis/**'],
+      target: proxyTarget,
+      changeOrigin: true,
+      secure: false,
+      autoRewrite: true,
+    }];
+  }
   WebpackDevServer.addDevServerEntrypoints(webpackConfig, serverOptions);
 
   const compiler = webpack(webpackConfig);
@@ -49,8 +66,10 @@ function run(mainPackage, dev) {
 
 export default function start(program, dev) {
   initialize(program, dev);
-  if (!dev && program.args.length) {
-    installSubmoduleDependencies(program, run);
+  const { choerodonConfig: { modules } } = context;
+  if (Array.isArray(modules) && modules.length > 0) {
+    const { isChoerodon } = getProjectType();
+    installSubmoduleDependencies(run, isChoerodon);
   } else {
     const mainPackagePath = getPackagePath();
     const mainPackage = require(mainPackagePath);

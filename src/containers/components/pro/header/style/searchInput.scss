@@ -1,0 +1,37 @@
+.search-input-wrap {
+  display: flex;
+  position: relative;
+
+  .icon {
+    font-size: 18px;
+    line-height: 35px;
+    position: absolute;
+    left: 10px;
+  }
+
+  .c7n-hap-select-wrapper {
+    background-color: rgba(255, 255, 255, 0.12);
+    height: .35rem;
+
+    .c7n-hap-select {
+      border: none;
+      padding-left: 35px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      height: 35px;
+      color: #fff;
+    }
+
+    .c7n-hap-select-inner-button .c7n-hap-select-clear-button {
+      display: none !important;
+    }
+
+    .c7n-hap-select-suffix {
+      display: none !important;
+    }
+
+    .c7n-hap-select:focus, .c7n-hap-select-focus .c7n-hap-select {
+      color: #fff !important;
+    }
+  }
+}

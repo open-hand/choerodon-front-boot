@@ -1,0 +1,31 @@
+.master-head {
+  &-wrap {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    font-size: 14px;
+    color: #fff;
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16);
+    position: relative;
+    z-index: 999;
+    background-color: #3f51b5;
+  }
+  &-left,
+  &-center,
+  &-right {
+    display: flex;
+    margin: auto;
+  }
+  &-left {
+    padding-left: 18px;
+  }
+  &-center {
+    padding-left: 0;
+    flex-grow: 1;
+    justify-content: flex-end;
+    margin-right: 68px;
+  }
+  &-right {
+    padding-right: 24px;
+  }
+}
