@@ -9,7 +9,8 @@ import PermissionProvider from '../permission/PermissionProvider';
 import asyncLocaleProvider from '../../util/asyncLocaleProvider';
 import { authorizeC7n, getAccessToken, setAccessToken, dashboard, WEBSOCKET_SERVER } from '../../../common';
 import WSProvider from '../ws/WSProvider';
-import './style';
+// import './style';
+import './index.scss';
 
 @withRouter
 @inject('AppState')

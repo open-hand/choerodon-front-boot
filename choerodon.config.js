@@ -21,7 +21,7 @@ module.exports = {
 
   // use for c7n start
   routes: { 'hap-core': './test/routeIndex' },
-  server: 'http://api.staging.saas.hand-china.com',
+  server: 'http://api.alpha.saas.hand-china.com',
   webSocketServer: 'ws://notify.staging.saas.hand-china.com',
   // server: 'http://api.c7nf.choerodon.staging.saas.hand-china.com',
   master: './src/containers/components/c7n/master/MasterDefault.jsx',
