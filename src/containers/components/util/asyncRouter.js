@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { get } from 'mobx';
+import { observer, Provider } from 'mobx-react';
+import omit from 'lodash/omit';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import esModule from './esModule';
@@ -7,13 +10,23 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/zip';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromPromise';
+import AsyncCmpWrap from './AsyncCmpWrap';
+import stores from '../../stores';
 
-export default function asyncRouter(getComponent, getInjects, extProps, callback) {
-  return class AsyncRoute extends Component {
+const { MenuStore } = stores;
+
+const refreshKey = '__refresh__';
+
+export default function asyncRouter(getComponent, getInjects, extProps = {}) {
+  class AsyncRoute extends Component {
     state = {
       Cmp: null,
       injects: {},
     };
+
+    initKey = Date.now();
+
+    cacheKey = extProps[refreshKey] ? null : this.props.history.location.pathname;
 
     componentWillUnmountSubject = new Subject();
 
@@ -55,7 +68,7 @@ export default function asyncRouter(getComponent, getInjects, extProps, callback
         Observable.zip(...streams)
           .takeUntil(subject)
           .subscribe(([Cmp, ...injects]) => {
-            this.setState({ Cmp, injects }, () => { if (callback) callback(); });
+            this.setState({ Cmp, injects });
             subject.unsubscribe();
           });
       }
@@ -69,10 +82,34 @@ export default function asyncRouter(getComponent, getInjects, extProps, callback
       }
     }
 
-    render() {
+    renderChild = () => {
       const { Cmp, injects } = this.state;
+      return <Cmp {...omit(extProps, [refreshKey, 'axios'])} {...this.props} {...Object.assign({}, ...injects)} key={this.initKey} />;
+    };
 
-      return Cmp && <Cmp {...Object.assign({}, extProps, this.props, ...injects)} />;
+    render() {
+      const { Cmp } = this.state;
+      const key = MenuStore.contentKeys ? get(MenuStore.contentKeys, this.cacheKey) : undefined;
+      const props = {
+        shouldUpdate: extProps[refreshKey],
+      };
+      if (key && key !== this.initKey) {
+        this.initKey = key;
+        props.shouldUpdate = true;
+      }
+      let axiosProps = {};
+      if (extProps.axios) {
+        axiosProps = { axios: extProps.axios };
+      }
+      return Cmp && (
+        <AsyncCmpWrap {...props}>
+          <Provider {...axiosProps}>
+            {this.renderChild()}
+          </Provider>
+        </AsyncCmpWrap>
+      );
     }
-  };
+  }
+
+  return observer(AsyncRoute);
 }

@@ -2,6 +2,22 @@ import { ACCESS_TOKEN, AUTH_HOST, AUTH_URL } from './constants';
 import { getCookieToken, removeAccessToken } from './accessToken';
 
 export function authorize() {
+  window.top.location = `${AUTH_URL}`;
+}
+
+export function logout() {
+  const token = getCookieToken();
+  let logoutUrl = `${AUTH_HOST}/logout`;
+  if (token) {
+    logoutUrl += `?${ACCESS_TOKEN}=${getCookieToken()}`;
+  }
+  removeAccessToken();
+  localStorage.clear();
+  sessionStorage.clear();
+  window.location = logoutUrl;
+}
+
+export function authorizeC7n() {
   // 为了把这个hash传到oauth里要把#换成%23
   const uri = escape(window.location.href);
   window.localStorage.removeItem('lastClosedId');
@@ -18,7 +34,7 @@ export function authorize() {
 /**
  * 登出
  */
-export function logout() {
+export function logoutC7n() {
   const token = getCookieToken();
   let logoutUrl = `${AUTH_HOST}/logout`;
   if (token) {

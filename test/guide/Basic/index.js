@@ -3,9 +3,9 @@ import './index.scss';
 import { Button, Icon } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import Step from '../../../src/containers/components/guide/Step';
-import StepFooter from '../../../src/containers/components/guide/StepFooter';
-import Mask from '../../../src/containers/components/guide/Mask';
+import Step from '../../../src/containers/components/c7n/guide/Step';
+import StepFooter from '../../../src/containers/components/c7n/guide/StepFooter';
+import Mask from '../../../src/containers/components/c7n/guide/Mask';
 
 @inject('GuideStore')
 @injectIntl

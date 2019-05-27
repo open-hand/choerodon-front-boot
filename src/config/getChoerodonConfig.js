@@ -9,7 +9,14 @@ const defaultConfig = {
   postcssConfig: {
     plugins: [
       autoprefixer({
-        browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
+        browsers: [
+          'last 2 versions',
+          'Firefox ESR',
+          '> 1%',
+          'ie >= 8',
+          'iOS >= 8',
+          'Android >= 4',
+        ],
       }),
     ],
   },
@@ -26,15 +33,20 @@ const defaultConfig = {
   root: '/',
   routes: null,
   local: true,
-  server: 'http://api.example.com',
-  fileServer: 'http://file.example.com',
-  webSocketServer: 'ws://ws.example.com',
-  apimGateway: 'http://apim.example.com',
+  server: '',
   clientid: 'localhost',
-  titlename: 'Choerodon | 企业级数字服务平台',
+  webSocketServer: 'http://localhost:8080',
+  titlename: 'Choerodon | 汉得应用开发平台',
   favicon: 'favicon.ico',
   dashboard: false,
   guide: false,
+  proxyTarget: 'http://localhost:8080',
+  distBasePath: './src/main/resources/lib',
+  htmlPath: './src/main/resources/WEB-INF/view',
+  homePath: undefined,
+  menuTheme: 'light',
+  resourcesLevel: ['site', 'user'],
+  apimGateway: 'http://apim.example.com',
 };
 
 export default function getChoerodonConfig(configFile) {

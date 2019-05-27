@@ -4,8 +4,8 @@ import { Button, Icon } from 'choerodon-ui';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-import Step from '../../../src/containers/components/guide/Step';
-import StepFooter from '../../../src/containers/components/guide/StepFooter';
+import Step from '../../../src/containers/components/c7n/guide/Step';
+import StepFooter from '../../../src/containers/components/c7n/guide/StepFooter';
 
 @inject('GuideStore')
 @injectIntl

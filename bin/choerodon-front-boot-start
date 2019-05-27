@@ -5,6 +5,7 @@ const Choerodon = require('../lib/index');
 
 program
   .option('-c, --config <path>', 'set config path. defaults to ./choerodon.config.js')
+  .option('-m, --modules', 'should bundle dependence modules in generator-react folder')
   .parse(process.argv);
 
 Choerodon.start(program);

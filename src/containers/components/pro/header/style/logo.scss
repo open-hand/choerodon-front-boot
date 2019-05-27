@@ -1,0 +1,25 @@
+.header-logo {
+  &-wrap {
+    height: 47px;
+    line-height: 47px;
+    display: flex;
+    align-items: center;
+  }
+
+  &-icon {
+    color: white;
+    font-size: 30px;
+    width: 57px;
+    height: 100%;
+    background-image: url('./icons/hap_logo.png');
+    background-repeat: no-repeat;
+    background-size: auto 20px;
+    background-position: center;
+  }
+
+  &-title {
+    margin-left: 20px;
+    font-size: 18px;
+    line-height: 23px;
+  }
+}

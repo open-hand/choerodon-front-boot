@@ -19,11 +19,18 @@ export default function babel(mode, env) {
       'lodash',
       [
         'import',
-        {
-          libraryName: 'choerodon-ui',
-          style: true,
-        },
+        [
+          {
+            libraryName: 'choerodon-ui',
+            style: true,
+          },
+          {
+            libraryName: 'choerodon-ui/pro',
+            style: true,
+          },
+        ],
       ],
+
     ],
   }, mode, env);
 }

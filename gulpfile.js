@@ -1,5 +1,3 @@
-
-
 const path = require('path');
 const gulp = require('gulp');
 const rimraf = require('rimraf');
@@ -11,7 +9,7 @@ const cwd = process.cwd();
 const libDir = path.join(cwd, 'lib');
 
 function compileAssets() {
-  return gulp.src(['src/**/*.@(jpg|png|svg|scss|html|ico)']).pipe(gulp.dest(libDir));
+  return gulp.src(['src/**/*.@(jpg|png|svg|scss|less|html|ico|gif|css)']).pipe(gulp.dest(libDir));
 }
 
 function compileFile() {
@@ -62,11 +60,17 @@ function getBabelCommonConfig() {
       polyfill: false,
     }],
     [
-      require.resolve('babel-plugin-import'),
-      {
-        'libraryName': 'choerodon-ui',
-        'style': true,
-      },
+      require.resolve('babel-plugin-import'), 
+      [
+        {
+          'libraryName': 'choerodon-ui',
+          'style': true,
+        },
+        {
+          'libraryName': 'choerodon-ui/pro',
+          'style': true,
+        },
+      ],
     ],
     require.resolve('babel-plugin-lodash'),
   ];
@@ -85,11 +89,13 @@ function babelify(js, dir = '') {
   const stream = js.pipe(babel(babelConfig));
   return stream
     .pipe(through2.obj(function (file, encoding, next) {
-      const matches = file.path.match(/(routes|dashboard|guide)\.nunjucks\.(js|jsx)/);
+      const matches = file.path.match(/(routes|dashboard|guide|entry|entrywithoutsider)\.nunjucks\.(js|jsx)/);
       if (matches) {
         const content = file.contents.toString(encoding);
         file.contents = Buffer.from(content
-          .replace(`'{{ ${matches[1]} }}'`, `{{ ${matches[1]} }}`));
+          .replace(`'{{ ${matches[1]} }}'`, `{{ ${matches[1]} }}`)
+          .replace(`'{{ home }}'`, '{{ home }}')
+          .replace(`'{{ master }}'`, '{{ master }}'));
       }
       this.push(file);
       next();
@@ -103,8 +109,4 @@ gulp.task('compile', () => {
 
 gulp.task('compile-bin', () => {
   compileBin();
-});
-
-gulp.task('copy', () => {
-  copyTo('/Users/binjiechen/choerodon-front-iam/iam/node_modules/choerodon-front-boot/lib');
 });
