@@ -23,27 +23,14 @@ import './style';
 @observer
 export default class Index extends React.Component {
   state = {
-    loading: true,
+    loading: false,
   }
 
   componentDidMount() {
-    this.loadAdvance();
-  }
-
-  loadAdvance() {
-    Promise.all([this.auth(), this.loadLocale(), this.loadSysInfo()])
-      .then((res) => {
-        if (res.every(item => item)) {
-          this.setState({
-            loading: false,
-          });
-
-          this.handleLocaleContext();
-          this.initHotkeyManager();
-          this.initIntl();
-          this.initSocket();
-        }
-      });
+    this.handleLocaleContext();
+    this.initHotkeyManager();
+    this.initIntl();
+    this.initSocket();
   }
 
   initSocket() {
@@ -101,36 +88,6 @@ export default class Index extends React.Component {
     }
   }
 
-  async auth() {
-    const { AppState } = this.props;
-    try {
-      AppState.setUserInfo(await AppState.loadUserInfo());
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async loadLocale() {
-    const { AppState } = this.props;
-    try {
-      AppState.setLocales(await AppState.loadLocale());
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async loadSysInfo() {
-    const { AppState } = this.props;
-    try {
-      AppState.setSysInfo(await AppState.loadSysInfo());
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
   render() {
     const { loading } = this.state;
     if (loading) {
@@ -139,17 +96,6 @@ export default class Index extends React.Component {
 
     const { AutoRouter, AppState, UserMaster } = this.props;
     const title = AppState.title ? <title>{AppState.title}</title> : null;
-
-    const UILocaleProviderAsync = asyncRouter(() => import('choerodon-ui/lib/locale-provider'), {
-      locale: () => import(`choerodon-ui/lib/locale-provider/${AppState.currentLang}.js`),
-    });
-
-    const language = AppState.currentLang;
-    const IntlProviderAsync = asyncLocaleProvider(
-      language,
-      () => import(`../../../locale/${language}`),
-      () => import(`react-intl/locale-data/${language.split('_')[0]}`),
-    );
 
     const originMaster = [
       <Header />,
@@ -169,20 +115,16 @@ export default class Index extends React.Component {
     ];
 
     return (
-      <UILocaleProviderAsync history={this.props.history}>
-        <IntlProviderAsync>
-          <PermissionProvider>
-            <div className="master-wrapper">
-              <Helmet preserved>
-                {title}
-              </Helmet>
-              {UserMaster ? <UserMaster AutoRouter={AutoRouter} /> : originMaster}
-              {/* {originMaster} */}
-              <ModalContainer />
-            </div>
-          </PermissionProvider>
-        </IntlProviderAsync>
-      </UILocaleProviderAsync>
+      <PermissionProvider>
+        <div className="master-wrapper">
+          <Helmet preserved>
+            {title}
+          </Helmet>
+          {UserMaster ? <UserMaster AutoRouter={AutoRouter} /> : originMaster}
+          {/* {originMaster} */}
+          <ModalContainer />
+        </div>
+      </PermissionProvider>
     );
   }
 }
