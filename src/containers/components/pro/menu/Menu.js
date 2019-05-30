@@ -21,6 +21,7 @@ export default class CommonMenu extends Component {
     const { MenuStore, history } = this.props;
     this.loadMenu(this.props);
     MenuStore.setHistory(history);
+    MenuStore.loadMenus('user');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -33,6 +34,7 @@ export default class CommonMenu extends Component {
 
     const { key, type } = getKeyAndTypeByLink(pathname);
 
+    
     MenuStore.loadMenus().then((menus) => {
       if (pathname === '/') {
         MenuStore.setSelectedKeys([]);
@@ -44,10 +46,23 @@ export default class CommonMenu extends Component {
         this.savedOpenKeys = temppath;
         MenuStore.setSelectedKeys([targetNode.code]);
         MenuStore.setActiveMenu(targetNode);
+        this.code = 'site';
+        this.forceUpdate();
       }, () => {
-        MenuStore.setSelectedKeys([key]);
-        MenuStore.setActiveMenu({
-          code: key,
+        MenuStore.loadMenus('user').then((userMenus) => {
+          MenuStore.getPathById(key, userMenus, type, (temppath, targetNode) => {
+            MenuStore.setOpenKeys(collapsed ? [] : temppath);
+            this.savedOpenKeys = temppath;
+            MenuStore.setSelectedKeys([targetNode.code]);
+            MenuStore.setActiveMenu(targetNode);
+            this.code = 'user';
+            this.forceUpdate();
+          }, () => {
+            MenuStore.setSelectedKeys([key]);
+            MenuStore.setActiveMenu({
+              code: key,
+            });
+          });
         });
       });
     });
@@ -74,6 +89,7 @@ export default class CommonMenu extends Component {
   onClickHome = () => {
     const { history, MenuStore } = this.props;
     MenuStore.setActiveMenu({});
+    this.code = 'site';
     history.push('/');
   }
 
