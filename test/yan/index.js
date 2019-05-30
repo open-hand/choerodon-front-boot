@@ -1,36 +1,50 @@
 import React, { Component } from 'react';
 import { Button } from 'choerodon-ui/pro';
-import { Link, withRouter } from 'react-router-dom';
-import { observable, action, computed } from 'mobx';
-import { observer, inject } from 'mobx-react';
-import Cmp from './Cmp';
-import { TYPE, AUTH_HOST } from '../../src/containers/common/constants';
-import { openTabR } from '../../src/containers/components';
+import Permission from '../../src/containers/components/pro/permission/Permission';
 
-@inject('getAxios', 'AppState', 'MenuStore')
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-
-    props.cacheLifecycles.didRecover(this.componentDidRecover);
-  }
-
-  componentDidRecover = () => {
-    // console.log('List recovered');
-  }
-
   componentDidMount() {
-    const axios = this.props.getAxios();
-    axios.get('/hafjsl');
-    // console.log(TYPE);
-    // console.log(AUTH_HOST);
+    console.log('again');
   }
-
+  
   render() {
     return (
-      <div>
-        <Button>click</Button>
-      </div>
+      <React.Fragment>
+        <div style={{ marginBottom: 40 }}>
+          <h4>有权限,正常显示的按钮</h4>
+          <Permission service={['task-execution.cancleExecute']}>
+            <Button>Permission Btn</Button>
+          </Permission>
+        </div>
+        <div style={{ marginBottom: 40 }}>
+          <h4>没有权限,被隐藏的按钮</h4>
+          <Permission service={['permission-code']}>
+            <Button>Permission Btn</Button>
+          </Permission>
+        </div>
+        <div style={{ marginBottom: 40 }}>
+          <h4>无权限控制,永远显示的按钮</h4>
+          <Button>Without Permission Btn</Button>
+        </div>
+        <div style={{ marginBottom: 40 }}>
+          <h4>没有权限,被隐藏的按钮,显示默认内容</h4>
+          <Permission
+            service={['permission-code']}
+            noAccessChildren={<span>对不起你不配看到我!</span>}
+          >
+            <Button>Permission Btn</Button>
+          </Permission>
+        </div>
+        <div style={{ marginBottom: 40 }}>
+          <h4>不知道有没有权限,反正加载的时候显示,没权限的时候也显示</h4>
+          <Permission
+            service={['permission-code']}
+            defaultChildren={<span>我还在加载!或者你不配看我!</span>}
+          >
+            <Button>Permission Btn</Button>
+          </Permission>
+        </div>
+      </React.Fragment>
     );
   }
 }

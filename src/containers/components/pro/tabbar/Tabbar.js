@@ -45,20 +45,21 @@ export default class MenuBar extends Component {
         if (!targetNode) return;
         this.insertTabs(key, type, targetNode);
       }, () => {
-        const construct = {
-          children: null,
-          code: key,
-          name: (state && state.title) || {
-            SYS_PREFERENCE: '用户信息',
-            '/hap-core/sys/preferences': '首选项',
-          }[key] || this.getNextTabName(),
-          route: {
-            SYS_PREFERENCE: 'sys/um/sys_user_info.html',
-            '/hap-core/sys/preferences': '/hap-core/sys/preferences',
-          }[key] || key,
-          pagePermissionType: type,
-        };
-        this.insertTabs(key, type, construct);
+        MenuStore.loadMenus('user').then((userMenus) => {
+          MenuStore.getPathById(key, userMenus, type, (temppath, targetNode) => {
+            if (!targetNode) return;
+            this.insertTabs(key, type, targetNode);
+          }, () => {
+            const construct = {
+              children: null,
+              code: key,
+              name: (state && state.title) || this.getNextTabName(),
+              route: key,
+              pagePermissionType: type,
+            };
+            this.insertTabs(key, type, construct);
+          });
+        });
       });
     });
   }
@@ -71,7 +72,7 @@ export default class MenuBar extends Component {
   getNextTabName() {
     const { MenuStore } = this.props;
     const tabs = MenuStore.getTabs;
-    const tabsNameArr = _.filter(_.map(tabs, 'text'), v => v.startsWith(TAB_PLACEHOLDER_NAME));
+    const tabsNameArr = _.filter(_.map(tabs, 'name'), v => v.startsWith(TAB_PLACEHOLDER_NAME));
     if (!tabsNameArr.length) return `${TAB_PLACEHOLDER_NAME}1`;
 
     const nums = tabsNameArr.map(v => v.slice(v.indexOf(TAB_PLACEHOLDER_NAME) + TAB_PLACEHOLDER_NAME.length));
@@ -179,7 +180,7 @@ export default class MenuBar extends Component {
         }
         break;
       case 'refresh':
-        if (tab && tab.symbol === 'REACT') {
+        if (tab && tab.pagePermissionType === 'page') {
           MenuStore.setContentKey(urlKey, Date.now());
           // this.handleCloseCmpContainTab(tab);
           // this.handleLink(tab, true);
@@ -248,7 +249,7 @@ export default class MenuBar extends Component {
                           )
                         }
                         {
-                          pathname === `/${tab.url}` || pathname === `/iframe/${tab.functionCode}` ? (
+                          pathname === tab.route || pathname === `/iframe/${tab.code}` ? (
                             <Menu.Item key="refresh">
                               刷新
                             </Menu.Item>
