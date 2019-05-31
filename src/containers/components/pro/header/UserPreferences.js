@@ -6,7 +6,7 @@ import { Menu, Popover, Button, Icon } from 'choerodon-ui';
 import axios from '../axios';
 import { authorize, logout } from '../../../common/authorize';
 import defaultAvatarPath from './style/icons/avatar.png';
-import Avatar from './Avatar.jsx';
+import Avatar from './Avatar';
 import { getLinkByMenuType } from '../menu/util';
 
 const prefixCls = 'user-preference';
