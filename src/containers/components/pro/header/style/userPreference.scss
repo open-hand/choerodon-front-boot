@@ -1,4 +1,13 @@
 .user-preference {
+  display: flex;
+  align-items: center;
+
+  &-name {
+    margin-left: 8px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
   &-popover {
     z-index: 1500 !important;
     position: absolute !important;
