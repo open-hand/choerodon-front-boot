@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.17.3",
+  "version": "0.17.2",
   "description": "Tools to build website for Choerodon",
   "main": "lib/containers/components/index.js",
   "homepage": "http://choerodon.io/",
@@ -138,9 +138,7 @@
     "prestart": "gulp compile-bin",
     "start": "node ./test/start --config ./test/choerodon.config.js -m",
     "prebuild": "npm run compile",
-    "build": "node ./test/build",
     "predist": "npm run compile",
-    "dist": "node ./test/dist",
     "predist:bin": "npm run compile",
     "dist:bin": "node ./bin/choerodon-hap-front-boot dist --config ./choerodon.config.js -m",
     "prestart:bin": "npm run compile",
