@@ -3,10 +3,6 @@ import { Button } from 'choerodon-ui/pro';
 import Permission from '../../src/containers/components/pro/permission/Permission';
 
 export default class App extends Component {
-  componentDidMount() {
-    console.log('again');
-  }
-  
   render() {
     return (
       <React.Fragment>

@@ -60,7 +60,7 @@ export default class Index extends React.Component {
    */
   initHotkeyManager() {
     const hotkeyManager = getHotkeyManager();
-    axios.post('/dataset/Hotkey/queries?page=1&pagesize=10', {})
+    axios.post('/sys/hotkey/query', {})
       .then((res) => {
         if (res.success) {
           hotkeyManager.init(res.rows);
