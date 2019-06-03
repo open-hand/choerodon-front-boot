@@ -7,7 +7,6 @@ class MasterProDefault extends React.Component {
   render() {
     const { AutoRouter } = this.props;
     const originMaster = [
-      // <div>from choreodon-front-boot default masterPro</div>,
       <Header />,
       <div className="master-body">
         <div className="master-content-wrapper">

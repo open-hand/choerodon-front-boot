@@ -42,6 +42,12 @@ export { default as toastr } from './util/toastr';
 
 export { default as createRouteWrapper } from './util/createRouteWrapper';
 
+export { default as closeTab } from './util/closeTab';
+
+export { default as getTabs } from './util/getTabs';
+
+export { default as getCurrentTab } from './util/getCurrentTab';
+
 // c7n
 
 export { default as Master } from './c7n/master';

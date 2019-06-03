@@ -297,6 +297,33 @@ export default class B extends Component {
 
 ```
 
+## 热键系统
+
+使用`Content`组件，可以默认使用平台提供的热键系统。
+
+```js
+import React, { Component } from 'react';
+import { Button } from 'choerodon-ui/pro';
+import { ContentPro as Content } from '@choerodon/boot';
+
+export default class App extends Component {
+  render() {
+    return (
+      <Content
+        hotkeys={{
+          hotkey_create: () => {
+            window.console.log('[Hotkey module, from `Hotkey`]: i emit hotkey ctrl + g');
+          },
+        }}
+      >
+        这是一个hotkey的演示demo.
+      </Content>
+    );
+  }
+}
+
+```
+
 ## 依赖
 
  * Node environment (6.9.0+)

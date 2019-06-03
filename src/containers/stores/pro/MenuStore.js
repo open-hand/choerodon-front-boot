@@ -42,6 +42,13 @@ class MenuStore {
 
   @observable history = undefined;
 
+  @observable currentTabIndex = 0;
+
+  @action
+  setCurrentTabIndex(value) {
+    this.currentTabIndex = value;
+  }
+
   @computed
   get treeNodeMenus() {
     const treeNodes = [];

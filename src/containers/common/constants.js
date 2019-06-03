@@ -23,3 +23,4 @@ export const NODE_ENV = `${process.env.NODE_ENV}`;
 export const TYPE = `${process.env.TYPE}`;
 export const RESOURCES_LEVEL = `${process.env.RESOURCES_LEVEL || ''}`;
 export const APIM_GATEWAY = `${process.env.APIM_GATEWAY}`;
+export const UI_CONFIGURE = `${process.env.UI_CONFIGURE}`;

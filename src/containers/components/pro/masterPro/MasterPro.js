@@ -5,15 +5,17 @@ import { Helmet } from 'react-helmet';
 import 'moment/locale/zh-cn';
 import SockJS from 'sockjs-client';
 import { localeContext, ModalContainer } from 'choerodon-ui/pro';
+import { configure } from 'choerodon-ui';
 import Loading from '../entryCmp/Loading';
 import Menu from '../menu';
 import axios from '../axios';
+import uiAxios from '../axios/UiAxios';
 import Tabbar from '../tabbar';
 import Header from '../header';
 import getHotkeyManager from './HotkeyManager';
 import getIntlManager from './IntlManager';
 import repeatLogin from '../../../common/repeatLogin';
-import { WEBSOCKET_SERVER } from '../../../common/constants';
+import { WEBSOCKET_SERVER, UI_CONFIGURE } from '../../../common/constants';
 import asyncRouter from '../../util/asyncRouter';
 import asyncLocaleProvider from '../../util/asyncLocaleProvider';
 import PermissionProvider from '../permission/PermissionProvider';
@@ -31,6 +33,15 @@ export default class Index extends React.Component {
     this.initHotkeyManager();
     this.initIntl();
     this.initSocket();
+    this.initUiConfigure();
+  }
+
+  initUiConfigure = () => {
+    const uiConfigure = UI_CONFIGURE || {};
+    configure({
+      ...uiConfigure,
+      axios: uiAxios,
+    });
   }
 
   initSocket() {
@@ -49,7 +60,7 @@ export default class Index extends React.Component {
    */
   initHotkeyManager() {
     const hotkeyManager = getHotkeyManager();
-    axios.post('/dataset/Hotkey/queries?page=1&pagesize=10', {})
+    axios.post('/sys/hotkey/query', {})
       .then((res) => {
         if (res.success) {
           hotkeyManager.init(res.rows);
@@ -121,7 +132,6 @@ export default class Index extends React.Component {
             {title}
           </Helmet>
           {UserMaster ? <UserMaster AutoRouter={AutoRouter} /> : originMaster}
-          {/* {originMaster} */}
           <ModalContainer />
         </div>
       </PermissionProvider>
