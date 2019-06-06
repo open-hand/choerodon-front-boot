@@ -36,7 +36,7 @@ const defaultConfig = {
   server: '',
   clientid: 'localhost',
   webSocketServer: 'http://localhost:8080',
-  titlename: 'Choerodon | 汉得应用开发平台',
+  titlename: 'Choerodon | 多云应用技术集成平台',
   favicon: 'favicon.ico',
   dashboard: false,
   guide: false,
