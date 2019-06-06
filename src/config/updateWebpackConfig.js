@@ -34,7 +34,7 @@ export default function updateWebpackConfig(mode, env) {
   const {
     theme, output, root, enterPoints, server, webSocketServer, local,
     postcssConfig, entryName, titlename, htmlTemplate, favicon, menuTheme,
-    clientid, dashboard, resourcesLevel, apimGateway, uiConfigure,
+    emailBlockList, clientid, dashboard, resourcesLevel, apimGateway, uiConfigure,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
@@ -91,6 +91,7 @@ export default function updateWebpackConfig(mode, env) {
   const mergedEnterPoints = {
     NODE_ENV: env,
     MENU_THEME: menuTheme,
+    EMAIL_BLOCK_LIST: emailBlockList,
     UI_CONFIGURE: JSON.stringify(uiConfigure || {}),
     USE_DASHBOARD: !!dashboard,
     SERVICES_CONFIG: JSON.stringify(pkg.servicesConfig || []),
