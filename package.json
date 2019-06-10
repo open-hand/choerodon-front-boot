@@ -1,6 +1,6 @@
 {
   "name": "choerodon-front-boot",
-  "version": "0.10.10",
+  "version": "0.10.11",
   "description": "Tools to build website for Choerodon",
   "main": "lib/containers/components/index.js",
   "homepage": "http://choerodon.io/",
@@ -81,7 +81,7 @@
     "lodash": "^4.17.4",
     "merge-stream": "^1.0.1",
     "mkdirp": "^0.5.1",
-    "mobx": "^4.4.0",
+    "mobx": "4.7.0",
     "mobx-react": "5.1.2",
     "moment": "latest",
     "natives": "^1.1.6",
