@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import { nomatch } from '../{{ source }}/containers/components/index';
 import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter';
@@ -6,6 +7,7 @@ import asyncModuleWrapper from '../{{ source }}/containers/components/util/async
 import createAxiosInsByModuleName from '../{{ source }}/containers/components/util/createAxiosInsByModuleName';
 import IFRAMEINDEX from '../{{ source }}/containers/components/pro/iframeWrapper';
 import { dashboard } from '../{{ source }}/containers/common/index';
+import { TYPE } from '../{{ source }}/containers/common/constants';
 import Dashboard from '{{ dashboardPath }}';
 
 const routes = {};
@@ -37,7 +39,7 @@ function createHome(path, component, homePath) {
         getAxios: createAxiosInsByModuleName,
       },
     );
-    routes[path] = <CacheRoute exact path={path} component={Cmp} />;
+    routes[path] = TYPE === 'choerodon' ? <Route exact path={path} component={Cmp} /> : <CacheRoute exact path={path} component={Cmp} />;
   }
   return routes[path];
 }

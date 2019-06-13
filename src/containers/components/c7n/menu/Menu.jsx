@@ -78,7 +78,7 @@ export default class CommonMenu extends Component {
       const link = (
         <Link
           to={this.getMenuLink(route)}
-          onClick={() => this.props.MenuStore.click(data.code, data.level, data.name)}
+          onClick={() => this.props.MenuStore.click(data.code, data.resourceLevel, data.name)}
           style={{
             marginLeft: parseInt(num, 10) * 20,
           }}

@@ -13,7 +13,7 @@ import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter'
 import asyncRouterC7n from '../{{ source }}/containers/components/c7n/util/asyncRouter';
 import asyncLocaleProvider from '../{{ source }}/containers/components/util/asyncLocaleProvider';
 import { authorizeC7n, getAccessToken, setAccessToken, WEBSOCKET_SERVER } from '../{{ source }}/containers/common';
-import { TYPE } from '../{{ source }}/containers/common/constants';
+import { TYPE, OUTWARD } from '../{{ source }}/containers/common/constants';
 import WSProvider from '../{{ source }}/containers/components/c7n/ws/WSProvider';
 import PermissionProvider from '../{{ source }}/containers/components/c7n/permission/PermissionProvider';
 import '../{{ source }}/containers/components/style';
@@ -132,7 +132,7 @@ class App extends Component {
     const IntlProviderAsync = asyncLocaleProvider(language, 
       () => import(`../{{ source }}/containers/locale/${language}`),
       () => import(`react-intl/locale-data/${language.split('_')[0]}`));
-    if (outwardPath.includes(window.location.hash) && TYPE === 'choerodon') {
+    if ((outwardPath.includes(window.location.hash) && TYPE === 'choerodon') || OUTWARD.split(',').includes(window.location.hash)) {
       return (
         <UILocaleProviderAsync>
           <IntlProviderAsync>

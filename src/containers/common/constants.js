@@ -25,3 +25,4 @@ export const RESOURCES_LEVEL = `${process.env.RESOURCES_LEVEL || ''}`;
 export const APIM_GATEWAY = `${process.env.APIM_GATEWAY}`;
 export const UI_CONFIGURE = `${process.env.UI_CONFIGURE}`;
 export const EMAIL_BLOCK_LIST = `${process.env.EMAIL_BLOCK_LIST}`;
+export const OUTWARD = `${process.env.OUTWARD || ''}`;
