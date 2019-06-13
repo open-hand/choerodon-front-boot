@@ -71,7 +71,7 @@ class MenuStore {
   }
 
   uploadStatistics() {
-    const postData = Object.keys(this.statistics).map(type => ({ level: type, menus: Object.keys(this.statistics[type]).map(code => ({ code, ...this.statistics[type][code] })) }));
+    const postData = Object.keys(this.statistics).map(type => ({ rootCode: `choerodon.code.top.${type}`, menus: Object.keys(this.statistics[type]).map(code => ({ code, ...this.statistics[type][code] })) }));
     axios.post('/manager/v1/statistic/menu_click/save', JSON.stringify(postData)).then((data) => {
       if (!data.failed) {
         this.statistics = {};

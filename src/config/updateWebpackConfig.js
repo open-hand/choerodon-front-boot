@@ -34,7 +34,7 @@ export default function updateWebpackConfig(mode, env) {
   const {
     theme, output, root, enterPoints, server, webSocketServer, local,
     postcssConfig, entryName, titlename, htmlTemplate, favicon, menuTheme,
-    emailBlockList, clientid, dashboard, resourcesLevel, apimGateway, uiConfigure,
+    emailBlockList, clientid, dashboard, resourcesLevel, apimGateway, uiConfigure, outward,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
@@ -97,6 +97,7 @@ export default function updateWebpackConfig(mode, env) {
     SERVICES_CONFIG: JSON.stringify(pkg.servicesConfig || []),
     RESOURCES_LEVEL: Array.isArray(resourcesLevel) ? resourcesLevel.join(',') : resourcesLevel,
     TYPE: projectType,
+    OUTWARD: outward,
     ...defaultEnterPoints,
     ...enterPoints(mode, env),
   };
