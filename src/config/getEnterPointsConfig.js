@@ -10,6 +10,7 @@ const enterPoints = {
   FILE_SERVER: 'localhost:fileserver', // unused
   WEBSOCKET_SERVER: 'localhost:wsserver', // websocket server
   APIM_GATEWAY: 'localhost:apimgateway',
+  EMAIL_BLACK_LIST: 'localhost:emailblacklist',
 };
 
 export default function getEnterPointsConfig() {

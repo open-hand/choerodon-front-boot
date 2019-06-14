@@ -132,7 +132,9 @@ class App extends Component {
     const IntlProviderAsync = asyncLocaleProvider(language, 
       () => import(`../{{ source }}/containers/locale/${language}`),
       () => import(`react-intl/locale-data/${language.split('_')[0]}`));
-    if ((outwardPath.includes(window.location.hash) && TYPE === 'choerodon') || OUTWARD.split(',').includes(window.location.hash)) {
+    const OUTWARD_ARR = OUTWARD === 'undefined' ? [] : OUTWARD.split(',');
+    const customInner = OUTWARD_ARR.some(v => window.location.hash.startsWith(v));
+    if ((outwardPath.includes(window.location.hash) && TYPE === 'choerodon') || customInner) {
       return (
         <UILocaleProviderAsync>
           <IntlProviderAsync>

@@ -13,7 +13,7 @@ module.exports = {
   //     locale: 'test/locale/*',
   //   },
   // },
-  // emailBlockList: 'qq',
+  // emailBlackList: 'qq',
 
   // // use for pro start
   // routes: { 'hap-core': './test/routeIndex' },
