@@ -6,7 +6,9 @@ import asyncRouter from '../../util/asyncRouter';
 import asyncLocaleProvider from '../../util/asyncLocaleProvider';
 import './style';
 import AppState from '../../../stores/c7n/AppState';
+import { OUTWARD } from '../../../common/constants';
 
+const OUTWARD_ARR = OUTWARD === 'undefined' ? [] : OUTWARD.split(',');
 const outwardPath = ['/organization/register-organization', '/organization/register-organization/agreement'];
 @withRouter
 @inject('AppState')
@@ -50,7 +52,8 @@ class Outward extends Component {
       () => import(`../../../locale/${language}`),
       () => import(`react-intl/locale-data/${language.split('_')[0]}`),
     );
-    if (outwardPath.includes(this.props.location.pathname)) {
+    const customInner = OUTWARD_ARR.some(v => `#${this.props.location.pathname}`.startsWith(v));
+    if (outwardPath.includes(this.props.location.pathname) || customInner) {
       return (
         <UILocaleProviderAsync history={this.props.history}>
           <IntlProviderAsync>
