@@ -19,6 +19,7 @@ class Masters extends Component {
       queryBar: 'bar',
       tableBorder: false,
       lookupAxiosMethod: 'get',
+      tableHighLightRow: false,
     });
   }
 

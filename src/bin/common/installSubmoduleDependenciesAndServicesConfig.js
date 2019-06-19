@@ -2,6 +2,7 @@ import path from 'path';
 import context from './context';
 import getPackagePath from './getPackagePath';
 import getPackageRoute from './getPackageRoute';
+import transformMain from './transformMain';
 
 async function getDependenciesByModules(mainPackage) {
   const { choerodonConfig } = context;
@@ -13,6 +14,7 @@ async function getDependenciesByModules(mainPackage) {
   const { main, name, routeName } = mainPackage;
   if (main && main !== '') {
     const rName = routeName || name;
+    const rMain = transformMain(main, 'lib', 'react');
     routes[rName] = path.join('.', main);
   }
 

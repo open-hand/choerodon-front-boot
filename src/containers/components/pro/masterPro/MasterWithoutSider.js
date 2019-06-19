@@ -5,39 +5,43 @@ import { Helmet } from 'react-helmet';
 import 'moment/locale/zh-cn';
 import SockJS from 'sockjs-client';
 import { localeContext, ModalContainer } from 'choerodon-ui/pro';
+import { configure } from 'choerodon-ui';
 import Loading from '../entryCmp/Loading';
+import Menu from '../menu';
 import axios from '../axios';
+import uiAxios from '../axios/UiAxios';
+import Tabbar from '../tabbar';
+import Header from '../header';
 import getHotkeyManager from './HotkeyManager';
 import getIntlManager from './IntlManager';
 import repeatLogin from '../../../common/repeatLogin';
-import { WEBSOCKET_SERVER } from '../../../common/constants';
+import { WEBSOCKET_SERVER, UI_CONFIGURE } from '../../../common/constants';
+import asyncRouter from '../../util/asyncRouter';
+import asyncLocaleProvider from '../../util/asyncLocaleProvider';
+import PermissionProvider from '../permission/PermissionProvider';
 import './style';
 
 @inject('AppState')
 @observer
 export default class Index extends React.Component {
   state = {
-    loading: true,
+    loading: false,
   }
 
   componentDidMount() {
-    this.loadAdvance();
+    this.handleLocaleContext();
+    this.initHotkeyManager();
+    this.initIntl();
+    this.initSocket();
+    this.initUiConfigure();
   }
 
-  loadAdvance() {
-    Promise.all([this.auth(), this.loadLocale(), this.loadSysInfo()])
-      .then((res) => {
-        if (res.every(item => item)) {
-          this.setState({
-            loading: false,
-          });
-
-          this.handleLocaleContext();
-          this.initHotkeyManager();
-          this.initIntl();
-          this.initSocket();
-        }
-      });
+  initUiConfigure = () => {
+    const uiConfigure = UI_CONFIGURE || {};
+    configure({
+      ...uiConfigure,
+      axios: uiAxios,
+    });
   }
 
   initSocket() {
@@ -56,7 +60,7 @@ export default class Index extends React.Component {
    */
   initHotkeyManager() {
     const hotkeyManager = getHotkeyManager();
-    axios.post('/dataset/Hotkey/queries?page=1&pagesize=10', {})
+    axios.post('/sys/hotkey/query', {})
       .then((res) => {
         if (res.success) {
           hotkeyManager.init(res.rows);
@@ -95,36 +99,6 @@ export default class Index extends React.Component {
     }
   }
 
-  async auth() {
-    const { AppState } = this.props;
-    try {
-      AppState.setUserInfo(await AppState.loadUserInfo());
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async loadLocale() {
-    const { AppState } = this.props;
-    try {
-      AppState.setLocales(await AppState.loadLocale());
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async loadSysInfo() {
-    const { AppState } = this.props;
-    try {
-      AppState.setSysInfo(await AppState.loadSysInfo());
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
   render() {
     const { loading } = this.state;
     if (loading) {
@@ -133,7 +107,9 @@ export default class Index extends React.Component {
 
     const { AutoRouter, AppState, UserMaster } = this.props;
     const title = AppState.title ? <title>{AppState.title}</title> : null;
+
     const originMaster = [
+      // <Header />,
       <div className="master-body">
         <div className="master-content-wrapper">
           <div className="master-content-container">
@@ -148,13 +124,15 @@ export default class Index extends React.Component {
     ];
 
     return (
-      <div className="master-wrapper">
-        <Helmet preserved>
-          {title}
-        </Helmet>
-        {UserMaster ? <UserMaster AutoRouter={AutoRouter} /> : originMaster}
-        <ModalContainer />
-      </div>
+      <PermissionProvider>
+        <div className="master-wrapper">
+          <Helmet preserved>
+            {title}
+          </Helmet>
+          {originMaster}
+          <ModalContainer />
+        </div>
+      </PermissionProvider>
     );
   }
 }
