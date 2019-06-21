@@ -40,7 +40,7 @@ axios.interceptors.response.use(
       return response;
     }
     // continue sending response to the then() method
-    return response.data;
+    return 'data' in response ? response.data : response;
   },
   (error) => {
     const { response } = error;
