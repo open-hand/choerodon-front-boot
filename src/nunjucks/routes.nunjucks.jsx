@@ -17,7 +17,7 @@ function createRoute(path, component, moduleCode) {
   const getAxios = createAxiosInsByModuleName(moduleCode);
   if (!routes[path]) {
     const Cmp = asyncModuleWrapper(component, null, null, moduleCode, getAxios);
-    routes[path] = <CacheRoute path={path} component={Cmp} />;
+    routes[path] = TYPE === 'choerodon' ? <Route path={path} component={Cmp} /> : <CacheRoute path={path} component={Cmp} />;
   }
   return routes[path];
 }
