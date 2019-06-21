@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.17.5",
+  "version": "0.18.2",
   "description": "Tools to build website for Choerodon",
   "main": "lib/containers/components/index.js",
   "homepage": "http://choerodon.io/",
@@ -56,7 +56,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.4.1",
     "change-case": "^3.0.1",
-    "choerodon-ui": "0.6.x",
+    "choerodon-ui": "0.7.x",
     "classnames": "^2.2.5",
     "commander": "^2.9.0",
     "component-classes": "^1.x",

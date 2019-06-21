@@ -16,7 +16,12 @@ export default class PageHeader extends Component {
   };
 
   onBackBtnClick = () => {
-    this.linkToChange(this.props.backPath);
+    const { backPath, history } = this.props;
+    if (backPath === true) {
+      this.props.history.goBack();
+    } else {
+      this.linkToChange(backPath);
+    }
   };
 
   linkToChange = (url) => {
