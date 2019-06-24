@@ -9,6 +9,7 @@ import getPackagePath from './common/getPackagePath';
 import generateEntryFile from './common/generateEntryFile';
 import updateWebpackConfig from '../config/updateWebpackConfig';
 import installSubmoduleDependencies from './common/installSubmoduleDependenciesAndServicesConfig';
+import generateEnv from './common/generateEnv';
 
 /**
  * generateEntryFile and start webpack-dev-server
@@ -30,7 +31,8 @@ function run(mainPackage, dev) {
     hot: true,
     ...devServerConfig,
     // contentBase: path.join(process.cwd(), output),
-    contentBase: path.join(process.cwd(), 'src', 'main', 'resources', 'lib', output),
+    // contentBase: path.join(process.cwd(), 'src', 'main', 'resources', 'lib', output),
+    contentBase: [path.join(process.cwd(), 'src', 'main', 'resources', 'lib', output), path.join(__dirname, '../../')],
     historyApiFallback: true,
     host: 'localhost',
   };
@@ -73,6 +75,7 @@ export default function start(program, dev) {
   } else {
     const mainPackagePath = getPackagePath();
     const mainPackage = require(mainPackagePath);
-    run(mainPackage);
+    // run(mainPackage);
+    generateEnv(() => run(mainPackage), true);
   }
 }
