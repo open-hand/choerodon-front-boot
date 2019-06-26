@@ -12,7 +12,10 @@ import { getMessage } from '../../../common';
 @injectIntl
 export default class PageHeader extends Component {
   static propTypes = {
-    backPath: PropTypes.string,
+    backPath: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.bool,
+    ]),
   };
 
   onBackBtnClick = () => {
