@@ -57,11 +57,9 @@ export default function build(program) {
   const { choerodonConfig: { modules } } = context;
   if (Array.isArray(modules) && modules.length > 0) {
     generateEnv(() => installSubmoduleDependencies(mainPackage => dist(mainPackage, env)));
-    // installSubmoduleDependencies(mainPackage => dist(mainPackage, env));
   } else {
     const mainPackagePath = getPackagePath();
     const mainPackage = require(mainPackagePath);
-    // dist(mainPackage, env);
     generateEnv(() => dist(mainPackage, env));
   }
 }
