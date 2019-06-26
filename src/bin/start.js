@@ -71,11 +71,12 @@ export default function start(program, dev) {
   const { choerodonConfig: { modules } } = context;
   if (Array.isArray(modules) && modules.length > 0) {
     const { isChoerodon } = getProjectType();
-    installSubmoduleDependencies(run, isChoerodon);
+    generateEnv(() => installSubmoduleDependencies(run, isChoerodon), false);
+    // installSubmoduleDependencies(run, isChoerodon);
   } else {
     const mainPackagePath = getPackagePath();
     const mainPackage = require(mainPackagePath);
     // run(mainPackage);
-    generateEnv(() => run(mainPackage), true);
+    generateEnv(() => run(mainPackage), false);
   }
 }

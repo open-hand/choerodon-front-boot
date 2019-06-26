@@ -56,7 +56,8 @@ export default function build(program) {
   const env = program.env || process.env.NODE_ENV || 'production';
   const { choerodonConfig: { modules } } = context;
   if (Array.isArray(modules) && modules.length > 0) {
-    installSubmoduleDependencies(mainPackage => dist(mainPackage, env));
+    generateEnv(() => installSubmoduleDependencies(mainPackage => dist(mainPackage, env)));
+    // installSubmoduleDependencies(mainPackage => dist(mainPackage, env));
   } else {
     const mainPackagePath = getPackagePath();
     const mainPackage = require(mainPackagePath);
