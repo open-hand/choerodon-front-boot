@@ -51,3 +51,5 @@ done < ${absolute_path}/.default.env
 echo "}" >> ${env_config}
 
 cat ${env_config}
+
+exec "$@"
