@@ -20,6 +20,8 @@ class Masters extends Component {
       tableBorder: false,
       lookupAxiosMethod: 'get',
       tableHighLightRow: false,
+      tableRowHeight: 32,
+      tableColumnResizable: false,
     });
   }
 
