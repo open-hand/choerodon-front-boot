@@ -114,7 +114,7 @@ function generateEnvNode(callback, dev = false) {
     const envConfigPath = path.join(__dirname, '../../..', 'env-config.js');
     fs.writeFileSync(
       envConfigPath,
-      `window.__env__ = ${JSON.stringify(combineEnv)};`,
+      `window._env_ = ${JSON.stringify(combineEnv)};`,
     );
     callback();
   } else {

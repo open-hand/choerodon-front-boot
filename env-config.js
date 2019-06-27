@@ -1,1 +1,1 @@
-window.__env__ = {};
+window._env_ = {};

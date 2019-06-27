@@ -1,12 +1,19 @@
 /* eslint-disable no-underscore-dangle */
 function get(valueName, defaultValue) {
-  if (window.__env__ && window.__env__[valueName]) {
-    return window.__env__[valueName];
+  if (window._env_ && window._env_[valueName]) {
+    return window._env_[valueName];
   }
   if (defaultValue) {
     return defaultValue;
   }
   return undefined;
+}
+
+function getAuthHost(isChoerodon, isDev, defaultValue, API_HOST) {
+  if (isChoerodon && !isDev) {
+    return `${API_HOST}/oauth`;
+  }
+  return defaultValue;
 }
 
 // export const PREFIX_CLS = 'c7n';
@@ -53,13 +60,14 @@ export const ACCESS_TOKEN = 'access_token';
 export const TOKEN_TYPE = 'token_type';
 export const ACCESS_DOMAIN = 'domain';
 export const STRING_DEVIDER = '__@.@__';
-export const AUTH_HOST = `${process.env.AUTH_HOST}`;
+// export const AUTH_HOST = `${process.env.AUTH_HOST}`;
+export const NODE_ENV = `${process.env.NODE_ENV}`;
+export const AUTH_HOST = getAuthHost(process.env.TYPE === 'choerodon', process.env.NODE_ENV === 'development', process.env.AUTH_HOST, API_HOST);
 export const AUTH_URL = `${process.env.TYPE === 'choerodon' ? `${AUTH_HOST}/oauth/authorize?response_type=token&client_id=${CLIENT_ID}&state=` : `${AUTH_HOST}/login`}`;
 export const USE_DASHBOARD = JSON.parse(process.env.USE_DASHBOARD || 'false');
 export const USE_GUIDE = JSON.parse(process.env.USE_GUIDE || 'false');
 export const MENU_THEME = `${process.env.MENU_THEME || 'light'}`;
 export const SERVICES_CONFIG = `${process.env.SERVICES_CONFIG}`;
-export const NODE_ENV = `${process.env.NODE_ENV}`;
 export const TYPE = `${process.env.TYPE}`;
 export const RESOURCES_LEVEL = `${process.env.RESOURCES_LEVEL || ''}`;
 export const UI_CONFIGURE = `${process.env.UI_CONFIGURE}`;
