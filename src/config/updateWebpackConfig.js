@@ -1,4 +1,5 @@
 import fs from 'fs';
+import fsEx from 'fs-extra';
 import { join } from 'path';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -125,6 +126,7 @@ export default function updateWebpackConfig(mode, env) {
       inject: true,
       chunks: ['vendor', entryName],
       favicon: getFilePath(favicon),
+      env: './env-config.js',
       minify: {
         html5: true,
         collapseWhitespace: true,

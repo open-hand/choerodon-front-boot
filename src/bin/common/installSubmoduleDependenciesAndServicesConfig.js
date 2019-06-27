@@ -15,7 +15,7 @@ async function getDependenciesByModules(mainPackage) {
   if (main && main !== '') {
     const rName = routeName || name;
     const rMain = transformMain(main, 'lib', 'react');
-    routes[rName] = path.join('.', main);
+    routes[rName] = path.join('.', rMain);
   }
 
   if (!choerodonConfig.routes) {
