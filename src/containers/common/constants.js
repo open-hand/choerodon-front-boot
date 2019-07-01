@@ -26,3 +26,4 @@ export const APIM_GATEWAY = `${process.env.APIM_GATEWAY}`;
 export const UI_CONFIGURE = `${process.env.UI_CONFIGURE}`;
 export const EMAIL_BLOCK_LIST = `${process.env.EMAIL_BLACK_LIST}`;
 export const OUTWARD = `${process.env.OUTWARD || 'undefined'}`;
+export const CUSTOM_THEME_COLOR = `${process.env.CUSTOM_THEME_COLOR || 'undefined'}`;

@@ -14,6 +14,7 @@ module.exports = {
   //   },
   // },
   // emailBlackList: 'qq',
+  // customThemeColor: '#fab614',
 
   // // use for pro start
   // routes: { 'hap-core': './test/routeIndex' },

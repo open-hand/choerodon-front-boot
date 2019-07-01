@@ -11,6 +11,7 @@ const enterPoints = {
   WEBSOCKET_SERVER: 'localhost:wsserver', // websocket server
   APIM_GATEWAY: 'localhost:apimgateway',
   EMAIL_BLACK_LIST: 'localhost:emailblacklist',
+  CUSTOM_THEME_COLOR: 'localhost:customthemecolor',
 };
 
 export default function getEnterPointsConfig() {
