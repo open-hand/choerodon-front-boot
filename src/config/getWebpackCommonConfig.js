@@ -4,6 +4,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import chalk from 'chalk';
 import getProjectType from '../bin/common/getProjectType';
 import getBabelCommonConfig from './getBabelCommonConfig';
@@ -14,6 +15,7 @@ import getPackagePath from '../bin/common/getPackagePath';
 const jsFileName = 'dis/[name].[hash:8].js';
 const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
 const cssFileName = 'dis/[name].[contenthash:8].css';
+const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 let processTimer;
 
@@ -79,6 +81,11 @@ export default function getWebpackCommonConfig(mode, env) {
     new FriendlyErrorsWebpackPlugin(),
     new webpack.ProvidePlugin({
       Choerodon: isDev ? join(process.cwd(), 'src/containers/common') : join(__dirname, '../containers/common'),
+    }),
+    new ThemeColorReplacer({
+      fileName: cssColorFileName,
+      matchColors: ['#3f51b5', '#303f9f'],
+      isJsUgly: env !== 'development',
     }),
   ];
 

@@ -12,6 +12,7 @@ find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:fileserver $
 find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:wsserver $PRO_WEBSOCKET_SERVER g"
 find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:apimgateway $PRO_APIM_GATEWAY g"
 find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:emailblacklist $PRO_EMAIL_BLACK_LIST g"
+find /usr/share/nginx/html -name '*.js' | xargs sed -i "s localhost:customthemecolor $PRO_CUSTOM_THEME_COLOR g"
 
 exec "$@"
 

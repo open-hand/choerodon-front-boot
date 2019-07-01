@@ -14,7 +14,7 @@ export default function getRoutesPath(packageInfo, configEntryName, dashboardPat
   nunjucks.configure(routesPath, {
     autoescape: false,
   });
-  const homePathStr = `createHome("/", ${homePath ? `function() { return import("${escapeWinPath(path.join(process.cwd(), homePath || ''))}"); }` : null}, '${homePath}')`;
+  const homePathStr = `createHome("/", ${homePath ? `function() { return import("${escapeWinPath(path.join(process.cwd(), homePath || ''))}"); }` : null}, ${homePath ? `'${homePath}'` : homePath})`;
   fs.writeFileSync(
     routesPath,
     nunjucks.renderString(routesTemplate, {

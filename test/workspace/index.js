@@ -1,17 +1,32 @@
 import React, { Component } from 'react';
-import { Button } from 'choerodon-ui/pro';
+import { Button, Spin } from 'choerodon-ui';
 import Permission from '../../src/containers/components/pro/permission/Permission';
+import themeColorClient from '../../src/containers/components/c7n/master/themeColorClient';
+
+const getRandomColor = () => `#${(Math.random() * 0xffffff << 0).toString(16)}`;
+
+const updateTheme = (newPrimaryColor) => {
+  themeColorClient.changeColor(newPrimaryColor)
+    // eslint-disable-next-line no-console
+    .finally(() => console.log(`[choerodon] Current Theme Color: ${newPrimaryColor}`));
+};
 
 export default class App extends Component {
+  handleClick = () => {
+    updateTheme(getRandomColor());
+  }
+
   render() {
     return (
       <React.Fragment>
-        <div style={{ marginBottom: 40 }}>
-          <h4>有权限,正常显示的按钮</h4>
-          <Permission service={['task-execution.cancleExecute']}>
-            <Button>Permission Btn</Button>
-          </Permission>
-        </div>
+        <Spin spinning>
+          <div style={{ marginBottom: 40 }}>
+            <h4>有权限,正常显示的按钮</h4>
+            <Permission service={['task-execution.cancleExecute']}>
+              <Button>Permission Btn</Button>
+            </Permission>
+          </div>
+        </Spin>
         <div style={{ marginBottom: 40 }}>
           <h4>没有权限,被隐藏的按钮</h4>
           <Permission service={['permission-code']}>
@@ -20,7 +35,7 @@ export default class App extends Component {
         </div>
         <div style={{ marginBottom: 40 }}>
           <h4>无权限控制,永远显示的按钮</h4>
-          <Button>Without Permission Btn</Button>
+          <Button onClick={this.handleClick}>Without Permission Btn</Button>
         </div>
         <div style={{ marginBottom: 40 }}>
           <h4>没有权限,被隐藏的按钮,显示默认内容</h4>

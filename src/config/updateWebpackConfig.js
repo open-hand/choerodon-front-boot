@@ -34,7 +34,7 @@ export default function updateWebpackConfig(mode, env) {
   const {
     theme, output, root, enterPoints, server, webSocketServer, local,
     postcssConfig, entryName, titlename, htmlTemplate, favicon, menuTheme,
-    emailBlackList, clientid, dashboard, resourcesLevel, apimGateway, uiConfigure, outward,
+    emailBlackList, clientid, dashboard, resourcesLevel, apimGateway, uiConfigure, outward, customThemeColor,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
@@ -63,6 +63,7 @@ export default function updateWebpackConfig(mode, env) {
       WEBSOCKET_SERVER: webSocketServer,
       APIM_GATEWAY: apimGateway,
       EMAIL_BLACK_LIST: emailBlackList,
+      CUSTOM_THEME_COLOR: customThemeColor,
     };
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;
