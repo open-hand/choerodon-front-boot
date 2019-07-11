@@ -74,7 +74,7 @@ function generateEnv(callback) {
     if (fs.existsSync(customEnvPath) && !runByBoot) {
       fs.copyFileSync(customEnvPath, dirEnvPath);
     } else {
-      fs.writeFile(dirEnvPath, '', 'utf8', null);
+      fs.writeFile(dirEnvPath, '', 'utf8', (err, written, buffer) => {});
     }
 
     const shellPath = path.join(__dirname, '../../../', 'env.sh');
@@ -96,7 +96,7 @@ function generateEnvNode(callback, dev = false) {
     if (fs.existsSync(customEnvPath) && !runByBoot) {
       fs.copyFileSync(customEnvPath, dirEnvPath);
     } else {
-      fs.writeFile(dirEnvPath, '', 'utf8', null);
+      fs.writeFile(dirEnvPath, '', 'utf8', (err, written, buffer) => {});
     }
 
     const customEnv = config({

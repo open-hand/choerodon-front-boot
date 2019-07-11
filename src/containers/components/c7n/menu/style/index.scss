@@ -18,6 +18,10 @@
     color: inherit;
   }
 
+  .c7n-menu-item-group-title {
+    margin-top: 15px;
+  }
+
   @include button-link-masker();
   .icon + span {
     transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -51,19 +55,20 @@
     &-header {
       display: flex;
       padding: 0 12px;
-      height: 58px;
-      line-height: 57px;
-      border-bottom: 1px solid #d3d3d3;
+      height: 40px;
+      line-height: 39px;
       font-size: 18px;
       align-items: center;
       flex-shrink: 0;
       color: rgba(0, 0, 0, .65);
       white-space: nowrap;
+      margin-bottom: -15px;
       .icon {
         font-size: 24px;
         width: 24px;
         height: 24px;
         margin-right: 14px;
+        cursor: pointer;
         & + span {
           vertical-align: middle;
         }

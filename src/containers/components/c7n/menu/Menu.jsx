@@ -7,7 +7,7 @@ import findFirstLeafMenu from '../../util/findFirstLeafMenu';
 import { historyPushMenu } from '../../../common';
 import './style';
 
-const { SubMenu, Item } = Menu;
+const { SubMenu, Item, ItemGroup } = Menu;
 
 @withRouter
 @inject('AppState', 'MenuStore')
@@ -72,54 +72,29 @@ export default class CommonMenu extends Component {
     }
   }
 
-  getMenuSingle(data, num) {
-    if (!data.subMenus) {
-      const { route } = findFirstLeafMenu(data);
-      const link = (
-        <Link
-          to={this.getMenuLink(route)}
-          onClick={() => this.props.MenuStore.click(data.code, data.resourceLevel, data.name)}
-          style={{
-            marginLeft: parseInt(num, 10) * 20,
-          }}
-        >
-          <Icon type={data.icon} />
-          <span>
-            {data.name}
-          </span>
-        </Link>
-      );
-      return (
-        <Item
-          key={data.code}
-        >
-          {this.TooltipMenu(link, data.code)}
-        </Item>
-      );
-    } else {
-      return (
-        <SubMenu
-          key={data.code}
-          className="common-menu-right-popup"
-          title={(
-            <span
-              style={{
-                marginLeft: parseInt(num, 10) * 20,
-              }}
-            >
-              <Icon type={data.icon} />
-              <span>
-                {data.name}
-              </span>
-            </span>
-          )}
-        >
-          {data.subMenus.map(
-            two => this.getMenuSingle(two, parseInt(num, 10) + 1),
-          )}
-        </SubMenu>
-      );
-    }
+  getMenuSingle(data, collapsed) {
+    const route = data ? data.route || '/emptyRoute' : '/emptyRoute';
+    const link = (
+      <Link
+        to={this.getMenuLink(route)}
+        onClick={() => this.props.MenuStore.click(data.code, data.resourceLevel, data.name)}
+        style={{
+          marginLeft: !collapsed ? 0 : 15,
+        }}
+      >
+        <Icon type={data.icon} />
+        <span>
+          {data.name}
+        </span>
+      </Link>
+    );
+    return (
+      <Item
+        key={data.code}
+      >
+        {this.TooltipMenu(link, data.code)}
+      </Item>
+    );
   }
 
   TooltipMenu(reactNode, code) {
@@ -252,10 +227,10 @@ export default class CommonMenu extends Component {
     }
   }
 
-  renderLeftMenuItem(item, expanded) {
+  renderLeftMenuItem(item, collapsed) {
     let icon = <Icon type={item.icon} />;
     let text;
-    if (expanded) {
+    if (!collapsed) {
       text = <span>{item.name}</span>;
     } else {
       icon = (
@@ -272,36 +247,41 @@ export default class CommonMenu extends Component {
         </Item>
       );
     } else {
-      return (
-        <SubMenu
-          onTitleClick={this.handleClick}
+      return !collapsed ? (
+        <ItemGroup
+          // onTitleClick={this.handleClick}
           key={item.code}
           className="common-menu-right-popup"
-          title={<span>{icon}{text}</span>}
+          title={item.name}
         >
           {
-            item.subMenus.map(two => (
-              <Item key={two.code}>
-                <Icon type={two.icon} style={{ marginLeft: 20 }} />
-                <span>{two.name}</span>
-              </Item>
-            ))
+            item.subMenus.map(two => this.getMenuSingle(two, collapsed))
+          }
+        </ItemGroup>
+      ) : (
+        <SubMenu
+          // onTitleClick={this.handleClick}
+          key={item.code}
+          className="common-menu-right-popup"
+          title={icon}
+        >
+          {
+            item.subMenus.map(two => this.getMenuSingle(two, collapsed))
           }
         </SubMenu>
       );
     }
   }
 
-  renderRightMenu(menu) {
-    const { collapsed, openKeys, activeMenu } = this.props.MenuStore;
+  renderRightMenu(expanded) {
+    const { MenuStore } = this.props;
+    const { collapsed, openKeys, activeMenu } = MenuStore;
+    const child = MenuStore.getMenuData;
     return (
       <div className={classNames('common-menu-right', { collapsed })}>
-        <Tooltip placement="right" title={collapsed ? menu.name : ''}>
-          <div className="common-menu-right-header">
-            <Icon type={menu.icon} />
-            <span>{menu.name}</span>
-          </div>
-        </Tooltip>
+        <div className="common-menu-right-header">
+          <Icon type="menu" onClick={this.toggleRightMenu} />
+        </div>
         <div className="common-menu-right-content">
           <Menu
             mode="inline"
@@ -310,12 +290,12 @@ export default class CommonMenu extends Component {
             openKeys={openKeys.slice()}
             onOpenChange={this.handleOpenChange}
           >
-            {menu.subMenus.map(two => this.getMenuSingle(two, 0))}
+            {child.map(item => this.renderLeftMenuItem(item, collapsed))}
           </Menu>
         </div>
-        <div className="common-menu-right-footer" onClick={this.toggleRightMenu}>
+        {/* <div className="common-menu-right-footer" onClick={this.toggleRightMenu}>
           <Icon type="first_page" />
-        </div>
+        </div> */}
       </div>
     );
   }
@@ -327,20 +307,12 @@ export default class CommonMenu extends Component {
     if (child && child.length > 0) {
       const { selected } = MenuStore;
       const expanded = AppState.getMenuExpanded;
-      const mask = expanded && (
-        <div
-          role="none"
-          onClick={this.collapseMenu}
-          className="common-menu-mask"
-        />
-      );
       return (
         <div style={{ height: '100%' }}>
           <div className="common-menu">
-            {this.renderLeftMenu(child, selected || child[0], expanded)}
-            {location.pathname !== '/' && this.renderRightMenu(selected || child[0])}
+            {/* {this.renderLeftMenu(child, selected || child[0], expanded)} */}
+            {this.renderRightMenu(expanded)}
           </div>
-          {mask}
         </div>
       );
     } else {

@@ -22,6 +22,9 @@ class Masters extends Component {
       tableHighLightRow: false,
       tableRowHeight: 32,
       tableColumnResizable: false,
+      modalSectionBorder: false,
+      modalOkFirst: false,
+      buttonFuncType: 'flat',
     });
   }
 
