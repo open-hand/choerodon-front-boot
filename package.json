@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "description": "Tools to build website for Choerodon",
   "main": "lib/containers/components/index.js",
   "homepage": "http://choerodon.io/",
@@ -90,6 +90,7 @@
     "mkdirp": "^0.5.1",
     "mobx": "4.7.0",
     "mobx-react": "5.1.2",
+    "mobx-react-lite": "^1.4.1",
     "moment": "latest",
     "node-sass": "^4.7.2",
     "nunjucks": "^3.1.3",
@@ -151,7 +152,7 @@
     "build:bin": "node ./bin/choerodon-hap-front-boot build --config ./choerodon.config.js",
     "lint": "npm run lint:es && npm run lint:style",
     "lint:es": "eslint src/**/*.{js,jsx} test ./choerodon.config.js",
-    "lint:style": "stylelint src/**/*.scss --syntax scss",
+    "lint:style": "stylelint src/**/*.scss",
     "lint-staged": "lint-staged",
     "lint-staged:es": "eslint test ./choerodon.config.js",
     "clean": "rimraf lib",
@@ -164,7 +165,7 @@
     "src/**/*.{js,jsx}": [
       "npm run lint-staged:es"
     ],
-    "src/**/*.scss": "stylelint --syntax scss"
+    "src/**/*.{scss,less}": "stylelint"
   },
   "husky": {
     "hooks": {

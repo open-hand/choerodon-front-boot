@@ -6,6 +6,7 @@ import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter'
 import asyncModuleWrapper from '../{{ source }}/containers/components/util/asyncModuleWrapper';
 import createAxiosInsByModuleName from '../{{ source }}/containers/components/util/createAxiosInsByModuleName';
 import IFRAMEINDEX from '../{{ source }}/containers/components/pro/iframeWrapper';
+import PROJECTINDEX from '../{{ source }}/containers/components/c7n/projects';
 import { dashboard } from '../{{ source }}/containers/common/index';
 import { TYPE } from '../{{ source }}/containers/common/constants';
 import Dashboard from '{{ dashboardPath }}';
@@ -59,6 +60,7 @@ export default class AutoRouter extends Component {
       <CacheSwitch>
         {'{{ home }}'}
         {'{{ routes }}'}
+        <Route path="/projects" component={PROJECTINDEX} />
         <CacheRoute path="/iframe/:name" cacheKey="iframe" component={IFRAMEINDEX} /> 
         <CacheRoute path="*" component={nomatch} />
       </CacheSwitch>

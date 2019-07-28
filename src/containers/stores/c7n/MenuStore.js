@@ -2,6 +2,10 @@
  * Created by jaywoods on 2017/6/24.
  */
 import { action, computed, get, observable, set } from 'mobx';
+import groupBy from 'lodash/groupBy';
+import concat from 'lodash/concat';
+import orderBy from 'lodash/orderBy';
+import flatten from 'lodash/flatten';
 import axios from '../../components/c7n/axios';
 import AppState from './AppState';
 
@@ -14,12 +18,44 @@ function getMenuType(menuType = AppState.currentMenuType, isUser = AppState.isTy
 function filterEmptyMenus(menuData, parent) {
   const newMenuData = menuData.filter((item) => {
     const { name, type, subMenus } = item;
-    return name !== null && (type === 'menu_item' || (subMenus !== null && filterEmptyMenus(subMenus, item).length > 0));
+    return name !== null && (type === 'menu_item' || (subMenus && filterEmptyMenus(subMenus, item).length > 0) || item.modelCode);
+    // return name !== null && (type === 'menu_item' || (subMenus !== null && filterEmptyMenus(subMenus, item).length > 0));
   });
   if (parent) {
     parent.subMenus = newMenuData;
   }
   return newMenuData;
+}
+
+function insertLcMenuOneMenu(menuItem, groupLcMenu, groupParentLcMenu, parentArr) {
+  if (menuItem.modelCode) {
+    return;
+  }
+  if (groupLcMenu[menuItem.code]) {
+    const keyGroup = orderBy(groupLcMenu[menuItem.code], ['sort'], ['asc']);
+    const insertIndex = parentArr.findIndex(r => r === menuItem);
+    if (insertIndex !== -1) {
+      keyGroup.forEach((o, i) => {
+        parentArr.splice(insertIndex + 1 + i, 0, o);
+      });
+    }
+  }
+  if (groupParentLcMenu[menuItem.code]) {
+    menuItem.subMenus = menuItem.subMenus || [];
+    const orderGroup = orderBy(groupParentLcMenu[menuItem.code], ['sort'], ['asc']);
+    menuItem.subMenus = concat(orderGroup, menuItem.subMenus);
+  }
+  if (menuItem.subMenus) {
+    menuItem.subMenus.forEach(item => insertLcMenuOneMenu(item, groupLcMenu, groupParentLcMenu, menuItem));
+  }
+}
+
+function insertLcMenu(menuData, lcMenu) {
+  const groupLcMenu = groupBy(lcMenu, 'afterBy');
+  const groupNullLcMenu = groupLcMenu.null || [];
+  const groupParentLcMenu = groupBy(groupNullLcMenu, 'parentCode');
+
+  menuData.forEach(item => insertLcMenuOneMenu(item, groupLcMenu, groupParentLcMenu, menuData));
 }
 
 class MenuStore {
@@ -131,11 +167,22 @@ class MenuStore {
     if (menu.length) {
       return Promise.resolve(menu);
     }
-    return axios.get(`/iam/v1/menus?code=choerodon.code.top.${type}&source_id=${id}`).then(action((data) => {
-      const child = filterEmptyMenus(data.subMenus || []);
-      this.setMenuData(child, type, id);
-      return child;
-    }));
+    if (type === 'organization') {
+      return Promise.all([axios.get(`/iam/v1/menus?code=choerodon.code.top.organization&source_id=${id}`), axios.get(`/lc/v1/organizations/${id}/menu/all`)])
+        .then(action(([menuData, lcMenu]) => {
+          // const child = filterEmptyMenus(menuData.subMenus || []);
+          const child = menuData.subMenus || [];
+          insertLcMenu(child, lcMenu);
+          this.setMenuData(child, type, id);
+          return child;
+        }));
+    } else {
+      return axios.get(`/iam/v1/menus?code=choerodon.code.top.${type}&source_id=${id}`).then(action((data) => {
+        const child = filterEmptyMenus(data.subMenus || []);
+        this.setMenuData(child, type, id);
+        return child;
+      }));
+    }
   }
 
   @action

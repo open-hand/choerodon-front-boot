@@ -16,7 +16,7 @@ $c7n-boot-header-user: #{$c7n-prefix}-boot-header-user;
     &-menu {
       border-bottom: 1px solid rgba(0, 0, 0, 0.20);
       margin-top: 2px;
-      padding-bottom: 7px;
+      // padding-bottom: 7px;
       &-item {
         text-align: left;
         padding: 0 !important;
