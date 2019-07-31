@@ -143,7 +143,6 @@ class Masters extends Component {
       return (
         AppState.isAuth && AppState.currentMenuType ? (
           <div className="page-wrapper">
-            <div>from choreodon-front-boot default master</div>
             <div className="page-header">
               {/* <AnnouncementBanner /> */}
               <MasterHeader />

@@ -1,0 +1,28 @@
+.wrap-tabs {
+  // padding-left: 24px;
+  // padding-right: 24px;
+  height: 100%;
+
+  .c7n-tabs-content {
+    height: 100%;
+
+    .c7n-tabs-tabpane {
+      height: 100%;
+    }
+  }
+
+  .c7n-tabs-bar {
+    position: absolute;
+    top: 64px;
+    width: calc(~"100% - 48px");
+    z-index: 1;
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+}
+
+.hasHeader {
+  .c7n-tabs-bar {
+    top: 104px !important;
+  }
+}

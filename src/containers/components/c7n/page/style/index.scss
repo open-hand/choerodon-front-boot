@@ -11,13 +11,15 @@
 
 .page-head {
   display: flex;
-  height: 58px;
-  min-height: 58px;
-  line-height: 57px;
+  height: 40px;
+  min-height: 40px;
+  line-height: 39px;
   border-bottom: 1px solid #d3d3d3;
   background-color: #fff;
   align-items: center;
-  padding-left: 25px;
+  padding-left: 24px;
+  // margin-left: -24px;
+  // margin-right: -24px;
 
   .back-btn {
     color: $primary-color;
@@ -28,7 +30,7 @@
   &-title {
     color: #000;
     font-size: 18px;
-    line-height: 58px;
+    line-height: 40px;
     padding-right: 70px;
   }
 
@@ -57,6 +59,10 @@
       }
     }
   }
+}
+
+.blank {
+  margin-bottom: 122px;
 }
 
 .page-head + div,

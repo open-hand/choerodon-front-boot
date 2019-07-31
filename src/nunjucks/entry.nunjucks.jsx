@@ -9,6 +9,7 @@ import queryString from 'query-string';
 import { Modal } from 'choerodon-ui';
 import noaccess from '../{{ source }}/containers/components/c7n/error-pages/403';
 import stores from '../{{ source }}/containers/stores';
+import { AppProvider } from '../{{ source }}/containers/stores/c7n/AppProvider';
 import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter';
 import asyncRouterC7n from '../{{ source }}/containers/components/c7n/util/asyncRouter';
 import asyncLocaleProvider from '../{{ source }}/containers/components/util/asyncLocaleProvider';
@@ -99,9 +100,7 @@ async function loadAdvance() {
       }
       return false;
     })
-    .catch(() => {
-      return false;
-    });
+    .catch(() => false);
 }
 
 function authAll() {
@@ -111,22 +110,35 @@ function authAll() {
   return loadAdvance();
 }
 
+const getConfirmation = (message, callback) => {
+  confirm({
+    className: 'c7n-iam-confirm-modal',
+    title: message.split(Choerodon.STRING_DEVIDER)[0],
+    content: message.split(Choerodon.STRING_DEVIDER)[1],
+    onOk() {
+      callback(true);
+    },
+    onCancel() {
+      callback(false);
+    },
+  });
+};
+
+const Inner = () => (
+  <Provider {...stores}>
+    <Router hashHistory={createBrowserHistory} getUserConfirmation={getConfirmation}>
+      <Switch>
+        <Route
+          path="/"
+          component={authAll() ? '{{ master }}' : noaccess}
+        />
+      </Switch>
+    </Router>
+  </Provider>
+);
+
 @observer
 class App extends Component {
-  getConfirmation = (message, callback) => {
-    confirm({
-      className: 'c7n-iam-confirm-modal',
-      title: message.split(Choerodon.STRING_DEVIDER)[0],
-      content: message.split(Choerodon.STRING_DEVIDER)[1],
-      onOk() {
-        callback(true);
-      },
-      onCancel() {
-        callback(false);
-      },
-    });
-  };
-
   render() {
     const language = TYPE === 'choerodon' ? AppState.currentLanguage : AppState.currentLang;
     const IntlProviderAsync = asyncLocaleProvider(language, 
@@ -152,16 +164,9 @@ class App extends Component {
       return (
         <UILocaleProviderAsync>
           <IntlProviderAsync>
-            <Provider {...stores}>
-              <Router hashHistory={createBrowserHistory} getUserConfirmation={this.getConfirmation}>
-                <Switch>
-                  <Route
-                    path="/"
-                    component={authAll() ? '{{ master }}' : noaccess}
-                  />
-                </Switch>
-              </Router>
-            </Provider>
+            <AppProvider>
+              <Inner />
+            </AppProvider>
           </IntlProviderAsync>
         </UILocaleProviderAsync>
       );

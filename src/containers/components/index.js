@@ -99,3 +99,11 @@ export { default as asyncLocaleProvider } from './util/asyncLocaleProvider';
 export { default as asyncRouter } from './util/asyncRouter';
 
 export { default as WSHandler } from './c7n/ws/WSHandler';
+
+export { default as PageTab } from './c7n/tab-page/PageTab';
+
+export { default as PageWrap } from './c7n/tab-page/PageWrap';
+
+export { default as TabPage } from './c7n/tab-page/TabPage';
+
+export { default as Breadcrumb } from './c7n/tab-page/Breadcrumb';

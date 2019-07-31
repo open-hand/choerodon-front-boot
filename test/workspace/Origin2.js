@@ -15,12 +15,11 @@ export default class Index extends React.Component {
     return (
       <TabPage>
         <Header>
-          <Button icon="refresh">刷新</Button>
-          <Button icon="save">保存</Button>
+          <Button icon="delete">删除</Button>
         </Header>
-        <Breadcrumb title="title1" />
+        <Breadcrumb title="title2" />
         <Content>
-          <div style={{ height: 1000 }}>halo1</div>
+          <div style={{ height: 1000 }}>halo2</div>
         </Content>
       </TabPage>
     );

@@ -14,13 +14,9 @@ export default class Index extends React.Component {
   render() {
     return (
       <TabPage>
-        <Header>
-          <Button icon="refresh">刷新</Button>
-          <Button icon="save">保存</Button>
-        </Header>
-        <Breadcrumb title="title1" />
+        <Breadcrumb title="title3" />
         <Content>
-          <div style={{ height: 1000 }}>halo1</div>
+          <div style={{ height: 1000 }}>halo3</div>
         </Content>
       </TabPage>
     );

@@ -5,7 +5,7 @@ const Store = createContext();
 
 export default Store;
 
-export const StoreProvider = (props) => {
+export const AppProvider = (props) => {
   const { children } = props;
   const value = {
     ...props,

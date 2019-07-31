@@ -72,29 +72,54 @@ export default class CommonMenu extends Component {
     }
   }
 
-  getMenuSingle(data, collapsed) {
-    const route = data ? data.route || '/emptyRoute' : '/emptyRoute';
-    const link = (
-      <Link
-        to={this.getMenuLink(route)}
-        onClick={() => this.props.MenuStore.click(data.code, data.resourceLevel, data.name)}
-        style={{
-          marginLeft: !collapsed ? 0 : 15,
-        }}
-      >
-        <Icon type={data.icon} />
-        <span>
-          {data.name}
-        </span>
-      </Link>
-    );
-    return (
-      <Item
-        key={data.code}
-      >
-        {this.TooltipMenu(link, data.code)}
-      </Item>
-    );
+  getMenuSingle(data, num, collapsed) {
+    if (!data.subMenus) {
+      const { route } = findFirstLeafMenu(data);
+      const link = (
+        <Link
+          to={this.getMenuLink(route)}
+          onClick={() => this.props.MenuStore.click(data.code, data.resourceLevel, data.name)}
+          style={{
+            marginLeft: collapsed ? 16 : parseInt(num, 10) * 20,
+          }}
+        >
+          <Icon type={data.icon} />
+          <span>
+            {data.name}
+          </span>
+        </Link>
+      );
+      return (
+        <Item
+          key={data.code}
+        >
+          {this.TooltipMenu(link, data.code)}
+        </Item>
+      );
+    } else {
+      return (
+        <SubMenu
+          key={data.code}
+          className="common-menu-right-popup"
+          title={(
+            <span
+              style={{
+                marginLeft: parseInt(num, 10) * 20,
+              }}
+            >
+              <Icon type={data.icon} />
+              <span>
+                {data.name}
+              </span>
+            </span>
+          )}
+        >
+          {data.subMenus.map(
+            two => this.getMenuSingle(two, parseInt(num, 10) + 1, collapsed),
+          )}
+        </SubMenu>
+      );
+    }
   }
 
   TooltipMenu(reactNode, code) {
@@ -255,7 +280,7 @@ export default class CommonMenu extends Component {
           title={item.name}
         >
           {
-            item.subMenus.map(two => this.getMenuSingle(two, collapsed))
+            item.subMenus.map(two => this.getMenuSingle(two, 0, collapsed))
           }
         </ItemGroup>
       ) : (
@@ -266,7 +291,7 @@ export default class CommonMenu extends Component {
           title={icon}
         >
           {
-            item.subMenus.map(two => this.getMenuSingle(two, collapsed))
+            item.subMenus.map(two => this.getMenuSingle(two, 0, collapsed))
           }
         </SubMenu>
       );

@@ -43,3 +43,5 @@ function useAppState() {
     loadSiteInfo,
   };
 }
+
+export default useAppState;

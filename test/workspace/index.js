@@ -1,46 +1,18 @@
 import React, { Component } from 'react';
 import { Button } from 'choerodon-ui/pro';
-import Permission from '../../src/containers/components/pro/permission/Permission';
+import PageWrap from '../../src/containers/components/c7n/tab-page/PageWrap';
+import PageTab from '../../src/containers/components/c7n/tab-page/PageTab';
+import Origin from './Origin';
+import Origin2 from './Origin2';
+import Origin3 from './Origin3';
 
-export default class App extends Component {
-  render() {
-    return (
-      <React.Fragment>
-        <div style={{ marginBottom: 40 }}>
-          <h4>有权限,正常显示的按钮</h4>
-          <Permission service={['task-execution.cancleExecute']}>
-            <Button>Permission Btn</Button>
-          </Permission>
-        </div>
-        <div style={{ marginBottom: 40 }}>
-          <h4>没有权限,被隐藏的按钮</h4>
-          <Permission service={['permission-code']}>
-            <Button>Permission Btn</Button>
-          </Permission>
-        </div>
-        <div style={{ marginBottom: 40 }}>
-          <h4>无权限控制,永远显示的按钮</h4>
-          <Button>Without Permission Btn</Button>
-        </div>
-        <div style={{ marginBottom: 40 }}>
-          <h4>没有权限,被隐藏的按钮,显示默认内容</h4>
-          <Permission
-            service={['permission-code']}
-            noAccessChildren={<span>对不起你不配看到我!</span>}
-          >
-            <Button>Permission Btn</Button>
-          </Permission>
-        </div>
-        <div style={{ marginBottom: 40 }}>
-          <h4>不知道有没有权限,反正加载的时候显示,没权限的时候也显示</h4>
-          <Permission
-            service={['permission-code']}
-            defaultChildren={<span>我还在加载!或者你不配看我!</span>}
-          >
-            <Button>Permission Btn</Button>
-          </Permission>
-        </div>
-      </React.Fragment>
-    );
-  }
-}
+const App = () => (
+  // <PageWrap noHeader={['tab3']}>
+  //   <PageTab title="测试没有header" tabKey="tab3" component={Origin3} />
+  //   <PageTab title="邮箱配置" tabKey="tab1" component={Origin} />
+  //   <PageTab title="短信配置" tabKey="tab2" component={Origin2} />
+  // </PageWrap>
+  <Origin2 />
+);
+
+export default App;

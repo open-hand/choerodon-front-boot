@@ -22,6 +22,12 @@
     margin-top: 15px;
   }
 
+  .c7n-menu li:first-child {
+    .c7n-menu-item-group-title {
+      margin-top: 0;
+    }
+  }
+
   @include button-link-masker();
   .icon + span {
     transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);

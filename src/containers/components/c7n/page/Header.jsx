@@ -6,6 +6,7 @@ import { inject } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { getMessage } from '../../../common';
+import { Context } from '../tab-page/PageWrap';
 
 @withRouter
 @inject('AppState', 'MenuStore')
@@ -46,8 +47,8 @@ export default class PageHeader extends Component {
   }
 
   render() {
-    const { title, backPath, children, className } = this.props;
-    let backBtn = '';
+    const { backPath, children, className } = this.props;
+    let backBtn = null;
     if (backPath) {
       backBtn = (
         // 清除从父元素继承的 CSS 样式
@@ -72,9 +73,6 @@ export default class PageHeader extends Component {
     return (
       <div className={classNames('page-head', className)}>
         {backBtn}
-        <span className="page-head-title">
-          {title}
-        </span>
         {children}
       </div>
     );

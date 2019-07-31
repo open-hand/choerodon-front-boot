@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.19.2",
+  "version": "0.19.3",
   "description": "Tools to build website for Choerodon",
   "main": "lib/containers/components/index.js",
   "homepage": "http://choerodon.io/",
