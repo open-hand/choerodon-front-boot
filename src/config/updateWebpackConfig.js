@@ -1,5 +1,4 @@
 import fs from 'fs';
-import fsEx from 'fs-extra';
 import { join } from 'path';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -62,8 +61,6 @@ export default function updateWebpackConfig(mode, env) {
       VERSION: '本地',
       TITLE_NAME: titlename,
       WEBSOCKET_SERVER: webSocketServer,
-      APIM_GATEWAY: apimGateway,
-      EMAIL_BLACK_LIST: emailBlackList,
     };
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;
@@ -113,16 +110,11 @@ export default function updateWebpackConfig(mode, env) {
   }
   const entryPath = join(choerodonLib, '..', 'tmp', `entry.${entryName}.js`);
   customizedWebpackConfig.entry[entryName] = entryPath;
-  if (!isChoerodon) {
-    const entryWithoutSiderPath = join(choerodonLib, '..', 'tmp', 'entry.withoutsider.js');
-    customizedWebpackConfig.entry.withoutsider = entryWithoutSiderPath;
-  }
   customizedWebpackConfig.plugins.push(
     new webpack.DefinePlugin(defines),
     new HtmlWebpackPlugin({
       title: process.env.TITLE_NAME || titlename,
       template: getFilePath(htmlTemplate),
-      // fileName: 'index.html',
       inject: true,
       chunks: ['vendor', entryName],
       favicon: getFilePath(favicon),
@@ -137,25 +129,5 @@ export default function updateWebpackConfig(mode, env) {
       },
     }),
   );
-  if (!isChoerodon) {
-    customizedWebpackConfig.plugins.push(
-      new HtmlWebpackPlugin({
-        title: process.env.TITLE_NAME || titlename,
-        template: getFilePath(htmlTemplate),
-        chunks: ['vendor', 'withoutsider'],
-        filename: 'withoutsider.html',
-        inject: true,
-        favicon: getFilePath(favicon),
-        minify: {
-          html5: true,
-          collapseWhitespace: true,
-          removeComments: true,
-          removeTagWhitespace: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-        },
-      }),
-    );
-  }
   return customizedWebpackConfig;
 }

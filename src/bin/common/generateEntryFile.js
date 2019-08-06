@@ -40,18 +40,4 @@ export default function generateEntryFile(mainPackage, configEntryName) {
       masterOutterPath: escapeWinPath(path.join(__dirname, `../../../${isDev ? 'src' : 'lib'}/containers/components/${isChoerodon ? 'c7n/master' : 'pro/masterPro'}`)),
     }),
   );
-  
-  if (!isChoerodon) {
-    const entryWithoutSiderPath = path.join(tmpDirPath, 'entry.withoutsider.js');
-    const entryWithoutSiderTemplate = fs.readFileSync(path.join(__dirname, '../../nunjucks/entrywithoutsider.nunjucks.js')).toString();
-    fs.writeFileSync(
-      entryWithoutSiderPath,
-      nunjucks.renderString(entryWithoutSiderTemplate, {
-        routesPath: escapeWinPath(routesPath),
-        source: isDev ? 'src' : 'lib',
-        master: masterPathStr,
-        masterOutterPath: escapeWinPath(path.join(__dirname, `../../../${isDev ? 'src' : 'lib'}/containers/components/${isChoerodon ? 'c7n/master' : 'pro/masterPro'}`)),
-      }),
-    );
-  }
 }

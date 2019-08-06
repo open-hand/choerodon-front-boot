@@ -1,6 +1,4 @@
 import spawn from 'cross-spawn';
-import mkdirp from 'mkdirp';
-import rimraf from 'rimraf';
 import context from './context';
 import getProjectType from './getProjectType';
 
@@ -89,9 +87,7 @@ function generateEnvNode(callback, dev = false) {
   const { choerodonConfig: { runByBoot } } = context;
   const { isChoerodon } = getProjectType();
   if (isChoerodon) {
-    const customEnvPath = runByBoot
-      ? path.join(process.cwd(), '.env')
-      : path.join(process.cwd(), './react/.env');
+    const customEnvPath = path.join(process.cwd(), './react/.env');
     const dirEnvPath = path.join(__dirname, '../../..', '.env');
     if (fs.existsSync(customEnvPath) && !runByBoot) {
       fs.copyFileSync(customEnvPath, dirEnvPath);
@@ -116,10 +112,8 @@ function generateEnvNode(callback, dev = false) {
       envConfigPath,
       `window._env_ = ${JSON.stringify(combineEnv)};`,
     );
-    callback();
-  } else {
-    callback();
   }
+  callback();
 }
 
 module.exports = generateEnvNode;

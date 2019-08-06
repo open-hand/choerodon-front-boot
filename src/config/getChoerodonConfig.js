@@ -46,7 +46,6 @@ const defaultConfig = {
   homePath: undefined,
   menuTheme: 'light',
   resourcesLevel: ['site', 'user'],
-  apimGateway: 'http://apim.example.com',
 };
 
 export default function getChoerodonConfig(configFile) {

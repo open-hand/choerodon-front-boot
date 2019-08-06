@@ -30,8 +30,6 @@ function run(mainPackage, dev) {
     quiet: true,
     hot: true,
     ...devServerConfig,
-    // contentBase: path.join(process.cwd(), output),
-    // contentBase: path.join(process.cwd(), 'src', 'main', 'resources', 'lib', output),
     contentBase: [path.join(process.cwd(), 'src', 'main', 'resources', 'lib', output), path.join(__dirname, '../../')],
     historyApiFallback: true,
     host: 'localhost',

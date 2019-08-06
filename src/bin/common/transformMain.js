@@ -8,7 +8,7 @@
  * to: react
  * output: ./react/src/app/iam/containers/IAMIndex.js
  */
-function transormMain(main, from, to) {
+function transformMain(main, from, to) {
   const originMain = main;
   const originMainArr = originMain.split('/');
   const reactIndex = originMainArr.findIndex(v => v === from);
@@ -19,4 +19,4 @@ function transormMain(main, from, to) {
   return originMain;
 }
 
-module.exports = transormMain;
+module.exports = transformMain;
