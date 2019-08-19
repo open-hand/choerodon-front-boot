@@ -1,7 +1,7 @@
 {
   "name": "@choerodon/boot",
   "version": "0.20.5",
-  "description": "Tools to build website for Choerodon",
+  "description": "Choerodon Scaffold to run react application.",
   "main": "lib/containers/components/index.js",
   "homepage": "http://choerodon.io/",
   "bin": {
@@ -140,26 +140,23 @@
   },
   "peerDependencies": {},
   "scripts": {
+    "clean": "rimraf lib",
+    "compile": "gulp compile",
     "prestart": "gulp compile-bin",
-    "start": "node ./test/start --config ./test/choerodon.config.js -m",
-    "prebuild": "npm run compile",
-    "predist": "npm run compile",
-    "predist:bin": "npm run compile",
-    "dist:bin": "node ./bin/choerodon-front-boot dist --config ./choerodon.config.js -m",
+    "start": "node ./test/start --config ./test/choerodon.config.js",
     "prestart:bin": "npm run compile",
-    "start:bin": "node ./bin/choerodon-front-boot start --config ./choerodon.config.js -m",
+    "start:bin": "node ./bin/choerodon-front-boot start --config ./choerodon.config.js",
     "prebuild:bin": "npm run compile",
     "build:bin": "node ./bin/choerodon-front-boot build --config ./choerodon.config.js",
+    "predist:bin": "npm run compile",
+    "dist:bin": "node ./bin/choerodon-front-boot dist --config ./choerodon.config.js",
+    "prepublish": "npm run compile",
+    "postpublish": "npm run clean",
     "lint": "npm run lint:es && npm run lint:style",
     "lint:es": "eslint src/**/*.{js,jsx} test ./choerodon.config.js",
     "lint:style": "stylelint src/**/*.scss",
     "lint-staged": "lint-staged",
-    "lint-staged:es": "eslint test ./choerodon.config.js",
-    "clean": "rimraf lib",
-    "compile": "gulp compile",
-    "copy": "gulp copy",
-    "prepublish": "npm run compile",
-    "postpublish": "npm run clean"
+    "lint-staged:es": "eslint test ./choerodon.config.js"
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [
