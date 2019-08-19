@@ -31,7 +31,7 @@ function getAssetLoader(env, mimetype, limit = 10000) {
 }
 
 export default function getWebpackCommonConfig(mode, env) {
-  const { isDev } = context;
+  const { isDev, choerodonConfig: { masterName: masterName = 'master' } } = context;
   const babelOptions = getBabelCommonConfig(mode, env);
   const tsOptions = getTSCommonConfig();
 
@@ -78,7 +78,9 @@ export default function getWebpackCommonConfig(mode, env) {
     }),
     new FriendlyErrorsWebpackPlugin(),
     new webpack.ProvidePlugin({
-      Choerodon: isDev ? join(process.cwd(), 'src/containers/common') : join(__dirname, '../containers/common'),
+      Choerodon: isDev
+        ? join(process.cwd(), `node_modules/@choerodon/${masterName}/lib/containers/common`)
+        : join(__dirname, `../../../${masterName}/lib/containers/common`),
     }),
   ];
 
