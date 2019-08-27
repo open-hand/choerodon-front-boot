@@ -8,18 +8,18 @@ const routes = {};
 
 function createRoute(path, component, moduleCode) {
   if (!routes[path]) {
-    routes[path] = <Route path={path} component={asyncRouter(component)} />;
+    routes[path] = <Route path={path} component={React.lazy(component)} />;
   }
   return routes[path];
 }
 
 function createHome(path, component, homePath) {
   if (!routes[path]) {
-    const Cmp = asyncRouter(
+    const Cmp = React.lazy(
       // eslint-disable-next-line no-nested-ternary
       homePath
         ? component
-        : () => import('../{{ source }}/containers/components/home'),
+        : () => import('../{{ source }}/containers/home'),
     );
     routes[path] = <Route exact path={path} component={Cmp} />;
   }

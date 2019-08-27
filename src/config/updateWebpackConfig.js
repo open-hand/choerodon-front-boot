@@ -5,11 +5,8 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import context from '../bin/common/context';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
-import getEnterPointsConfig from './getEnterPointsConfig';
 import getWebpackCommonConfig from './getWebpackCommonConfig';
 import getDefaultTheme from './getDefaultTheme';
-import getPackagePath from '../bin/common/getPackagePath';
-import getProjectType from '../bin/common/getProjectType';
 
 const choerodonLib = join(__dirname, '..');
 
@@ -26,16 +23,15 @@ function getFilePath(file) {
 }
 
 export default function updateWebpackConfig(mode, env) {
-  const pkgPath = getPackagePath();
-  const pkg = require(pkgPath);
-  const { isChoerodon, projectType } = getProjectType();
-  const webpackConfig = getWebpackCommonConfig(mode, env);
   const { choerodonConfig } = context;
   const {
     theme, output, root, enterPoints, server, webSocketServer, local,
     postcssConfig, entryName, titlename, htmlTemplate, favicon, menuTheme,
     emailBlackList, clientid, dashboard, resourcesLevel, apimGateway, uiConfigure, outward,
   } = choerodonConfig;
+  
+  const webpackConfig = getWebpackCommonConfig(mode, env);
+  
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
     modifyVars: Object.assign({}, getDefaultTheme(env), theme),
@@ -55,7 +51,7 @@ export default function updateWebpackConfig(mode, env) {
     });
     defaultEnterPoints = {
       API_HOST: server,
-      AUTH_HOST: isChoerodon ? `${server}/oauth` : server,
+      AUTH_HOST: `${server}/oauth`,
       CLIENT_ID: clientid,
       LOCAL: local,
       VERSION: '本地',
@@ -64,7 +60,7 @@ export default function updateWebpackConfig(mode, env) {
     };
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;
-    webpackConfig.output.path = join(process.cwd(), 'src', 'main', 'resources', 'lib', output);
+    webpackConfig.output.path = join(process.cwd(), output);
     styleLoadersConfig.forEach((config) => {
       webpackConfig.module.rules.push({
         test: config.test,
@@ -73,28 +69,11 @@ export default function updateWebpackConfig(mode, env) {
         }),
       });
     });
-    if (isChoerodon) {
-      defaultEnterPoints = getEnterPointsConfig();
-    } else {
-      defaultEnterPoints = {
-        API_HOST: server,
-        AUTH_HOST: server,
-        LOCAL: local,
-        VERSION: '本地',
-        TITLE_NAME: titlename,
-        WEBSOCKET_SERVER: '',
-      };
-    }
+    defaultEnterPoints = {};
   }
-  /* eslint-enable no-param-reassign */
   const mergedEnterPoints = {
     NODE_ENV: env,
-    MENU_THEME: menuTheme,
-    UI_CONFIGURE: JSON.stringify(uiConfigure || {}),
-    USE_DASHBOARD: !!dashboard,
-    SERVICES_CONFIG: JSON.stringify(pkg.servicesConfig || []),
     RESOURCES_LEVEL: Array.isArray(resourcesLevel) ? resourcesLevel.join(',') : resourcesLevel,
-    TYPE: projectType,
     OUTWARD: outward,
     ...defaultEnterPoints,
     ...enterPoints(mode, env),
@@ -116,7 +95,7 @@ export default function updateWebpackConfig(mode, env) {
       title: process.env.TITLE_NAME || titlename,
       template: getFilePath(htmlTemplate),
       inject: true,
-      chunks: ['vendor', entryName],
+      // chunks: ['vendor', entryName],
       favicon: getFilePath(favicon),
       env: './env-config.js',
       minify: {

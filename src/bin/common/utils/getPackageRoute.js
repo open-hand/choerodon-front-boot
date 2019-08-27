@@ -1,5 +1,5 @@
 import path from 'path';
-import context from './context';
+import context from '../context';
 import transformMain from './transformMain';
 
 export default function getPackageRoute(packageInfo, base = '.') {
@@ -9,7 +9,7 @@ export default function getPackageRoute(packageInfo, base = '.') {
     const rName = routeName || name;
     const rMain = Array.isArray(modules) && modules.length > 0
       ? main
-      : transformMain(main, 'lib', 'react');
+      : transformMain(main);
     
     return { [rName]: path.join(base, rMain) };
   }

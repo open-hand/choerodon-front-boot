@@ -1,6 +1,6 @@
 import path from 'path';
 import mkdirp from 'mkdirp';
-import warning from '../../common/warning';
+import warning from './utils/warning';
 
 let isInitialized = false;
 exports.initialize = function initialize(context) {

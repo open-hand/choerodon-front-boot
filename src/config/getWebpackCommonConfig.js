@@ -6,11 +6,9 @@ import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import chalk from 'chalk';
-import getProjectType from '../bin/common/getProjectType';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getTSCommonConfig from './getTSCommonConfig';
 import context from '../bin/common/context';
-import getPackagePath from '../bin/common/getPackagePath';
 
 const jsFileName = 'dis/[name].[hash:8].js';
 const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
@@ -20,14 +18,12 @@ const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 let processTimer;
 
 function getAssetLoader(env, mimetype, limit = 10000) {
-  const { isChoerodon, isSingle } = getProjectType();
   return {
     loader: 'url-loader',
     options: {
       limit,
       mimetype,
       name: assetFileName,
-      publicPath: env === 'production' && (!isChoerodon) ? '/lib/dist/' : undefined,
     },
   };
 }
@@ -40,7 +36,6 @@ export default function getWebpackCommonConfig(mode, env) {
   const plugins = [
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      filename: 'dis/[name].[hash:5].js',
       minChunks: Infinity,
     }),
     new ExtractTextPlugin({
@@ -108,6 +103,10 @@ export default function getWebpackCommonConfig(mode, env) {
           },
         },
       }),
+    );
+  } else {
+    plugins.push(
+      new webpack.HotModuleReplacementPlugin(),
     );
   }
   return {

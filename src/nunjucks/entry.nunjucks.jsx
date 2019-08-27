@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Modal } from 'choerodon-ui';
-import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter';
+import asyncRouter from '../{{ source }}/containers/util/asyncRouter';
 
 let MASTERS;
 const { confirm } = Modal;

@@ -3,7 +3,7 @@ import getChoerodonConfig from '../../config/getChoerodonConfig';
 import context from './context';
 
 function checkRequiredProp(choerodonConfig) {
-  const requiredProps = ['projectType', 'buildType', 'master'];
+  const requiredProps = ['master'];
   if (!requiredProps.every(prop => choerodonConfig[prop])) {
     // eslint-disable-next-line no-console
     console.log('缺失部分属性');

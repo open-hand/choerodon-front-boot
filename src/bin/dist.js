@@ -4,19 +4,19 @@ import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
 import context from './common/context';
-import warning from '../common/warning';
+import warning from './common/utils/warning';
 import initialize from './common/initialize';
-import getPackagePath from './common/getPackagePath';
-import generateEntryFile from './common/generateEntryFile';
+import getPackagePath from './common/utils/getPackagePath';
+import handleGenerateEntry from './common/handleGenerateEntry';
 import updateWebpackConfig from '../config/updateWebpackConfig';
-import installSubmoduleDependencies from './common/installSubmoduleDependenciesAndServicesConfig';
-import generateEnv from './common/generateEnv';
+import handleCollectRoute from './common/handleCollectRoute';
+import handleEnvironmentVariable from './common/handleEnvironmentVariable';
 
 function copy(fileName) {
-  const { choerodonConfig: { output, distBasePath, htmlPath } } = context;
+  const { choerodonConfig: { output, htmlPath } } = context;
 
   const originPath = path.join(__dirname, '../../', fileName);
-  const distPath = path.join(process.cwd(), distBasePath, output, fileName);
+  const distPath = path.join(process.cwd(), output, fileName);
   fs.copyFileSync(originPath, distPath);
 }
 
@@ -26,12 +26,12 @@ function handleAfterCompile() {
 }
 
 function dist(mainPackage, env) {
-  const { choerodonConfig: { entryName, output, distBasePath } } = context;
-  const distPath = path.join(process.cwd(), distBasePath, output);
+  const { choerodonConfig: { entryName, output } } = context;
+  const distPath = path.join(process.cwd(), output);
   rimraf.sync(distPath);
   mkdirp.sync(distPath);
 
-  generateEntryFile(
+  handleGenerateEntry(
     mainPackage,
     entryName,
   );
@@ -55,11 +55,11 @@ export default function build(program) {
   initialize(program);
   const env = program.env || process.env.NODE_ENV || 'production';
   const { choerodonConfig: { modules } } = context;
+  const mainPackagePath = getPackagePath();
+  const mainPackage = require(mainPackagePath);
+  handleEnvironmentVariable();
   if (Array.isArray(modules) && modules.length > 0) {
-    generateEnv(() => installSubmoduleDependencies(mainPackage => dist(mainPackage, env)));
-  } else {
-    const mainPackagePath = getPackagePath();
-    const mainPackage = require(mainPackagePath);
-    generateEnv(() => dist(mainPackage, env));
+    handleCollectRoute(mainPackage);
   }
+  dist(mainPackage);
 }

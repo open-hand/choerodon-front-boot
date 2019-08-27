@@ -5,8 +5,7 @@
 .idea
 .project
 
-
-# npm
+# npm / yarn
 node_modules
 npm-debug.log
 yarn-error.log
@@ -25,7 +24,6 @@ webpack/dist
 webpack/dll
 
 #缓存
-
 .cache
 
 #python的test

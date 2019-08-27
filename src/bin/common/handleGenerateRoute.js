@@ -2,12 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import nunjucks from 'nunjucks';
 import context from './context';
-import escapeWinPath from './escapeWinPath';
-import getPackageRoute from './getPackageRoute';
+import escapeWinPath from './utils/escapeWinPath';
+import getPackageRoute from './utils/getPackageRoute';
 
 const routesTemplate = fs.readFileSync(path.join(__dirname, '../../nunjucks/routes.nunjucks.js')).toString();
 
-export default function getRoutesPath(packageInfo, configEntryName, dashboardPath) {
+export default function handleGenerateRoute(packageInfo, configEntryName) {
   const { tmpDirPath, isDev, choerodonConfig: { routes, homePath } } = context;
   const configRoutes = routes || getPackageRoute(packageInfo);
   const routesPath = path.join(tmpDirPath, `routes.${configEntryName}.js`);
@@ -22,7 +22,6 @@ export default function getRoutesPath(packageInfo, configEntryName, dashboardPat
         `createRoute("/${key}", function() { return import("${escapeWinPath(path.join(process.cwd(), configRoutes[key]))}"); }, "${key}")`
       )).join(',\n'),
       home: homePathStr,
-      dashboardPath: escapeWinPath(dashboardPath),
       source: isDev ? 'src' : 'lib',
     }),
   );
