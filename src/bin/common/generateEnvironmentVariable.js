@@ -57,7 +57,14 @@ function config(options) {
   }
 }
 
-function generateEnvNode(dev = false) {
+/**
+ * 通过node模拟shell脚本生成环境变量文件(env-config.js)过程
+ * 检查本地是否有环境变量文件，如果有，复制都boot根目录下
+ * 解析用户环境变量文件和默认环境变量文件
+ * 进行合并
+ * @param {*} isDev 
+ */
+function generateEnvNode(isDev = false) {
   const { choerodonConfig: { runByBoot } } = context;
 
   const customEnvPath = path.join(process.cwd(), './react/.env');
@@ -74,7 +81,7 @@ function generateEnvNode(dev = false) {
   const defaultEnv = config({
     path: path.join(__dirname, '../../..', '.default.env'),
   });
-  const combineEnv = dev
+  const combineEnv = isDev
     ? customEnv.parsed
     : {
       ...defaultEnv.parsed,

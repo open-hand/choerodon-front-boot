@@ -8,7 +8,7 @@ import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import chalk from 'chalk';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getTSCommonConfig from './getTSCommonConfig';
-import context from '../bin/common/context';
+import context from '../context';
 
 const jsFileName = 'dis/[name].[hash:8].js';
 const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';

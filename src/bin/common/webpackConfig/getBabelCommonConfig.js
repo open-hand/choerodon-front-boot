@@ -1,4 +1,4 @@
-import context from '../bin/common/context';
+import context from '../context';
 
 export default function babel(mode, env) {
   const { choerodonConfig } = context;

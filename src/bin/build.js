@@ -5,12 +5,9 @@ import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
 import context from './common/context';
 import warning from './common/utils/warning';
-import initialize from './common/initialize';
-import getPackagePath from './common/utils/getPackagePath';
-import handleGenerateEntry from './common/handleGenerateEntry';
-import updateWebpackConfig from '../config/updateWebpackConfig';
-import handleCollectRoute from './common/handleCollectRoute';
-import handleEnvironmentVariable from './common/handleEnvironmentVariable';
+import handleGenerateEntry from './common/generateEntry';
+import generateWebpackConfig from './common/generateWebpackConfig';
+import generateEnvironmentVariable from './common/generateEnvironmentVariable';
 
 function copy(fileName) {
   const { choerodonConfig: { output, htmlPath } } = context;
@@ -25,18 +22,24 @@ function handleAfterCompile() {
   COPY_FILE_NAME.forEach(filename => copy(filename));
 }
 
-function dist(mainPackage, env) {
+export default function build(program) {
+  const env = program.env || process.env.NODE_ENV || 'production';
+  // 初始化全局参数context
+  const { initContext } = context;
+  initContext(program);
+
+  // 前端环境变量方案处理
+  generateEnvironmentVariable();
+  initContext(program);
+
   const { choerodonConfig: { entryName, output } } = context;
   const distPath = path.join(process.cwd(), output);
   rimraf.sync(distPath);
   mkdirp.sync(distPath);
-
-  handleGenerateEntry(
-    mainPackage,
-    entryName,
-  );
+  // 生成入口文件
+  handleGenerateEntry(entryName);
   
-  const webpackConfig = updateWebpackConfig('build', env);
+  const webpackConfig = generateWebpackConfig('build', env);
   webpackConfig.plugins.push(new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(env),
   }));
@@ -49,17 +52,4 @@ function dist(mainPackage, env) {
     }
     handleAfterCompile();
   });
-}
-
-export default function build(program) {
-  initialize(program);
-  const env = program.env || process.env.NODE_ENV || 'production';
-  const { choerodonConfig: { modules } } = context;
-  const mainPackagePath = getPackagePath();
-  const mainPackage = require(mainPackagePath);
-  handleEnvironmentVariable();
-  if (Array.isArray(modules) && modules.length > 0) {
-    handleCollectRoute(mainPackage);
-  }
-  dist(mainPackage);
 }

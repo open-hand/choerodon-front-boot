@@ -1,15 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import nunjucks from 'nunjucks';
-import context from './context';
-import escapeWinPath from './utils/escapeWinPath';
-import getPackageRoute from './utils/getPackageRoute';
+import context from '../context';
+import escapeWinPath from '../utils/escapeWinPath';
+import getPackageRoute from '../utils/getPackageRoute';
 
-const routesTemplate = fs.readFileSync(path.join(__dirname, '../../nunjucks/routes.nunjucks.js')).toString();
+const routesTemplate = fs.readFileSync(path.join(__dirname, '../nunjucks/routes.nunjucks.js')).toString();
 
-export default function handleGenerateRoute(packageInfo, configEntryName) {
+export default function handleGenerateRoute(configEntryName) {
   const { tmpDirPath, isDev, choerodonConfig: { routes, homePath } } = context;
-  const configRoutes = routes || getPackageRoute(packageInfo);
+  const configRoutes = routes;
   const routesPath = path.join(tmpDirPath, `routes.${configEntryName}.js`);
   nunjucks.configure(routesPath, {
     autoescape: false,

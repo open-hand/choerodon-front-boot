@@ -4,7 +4,10 @@ module.exports = {
   // server: 'https://api.choerodon.com.cn',
   webSocketServer: 'ws://notify.staging.saas.hand-china.com',
   // master: './src/containers/components/c7n/master/MasterDefault.jsx',
-  master: './test/workspace/Cmp.js',
+  // master: './test/workspace/Cmp.js',
+  // master: '@choerodon/master',
+  master: './test/workspace/export.js',
+  modules: [],
   dashboard: {},
   guide: {
     iam: {

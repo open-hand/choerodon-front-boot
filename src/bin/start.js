@@ -3,21 +3,25 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import openBrowser from 'react-dev-utils/openBrowser';
 import context from './common/context';
-import initialize from './common/initialize';
-import getPackagePath from './common/utils/getPackagePath';
-import handleGenerateEntry from './common/handleGenerateEntry';
-import updateWebpackConfig from '../config/updateWebpackConfig';
-import handleCollectRoute from './common/handleCollectRoute';
-import handleEnvironmentVariable from './common/handleEnvironmentVariable';
+import generateTransfer from './common/generateTransfer';
+import handleGenerateEntry from './common/generateEntry';
+import generateWebpackConfig from './common/generateWebpackConfig';
+import generateEnvironmentVariable from './common/generateEnvironmentVariable';
 
-function run(mainPackage, dev) {
+export default function start(program, dev) {
+  // 初始化全局参数context
+  const { initContext } = context;
+  initContext(program, dev);
+
+  // 前端环境变量方案处理
+  generateEnvironmentVariable(true);
+
   const { choerodonConfig: { entryName, devServerConfig, output, port } } = context;
-  handleGenerateEntry(
-    mainPackage,
-    entryName,
-  );
+  // 生成入口文件
+  generateTransfer(entryName);
+  handleGenerateEntry(entryName);
 
-  const webpackConfig = updateWebpackConfig('start', 'development');
+  const webpackConfig = generateWebpackConfig('start', 'development');
   const serverOptions = {
     quiet: true,
     hot: true,
@@ -44,16 +48,4 @@ function run(mainPackage, dev) {
     port, '0.0.0.0',
     () => openBrowser(`http://localhost:${port}`),
   );
-}
-
-export default function start(program, dev) {
-  initialize(program, dev);
-  const { choerodonConfig: { modules } } = context;
-  const mainPackagePath = getPackagePath();
-  const mainPackage = require(mainPackagePath);
-  handleEnvironmentVariable(true);
-  if (Array.isArray(modules) && modules.length > 0) {
-    handleCollectRoute(mainPackage);
-  }
-  run(mainPackage);
 }

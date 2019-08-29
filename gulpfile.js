@@ -89,7 +89,7 @@ function babelify(js, dir = '') {
   const stream = js.pipe(babel(babelConfig));
   return stream
     .pipe(through2.obj(function (file, encoding, next) {
-      const matches = file.path.match(/(routes|dashboard|guide|entry|entrywithoutsider)\.nunjucks\.(js|jsx)/);
+      const matches = file.path.match(/(routes|dashboard|guide|entry)\.nunjucks\.(js|jsx)/);
       if (matches) {
         const content = file.contents.toString(encoding);
         file.contents = Buffer.from(content

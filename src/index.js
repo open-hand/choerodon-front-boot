@@ -1,9 +1,3 @@
-import start from './bin/start';
-import dist from './bin/dist';
-import compile from './bin/compile';
+import Index from '../tmp/transfer.index.js';
 
-export {
-  start,
-  dist,
-  compile,
-};
+export default Index;
