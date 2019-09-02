@@ -12,7 +12,8 @@ export default function generateEntry(configEntryName) {
   // 收集路由，单模块启动也得配置路径
   handleCollectRoute();
 
-  const masterPathStr = `getMasters(${`function() { return import("${escapeWinPath(path.join(process.cwd(), master))}"); }`})`;
+  const masterPath = typeof master === 'object' ? master.masterPath : master;
+  const masterPathStr = `getMasters(${`function() { return import("${escapeWinPath(path.join(process.cwd(), masterPath))}"); }`})`;
   
   // 生成路由文件
   const routesPath = handleGenerateRoute(configEntryName);

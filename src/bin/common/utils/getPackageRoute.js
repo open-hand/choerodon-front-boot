@@ -7,7 +7,7 @@ export default function getPackageRoute(packageInfo, base = '.') {
   if (packageInfo) {
     const { main, name, routeName } = packageInfo;
     const rName = routeName || name;
-    const rMain = Array.isArray(modules) && modules.length > 0
+    const rMain = base !== '.'
       ? main
       : transformMain(main);
     

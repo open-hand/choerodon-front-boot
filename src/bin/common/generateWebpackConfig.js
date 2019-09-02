@@ -18,7 +18,7 @@ function getFilePath(file) {
   } else if (isDev) {
     return join(process.cwd(), 'src', file);
   } else {
-    return join(__dirname, '..', file);
+    return join(__dirname, '../../', file);
   }
 }
 

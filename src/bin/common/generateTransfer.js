@@ -9,10 +9,11 @@ export default function generateTransfer(configEntryName) {
 
   const transferPath = path.join(tmpDirPath, `transfer.${configEntryName}.js`);
   const transferTemplate = fs.readFileSync(path.join(__dirname, './nunjucks/transfer.nunjucks.js')).toString();
+  const exportPath = typeof master === 'object' ? master.exportPath : master;
   fs.writeFileSync(
     transferPath,
     nunjucks.renderString(transferTemplate, {
-      exportPath: escapeWinPath(path.join(process.cwd(), master)),
+      exportPath: escapeWinPath(path.join(process.cwd(), exportPath)),
     }),
   );
 }

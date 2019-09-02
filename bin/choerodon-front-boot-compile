@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-const Choerodon = require('../lib/index');
+const compile = require('../lib/bin/compile').default;
 
 program
   .option('-c, --config <path>', 'set config path. defaults to ./choerodon.config.js')
-  .option('-e, --env <path>', 'NODE_ENV in build')
   .parse(process.argv);
 
-Choerodon.compile(program);
+compile(program);
