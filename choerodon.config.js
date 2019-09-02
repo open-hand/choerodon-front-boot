@@ -1,20 +1,12 @@
 module.exports = {
   routes: { 'hap-core': './test/routeIndex' },
   server: 'http://api.staging.saas.hand-china.com',
-  // server: 'https://api.choerodon.com.cn',
   webSocketServer: 'ws://notify.staging.saas.hand-china.com',
-  // master: './src/containers/components/c7n/master/MasterDefault.jsx',
-  // master: './test/workspace/Cmp.js',
-  // master: '@choerodon/master',
-  master: './test/workspace/export.js',
-  modules: [],
-  dashboard: {},
-  guide: {
-    iam: {
-      components: 'test/guide/*',
-      locale: 'test/locale/*',
-    },
+  master: {
+    masterPath: './test/workspace/Cmp.js',
+    exportPath: './test/workspace/export.js',
   },
+  modules: [],
   emailBlackList: 'qq',
   runByBoot: true,
 };

@@ -2,7 +2,7 @@
   "name": "@choerodon/boot",
   "version": "0.20.6",
   "description": "Choerodon Scaffold to run react application.",
-  "main": "lib/containers/components/index.js",
+  "main": "tmp/transfer.index.js",
   "homepage": "http://choerodon.io/",
   "bin": {
     "choerodon-front-boot": "./bin/choerodon-front-boot"
@@ -37,6 +37,7 @@
     "axios": "^0.16.2",
     "babel-core": "^6.25.0",
     "babel-eslint": "^8.2.6",
+    "babel-generator": "^6.26.1",
     "babel-loader": "^6.4.1",
     "babel-plugin-import": "^1.5.0",
     "babel-plugin-lodash": "^3.2.11",
