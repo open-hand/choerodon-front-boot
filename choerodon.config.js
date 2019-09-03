@@ -1,5 +1,5 @@
 module.exports = {
-  routes: { 'hap-core': './test/routeIndex' },
+  routes: { core: './test/routeIndex' },
   server: 'http://api.staging.saas.hand-china.com',
   webSocketServer: 'ws://notify.staging.saas.hand-china.com',
   master: {

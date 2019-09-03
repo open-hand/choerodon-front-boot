@@ -25,10 +25,12 @@ function astFunction(exportPath) {
   traverse(ast, {
     // eslint-disable-next-line no-shadow
     ExportNamedDeclaration(path) {
-      path.node.source.value = join(process.cwd(), exportPath.replace(/index.js/, '').replace(/export.js/, ''), path.node.source.value);
+      if (path.node.source.value.startsWith('.')) {
+        path.node.source.value = join(process.cwd(), exportPath.replace(/index.js/, '').replace(/export.js/, ''), path.node.source.value);
+      }
     },
     CallExpression({ node }) {
-      if (node.callee.name === 'require') {
+      if (node.callee.name === 'require' && node.arguments[0].value.startsWith('.')) {
         node.arguments[0].value = join(
           process.cwd(),
           exportPath.replace(/index.js/, '').replace(/export.js/, ''),
