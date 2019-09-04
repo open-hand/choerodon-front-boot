@@ -1,7 +1,6 @@
 import path from 'path';
 import mkdirp from 'mkdirp';
 import warning from './utils/warning';
-
 import getChoerodonConfig from './webpackConfig/getChoerodonConfig';
 
 let isInitialized = false;

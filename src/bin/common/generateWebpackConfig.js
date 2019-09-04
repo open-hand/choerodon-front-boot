@@ -25,25 +25,17 @@ function getFilePath(file) {
 export default function updateWebpackConfig(mode, env) {
   const { choerodonConfig } = context;
   const {
-    theme, output, root, enterPoints, server, webSocketServer, local, master,
-    postcssConfig, entryName, titlename, htmlTemplate, favicon, menuTheme,
-    emailBlackList, clientid, dashboard, resourcesLevel, apimGateway, uiConfigure, outward,
+    theme, output, root, enterPoints, postcssConfig, entryName,
+    titlename, htmlTemplate, favicon, resourcesLevel, outward,
   } = choerodonConfig;
   
   const webpackConfig = getWebpackCommonConfig(mode, env);
 
-  // if (typeof master === 'object' && master.exportPath) {
-  //   webpackConfig.resolve.alias = {
-  //     '@': 
-  //   };
-  // }
-  
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
     modifyVars: Object.assign({}, getDefaultTheme(env), theme),
   });
 
-  let defaultEnterPoints;
   webpackConfig.entry = {};
   if (mode === 'start') {
     webpackConfig.output.publicPath = '/';
@@ -55,15 +47,6 @@ export default function updateWebpackConfig(mode, env) {
         use: ['style-loader', ...config.use],
       });
     });
-    defaultEnterPoints = {
-      API_HOST: server,
-      AUTH_HOST: `${server}/oauth`,
-      CLIENT_ID: clientid,
-      LOCAL: local,
-      VERSION: '本地',
-      TITLE_NAME: titlename,
-      WEBSOCKET_SERVER: webSocketServer,
-    };
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;
     webpackConfig.output.path = join(process.cwd(), output);
@@ -75,13 +58,11 @@ export default function updateWebpackConfig(mode, env) {
         }),
       });
     });
-    defaultEnterPoints = {};
   }
   const mergedEnterPoints = {
     NODE_ENV: env,
     RESOURCES_LEVEL: Array.isArray(resourcesLevel) ? resourcesLevel.join(',') : resourcesLevel,
     OUTWARD: outward,
-    ...defaultEnterPoints,
     ...enterPoints(mode, env),
   };
   const defines = Object.keys(mergedEnterPoints).reduce((obj, key) => {
