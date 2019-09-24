@@ -62,20 +62,20 @@ export default class Home extends Component {
         <header className="choerodon-home-header">
           <div className="choerodon-home-header-content">
             <h1>
-              {'您好！欢迎使用HAP 4.0'}
+              {'您好！欢迎使用Choerodon Framework'}
             </h1>
             <p>
-            汉得应用开发平台（HAND Application Platform）是汉得公司为了应对移动互联网化、
-            应用云端化、海量数据化和数字化服务转型的应用开发平台，是中台化产品和应用开发的基础平台。
-            HAP采用开源的Java EE技术体系，平台设计灵活可扩展、可移植、可应对高并发需求。
+            Choerodon Framework是为了应对移动互联网化、
+            应用云端化、海量数据化和数字化服务转型的快速应用开发平台，是中台化产品和应用开发的基础平台。
+            Choerodon Framework采用开源的Spring Cloud、Spring Boot和React技术体系，平台设计灵活可扩展、可移植、可应对高并发需求。
             </p>
           </div>
         </header>
-        <div className="choerodon-home-content">
+        {/* <div className="choerodon-home-content">
           <div className="access-list">
             {this.renderContentLinks()}
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

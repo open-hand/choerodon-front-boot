@@ -16,9 +16,9 @@ module.exports = {
   // emailBlackList: 'qq',
 
   // // use for pro start
-  // routes: { 'hap-core': './test/routeIndex' },
-  // proxyTarget: 'http://hap4.c7nf.choerodon.staging.saas.hand-china.com',
-  // master: './src/containers/components/pro/masterPro/MasterProDefault.js',
-  // projectType: 'hap',
-  // buildType: 'single',
+  routes: { 'hap-core': './test/routeIndex' },
+  proxyTarget: 'http://framework.dev.devopseasy.com',
+  master: './src/containers/components/pro/masterPro/MasterProDefault.js',
+  projectType: 'hap',
+  buildType: 'single',
 };

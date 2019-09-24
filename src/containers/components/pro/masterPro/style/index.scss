@@ -7,6 +7,7 @@
   .master-body {
     flex: 1;
     display: flex;
+    height: inherit;
 
     .master-content-wrapper {
       background-color: #fff;
