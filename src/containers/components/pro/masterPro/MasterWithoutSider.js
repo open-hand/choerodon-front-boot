@@ -152,7 +152,8 @@ export default class Index extends React.Component {
         <Helmet preserved>
           {title}
         </Helmet>
-        {UserMaster ? <UserMaster AutoRouter={AutoRouter} /> : originMaster}
+        {/* {UserMaster ? <UserMaster AutoRouter={AutoRouter} /> : originMaster} */}
+        {originMaster}
         <ModalContainer />
       </div>
     );

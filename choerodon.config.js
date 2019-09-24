@@ -17,7 +17,7 @@ module.exports = {
 
   // // use for pro start
   routes: { 'hap-core': './test/routeIndex' },
-  proxyTarget: 'http://framework.dev.devopseasy.com',
+  proxyTarget: 'http://hap4.staging.saas.hand-china.com',
   master: './src/containers/components/pro/masterPro/MasterProDefault.js',
   projectType: 'hap',
   buildType: 'single',
