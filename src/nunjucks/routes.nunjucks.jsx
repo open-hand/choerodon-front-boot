@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
+import Nomatch from '@choerodon/master/lib/containers/components/c7n/tools/error-pages/404';
 import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter';
 
 const routes = {};
-
-const nomatch = () => (
-  <div>nomatch</div>
-);
 
 function createRoute(path, component, moduleCode) {
   if (!routes[path]) {
@@ -33,7 +30,7 @@ const AutoRouter = () => (
   <CacheSwitch>
     {'{{ home }}'}
     {'{{ routes }}'}
-    <CacheRoute path="*" component={nomatch} />
+    <CacheRoute path="*" component={Nomatch} />
   </CacheSwitch>
 );
 

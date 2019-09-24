@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.20.5",
+  "version": "0.20.6",
   "description": "Choerodon Scaffold to run react application.",
   "main": "lib/containers/components/index.js",
   "homepage": "http://choerodon.io/",
@@ -129,7 +129,8 @@
     "url-loader": "^1.1.1",
     "warning": "^3.0.0",
     "webpack": "^3.12.0",
-    "webpack-dev-server": "^2.11.3"
+    "webpack-dev-server": "^2.11.3",
+    "webpack-theme-color-replacer": "^1.2.17"
   },
   "devDependencies": {
     "babel-preset-env": "^1.7.0",
