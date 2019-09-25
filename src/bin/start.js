@@ -26,7 +26,7 @@ export default function start(program, dev) {
     quiet: true,
     hot: true,
     ...devServerConfig,
-    contentBase: [path.join(__dirname, '../../')],
+    contentBase: [path.join(__dirname, '../../')], // 用于在本地启动时获取到生成的env-config.js
     historyApiFallback: true,
     host: 'localhost',
   };

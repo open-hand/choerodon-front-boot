@@ -4,7 +4,12 @@ import spawn from 'cross-spawn';
 
 const cwd = process.cwd();
 
-export default function compile(program, dev) {
+/**
+ * 检测根目录下是否有`gulpfile.js`，
+ * 如果没有，把默认的复制过去打包，完成后删除
+ * 如果有，直接使用用户的打包，完成后`不`删除
+ */
+export default function compile() {
   let copy = false;
   const customGulpfilePath = path.join(cwd, 'gulpfile.js');
   const gulpfilePath = path.join(__dirname, './common/gulp/gulpfile.js');
