@@ -5,7 +5,7 @@ import Permission from '../../src/containers/components/pro/permission/Permissio
 export default class App extends Component {
   render() {
     return (
-      <React.Fragment>
+      <fragment>
         <div style={{ marginBottom: 40 }}>
           <h4>有权限,正常显示的按钮</h4>
           <Permission service={['task-execution.cancleExecute']}>
@@ -40,7 +40,7 @@ export default class App extends Component {
             <Button>Permission Btn</Button>
           </Permission>
         </div>
-      </React.Fragment>
+      </fragment>
     );
   }
 }

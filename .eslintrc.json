@@ -4,21 +4,32 @@
   "env": {
     "browser": true,
     "node": true,
+    "jasmine": true,
+    "jest": true,
     "es6": true
-    // "worker": true
   },
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
+  "settings": {
+    "react": {
+      "version": "16.9"
     }
   },
   "plugins": [
     "babel",
-    "react"
+    "react",
+    "jest"
   ],
-  "extends": "airbnb",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  "extends": [
+    "airbnb",
+    "prettier",
+    "plugin:jest/recommended",
+    "plugin:react/recommended",
+    "prettier/react"
+  ],
   "rules": {
     "class-methods-use-this": "off",
     "consistent-return": "off",
@@ -57,6 +68,7 @@
     "no-unused-vars": "off",
     "object-curly-newline": "off",
     "react/destructuring-assignment": "off",
+    "react/display-name": "off",
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": "off",
     "react/jsx-no-bind": [
@@ -69,14 +81,16 @@
     ],
     "react/jsx-one-expression-per-line": "off",
     "react/no-unused-prop-types": "off",
-    "react/prefer-stateless-function": ["off",
+    "react/prefer-stateless-function": [
+      "off",
       {
         "ignorePureComponents": true
       }
     ],
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    "react/sort-comp": "off"
+    "react/sort-comp": "off",
+    "react/state-in-constructor": "off"
   },
   "globals": {
     "Choerodon": true

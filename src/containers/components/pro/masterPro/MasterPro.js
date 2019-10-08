@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { HashRouter } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import 'moment/locale/zh-cn';
 import SockJS from 'sockjs-client';
@@ -15,10 +14,9 @@ import Header from '../header';
 import getHotkeyManager from './HotkeyManager';
 import getIntlManager from './IntlManager';
 import repeatLogin from '../../../common/repeatLogin';
-import { WEBSOCKET_SERVER, UI_CONFIGURE } from '../../../common/constants';
-import asyncRouter from '../../util/asyncRouter';
-import asyncLocaleProvider from '../../util/asyncLocaleProvider';
+import { UI_CONFIGURE, WEBSOCKET_SERVER } from '../../../common/constants';
 import PermissionProvider from '../permission/PermissionProvider';
+import esModule from '../../util/esModule';
 import './style';
 
 @inject('AppState')
@@ -94,7 +92,7 @@ export default class Index extends React.Component {
     if (currentLang) {
       import(`choerodon-ui/pro/lib/locale-context/${currentLang}.js`)
         .then((o) => {
-          localeContext.setLocale(o);
+          localeContext.setLocale(esModule(o));
         });
     }
   }
@@ -109,8 +107,8 @@ export default class Index extends React.Component {
     const title = AppState.title ? <title>{AppState.title}</title> : null;
 
     const originMaster = [
-      <Header />,
-      <div className="master-body">
+      <Header key="master-header" />,
+      <div  key="master-body" className="master-body">
         <div className="master-content-wrapper">
           <Menu />
           <div className="master-content-container">

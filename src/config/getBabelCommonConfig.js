@@ -28,6 +28,10 @@ export default function babel(mode, env) {
             libraryName: 'choerodon-ui/pro',
             style: true,
           },
+          {
+            libraryName: 'antd',
+            style: true,
+          },
         ],
       ],
 

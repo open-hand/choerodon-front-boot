@@ -13,32 +13,32 @@ function compileAssets() {
 }
 
 function compileFile() {
-  const source = [
+  return babelify(gulp.src([
     'src/**/*.js',
     'src/**/*.jsx',
-  ];
-  return babelify(gulp.src(source));
+  ]));
 }
 
-function compileBin() {
+function compileBin(done) {
   rimraf.sync(libDir);
-  compileDir('bin');
-  compileDir('common');
-  compileDir('config');
-  compileDir('nunjucks');
+  merge2([
+    compileDir('bin'),
+    compileDir('common'),
+    compileDir('config'),
+    compileDir('nunjucks'),
+  ]).on('finish', done);
 }
 
 function compileDir(dir) {
-  babelify(gulp.src([
+  return babelify(gulp.src([
     'src/' + dir + '/**/*.js',
     'src/' + dir + '/**/*.jsx',
   ]), dir);
 }
 
-function compile() {
+function compile(done) {
   rimraf.sync(libDir);
-  compileAssets();
-  compileFile();
+  merge2([compileAssets(), compileFile()]).on('finish', done);
 }
 
 function copyTo(dir) {
@@ -60,7 +60,7 @@ function getBabelCommonConfig() {
       polyfill: false,
     }],
     [
-      require.resolve('babel-plugin-import'), 
+      require.resolve('babel-plugin-import'),
       [
         {
           'libraryName': 'choerodon-ui',
@@ -103,10 +103,10 @@ function babelify(js, dir = '') {
     .pipe(gulp.dest(path.join(libDir, dir)));
 }
 
-gulp.task('compile', () => {
-  compile();
+gulp.task('compile', (done) => {
+  compile(done);
 });
 
-gulp.task('compile-bin', () => {
-  compileBin();
+gulp.task('compile-bin', (done) => {
+  compileBin(done);
 });
