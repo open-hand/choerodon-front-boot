@@ -11,6 +11,6 @@ export default function getPackageRoute(packageInfo, base = '.') {
       ? main
       : transformMain(main);
     
-    return { [rName]: path.join(base, rMain) };
+    return { [rName]: path.join(base !== '.' ? '/node_modules' : '', base, rMain) };
   }
 }
