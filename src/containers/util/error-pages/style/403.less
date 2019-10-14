@@ -1,0 +1,39 @@
+@import '~choerodon-ui/lib/style/themes/default';
+@import "~choerodon-ui-font/style/theme";
+
+.c7n-403-page {
+  padding-top: 1.1rem;
+  width: 8rem;
+  margin: 0 auto;
+  text-align: right;
+  height: 100%;
+
+  &-banner {
+    width: 100%;
+    height: 60%;
+    background-image: url('./403.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    &-text {
+      text-align: center;
+      margin-top: .32rem;
+      > span {
+        font-weight: 400;
+        font-size: 24px;
+        color: #000;
+        text-align: right;
+        margin-right: .1rem;
+      }
+
+      button {
+        line-height: .24rem;
+        top: -.04rem;
+        > span {
+          color: @primary-color;
+        }
+      }
+    }
+  }
+}

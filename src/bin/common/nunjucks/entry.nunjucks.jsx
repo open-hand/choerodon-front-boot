@@ -23,8 +23,8 @@ function getMasters(component) {
 const getConfirmation = (message, callback) => {
   confirm({
     className: 'c7n-iam-confirm-modal',
-    title: message.split(Choerodon.STRING_DEVIDER)[0],
-    content: message.split(Choerodon.STRING_DEVIDER)[1],
+    title: message.split('__@.@__')[0],
+    content: message.split('__@.@__')[1],
     onOk() {
       callback(true);
     },

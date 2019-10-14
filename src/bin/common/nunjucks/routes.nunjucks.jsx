@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
-import Nomatch from '@choerodon/master/lib/containers/components/c7n/tools/error-pages/404';
-import asyncRouter from '../{{ source }}/containers/components/util/asyncRouter';
+import Nomatch from '../{{ source }}/containers/util/error-pages/404';
+import asyncRouter from '../{{ source }}/containers/util/asyncRouter';
 
 const routes = {};
 
