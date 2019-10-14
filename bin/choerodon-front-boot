@@ -7,7 +7,7 @@ program
   .version(package.version)
   .usage('[command] [options]')
   .command('start [options]', 'to start a server')
-  .command('build [options]', 'to build micro server or a single frontend bundle')
+  .command('dist [options]', 'to build micro server or a single frontend bundle')
   .command('compile [option]', 'to compile dir')
   .parse(process.argv);
 
