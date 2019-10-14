@@ -110,3 +110,7 @@ gulp.task('compile', () => {
 gulp.task('compile-bin', () => {
   compileBin();
 });
+gulp.task('copy', () => {
+  copyTo('/Users/binjiechen/base-service-pro/node_modules/@choerodon/boot/lib');
+});
+
