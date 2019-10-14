@@ -6,6 +6,7 @@ import rimraf from 'rimraf';
 import context from './common/context';
 import warning from './common/utils/warning';
 import handleGenerateEntry from './common/generateEntry';
+import generateTransfer from './common/generateTransfer';
 import generateWebpackConfig from './common/generateWebpackConfig';
 import generateEnvironmentVariable from './common/generateEnvironmentVariable';
 
@@ -20,6 +21,12 @@ function copy(fileName) {
 function handleAfterCompile() {
   const COPY_FILE_NAME = ['.env', '.default.env', 'env.sh', 'env-config.js'];
   COPY_FILE_NAME.forEach((filename) => copy(filename));
+
+  const { choerodonConfig: { output, htmlPath, distBasePath } } = context;
+
+  const originPath = path.join(process.cwd(), output);
+  const distPath = path.join(process.cwd(), distBasePath, output);
+  fs.copySync(`${originPath}`, distPath);
 }
 
 export default function build(program) {
@@ -38,6 +45,7 @@ export default function build(program) {
   rimraf.sync(distPath);
   mkdirp.sync(distPath);
   // 生成入口文件
+  generateTransfer(entryName);
   handleGenerateEntry(entryName);
   
   const webpackConfig = generateWebpackConfig('build', env);
