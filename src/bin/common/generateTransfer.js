@@ -46,7 +46,8 @@ export default function generateTransfer(configEntryName) {
   const { tmpDirPath, isDev, choerodonConfig: { master } } = context;
 
   const transferPath = path.join(tmpDirPath, `transfer.${configEntryName}.js`);
-  const exportPath = typeof master === 'object' ? master.exportPath : undefined;
+  
+  const exportPath = master.replace('master.js', 'index.js');
   const content = astFunction(exportPath);
   fs.writeFileSync(
     transferPath,

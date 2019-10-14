@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import Nomatch from '../{{ source }}/containers/util/error-pages/404';
@@ -27,11 +27,13 @@ function createHome(path, component, homePath) {
 }
 
 const AutoRouter = () => (
-  <CacheSwitch>
-    {'{{ home }}'}
-    {'{{ routes }}'}
-    <CacheRoute path="*" component={Nomatch} />
-  </CacheSwitch>
+  <Suspense fallback={<span />}>
+    <CacheSwitch>
+      {'{{ home }}'}
+      {'{{ routes }}'}
+      <CacheRoute path="*" component={Nomatch} />
+    </CacheSwitch>
+  </Suspense>
 );
 
 export default AutoRouter;

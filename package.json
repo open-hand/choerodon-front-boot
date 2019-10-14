@@ -157,7 +157,8 @@
     "lint:es": "eslint src/**/*.{js,jsx} test ./choerodon.config.js",
     "lint:style": "stylelint src/**/*.scss",
     "lint-staged": "lint-staged",
-    "lint-staged:es": "eslint test ./choerodon.config.js"
+    "lint-staged:es": "eslint test ./choerodon.config.js",
+    "copy": "gulp copy"
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [
