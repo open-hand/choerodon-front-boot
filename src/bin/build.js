@@ -10,16 +10,16 @@ import generateWebpackConfig from './common/generateWebpackConfig';
 import generateEnvironmentVariable from './common/generateEnvironmentVariable';
 
 function copy(fileName) {
-  const { choerodonConfig: { output, htmlPath } } = context;
+  const { choerodonConfig: { output, htmlPath, distBasePath } } = context;
 
   const originPath = path.join(__dirname, '../../', fileName);
-  const distPath = path.join(process.cwd(), output, fileName);
+  const distPath = path.join(process.cwd(), distBasePath, output, fileName);
   fs.copyFileSync(originPath, distPath);
 }
 
 function handleAfterCompile() {
   const COPY_FILE_NAME = ['.env', '.default.env', 'env.sh', 'env-config.js'];
-  COPY_FILE_NAME.forEach(filename => copy(filename));
+  COPY_FILE_NAME.forEach((filename) => copy(filename));
 }
 
 export default function build(program) {
@@ -32,8 +32,9 @@ export default function build(program) {
   generateEnvironmentVariable();
   initContext(program);
 
-  const { choerodonConfig: { entryName, output } } = context;
-  const distPath = path.join(process.cwd(), output);
+  const { choerodonConfig: { entryName, output, htmlPath, distBasePath } } = context;
+
+  const distPath = path.join(process.cwd(), distBasePath, output);
   rimraf.sync(distPath);
   mkdirp.sync(distPath);
   // 生成入口文件
