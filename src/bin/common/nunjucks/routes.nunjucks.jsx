@@ -1,7 +1,7 @@
 import React, { Component, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
-import Nomatch from '../{{ source }}/containers/util/error-pages/404';
+import { nomatch } from './transfer.index.js';
 import asyncRouter from '../{{ source }}/containers/util/asyncRouter';
 
 const routes = {};
@@ -31,7 +31,7 @@ const AutoRouter = () => (
     <CacheSwitch>
       {'{{ home }}'}
       {'{{ routes }}'}
-      <CacheRoute path="*" component={Nomatch} />
+      <CacheRoute path="*" component={nomatch} />
     </CacheSwitch>
   </Suspense>
 );

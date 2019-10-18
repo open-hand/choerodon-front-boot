@@ -111,6 +111,6 @@ gulp.task('compile-bin', () => {
   compileBin();
 });
 gulp.task('copy', () => {
-  copyTo('/Users/binjiechen/base-service-pro/node_modules/@choerodon/boot/lib');
+  copyTo('/Users/binjiechen/choerodon-front/node_modules/@choerodon/boot/lib');
 });
 
