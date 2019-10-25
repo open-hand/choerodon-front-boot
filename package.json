@@ -149,7 +149,7 @@
     "prestart:bin": "npm run compile",
     "start:bin": "node ./bin/choerodon-front-boot start --config ./choerodon.config.js",
     "prebuild:bin": "npm run compile",
-    "build:bin": "node ./bin/choerodon-front-boot build --config ./choerodon.config.js",
+    "dist:bin": "node ./bin/choerodon-front-boot dist --config ./choerodon.config.js",
     "compile:bin": "node ./bin/choerodon-front-boot compile",
     "prepublish": "npm run compile",
     "postpublish": "npm run clean",
