@@ -7,11 +7,8 @@ program
   .version(package.version)
   .usage('[command] [options]')
   .command('start [options]', 'to start a server')
-  .command('build [options]', 'to build and write static files to `config.output`')
   .command('dist [options]', 'to build micro server or a single frontend bundle')
   .command('compile [option]', 'to compile dir')
-  .command('prepublish [option]', 'prepublish')
-  .command('postpublish [option]', 'prepublish')
   .parse(process.argv);
 
 process.on('SIGINT', function() {

@@ -3,47 +3,33 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import openBrowser from 'react-dev-utils/openBrowser';
 import context from './common/context';
-import initialize from './common/initialize';
-import getProjectType from './common/getProjectType';
-import getPackagePath from './common/getPackagePath';
-import generateEntryFile from './common/generateEntryFile';
-import updateWebpackConfig from '../config/updateWebpackConfig';
-import installSubmoduleDependencies from './common/installSubmoduleDependenciesAndServicesConfig';
+import generateTransfer from './common/generateTransfer';
+import handleGenerateEntry from './common/generateEntry';
+import generateWebpackConfig from './common/generateWebpackConfig';
+import generateEnvironmentVariable from './common/generateEnvironmentVariable';
 
-/**
- * generateEntryFile and start webpack-dev-server
- * @param {*} mainPackage workspace pkg.json object
- * @param {*} dev 
- */
-function run(mainPackage, dev) {
-  const { choerodonConfig: { entryName, devServerConfig, output, port, proxyTarget } } = context;
-  generateEntryFile(
-    mainPackage,
-    entryName,
-    dev,
-  );
+export default function start(program, dev) {
+  // 初始化全局参数context
+  const { initContext } = context;
+  initContext(program, dev);
 
-  const webpackConfig = updateWebpackConfig('start', 'development');
-  webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
+  // 前端环境变量方案处理
+  generateEnvironmentVariable(true);
+
+  const { choerodonConfig: { entryName, devServerConfig, output, port } } = context;
+  // 生成入口文件
+  generateTransfer(entryName);
+  handleGenerateEntry(entryName);
+
+  const webpackConfig = generateWebpackConfig('start', 'development');
   const serverOptions = {
     quiet: true,
     hot: true,
     ...devServerConfig,
-    // contentBase: path.join(process.cwd(), output),
-    contentBase: path.join(process.cwd(), 'src', 'main', 'resources', 'lib', output),
+    contentBase: [path.join(__dirname, '../../')], // 用于在本地启动时获取到生成的env-config.js
     historyApiFallback: true,
     host: 'localhost',
   };
-  const { isChoerodon } = getProjectType();
-  if (!isChoerodon) {
-    serverOptions.proxy = [{
-      context: ['**', '!/', '!/dis/**'],
-      target: proxyTarget,
-      changeOrigin: true,
-      secure: false,
-      autoRewrite: true,
-    }];
-  }
   WebpackDevServer.addDevServerEntrypoints(webpackConfig, serverOptions);
 
   const compiler = webpack(webpackConfig);
@@ -62,17 +48,4 @@ function run(mainPackage, dev) {
     port, '0.0.0.0',
     () => openBrowser(`http://localhost:${port}`),
   );
-}
-
-export default function start(program, dev) {
-  initialize(program, dev);
-  const { choerodonConfig: { modules } } = context;
-  if (Array.isArray(modules) && modules.length > 0) {
-    const { isChoerodon } = getProjectType();
-    installSubmoduleDependencies(run, isChoerodon);
-  } else {
-    const mainPackagePath = getPackagePath();
-    const mainPackage = require(mainPackagePath);
-    run(mainPackage);
-  }
 }

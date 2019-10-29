@@ -1,205 +1,85 @@
-# Choerodon Hap Front Boot
+# 开发（@choerodon/boot）
 
-
-Choerodon hap front boot is a toolkit about front end package management, startup, compilation.
-
-It is mainly used to provide custom some configurations file to create a project of React that can be modified to some extent.
-
-The construction project can be used on `macOS`, `Windows` or `Linux`. Teams can be developed in modules, greatly speeding up development.
-
- * The project uses `webpack v3+` for construction.
- * `React` and `Mobx` are used as the main development technology.
-
-## Install
+## 安装依赖
 
 ```bash
-$ npm install choerodon-hap-front-boot --registry https://nexus.choerodon.com.cn/repository/choerodon-npm/
+npm install
 ```
 
-*now the lib is in private repository so you should add --registry*
+安装的依赖包含了webpack，babel，react等@choerodon/boot必须的依赖，可以在`package.json`中进行查看。
 
-## Configuration
+## 运行配置及配置项说明
 
-* Create a configuration file named `config.js`
+### 运行
 
-```js
-const config = {
-  port: 9090,
-  proxyTarget: 'http://localhost:8080',
-}
+```bash
+npm start
 ```
 
-*we suggest you only change the two options in daily development. Actually, we exposed a lot of configurable options, but for the sake of simplicity, we hidden them. If you have some special demand, contact us.*
+运行时会自动调用package.json的如下命令：
 
-## Run
+1. `prestart` 执行gulp对文件进行编译
+2. `start` 启动
 
-add the below code in your package.json
+其中启动分为如下阶段：
 
-```javascript
-// package.json
-...
-"scripts": {
-  "start": "choerodon-hap-front-boot start --config ./react/config.js",
-  "build": "choerodon-hap-front-boot build --config ./react/config.js",
-},
-...
+1. 环境变量处理
+2. 入口文件处理: 包括路由收集和路由模板文件生成
+3. Master暴露的组件转发处理
+4. 获取webpack配置进行启动
+
+### 发布
+
+```bash
+npm publish
 ```
 
-and run
+运行publish会自动调用如下阶段：
 
-```javascript
-// if you can not run npm start with permission problems on linux or macOS, run *chmod -R 755 node_modules* first
-$ npm start
+1. prepublish：调用`npm run compile`对代码进行编译（因为要发布的代码是编译后的代码）
+2. 发布编译后的lib文件夹
+3. postpublish：发布完成后调用`npm run clean`去执行`rimraf lib`删除lib文件夹
+
+### 构建
+
+```bash
+npm run dist
 ```
 
-Once running, open http://localhost:9090
+通过package.json中的配置的scripts命令，会去执行`choerodon-front-boot dist`，执行阶段和start相同，只是生成的代码是适合部署到生产环境的代码。
 
-*if you want to run all modules you relied on, you can change start commond as choerodon-hap-front-boot start --config ./react/config.js -m*
+通过package.json中的配置的scripts命令，会去执行`choerodon-front-boot compile`：
 
-## Dist
+1. 判断项目根目录下是否存在`gulpfile.js`
+2. 如果存在使用该配置文件执行`compile task`
+3. 如果不存在，使用`@choerodon/boot`提供的`gulpfile.js`来执行`compile task`
+4. 会在根目录下生成名为lib的编译后的代码文件夹（可用于发布）
 
-```
-$ npm run build
-```
+### 功能描述
 
-## axios
+@choerodon/boot作为一个脚手架项目，希望在功能纯净且单一的基础上帮助用户做更多的事，以更好地开发猪齿鱼Choerodon平台的模块或者Master。
 
-`axios` is used to make a network request.
+下面介绍贯穿在整个运行过程中的几个关键步骤：
 
-```jsx
-import React from 'react';
-import { inject } from 'mobx-react';
+## 环境变量方案
 
-@inject('axios')
-class Example1 extends React.Component {
-  componentDidMount() {
-    this.loadData();
-  }
-  
-  async loadData() {
-    try {
-      const res = await this.props.axios.get('your url here');
-      // if res get success, do something
-    } catch (error) {
-      // if something wrong, do something
-    }
-  }
+Choerodon猪齿鱼平台的前端环境变量方案是一种给用户自定义环境变量，并且可以在部署时进行替换的一种方案。
 
-  render() {
-    return (
-      <div>axios demo</div>
-    )
-  }
-}
+在react目录下建立.env文件，以`键=值`的方式写入环境变量，在启动过程中会与默认环境变量进行合并（默认环境变量文件在@choerodon/boot下，名为`.default.env`，当然用户变量的优先级更高）。
 
-```
+*特别需要注意的是，你永远应该配置一个名为`API_HOST`的环境变量，这是代码运行时访问的API的路径前缀。*
 
-We strongly recommend that you use this method, reasons are as follows:
+## 主入口生成和路由收集生成
 
-- add `X-Requested-With` header to fit dataset development way
-- add `API_HOST` you set in config.js
-- add login and timeout default processing with response interceptors
+主入口和路由文件，会生成在tmp目录下，有nunjucks模板生成。会经过如下步骤：
 
-## change home
+1. 收集路由，根据配置的modules去进行路由收集
+   * 注意：如果modules字段为空，表示当前模块也不会被webpack编译进去，这也之前有不同，当前模块用'.'表示，其余模块可以直接用模块名或者模块路径表示，相对于根目录
 
-You can change the home page by yourself.
+2. 路由生成：根据收集路由得到的路由对象，生成路由文件
+3. 主入口文件生成：根据配置的Master属性，将Master和路由文件注入到总入口，生成最终入口文件`entry.index.js`
 
-only put the home page in your project path, and set `homePath` in project:
+## 组件转发
+为了便于Master暴露的组件在模块中使用，而切换Master后不改用各个模块中的代码，所以用`@choerodon/boot`对组件进行转发。
 
-```jsx
-const config = {
-  homePath: 'your url here',
-}
-```
-
-- restart and you will see your page is at home(you can even set a function page at home)
-- in the near future, we will launch a configurable dashboard settings homepage, and this approach will be retained.
-
-## Content
-
-`Content` component is the outest wrapper of your page.
-
-(Of course you can write your page without it, but we strongly recommond you use it.)
-
-```jsx
-...
-render() {
-  return (
-    <Content>
-      <div>hello hap</div>
-    </Content>
-  );
-}
-...
-```
-
-- you can use hotkey system with it
-- it provide default style like `padding: 10px 20px;`, you can delete it by rewrite style such as `style={{ padding: 0 }}`
-- in the near future, we may add permission control on it
-- by the way, if you have your own `index.less`, you can(should) add a className on Content, and named after your module and function, such as `wf-model-editApproveChain-modal`, and the less like below
-```less
-.wf-model-editApproveChain-modal {
-  // your style code here
-}
-```
-*like a namespace, block other people's code from affecting your page, and vice versa*
-
-## asyncRouter
-
-`asyncRouter` component is a component for demand loading
-
-```jsx
-import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
-import { asyncRouter } from 'choerodon-hap-front-boot';
-
-const YOUR_PAGE = asyncRouter(() => import('./src/MyPage'));
-
-...
-<CacheRoute exact path={`${match.url}/mypage`} cacheKey={`${match.url}/mypage`} component={ApvStratYOUR_PAGEegy} />
-...
-```
-
-- Using it will better help with split bundle and the user experience
-- we provide cache and refresh control in it
-
-## $l
-
-`$l` function is use for uniform localization support.
-
-```jsx
-import { $l } from 'choerodon-hap-front-boot';
-
-...
-<div>$l('code')</div>
-...
-```
-
-## openTabR
-`openTabR` is a function that can open(create or locate) a tab.
-
-```jsx
-import { openTabR } from 'choerodon-hap-front-boot';
-
-...
-openTabR(url, title);
-...
-```
-
-## Dependencies
-
- * Node environment (6.9.0+)
- * Git environment
-
-## Related documents and information
-
-* [React](https://reactjs.org)
-* [Mobx](https://github.com/mobxjs/mobx)
-* [webpack](https://webpack.docschina.org)
-* [gulp](https://gulpjs.com)
-* [choerodon hap ui](http://hap-ui.staging.saas.hand-china.com)
-
-## Reporting Issues
-If you find any shortcomings or bugs, please describe them in the issue
-
-## How to Contribute
-Pull requests are welcome! Follow to know for more information on how to contribute.
+主要是对master中的exportPath指向的文件进行解析，如果是指向一个相对路径的，使用exportPath和相对路径做一定处理（截尾+拼接），生成到`tmp/transfer.index.js`目录中，最后由@choerodon/boot暴露出去。

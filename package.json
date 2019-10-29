@@ -1,15 +1,18 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.18.2",
-  "description": "Tools to build website for Choerodon",
-  "main": "lib/containers/components/index.js",
+  "version": "0.19.0",
+  "description": "Choerodon Scaffold to run react application.",
+  "main": "tmp/transfer.index.js",
   "homepage": "http://choerodon.io/",
   "bin": {
     "choerodon-front-boot": "./bin/choerodon-front-boot"
   },
   "files": [
     "lib",
-    "bin"
+    "bin",
+    ".env",
+    ".default.env",
+    "env.sh"
   ],
   "keywords": [
     "choerodon",
@@ -34,6 +37,7 @@
     "axios": "^0.16.2",
     "babel-core": "^6.25.0",
     "babel-eslint": "^8.2.6",
+    "babel-generator": "^6.26.1",
     "babel-loader": "^6.4.1",
     "babel-plugin-import": "^1.5.0",
     "babel-plugin-lodash": "^3.2.11",
@@ -56,12 +60,13 @@
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.4.1",
     "change-case": "^3.0.1",
-    "choerodon-ui": "0.7.x",
+    "choerodon-ui": "0.8.x",
     "classnames": "^2.2.5",
     "commander": "^2.9.0",
     "component-classes": "^1.x",
     "cross-spawn": "^6.0.5",
     "css-loader": "^0.25.0",
+    "dotenv": "^8.0.0",
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "latest",
     "eslint-plugin-babel": "^5.1.0",
@@ -86,6 +91,7 @@
     "mkdirp": "^0.5.1",
     "mobx": "4.7.0",
     "mobx-react": "5.1.2",
+    "mobx-react-lite": "^1.4.1",
     "moment": "latest",
     "node-sass": "^4.7.2",
     "nunjucks": "^3.1.3",
@@ -125,7 +131,7 @@
     "warning": "^3.0.0",
     "webpack": "^3.12.0",
     "webpack-dev-server": "^2.11.3",
-    "webpack-theme-color-replacer": "^1.2.15"
+    "webpack-theme-color-replacer": "^1.2.17"
   },
   "devDependencies": {
     "babel-preset-env": "^1.7.0",
@@ -136,32 +142,29 @@
   },
   "peerDependencies": {},
   "scripts": {
-    "prestart": "gulp compile-bin",
-    "start": "node ./test/start --config ./test/choerodon.config.js -m",
-    "prebuild": "npm run compile",
-    "predist": "npm run compile",
-    "predist:bin": "npm run compile",
-    "dist:bin": "node ./bin/choerodon-hap-front-boot dist --config ./choerodon.config.js -m",
-    "prestart:bin": "npm run compile",
-    "start:bin": "node ./bin/choerodon-hap-front-boot start --config ./choerodon.config.js -m",
-    "prebuild:bin": "npm run compile",
-    "build:bin": "node ./bin/choerodon-hap-front-boot build --config ./choerodon.config.js",
-    "lint": "npm run lint:es && npm run lint:style",
-    "lint:es": "eslint src/**/*.{js,jsx} test ./choerodon.config.js",
-    "lint:style": "stylelint src/**/*.scss --syntax scss",
-    "lint-staged": "lint-staged",
-    "lint-staged:es": "eslint test ./choerodon.config.js",
     "clean": "rimraf lib",
     "compile": "gulp compile",
-    "copy": "gulp copy",
+    "prestart": "gulp compile-bin",
+    "start": "node ./test/start --config ./test/choerodon.config.js",
+    "prestart:bin": "npm run compile",
+    "start:bin": "node ./bin/choerodon-front-boot start --config ./choerodon.config.js",
+    "prebuild:bin": "npm run compile",
+    "dist:bin": "node ./bin/choerodon-front-boot dist --config ./choerodon.config.js",
+    "compile:bin": "node ./bin/choerodon-front-boot compile",
     "prepublish": "npm run compile",
-    "postpublish": "npm run clean"
+    "postpublish": "npm run clean",
+    "lint": "npm run lint:es && npm run lint:style",
+    "lint:es": "eslint src/**/*.{js,jsx} test ./choerodon.config.js",
+    "lint:style": "stylelint src/**/*.scss",
+    "lint-staged": "lint-staged",
+    "lint-staged:es": "eslint test ./choerodon.config.js",
+    "copy": "gulp copy"
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [
       "npm run lint-staged:es"
     ],
-    "src/**/*.scss": "stylelint --syntax scss"
+    "src/**/*.{scss,less}": "stylelint"
   },
   "husky": {
     "hooks": {
