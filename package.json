@@ -137,6 +137,7 @@
     "babel-preset-env": "^1.7.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",
+    "hard-source-webpack-plugin": "^0.13.1",
     "merge2": "^1.2.2",
     "through2": "^2.0.3"
   },

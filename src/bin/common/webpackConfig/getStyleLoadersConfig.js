@@ -1,7 +1,7 @@
 function normalizeToSassVariables(modifyVarsOptions) {
   const { modifyVars, ...options } = modifyVarsOptions;
   if (modifyVars) {
-    options.data = Object.keys(modifyVars).map(key => `$${key}: ${modifyVars[key]};`).join('');
+    options.data = Object.keys(modifyVars).map((key) => `$${key}: ${modifyVars[key]};`).join('');
   }
   return options;
 }
