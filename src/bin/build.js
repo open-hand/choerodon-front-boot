@@ -35,9 +35,6 @@ export default function build(program) {
   const { initContext } = context;
   initContext(program);
 
-  // 前端环境变量方案处理
-  generateEnvironmentVariable();
-  initContext(program);
 
   const { choerodonConfig: { entryName, output, htmlPath, distBasePath } } = context;
 
@@ -48,7 +45,7 @@ export default function build(program) {
   generateTransfer(entryName);
   handleGenerateEntry(entryName);
   
-  const webpackConfig = generateWebpackConfig('build', env);
+  const webpackConfig = generateWebpackConfig('build', env, generateEnvironmentVariable());
   webpackConfig.plugins.push(new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(env),
   }));

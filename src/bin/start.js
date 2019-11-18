@@ -21,7 +21,7 @@ export default function start(program, dev) {
   generateTransfer(entryName);
   handleGenerateEntry(entryName);
 
-  const webpackConfig = generateWebpackConfig('start', 'development');
+  const webpackConfig = generateWebpackConfig('start', 'development', generateEnvironmentVariable(true));
   const serverOptions = {
     quiet: true,
     hot: true,

@@ -92,6 +92,7 @@ function generateEnvNode(isDev = false) {
     envConfigPath,
     `window._env_ = ${JSON.stringify(combineEnv)};`,
   );
+  return `window._env_ = ${JSON.stringify(combineEnv)};`;
 }
 
 module.exports = generateEnvNode;

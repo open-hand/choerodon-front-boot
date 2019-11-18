@@ -22,7 +22,7 @@ function getFilePath(file) {
   }
 }
 
-export default function updateWebpackConfig(mode, env) {
+export default function updateWebpackConfig(mode, env, envStr) {
   const { choerodonConfig } = context;
   const {
     theme, output, root, enterPoints, postcssConfig, entryName,
@@ -33,7 +33,7 @@ export default function updateWebpackConfig(mode, env) {
 
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
-    modifyVars: Object.assign({}, getDefaultTheme(env), theme),
+    modifyVars: { ...getDefaultTheme(env), ...theme },
   });
 
   webpackConfig.entry = {};
@@ -84,7 +84,7 @@ export default function updateWebpackConfig(mode, env) {
       inject: true,
       // chunks: ['vendor', entryName],
       favicon: getFilePath(favicon),
-      env: './env-config.js',
+      env: envStr,
       minify: {
         html5: true,
         collapseWhitespace: true,
