@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import ParallelUglifyPlugin from 'webpack-parallel-uglify-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 import chalk from 'chalk';
@@ -98,15 +98,17 @@ export default function getWebpackCommonConfig(mode, env) {
       new webpack.LoaderOptionsPlugin({
         minimize: true,
       }),
-      new UglifyJsPlugin({
-        parallel: true,
-        cache: true,
-        uglifyOptions: {
+      new ParallelUglifyPlugin({
+        uglifyJS: {
           output: {
             comments: false,
+            beautify: false,
           },
+          warnings: false,
           compress: {
-            warnings: false,
+            drop_console: true,
+            collapse_vars: true,
+            reduce_vars: true,
           },
         },
       }),
