@@ -5,6 +5,7 @@ import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
+import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 import chalk from 'chalk';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getTSCommonConfig from './getTSCommonConfig';
@@ -89,6 +90,7 @@ export default function getWebpackCommonConfig(mode, env) {
       matchColors: ['#3f51b5', '#303f9f'],
       isJsUgly: env !== 'development',
     }),
+    new HardSourceWebpackPlugin(),
   ];
 
   if (env === 'production') {
