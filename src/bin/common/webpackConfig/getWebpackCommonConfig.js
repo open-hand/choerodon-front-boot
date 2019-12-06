@@ -1,6 +1,7 @@
 import { join } from 'path';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import FilterWarningsPlugin from 'webpack-filter-warnings-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import ParallelUglifyPlugin from 'webpack-parallel-uglify-plugin';
@@ -35,6 +36,9 @@ export default function getWebpackCommonConfig(mode, env) {
   const tsOptions = getTSCommonConfig();
 
   const plugins = [
+    new FilterWarningsPlugin({
+      exclude: /.*@choerodon.*/,
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: Infinity,
@@ -85,11 +89,7 @@ export default function getWebpackCommonConfig(mode, env) {
       matchColors: ['#3f51b5', '#303f9f'],
       isJsUgly: env !== 'development',
     }),
-    new ThemeColorReplacer({
-      fileName: cssColorFileName,
-      matchColors: ['#3f51b5', '#303f9f'],
-      isJsUgly: env !== 'development',
-    }),
+
   ];
 
   if (env === 'production') {

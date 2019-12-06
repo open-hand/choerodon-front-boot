@@ -131,6 +131,7 @@
     "warning": "^3.0.0",
     "webpack": "^3.12.0",
     "webpack-dev-server": "^2.11.3",
+    "webpack-filter-warnings-plugin": "^1.2.1",
     "webpack-parallel-uglify-plugin": "^1.1.2",
     "webpack-theme-color-replacer": "^1.2.17"
   },
