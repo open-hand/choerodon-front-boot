@@ -1,1 +1,1 @@
-window._env_ = {};
+window._env_ = {"CLIENT_ID":"localhost","API_HOST":"http://api.staging.saas.hand-china.com","HEADER_TITLE_NAME":"猪齿鱼"};

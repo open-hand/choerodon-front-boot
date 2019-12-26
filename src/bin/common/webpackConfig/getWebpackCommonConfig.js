@@ -10,6 +10,7 @@ import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 import chalk from 'chalk';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getTSCommonConfig from './getTSCommonConfig';
+import colorPalette from '../utils/colorPalette';
 import context from '../context';
 
 const jsFileName = 'dis/[name].[hash:8].js';
@@ -18,6 +19,8 @@ const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 let processTimer;
+const baseColor = '#3f51b5';
+
 
 function getAssetLoader(env, mimetype, limit = 10000) {
   return {
@@ -86,7 +89,21 @@ export default function getWebpackCommonConfig(mode, env) {
     }),
     new ThemeColorReplacer({
       fileName: cssColorFileName,
-      matchColors: ['#3f51b5', '#303f9f'],
+      matchColors: [
+        colorPalette(baseColor, 1),
+        colorPalette(baseColor, 2),
+        colorPalette(baseColor, 3),
+        colorPalette(baseColor, 4),
+        colorPalette(baseColor, 5),
+        baseColor,
+        colorPalette(baseColor, 7),
+        colorPalette(baseColor, 8),
+        colorPalette(baseColor, 9),
+        colorPalette(baseColor, 10),
+        '#303f9f', // 左上角颜色
+        '140, 158, 255, 0.12', // menu-item背景
+      ],
+      injectCss: true,
       isJsUgly: env !== 'development',
     }),
 
