@@ -102,6 +102,7 @@ export default function getWebpackCommonConfig(mode, env) {
         colorPalette(baseColor, 10),
         '#303f9f', // 左上角颜色
         '140, 158, 255, 0.12', // menu-item背景
+        '140, 158, 255, 0.16', // 左侧菜单menu-item背景
       ],
       injectCss: true,
       isJsUgly: env !== 'development',
@@ -111,9 +112,10 @@ export default function getWebpackCommonConfig(mode, env) {
 
   if (env === 'production') {
     plugins.push(
-      new webpack.LoaderOptionsPlugin({
-        minimize: true,
-      }),
+      // 这个会使ThemeColorReplacer无法替换rgba颜色，先去掉测试测试
+      // new webpack.LoaderOptionsPlugin({
+      //   minimize: true,
+      // }),
       new ParallelUglifyPlugin({
         uglifyJS: {
           output: {
