@@ -12,34 +12,6 @@ function compileAssets() {
   return gulp.src(['src/**/*.@(jpg|png|svg|scss|less|html|ico|gif|css)']).pipe(gulp.dest(libDir));
 }
 
-function compileFile() {
-  const source = [
-    'src/**/*.js',
-    'src/**/*.jsx',
-  ];
-  return babelify(gulp.src(source));
-}
-
-function compileBin() {
-  rimraf.sync(libDir);
-  compileDir('bin');
-  compileDir('common');
-  compileDir('config');
-  compileDir('nunjucks');
-}
-
-function compileDir(dir) {
-  babelify(gulp.src([
-    'src/' + dir + '/**/*.js',
-    'src/' + dir + '/**/*.jsx',
-  ]), dir);
-}
-
-function compile() {
-  rimraf.sync(libDir);
-  compileAssets();
-  compileFile();
-}
 
 function copyTo(dir) {
   rimraf.sync(dir);
@@ -60,19 +32,23 @@ function getBabelCommonConfig() {
       polyfill: false,
     }],
     [
-      require.resolve('babel-plugin-import'), 
+      require.resolve('babel-plugin-import'),
       [
         {
-          'libraryName': 'choerodon-ui',
-          'style': true,
+          libraryName: 'choerodon-ui',
+          style: true,
         },
         {
-          'libraryName': 'choerodon-ui/pro',
-          'style': true,
+          libraryName: 'choerodon-ui/pro',
+          style: true,
         },
       ],
     ],
     require.resolve('babel-plugin-lodash'),
+    ['try-import', {
+      tryImport: 'C7NTryImport',
+      hasModule: 'C7NHasModule',
+    }],
   ];
   return {
     presets: [
@@ -94,15 +70,42 @@ function babelify(js, dir = '') {
         const content = file.contents.toString(encoding);
         file.contents = Buffer.from(content
           .replace(`'{{ ${matches[1]} }}'`, `{{ ${matches[1]} }}`)
-          .replace(`'{{ home }}'`, '{{ home }}')
-          .replace(`'{{ master }}'`, '{{ master }}'));
+          .replace('\'{{ home }}\'', '{{ home }}')
+          .replace('\'{{ master }}\'', '{{ master }}'));
       }
       this.push(file);
       next();
     }))
     .pipe(gulp.dest(path.join(libDir, dir)));
 }
+function compileFile() {
+  const source = [
+    'src/**/*.js',
+    'src/**/*.jsx',
+  ];
+  return babelify(gulp.src(source));
+}
+function compileDir(dir) {
+  babelify(gulp.src([
+    `src/${dir}/**/*.js`,
+    `src/${dir}/**/*.jsx`,
+  ]), dir);
+}
 
+function compileBin() {
+  rimraf.sync(libDir);
+  compileDir('bin');
+  compileDir('common');
+  compileDir('config');
+  compileDir('nunjucks');
+}
+
+
+function compile() {
+  rimraf.sync(libDir);
+  compileAssets();
+  compileFile();
+}
 gulp.task('compile', () => {
   compile();
 });
@@ -113,4 +116,3 @@ gulp.task('compile-bin', () => {
 gulp.task('copy', () => {
   copyTo('/Users/binjiechen/choerodon-front/node_modules/@choerodon/boot/lib');
 });
-
