@@ -29,7 +29,10 @@ export default function babel(mode, env) {
           },
         ],
       ],
-
+      ['try-import', {
+        tryImport: 'C7NTryImport',
+        hasModule: 'C7NHasModule',
+      }],
     ],
   }, mode, env);
 }
