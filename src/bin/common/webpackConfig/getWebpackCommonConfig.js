@@ -1,12 +1,11 @@
 import { join } from 'path';
 import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import FilterWarningsPlugin from 'webpack-filter-warnings-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
+import ProgressBarPlugin from 'progress-bar-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
-import ParallelUglifyPlugin from 'webpack-parallel-uglify-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
-import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 import chalk from 'chalk';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getTSCommonConfig from './getTSCommonConfig';
@@ -42,45 +41,12 @@ export default function getWebpackCommonConfig(mode, env) {
     new FilterWarningsPlugin({
       exclude: /.*@choerodon.*/,
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: Infinity,
-    }),
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: cssFileName,
-      disable: false,
-      allChunks: true,
+      chunkFilename: env === 'development' ? '[id].css' : '[id].[hash].css',
+      ignoreOrder: true, // 不加控制台一堆warn
     }),
-    new CaseSensitivePathsPlugin(),
-    new webpack.ProgressPlugin((percentage, msg, addInfo) => {
-      const stream = process.stderr;
-      if (stream.isTTY) {
-        if (stream.isTTY && percentage < 0.71) {
-          stream.cursorTo(0);
-          stream.write(`📦  ${chalk.magenta(msg)} (${chalk.magenta(addInfo)})`);
-          stream.clearLine(1);
-        } else if (percentage === 1) {
-          // eslint-disable-next-line no-console
-          console.log(chalk.green('\nwebpack: bundle build is now finished.'));
-        }
-      } else {
-        const outputStr = '📦  bundleing!';
-        if (percentage !== 1 && !processTimer) {
-          // eslint-disable-next-line no-console
-          console.log(`📦  bundleing!  ${new Date()}`);
-          processTimer = setInterval(() => {
-            // eslint-disable-next-line no-console
-            console.log(`📦  bundleing!  ${new Date()}`);
-          }, 1000 * 30);
-        } else if (percentage === 1) {
-          // eslint-disable-next-line no-console
-          console.log(chalk.green('\nwebpack: bundle build is now finished.'));
-          if (processTimer) {
-            clearInterval(processTimer);
-          }
-        }
-      }
-    }),
+    new ProgressBarPlugin(),
     new FriendlyErrorsWebpackPlugin(),
     new webpack.ProvidePlugin({
       Choerodon: isDev
@@ -110,37 +76,35 @@ export default function getWebpackCommonConfig(mode, env) {
 
   ];
 
-  if (env === 'production') {
+  if (env === 'development') {
     plugins.push(
-      // 这个会使ThemeColorReplacer无法替换rgba颜色，先去掉测试测试
-      // new webpack.LoaderOptionsPlugin({
-      //   minimize: true,
-      // }),
-      new ParallelUglifyPlugin({
-        uglifyJS: {
-          output: {
-            comments: false,
-            beautify: false,
-          },
-          warnings: false,
-          compress: {
-            drop_console: true,
-            collapse_vars: true,
-            reduce_vars: true,
-          },
-        },
-      }),
-    );
-  } else {
-    plugins.push(
+      new CaseSensitivePathsPlugin(),
       new webpack.HotModuleReplacementPlugin(),
-      new HardSourceWebpackPlugin(),
     );
   }
   return {
+    mode: env,
     output: {
       filename: jsFileName,
       chunkFilename: jsChunkFileName,
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          libs: {
+            name: 'chunk-libs',
+            test: /[\\/]node_modules[\\/]/,
+            priority: 10,
+            chunks: 'initial', // 只打包初始时依赖的第三方
+          },
+          choerodonUI: {
+            name: 'chunk-ui', // 单独将 UI 拆包
+            priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
+            test: /[\\/]node_modules[\\/]choerodon-ui[\\/]/,
+          },
+        },
+      },
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
@@ -158,18 +122,18 @@ export default function getWebpackCommonConfig(mode, env) {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: 'babel-loader',
+          loader: 'babel-loader?cacheDirectory',
           options: babelOptions,
         },
         {
           test: /\.jsx$/,
-          loader: 'babel-loader',
+          loader: 'babel-loader?cacheDirectory',
           options: babelOptions,
         },
         {
           test: /\.tsx?$/,
           use: [{
-            loader: 'babel-loader',
+            loader: 'babel-loader?cacheDirectory',
             options: babelOptions,
           }, {
             loader: 'ts-loader',
@@ -202,10 +166,6 @@ export default function getWebpackCommonConfig(mode, env) {
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
           use: getAssetLoader(env),
-        },
-        {
-          test: /\.json$/,
-          loader: 'json-loader',
         },
       ],
     },

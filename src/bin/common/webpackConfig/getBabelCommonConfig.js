@@ -4,35 +4,47 @@ export default function babel(mode, env) {
   const { choerodonConfig } = context;
   return choerodonConfig.babelConfig({
     presets: [
-      'react',
-      [
-        'es2015',
-      ],
-      'stage-1',
+      ['@babel/preset-env', {
+        corejs: 3,
+        useBuiltIns: 'entry',
+      }],
+      '@babel/preset-react',
     ],
     plugins: [
-      'transform-async-to-generator',
-      'transform-decorators-legacy',
-      'transform-class-properties',
-      'transform-runtime',
+      [
+        '@babel/plugin-proposal-decorators',
+        {
+          legacy: true,
+        },
+      ],
+      [
+        '@babel/plugin-proposal-class-properties',
+        {
+          loose: true,
+        },
+      ],
       'lodash',
       [
         'import',
-        [
-          {
-            libraryName: 'choerodon-ui',
-            style: true,
-          },
-          {
-            libraryName: 'choerodon-ui/pro',
-            style: true,
-          },
-        ],
+        {
+          libraryName: 'choerodon-ui',
+          style: true,
+        },
+        'choerodon-ui',
+      ],
+      [
+        'import',
+        {
+          libraryName: 'choerodon-ui/pro',
+          style: true,
+        },
+        'choerodon-ui-pro',
       ],
       ['try-import', {
         tryImport: 'C7NTryImport',
         hasModule: 'C7NHasModule',
       }],
+      'react-hot-loader/babel',
     ],
   }, mode, env);
 }

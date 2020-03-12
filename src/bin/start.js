@@ -33,16 +33,6 @@ function restart(program, dev, open = false) {
   WebpackDevServer.addDevServerEntrypoints(webpackConfig, serverOptions);
 
   const compiler = webpack(webpackConfig);
-
-  const timefix = 11000;
-  compiler.plugin('watch-run', (watching, callback) => {
-    watching.startTime += timefix;
-    callback();
-  });
-  compiler.plugin('done', (stats) => {
-    stats.startTime -= timefix;
-  });
-
   const server = new WebpackDevServer(compiler, serverOptions);
   server.listen(
     port, '0.0.0.0',
