@@ -11,6 +11,8 @@ export default function babel(mode, env) {
       '@babel/preset-react',
     ],
     plugins: [
+      '@babel/plugin-proposal-export-default-from',
+      '@babel/plugin-proposal-export-namespace-from',
       [
         '@babel/plugin-proposal-decorators',
         {
@@ -44,7 +46,6 @@ export default function babel(mode, env) {
         tryImport: 'C7NTryImport',
         hasModule: 'C7NHasModule',
       }],
-      'react-hot-loader/babel',
     ],
   }, mode, env);
 }

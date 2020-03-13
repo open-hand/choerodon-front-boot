@@ -1,4 +1,3 @@
-import { hot } from 'react-hot-loader/root';
 import React, { Component, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
@@ -37,4 +36,4 @@ const AutoRouter = () => (
   </Suspense>
 );
 
-export default hot(AutoRouter);
+export default AutoRouter;
