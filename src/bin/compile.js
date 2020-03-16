@@ -5,29 +5,20 @@ import spawn from 'cross-spawn';
 const cwd = process.cwd();
 
 /**
- * 检测根目录下是否有`gulpfile.js`，
- * 如果没有，把默认的复制过去打包，完成后删除
- * 如果有，直接使用用户的打包，完成后`不`删除
+ * 使用babel进行转义
+ * 检测根目录下是否有`babel.config.js`，
+ * 如果没有，使用boot里的配置
+ * https://github.com/babel/babel/blob/master/packages/babel-cli/src/babel/options.js
  */
 export default function compile() {
-  let copy = false;
-  const customGulpfilePath = path.join(cwd, 'gulpfile.js');
-  const gulpfilePath = path.join(__dirname, './common/gulp/gulpfile.js');
-  if (!fs.existsSync(customGulpfilePath)) {
-    fs.copyFileSync(gulpfilePath, customGulpfilePath);
-    copy = true;
-  }
-  const process = spawn('gulp', ['compile', '--gulpfile', path.join(cwd, 'gulpfile.js')], { stdio: 'inherit' });
-  process.on('close', (code) => {
-    if (copy) {
-      try {
-        fs.unlinkSync(customGulpfilePath);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.log('删除gulpfile.js失败，但这不会影响你的其他过程!');
-      }
-    }
-    // eslint-disable-next-line no-console
-    console.log('编译完成！');
-  });
+  const userBabelConfigFile = path.join(cwd, 'babel.config.js');
+  const configFile = fs.existsSync(userBabelConfigFile) ? userBabelConfigFile : path.join(__dirname, '../../babel.config.js');
+  const process = spawn('babel', [
+    path.join(cwd, 'react'), // 源文件路径
+    '--config-file', configFile, // babel配置文件路径
+    '--out-dir', path.join(cwd, 'lib'), // 输出路径
+    '--copy-files', // 拷贝其他文件
+    '--delete-dir-on-start', // 编译前先删除原来的
+  ],
+  { stdio: 'inherit' });
 }

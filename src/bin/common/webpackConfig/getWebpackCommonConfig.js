@@ -47,7 +47,6 @@ export default function getWebpackCommonConfig(mode, env) {
       ignoreOrder: true, // 不加控制台一堆warn
     }),
     new ProgressBarPlugin(),
-    new FriendlyErrorsWebpackPlugin(),
     new webpack.ProvidePlugin({
       Choerodon: isDev
         ? join(process.cwd(), `node_modules/@choerodon/${masterName}/lib/containers/common`)
@@ -78,6 +77,7 @@ export default function getWebpackCommonConfig(mode, env) {
 
   if (env === 'development') {
     plugins.push(
+      new FriendlyErrorsWebpackPlugin(),
       new CaseSensitivePathsPlugin(),
       new webpack.HotModuleReplacementPlugin(),
     );
@@ -122,18 +122,18 @@ export default function getWebpackCommonConfig(mode, env) {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: 'babel-loader?cacheDirectory',
+          loader: 'babel-loader',
           options: babelOptions,
         },
         {
           test: /\.jsx$/,
-          loader: 'babel-loader?cacheDirectory',
+          loader: 'babel-loader',
           options: babelOptions,
         },
         {
           test: /\.tsx?$/,
           use: [{
-            loader: 'babel-loader?cacheDirectory',
+            loader: 'babel-loader',
             options: babelOptions,
           }, {
             loader: 'ts-loader',

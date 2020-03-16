@@ -12,7 +12,8 @@
     "bin",
     ".env",
     ".default.env",
-    "env.sh"
+    "env.sh",
+    "babel.config.js"
   ],
   "keywords": [
     "choerodon",
@@ -31,6 +32,7 @@
   "author": "Qyellow <598260403@qq.com>",
   "license": "ISC",
   "dependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.7",
     "@babel/parser": "^7.4.3",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -133,8 +135,7 @@
     "lint:es": "eslint src/**/*.{js,jsx} test ./choerodon.config.js",
     "lint:style": "stylelint src/**/*.scss",
     "lint-staged": "lint-staged",
-    "lint-staged:es": "eslint test ./choerodon.config.js",
-    "copy": "gulp copy"
+    "lint-staged:es": "eslint test ./choerodon.config.js"
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [
