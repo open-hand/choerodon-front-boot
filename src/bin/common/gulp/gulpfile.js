@@ -13,36 +13,37 @@ function compileAssets() {
 
 function getBabelCommonConfig() {
   const plugins = [
-    require.resolve('babel-plugin-syntax-dynamic-import'),
-    require.resolve('babel-plugin-transform-decorators-legacy'),
-    require.resolve('babel-plugin-transform-es3-member-expression-literals'),
-    require.resolve('babel-plugin-transform-es3-property-literals'),
-    require.resolve('babel-plugin-transform-object-assign'),
-    require.resolve('babel-plugin-transform-class-properties'),
-    require.resolve('babel-plugin-transform-object-rest-spread'),
-    [require.resolve('babel-plugin-transform-runtime'), {
-      polyfill: false,
+    '@babel/plugin-proposal-export-default-from',
+    '@babel/plugin-proposal-export-namespace-from',
+    ['@babel/plugin-proposal-decorators', {
+      legacy: true,
     }],
-    [
-      require.resolve('babel-plugin-import'), 
-      [
-        {
-          libraryName: 'choerodon-ui',
-          style: true,
-        },
-        {
-          libraryName: 'choerodon-ui/pro',
-          style: true,
-        },
-      ],
+    ['@babel/plugin-proposal-class-properties', {
+      loose: true,
+    }],
+    ['babel-plugin-import',
+      {
+        libraryName: 'choerodon-ui',
+        style: true,
+      },
+      'choerodon-ui',
+    ], ['babel-plugin-import',
+      {
+        libraryName: 'choerodon-ui/pro',
+        style: true,
+      },
+      'choerodon-ui-pro',
     ],
-    require.resolve('babel-plugin-lodash'),
+    'babel-plugin-lodash',
+    ['babel-plugin-try-import', {
+      tryImport: 'C7NTryImport',
+      hasModule: 'C7NHasModule',
+    }],
   ];
   return {
     presets: [
-      require.resolve('babel-preset-react'),
-      require.resolve('babel-preset-es2015'),
-      require.resolve('babel-preset-stage-1'),
+      '@babel/preset-react',
+      '@babel/preset-env',
     ],
     plugins,
   };

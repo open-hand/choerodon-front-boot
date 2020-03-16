@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
 import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import context from '../bin/common/context';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
@@ -38,7 +38,7 @@ export default function updateWebpackConfig(mode, env) {
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
-    modifyVars: Object.assign({}, getDefaultTheme(env), theme),
+    modifyVars: { ...getDefaultTheme(env), ...theme },
   });
 
   let defaultEnterPoints;
@@ -71,9 +71,10 @@ export default function updateWebpackConfig(mode, env) {
     styleLoadersConfig.forEach((config) => {
       webpackConfig.module.rules.push({
         test: config.test,
-        use: ExtractTextPlugin.extract({
-          use: config.use,
-        }),
+        use: [
+          MiniCssExtractPlugin.loader,
+          ...config.use,
+        ],
       });
     });
     if (isChoerodon) {

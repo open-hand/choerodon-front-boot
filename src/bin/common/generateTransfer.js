@@ -5,8 +5,8 @@ import context from './context';
 import escapeWinPath from './utils/escapeWinPath';
 
 const babelParse = require('@babel/parser').parse;
-const traverse = require('babel-traverse').default;
-const generate = require('babel-generator').default;
+const traverse = require('@babel/traverse').default;
+const generate = require('@babel/generator').default;
 
 const { join } = path;
 
@@ -46,7 +46,7 @@ export default function generateTransfer(configEntryName) {
   const { tmpDirPath, isDev, choerodonConfig: { master } } = context;
 
   const transferPath = path.join(tmpDirPath, `transfer.${configEntryName}.js`);
-  
+
   const exportPath = master.replace('master.js', 'index.js');
   const content = astFunction(exportPath);
   fs.writeFileSync(

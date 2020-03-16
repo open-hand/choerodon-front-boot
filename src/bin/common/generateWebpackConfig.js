@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
 import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import context from './context';
 import getStyleLoadersConfig from './webpackConfig/getStyleLoadersConfig';
@@ -28,7 +28,7 @@ export default function updateWebpackConfig(mode, env, envStr) {
     theme, output, root, enterPoints, postcssConfig, entryName,
     titlename, htmlTemplate, favicon, resourcesLevel, outward,
   } = choerodonConfig;
-  
+
   const webpackConfig = getWebpackCommonConfig(mode, env);
 
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
@@ -53,9 +53,10 @@ export default function updateWebpackConfig(mode, env, envStr) {
     styleLoadersConfig.forEach((config) => {
       webpackConfig.module.rules.push({
         test: config.test,
-        use: ExtractTextPlugin.extract({
-          use: config.use,
-        }),
+        use: [
+          MiniCssExtractPlugin.loader,
+          ...config.use,
+        ],
       });
     });
   }

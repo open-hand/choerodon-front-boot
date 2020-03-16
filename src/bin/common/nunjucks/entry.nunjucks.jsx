@@ -1,4 +1,5 @@
-import 'babel-polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
