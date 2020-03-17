@@ -44,7 +44,7 @@ export default function build(program) {
   // 生成入口文件
   generateTransfer(entryName);
   handleGenerateEntry(entryName);
-  
+
   const webpackConfig = generateWebpackConfig('build', env, generateEnvironmentVariable());
   webpackConfig.plugins.push(new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(env),
@@ -53,8 +53,10 @@ export default function build(program) {
   webpack(webpackConfig, (err, stats) => {
     if (err !== null) {
       warning(false, err);
+      process.exit(1);
     } else if (stats.hasErrors()) {
       warning(false, stats.toString('errors-only'));
+      process.exit(1);
     }
     handleAfterCompile();
   });
