@@ -13,7 +13,8 @@ const cwd = process.cwd();
 export default function compile() {
   const userBabelConfigFile = path.join(cwd, 'babel.config.js');
   const configFile = fs.existsSync(userBabelConfigFile) ? userBabelConfigFile : path.join(__dirname, '../../babel.config.js');
-  const process = spawn('babel', [
+  // eslint-disable-next-line camelcase
+  const child_process = spawn('babel', [
     path.join(cwd, 'react'), // 源文件路径
     '--config-file', configFile, // babel配置文件路径
     '--out-dir', path.join(cwd, 'lib'), // 输出路径
@@ -21,4 +22,9 @@ export default function compile() {
     '--delete-dir-on-start', // 编译前先删除原来的
   ],
   { stdio: 'inherit' });
+  child_process.on('close', (code) => {
+    if (code === 1) {
+      process.exit(1);
+    }
+  });
 }
