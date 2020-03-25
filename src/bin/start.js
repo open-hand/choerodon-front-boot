@@ -1,7 +1,6 @@
 import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import openBrowser from 'react-dev-utils/openBrowser';
 import gaze from 'gaze';
 import context from './common/context';
 import generateTransfer from './common/generateTransfer';
@@ -25,6 +24,7 @@ function restart(program, dev, open = false) {
   const serverOptions = {
     quiet: true,
     hot: true,
+    open: true,
     ...devServerConfig,
     contentBase: [path.join(__dirname, '../../')], // 用于在本地启动时获取到生成的env-config.js
     historyApiFallback: true,
@@ -34,14 +34,11 @@ function restart(program, dev, open = false) {
 
   const compiler = webpack(webpackConfig);
   const server = new WebpackDevServer(compiler, serverOptions);
-  server.listen(
-    port, '0.0.0.0',
-    () => {
-      if (open) {
-        openBrowser(`http://localhost:${port}`);
-      }
-    },
-  );
+  server.listen(port, '0.0.0.0', (err) => {
+    if (err) {
+      throw err;
+    }
+  });
   return server;
 }
 export default function start(program, dev) {

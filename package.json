@@ -90,7 +90,6 @@
     "query-string": "^4.3.4",
     "react": "^16.6.0",
     "react-color": "^2.17.0",
-    "react-dev-utils": "^5.0.2",
     "react-dom": "^16.6.0",
     "react-hot-loader": "^4.12.19",
     "react-intl": "^2.3.0",

@@ -42,5 +42,7 @@ const App = () => (
     </Switch>
   </Router>
 );
-
+if (module.hot) {
+  module.hot.accept();
+}
 render(<App />, document.getElementById('app'));
