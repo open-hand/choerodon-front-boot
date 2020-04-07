@@ -20,7 +20,15 @@ const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 let processTimer;
 const baseColor = '#3f51b5';
 
-
+function changeSelector(selector, util) {
+  // ui-pro替换这个样式后选择框样式有问题
+  switch (selector) {
+    case '.c7n-pro-calendar-today .c7n-pro-calendar-cell-inner':
+      return `${selector}.dropBy-@choerodon/boot`;
+    default:
+      return selector;
+  }
+}
 function getAssetLoader(env, mimetype, limit = 10000) {
   return {
     loader: 'url-loader',
@@ -53,6 +61,7 @@ export default function getWebpackCommonConfig(mode, env) {
         : join(__dirname, `../../../${masterName}/lib/containers/common`),
     }),
     new ThemeColorReplacer({
+      changeSelector,
       fileName: cssColorFileName,
       matchColors: [
         colorPalette(baseColor, 1),
