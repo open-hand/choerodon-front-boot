@@ -25,6 +25,8 @@ function changeSelector(selector, util) {
   switch (selector) {
     case '.c7n-pro-calendar-today .c7n-pro-calendar-cell-inner':
       return `${selector}.dropBy-@choerodon/boot`;
+    case '.c7n-calendar-today .c7n-calendar-date':
+      return `${selector}.dropBy-@choerodon/boot`;
     default:
       return selector;
   }
