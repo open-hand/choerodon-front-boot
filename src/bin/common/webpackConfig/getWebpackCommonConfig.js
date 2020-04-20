@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import FilterWarningsPlugin from 'webpack-filter-warnings-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
-import ProgressBarPlugin from 'progress-bar-webpack-plugin';
+import WebpackBar from 'webpackbar';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import chalk from 'chalk';
@@ -56,7 +56,7 @@ export default function getWebpackCommonConfig(mode, env) {
       chunkFilename: env === 'development' ? '[id].css' : '[id].[hash].css',
       ignoreOrder: true, // 不加控制台一堆warn
     }),
-    new ProgressBarPlugin(),
+    new WebpackBar(),
     new webpack.ProvidePlugin({
       Choerodon: isDev
         ? join(process.cwd(), `node_modules/@choerodon/${masterName}/lib/containers/common`)
