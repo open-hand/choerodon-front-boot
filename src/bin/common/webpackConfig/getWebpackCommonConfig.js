@@ -181,5 +181,9 @@ export default function getWebpackCommonConfig(mode, env) {
       ],
     },
     plugins,
+    stats: {
+      children: false, // FIX: Entrypoint undefined = index.html
+      warnings: true,
+    },
   };
 }
