@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "Choerodon Scaffold to run react application.",
   "main": "tmp/transfer.index.js",
   "homepage": "http://choerodon.io/",
@@ -51,7 +51,6 @@
     "babel-plugin-try-import": "^0.0.2",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.4.1",
-    "choerodon-ui": "0.8.x",
     "classnames": "^2.2.5",
     "commander": "^2.9.0",
     "core-js": "^3.6.4",
@@ -116,7 +115,9 @@
     "webpack-theme-color-replacer": "^1.2.17",
     "webpackbar": "^4.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "choerodon-ui": "0.8.x"
+  },
   "peerDependencies": {},
   "scripts": {
     "clean": "rimraf lib",
