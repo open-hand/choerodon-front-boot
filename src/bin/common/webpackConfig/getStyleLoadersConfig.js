@@ -6,11 +6,16 @@ function normalizeToSassVariables(modifyVarsOptions) {
   return options;
 }
 
-export default (postcssOptions, loaderOptions) => ([
+export default (postcssOptions, loaderOptions, useCssModules) => ([
   {
     test: /\.css$/,
     use: [{
       loader: 'css-loader',
+      options: useCssModules ? {
+        modules: {
+          localIdentName: '[name]__[local]--[hash:base64:5]',
+        },
+      } : {},
     }, {
       loader: 'postcss-loader',
       options: postcssOptions,
@@ -21,6 +26,11 @@ export default (postcssOptions, loaderOptions) => ([
     use: [
       {
         loader: 'css-loader',
+        options: useCssModules ? {
+          modules: {
+            localIdentName: '[name]__[local]--[hash:base64:5]',
+          },
+        } : {},
       },
       {
         loader: 'postcss-loader',
@@ -37,6 +47,11 @@ export default (postcssOptions, loaderOptions) => ([
     use: [
       {
         loader: 'css-loader',
+        options: useCssModules ? {
+          modules: {
+            localIdentName: '[name]__[local]--[hash:base64:5]',
+          },
+        } : {},
       },
       {
         loader: 'postcss-loader',

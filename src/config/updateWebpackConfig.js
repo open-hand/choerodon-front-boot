@@ -40,17 +40,26 @@ export default function updateWebpackConfig(mode, env) {
     sourceMap: mode === 'start',
     modifyVars: { ...getDefaultTheme(env), ...theme },
   });
-
+  const styleLoadersConfigWithCssLoader = getStyleLoadersConfig(postcssConfig, {
+    sourceMap: mode === 'start',
+    modifyVars: { ...getDefaultTheme(env), ...theme },
+  }, true);
   let defaultEnterPoints;
   webpackConfig.entry = {};
   if (mode === 'start') {
     webpackConfig.output.publicPath = '/';
     webpackConfig.devtool = 'cheap-module-eval-source-map';
     webpackConfig.watch = true;
-    styleLoadersConfig.forEach((config) => {
+    styleLoadersConfig.forEach((config, index) => {
       webpackConfig.module.rules.push({
-        test: config.test,
-        use: ['style-loader', ...config.use],
+        oneOf: [{
+          test: config.test,
+          resourceQuery: /modules/,
+          use: ['style-loader', ...styleLoadersConfigWithCssLoader[index].use],
+        }, {
+          test: config.test,
+          use: ['style-loader', ...config.use],
+        }],
       });
     });
     defaultEnterPoints = {
@@ -68,13 +77,16 @@ export default function updateWebpackConfig(mode, env) {
   } else if (mode === 'build') {
     webpackConfig.output.publicPath = root;
     webpackConfig.output.path = join(process.cwd(), 'src', 'main', 'resources', 'lib', output);
-    styleLoadersConfig.forEach((config) => {
+    styleLoadersConfig.forEach((config, index) => {
       webpackConfig.module.rules.push({
-        test: config.test,
-        use: [
-          MiniCssExtractPlugin.loader,
-          ...config.use,
-        ],
+        oneOf: [{
+          test: config.test,
+          resourceQuery: /modules/,
+          use: [MiniCssExtractPlugin.loader, ...styleLoadersConfigWithCssLoader[index].use],
+        }, {
+          test: config.test,
+          use: [MiniCssExtractPlugin.loader, ...config.use],
+        }],
       });
     });
     if (isChoerodon) {

@@ -8,6 +8,7 @@ module.exports = {
     '@babel/preset-react',
   ],
   plugins: [
+    '@umijs/babel-plugin-auto-css-modules',
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-proposal-export-namespace-from',
     [
