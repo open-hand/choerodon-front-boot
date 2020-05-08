@@ -124,7 +124,7 @@
     "clean": "rimraf lib",
     "compile": "gulp compile",
     "prestart": "gulp compile-bin",
-    "start": "node ./test/start --config ./test/choerodon.config.js",
+    "start": "node ./test/start --config ./choerodon.config.js",
     "prestart:bin": "npm run compile",
     "start:bin": "node ./bin/choerodon-front-boot start --config ./choerodon.config.js",
     "prebuild:bin": "npm run compile",
