@@ -24,7 +24,8 @@ function restart(program, dev, open = false) {
   const serverOptions = {
     quiet: true,
     hot: true,
-    open: true,
+    open,
+    publicPath: '/',
     ...devServerConfig,
     contentBase: [path.join(__dirname, '../../')], // 用于在本地启动时获取到生成的env-config.js
     historyApiFallback: true,

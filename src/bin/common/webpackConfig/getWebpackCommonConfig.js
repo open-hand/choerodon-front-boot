@@ -43,7 +43,7 @@ function getAssetLoader(env, mimetype, limit = 10000) {
 }
 
 export default function getWebpackCommonConfig(mode, env) {
-  const { isDev, choerodonConfig: { masterName: masterName = 'master' } } = context;
+  const { isDev, choerodonConfig: { masterName = 'master' } } = context;
   const babelOptions = getBabelCommonConfig(mode, env);
   const tsOptions = getTSCommonConfig();
 
@@ -181,9 +181,5 @@ export default function getWebpackCommonConfig(mode, env) {
       ],
     },
     plugins,
-    stats: {
-      children: false, // FIX: Entrypoint undefined = index.html
-      warnings: true,
-    },
   };
 }
