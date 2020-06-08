@@ -20,6 +20,7 @@ export default function compile() {
     '--out-dir', path.join(cwd, 'lib'), // 输出路径
     '--copy-files', // 拷贝其他文件
     '--delete-dir-on-start', // 编译前先删除原来的
+    '--extensions', '.ts,.js,.jsx,.tsx',
   ],
   { stdio: 'inherit' });
   child_process.on('close', (code) => {
