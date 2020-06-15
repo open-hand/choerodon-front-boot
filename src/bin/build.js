@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
+import EsbuildPlugin from 'esbuild-webpack-plugin';
 import context from './common/context';
 import warning from './common/utils/warning';
 import handleGenerateEntry from './common/generateEntry';
@@ -31,6 +32,7 @@ function handleAfterCompile() {
 
 export default function build(program) {
   const env = program.env || process.env.NODE_ENV || 'production';
+  const shouldUseEsbuild = program.esbuild;
   // 初始化全局参数context
   const { initContext } = context;
   initContext(program);
@@ -49,7 +51,11 @@ export default function build(program) {
   webpackConfig.plugins.push(new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(env),
   }));
-
+  if (shouldUseEsbuild) {
+    // eslint-disable-next-line no-console
+    console.log('use esbuild as webpack minimizer');
+    webpackConfig.optimization.minimizer = [new EsbuildPlugin()];
+  }
   webpack(webpackConfig, (err, stats) => {
     if (err !== null) {
       warning(false, err);
