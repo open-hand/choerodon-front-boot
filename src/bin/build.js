@@ -64,6 +64,6 @@ export default function build(program) {
       warning(false, stats.toString('errors-only'));
       process.exit(1);
     }
-    handleAfterCompile();
+    // handleAfterCompile();
   });
 }
