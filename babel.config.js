@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   presets: [
     ['@babel/preset-env', {
@@ -6,9 +8,18 @@ module.exports = {
       useBuiltIns: 'entry',
     }],
     '@babel/preset-react',
+    '@babel/preset-typescript',
   ],
   plugins: [
     '@umijs/babel-plugin-auto-css-modules',
+    [
+      'babel-plugin-module-resolver',
+      {
+        alias: {
+          '@': ('./react'),
+        },
+      },
+    ],
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-proposal-export-namespace-from',
     [

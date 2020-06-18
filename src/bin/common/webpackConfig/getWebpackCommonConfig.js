@@ -6,9 +6,7 @@ import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import WebpackBar from 'webpackbar';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
-import chalk from 'chalk';
 import getBabelCommonConfig from './getBabelCommonConfig';
-import getTSCommonConfig from './getTSCommonConfig';
 import colorPalette from '../utils/colorPalette';
 import context from '../context';
 
@@ -17,7 +15,6 @@ const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
 const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
-let processTimer;
 const baseColor = '#3f51b5';
 
 function changeSelector(selector, util) {
@@ -45,7 +42,6 @@ function getAssetLoader(env, mimetype, limit = 10000) {
 export default function getWebpackCommonConfig(mode, env) {
   const { isDev, choerodonConfig: { masterName = 'master' } } = context;
   const babelOptions = getBabelCommonConfig(mode, env);
-  const tsOptions = getTSCommonConfig();
 
   const plugins = [
     new FilterWarningsPlugin({
@@ -146,28 +142,10 @@ export default function getWebpackCommonConfig(mode, env) {
       noParse: [/moment.js/],
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
           loader: 'babel-loader',
           options: babelOptions,
-        },
-        {
-          test: /\.jsx$/,
-          loader: 'babel-loader',
-          options: babelOptions,
-        },
-        {
-          test: /\.tsx?$/,
-          use: [{
-            loader: 'babel-loader',
-            options: babelOptions,
-          }, {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,
-              compilerOptions: tsOptions,
-            },
-          }],
         },
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
