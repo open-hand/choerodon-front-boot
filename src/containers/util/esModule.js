@@ -1,6 +1,6 @@
 import { isArray } from 'lodash';
 
-const moduleDefaultExport = module => module.default || module;
+const moduleDefaultExport = (module) => module.default || module;
 
 export default function esModule(module) {
   if (isArray(module)) {

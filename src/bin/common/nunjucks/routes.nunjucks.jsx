@@ -1,8 +1,7 @@
-import React, { Component, Suspense } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { Route } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import { nomatch } from './transfer.index.js';
-import asyncRouter from '../{{ source }}/containers/util/asyncRouter';
 
 const routes = {};
 
