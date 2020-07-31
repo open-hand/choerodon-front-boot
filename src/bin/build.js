@@ -6,7 +6,7 @@ import rimraf from 'rimraf';
 // import EsbuildPlugin from 'esbuild-webpack-plugin';
 import context from './common/context';
 import warning from './common/utils/warning';
-import handleGenerateEntry from './common/generateEntry';
+import handleCollectRoute from './common/entry/handleCollectRoute';
 import generateTransfer from './common/generateTransfer';
 import generateWebpackConfig from './common/generateWebpackConfig';
 import generateEnvironmentVariable from './common/generateEnvironmentVariable';
@@ -45,7 +45,8 @@ export default function build(program) {
   mkdirp.sync(distPath);
   // 生成入口文件
   generateTransfer(entryName);
-  handleGenerateEntry(entryName);
+  // 收集路由，单模块启动也得配置路径
+  handleCollectRoute(entryName);
 
   const webpackConfig = generateWebpackConfig('build', env, generateEnvironmentVariable());
   webpackConfig.plugins.push(new webpack.DefinePlugin({

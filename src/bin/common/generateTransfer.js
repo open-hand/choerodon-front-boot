@@ -1,8 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import nunjucks from 'nunjucks';
 import context from './context';
-import escapeWinPath from './utils/escapeWinPath';
 
 const babelParse = require('@babel/parser').parse;
 const traverse = require('@babel/traverse').default;

@@ -4,7 +4,7 @@ import WebpackDevServer from 'webpack-dev-server';
 import gaze from 'gaze';
 import context from './common/context';
 import generateTransfer from './common/generateTransfer';
-import handleGenerateEntry from './common/generateEntry';
+import handleCollectRoute from './common/entry/handleCollectRoute';
 import generateWebpackConfig from './common/generateWebpackConfig';
 import generateEnvironmentVariable from './common/generateEnvironmentVariable';
 
@@ -18,7 +18,8 @@ function restart(program, dev, open = false) {
   const { choerodonConfig: { entryName, devServerConfig, output, port } } = context;
   // 生成入口文件
   generateTransfer(entryName);
-  handleGenerateEntry(entryName);
+  // 收集路由，单模块启动也得配置路径
+  handleCollectRoute(entryName);
 
   const webpackConfig = generateWebpackConfig('start', 'development', generateEnvironmentVariable(true));
   const serverOptions = {
