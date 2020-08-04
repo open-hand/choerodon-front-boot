@@ -1,10 +1,9 @@
 import context from '../context';
-import babelConfig from '../../../../babel.config';
 
 export default function babel(mode, env) {
   const { choerodonConfig } = context;
   return choerodonConfig.babelConfig({
     cacheDirectory: true,
-    ...babelConfig,
+    presets: ['c7n-app'],
   }, mode, env);
 }
