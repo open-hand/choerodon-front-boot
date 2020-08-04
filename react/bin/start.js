@@ -15,7 +15,11 @@ function restart(program, dev, open = false) {
   // 前端环境变量方案处理
   generateEnvironmentVariable(true);
 
-  const { choerodonConfig: { entryName, devServerConfig, output, port } } = context;
+  const {
+    choerodonConfig: {
+      entryName, devServerConfig, output, port,
+    },
+  } = context;
   // 生成入口文件
   generateTransfer(entryName);
   // 收集路由，单模块启动也得配置路径

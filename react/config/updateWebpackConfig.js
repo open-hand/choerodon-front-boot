@@ -1,3 +1,5 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 import fs from 'fs';
 import { join } from 'path';
 import webpack from 'webpack';
@@ -18,11 +20,10 @@ function getFilePath(file) {
   const filePath = join(process.cwd(), file);
   if (fs.existsSync(filePath)) {
     return filePath;
-  } else if (isDev) {
+  } if (isDev) {
     return join(process.cwd(), 'src', file);
-  } else {
-    return join(__dirname, '..', file);
   }
+  return join(__dirname, '..', file);
 }
 
 export default function updateWebpackConfig(mode, env) {
@@ -34,7 +35,8 @@ export default function updateWebpackConfig(mode, env) {
   const {
     theme, output, root, enterPoints, server, webSocketServer, local,
     postcssConfig, entryName, titlename, htmlTemplate, favicon, menuTheme,
-    emailBlackList, clientid, dashboard, resourcesLevel, apimGateway, uiConfigure, outward, customThemeColor,
+    emailBlackList, clientid, dashboard, resourcesLevel, apimGateway,
+    uiConfigure, outward, customThemeColor,
   } = choerodonConfig;
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
@@ -116,6 +118,7 @@ export default function updateWebpackConfig(mode, env) {
     ...enterPoints(mode, env),
   };
   const defines = Object.keys(mergedEnterPoints).reduce((obj, key) => {
+    // eslint-disable-next-line no-param-reassign
     obj[`process.env.${key}`] = JSON.stringify(process.env[key] || mergedEnterPoints[key]);
     return obj;
   }, {});

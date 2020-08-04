@@ -16,11 +16,10 @@ function getFilePath(file) {
   const filePath = join(process.cwd(), file);
   if (fs.existsSync(filePath)) {
     return filePath;
-  } else if (isDev) {
+  } if (isDev) {
     return join(process.cwd(), 'src', file);
-  } else {
-    return join(__dirname, '../../', file);
   }
+  return join(__dirname, '../../', file);
 }
 
 export default function updateWebpackConfig(mode, env, envStr) {
@@ -79,6 +78,7 @@ export default function updateWebpackConfig(mode, env, envStr) {
     ...enterPoints(mode, env),
   };
   const defines = Object.keys(mergedEnterPoints).reduce((obj, key) => {
+    // eslint-disable-next-line no-param-reassign
     obj[`process.env.${key}`] = JSON.stringify(process.env[key] || mergedEnterPoints[key]);
     return obj;
   }, {});

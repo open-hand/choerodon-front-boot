@@ -62,7 +62,7 @@ function config(options) {
  * 检查本地是否有环境变量文件，如果有，复制都boot根目录下
  * 解析用户环境变量文件和默认环境变量文件
  * 进行合并
- * @param {*} isDev 
+ * @param {*} isDev
  */
 function generateEnvNode(isDev = false) {
   const { choerodonConfig: { runByBoot } } = context;

@@ -37,8 +37,11 @@ export default function build(program) {
   const { initContext } = context;
   initContext(program);
 
-
-  const { choerodonConfig: { entryName, output, htmlPath, distBasePath } } = context;
+  const {
+    choerodonConfig: {
+      entryName, output, htmlPath, distBasePath,
+    },
+  } = context;
 
   const distPath = path.join(process.cwd(), distBasePath, output);
   rimraf.sync(distPath);
