@@ -10,6 +10,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import colorPalette from '../utils/colorPalette';
 import context from '../context';
+import escapeWinPath from '../utils/escapeWinPath';
 
 const jsFileName = 'dis/[name].[hash:8].js';
 const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
@@ -41,9 +42,12 @@ function getAssetLoader(env, mimetype, limit = 10000) {
 }
 
 export default function getWebpackCommonConfig(mode, env) {
-  const { isDev, choerodonConfig: { masterName = 'master' } } = context;
+  const { isDev, choerodonConfig: { masterName = 'master', routes } } = context;
   const babelOptions = getBabelCommonConfig(mode, env);
-
+  const ROUTES = Object.keys(routes).map((key) => ({
+    key: `/${key}`,
+    path: escapeWinPath(join(process.cwd(), routes[key])),
+  }));
   const plugins = [
     new FilterWarningsPlugin({
       exclude: /.*@choerodon.*/,
@@ -147,6 +151,16 @@ export default function getWebpackCommonConfig(mode, env) {
           exclude: /node_modules/,
           loader: 'babel-loader',
           options: babelOptions,
+        },
+        {
+          test: /routes\.(js|jsx|ts|tsx)$/,
+          use: [{
+            loader: 'string-replace-loader',
+            options: {
+              search: '__ROUTES__',
+              replace: ROUTES.map((route) => 'React.createElement(Route,{\n          path:"'.concat(route.key, '",\n          component:React.lazy(() => import("').concat(route.path, '"))\n        })')).join('\n'),
+            },
+          }],
         },
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,

@@ -1,8 +1,10 @@
 import fs from 'fs';
 import autoprefixer from 'autoprefixer';
+import path from 'path';
 
 const defaultConfig = {
   port: 9090,
+  entry: path.resolve(process.cwd(), './node_modules/@choerodon/master/lib/entry.js'),
   output: './dist',
   htmlTemplate: 'index.template.html',
   devServerConfig: {},
@@ -50,5 +52,5 @@ const defaultConfig = {
 
 export default function getChoerodonConfig(configFile) {
   const customizedConfig = fs.existsSync(configFile) ? require(configFile) : {};
-  return Object.assign({}, defaultConfig, customizedConfig);
+  return { ...defaultConfig, ...customizedConfig };
 }

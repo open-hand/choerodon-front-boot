@@ -7,6 +7,7 @@ import context from './context';
 import getStyleLoadersConfig from './webpackConfig/getStyleLoadersConfig';
 import getWebpackCommonConfig from './webpackConfig/getWebpackCommonConfig';
 import getDefaultTheme from './webpackConfig/getDefaultTheme';
+import escapeWinPath from './utils/escapeWinPath';
 
 const choerodonLib = join(__dirname, '..', '..');
 
@@ -26,11 +27,10 @@ export default function updateWebpackConfig(mode, env, envStr) {
   const { choerodonConfig } = context;
   const {
     theme, output, root, enterPoints, postcssConfig, entryName,
-    titlename, htmlTemplate, favicon, resourcesLevel, outward,
+    titlename, htmlTemplate, favicon, resourcesLevel, outward, entry,
   } = choerodonConfig;
 
   const webpackConfig = getWebpackCommonConfig(mode, env);
-
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
     modifyVars: { ...getDefaultTheme(env), ...theme },
@@ -88,7 +88,7 @@ export default function updateWebpackConfig(mode, env, envStr) {
     throw new Error(`Should not set \`webpackConfig.entry.${entryName}\`!`);
   }
   const entryPath = join(choerodonLib, '..', 'tmp', `entry.${entryName}.js`);
-  customizedWebpackConfig.entry[entryName] = entryPath;
+  customizedWebpackConfig.entry[entryName] = entry;
   customizedWebpackConfig.plugins.push(
     new webpack.DefinePlugin(defines),
     new HtmlWebpackPlugin({
