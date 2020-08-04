@@ -6,6 +6,7 @@ import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import WebpackBar from 'webpackbar';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import colorPalette from '../utils/colorPalette';
 import context from '../context';
@@ -79,8 +80,8 @@ export default function getWebpackCommonConfig(mode, env) {
       injectCss: true,
       isJsUgly: env !== 'development',
     }),
-
-  ];
+    isDev && new ForkTsCheckerWebpackPlugin(),
+  ].filter(Boolean);
 
   if (env === 'development') {
     plugins.push(
