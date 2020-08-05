@@ -158,7 +158,7 @@ export default function getWebpackCommonConfig(mode, env) {
             loader: 'string-replace-loader',
             options: {
               search: '__ROUTES__',
-              replace: ROUTES.map((route) => 'React.createElement(Route,{\n          path:"'.concat(route.key, '",\n          component:React.lazy(() => import("').concat(route.path, '"))\n        })')).join('\n'),
+              replace: ROUTES.map((route) => `React.createElement(Route, { path: "${route.key}", component: React.lazy(() => import("${route.path}")) })`).join(','),
             },
           }],
         },
