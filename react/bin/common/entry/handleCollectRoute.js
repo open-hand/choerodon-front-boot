@@ -1,8 +1,8 @@
-import path from 'path';
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 import context from '../context';
 import getPackagePath from '../utils/getPackagePath';
 import getPackageRoute from '../utils/getPackageRoute';
-import transformMain from '../utils/transformMain';
 
 export default function handleCollectRoute() {
   const { choerodonConfig, choerodonConfig: { modules } } = context;

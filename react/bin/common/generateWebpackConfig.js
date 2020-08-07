@@ -7,7 +7,6 @@ import context from './context';
 import getStyleLoadersConfig from './webpackConfig/getStyleLoadersConfig';
 import getWebpackCommonConfig from './webpackConfig/getWebpackCommonConfig';
 import getDefaultTheme from './webpackConfig/getDefaultTheme';
-import escapeWinPath from './utils/escapeWinPath';
 
 const choerodonLib = join(__dirname, '..', '..');
 

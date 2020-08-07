@@ -58,11 +58,6 @@ export default function getWebpackCommonConfig(mode, env) {
       ignoreOrder: true, // 不加控制台一堆warn
     }),
     new WebpackBar(),
-    new webpack.ProvidePlugin({
-      Choerodon: isDev
-        ? join(process.cwd(), `node_modules/@choerodon/${masterName}/lib/containers/common`)
-        : join(__dirname, `../../../${masterName}/lib/containers/common`),
-    }),
     new ThemeColorReplacer({
       changeSelector,
       fileName: cssColorFileName,
@@ -158,7 +153,7 @@ export default function getWebpackCommonConfig(mode, env) {
             loader: 'string-replace-loader',
             options: {
               search: '__ROUTES__',
-              replace: ROUTES.map((route) => `React.createElement(Route, { path: "${route.key}", component: React.lazy(() => import("${route.path}")) })`).join(','),
+              replace: `[${ROUTES.map((route) => `["${route.key}", ()=>import("${route.path}")]`).join(',\n')}]`,
             },
           }],
         },

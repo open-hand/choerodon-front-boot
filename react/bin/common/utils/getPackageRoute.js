@@ -13,4 +13,5 @@ export default function getPackageRoute(packageInfo, base = '.') {
 
     return { [rName]: path.join(base !== '.' ? '/node_modules' : '', base, rMain) };
   }
+  return undefined;
 }
