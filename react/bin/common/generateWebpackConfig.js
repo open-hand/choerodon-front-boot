@@ -21,7 +21,7 @@ function getFilePath(file) {
   return join(__dirname, '../../', file);
 }
 
-export default function updateWebpackConfig(mode, env, envStr) {
+export default function generateWebpackConfig(mode, env, envStr) {
   const { choerodonConfig } = context;
   const {
     theme, output, root, enterPoints, postcssConfig, entryName,

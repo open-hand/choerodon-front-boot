@@ -3,7 +3,6 @@ import path from 'path';
 import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
-import EsbuildPlugin from 'esbuild-webpack-plugin';
 import context from './common/context';
 import warning from './common/utils/warning';
 import handleCollectRoute from './common/entry/handleCollectRoute';
@@ -56,6 +55,8 @@ export default function build(program) {
     'process.env.NODE_ENV': JSON.stringify(env),
   }));
   if (shouldUseEsbuild) {
+    // eslint-disable-next-line global-require
+    const EsbuildPlugin = require('esbuild-webpack-plugin').default;
     // eslint-disable-next-line no-console
     console.log('use esbuild as webpack minimizer');
     webpackConfig.optimization.minimizer = [new EsbuildPlugin()];
@@ -68,6 +69,6 @@ export default function build(program) {
       warning(false, stats.toString('errors-only'));
       process.exit(1);
     }
-    // handleAfterCompile();
+    handleAfterCompile();
   });
 }
