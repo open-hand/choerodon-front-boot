@@ -1,4 +1,14 @@
-export default (postcssOptions, loaderOptions, useCssModules) => ([
+const sass = require('sass');
+
+function normalizeToSassVariables(modifyVarsOptions) {
+  const { modifyVars, ...options } = modifyVarsOptions;
+  if (modifyVars) {
+    options.additionalData = Object.keys(modifyVars).map((key) => `$${key}: ${modifyVars[key]};`).join('');
+  }
+  return options;
+}
+
+const getStyleLoadersConfig = (postcssOptions, loaderOptions, useCssModules) => ([
   {
     test: /\.css$/,
     use: [{
@@ -34,4 +44,29 @@ export default (postcssOptions, loaderOptions, useCssModules) => ([
       },
     ],
   },
+  {
+    test: /\.scss$/,
+    use: [
+      {
+        loader: 'css-loader',
+        options: useCssModules ? {
+          modules: {
+            localIdentName: '[name]__[local]--[hash:base64:5]',
+          },
+        } : {},
+      },
+      {
+        loader: 'postcss-loader',
+        options: postcssOptions,
+      },
+      {
+        loader: 'sass-loader',
+        options: {
+          ...normalizeToSassVariables(loaderOptions),
+          implementation: sass,
+        },
+      },
+    ],
+  },
 ]);
+export default getStyleLoadersConfig;
