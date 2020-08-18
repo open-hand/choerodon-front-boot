@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { join } from 'path';
 import webpack from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -24,13 +23,6 @@ const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 const baseColor = '#3f51b5';
-function getFilePath(file) {
-  const filePath = join(process.cwd(), file);
-  if (fs.existsSync(filePath)) {
-    return filePath;
-  }
-  return join(__dirname, '../../../', file);
-}
 function changeSelector(selector, util) {
   // ui-pro替换这个样式后选择框样式有问题
   switch (selector) {
@@ -58,7 +50,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     choerodonConfig: {
       output, root,
       routes, postcssConfig, theme, resourcesLevel, enterPoints, outward,
-      titlename, htmlTemplate, favicon, entryName, entry, webpackConfig,
+      titlename, entryName, entry, webpackConfig,
     },
   } = context;
   const isEnvDevelopment = env === 'development';
