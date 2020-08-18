@@ -1,7 +1,7 @@
 import path from 'path';
 import mkdirp from 'mkdirp';
-import warning from './utils/warning';
-import getChoerodonConfig from './webpackConfig/getChoerodonConfig';
+import warning from './warning';
+import getChoerodonConfig from '../config/getChoerodonConfig';
 
 let isInitialized = false;
 function initialize(context) {
@@ -9,9 +9,9 @@ function initialize(context) {
     warning(false, '`context` had been initialized');
     return;
   }
-  const tmpDirPath = path.join(__dirname, '../../../tmp');
-  context.tmpDirPath = tmpDirPath;
-  mkdirp.sync(tmpDirPath);
+  // const tmpDirPath = path.join(__dirname, '../../../tmp');
+  // context.tmpDirPath = tmpDirPath;
+  // mkdirp.sync(tmpDirPath);
   Object.assign(exports, context);
   isInitialized = true;
 }

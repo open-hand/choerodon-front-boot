@@ -1,5 +1,5 @@
 import path from 'path';
-import context from '../context';
+import context from './context';
 import transformMain from './transformMain';
 
 export default function getPackageRoute(packageInfo, base = '.') {

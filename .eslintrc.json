@@ -1,3 +1,7 @@
 {
-  "extends": "c7n-app"
+  "extends": "c7n-app",
+  "rules": {
+    "import/no-dynamic-require": 0,
+    "global-require": 0
+  }
 }

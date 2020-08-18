@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-const start = require('../lib/bin/start').default;
+const start = require('../lib/scripts/start').default;
 
 program
   .option('-c, --config <path>', 'set config path. defaults to ./choerodon.config.js')

@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "description": "Choerodon Scaffold to run react application.",
   "main": "tmp/transfer.index.js",
   "homepage": "http://choerodon.io/",
@@ -92,7 +92,8 @@
   "peerDependencies": {},
   "scripts": {
     "clean": "rimraf lib",
-    "compile": "c7n compile",
+    "compile": "compiler compile",
+    "watch": "compiler compile --watch",
     "start": "node ./test/start --config ./choerodon.config.js",
     "prestart:bin": "npm run compile",
     "start:bin": "node ./bin/choerodon-front-boot start --config ./choerodon.config.js",

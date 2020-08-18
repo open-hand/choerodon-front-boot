@@ -3,12 +3,11 @@ import path from 'path';
 import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
-import context from './common/context';
-import warning from './common/utils/warning';
-import handleCollectRoute from './common/entry/handleCollectRoute';
-import generateTransfer from './common/generateTransfer';
-import generateWebpackConfig from './common/generateWebpackConfig';
-import generateEnvironmentVariable from './common/generateEnvironmentVariable';
+import context from '../utils/context';
+import warning from '../utils/warning';
+import handleCollectRoute from '../utils/handleCollectRoute';
+import generateEnvironmentVariable from '../utils/generateEnvironmentVariable';
+import configFactory from '../config/webpack.config';
 
 function copy(fileName) {
   const { choerodonConfig: { output, htmlPath, distBasePath } } = context;
@@ -34,7 +33,7 @@ export default function build(program) {
   const shouldUseEsbuild = program.esbuild;
   // 初始化全局参数context
   const { initContext } = context;
-  initContext(program);
+  initContext(program, false);
 
   const {
     choerodonConfig: {
@@ -45,12 +44,10 @@ export default function build(program) {
   const distPath = path.join(process.cwd(), distBasePath, output);
   rimraf.sync(distPath);
   mkdirp.sync(distPath);
-  // 生成入口文件
-  generateTransfer(entryName);
   // 收集路由，单模块启动也得配置路径
   handleCollectRoute(entryName);
 
-  const webpackConfig = generateWebpackConfig('build', env, generateEnvironmentVariable());
+  const webpackConfig = configFactory('build', env, generateEnvironmentVariable());
   webpackConfig.plugins.push(new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(env),
   }));

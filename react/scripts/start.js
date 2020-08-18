@@ -2,30 +2,27 @@ import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import gaze from 'gaze';
-import context from './common/context';
-import generateTransfer from './common/generateTransfer';
-import handleCollectRoute from './common/entry/handleCollectRoute';
-import generateWebpackConfig from './common/generateWebpackConfig';
-import generateEnvironmentVariable from './common/generateEnvironmentVariable';
+import context from '../utils/context';
+import handleCollectRoute from '../utils/handleCollectRoute';
+import generateEnvironmentVariable from '../utils/generateEnvironmentVariable';
+import configFactory from '../config/webpack.config';
 
-function restart(program, dev, open = false) {
+function restart(program, open = false) {
   // 初始化全局参数context
   const { initContext } = context;
-  initContext(program, dev);
+  initContext(program, true);
   // 前端环境变量方案处理
   generateEnvironmentVariable(true);
 
   const {
     choerodonConfig: {
-      entryName, devServerConfig, output, port,
+      entryName, devServerConfig, port,
     },
   } = context;
-  // 生成入口文件
-  generateTransfer(entryName);
   // 收集路由，单模块启动也得配置路径
   handleCollectRoute(entryName);
 
-  const webpackConfig = generateWebpackConfig('start', 'development', generateEnvironmentVariable(true));
+  const config = configFactory('start', 'development', generateEnvironmentVariable(true));
   const serverOptions = {
     quiet: true,
     hot: true,
@@ -36,9 +33,9 @@ function restart(program, dev, open = false) {
     historyApiFallback: true,
     host: 'localhost',
   };
-  WebpackDevServer.addDevServerEntrypoints(webpackConfig, serverOptions);
+  WebpackDevServer.addDevServerEntrypoints(config, serverOptions);
 
-  const compiler = webpack(webpackConfig);
+  const compiler = webpack(config);
   const server = new WebpackDevServer(compiler, serverOptions);
   server.listen(port, '0.0.0.0', (err) => {
     if (err) {
@@ -47,8 +44,8 @@ function restart(program, dev, open = false) {
   });
   return server;
 }
-export default function start(program, dev) {
-  let server = restart(program, dev, true);
+export default function start(program) {
+  let server = restart(program, true);
   const configFiles = [program.config, './react/.env', './react/.default.env'].map((file) => path.join(process.cwd(), file));
   gaze(configFiles, (err, watcher) => {
     // Files have all started watching
@@ -59,7 +56,7 @@ export default function start(program, dev) {
       // eslint-disable-next-line no-console
       console.log(`Since ${filename} was ${event}, try to restart server...`);
       server.close(() => {
-        server = restart(program, dev);
+        server = restart(program);
       });
     });
   });
