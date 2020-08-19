@@ -1,8 +1,7 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.22.1",
+  "version": "0.22.1-test",
   "description": "Choerodon Scaffold to run react application.",
-  "main": "tmp/transfer.index.js",
   "homepage": "http://choerodon.io/",
   "bin": {
     "choerodon-front-boot": "./bin/choerodon-front-boot"
