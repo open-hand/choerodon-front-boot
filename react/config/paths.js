@@ -33,7 +33,8 @@ const resolveModule = (resolveFn, filePath) => {
 const resolveOwn = (relativePath) => path.resolve(__dirname, '..', relativePath);
 
 module.exports = {
-  dotenv: resolveApp('.env'),
+  dotenv: resolveApp('react/.env'),
+  selfDotenv: resolveOwn('../.env'),
   appPath: resolveApp('.'),
   appBuild: resolveApp('build'),
   appPublic: resolveApp('public'),
@@ -48,6 +49,7 @@ module.exports = {
   proxySetup: resolveApp('src/setupProxy.js'),
   appNodeModules: resolveApp('node_modules'),
   ownPath: resolveOwn('.'),
+  ownRoot: resolveOwn('../'),
   ownNodeModules: resolveOwn('node_modules'), // This is empty on npm 3
   appTypeDeclarations: resolveApp('src/react-app-env.d.ts'),
   ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),

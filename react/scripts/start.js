@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import context from '../utils/context';
 import handleCollectRoute from '../utils/handleCollectRoute';
-import generateEnvironmentVariable from '../utils/generateEnvironmentVariable';
+import getEnv from '../utils/getEnv';
 import configFactory from '../config/webpack.config';
 
 const openBrowser = require('../dev-utils/openBrowser');
@@ -15,8 +15,6 @@ export default function start(program) {
   // 初始化全局参数context
   const { initContext } = context;
   initContext(program, true);
-  // 前端环境变量方案处理
-  generateEnvironmentVariable(true);
 
   const {
     choerodonConfig: {
@@ -44,7 +42,7 @@ export default function start(program) {
       // We have not found a port.
         return;
       }
-      const config = configFactory('start', 'development', generateEnvironmentVariable(true));
+      const config = configFactory('start', 'development', getEnv());
       const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
       const appName = require(paths.appPackageJson).name;
       const useTypeScript = fs.existsSync(paths.appTsConfig);

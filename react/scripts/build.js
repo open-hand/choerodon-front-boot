@@ -6,23 +6,30 @@ import rimraf from 'rimraf';
 import context from '../utils/context';
 import warning from '../utils/warning';
 import handleCollectRoute from '../utils/handleCollectRoute';
-import generateEnvironmentVariable from '../utils/generateEnvironmentVariable';
+import getEnv from '../utils/getEnv';
 import configFactory from '../config/webpack.config';
 
-function copy(fileName) {
-  const { choerodonConfig: { output, htmlPath, distBasePath } } = context;
+const paths = require('../config/paths');
 
-  const originPath = path.join(__dirname, '../../', fileName);
+function copy(fileName) {
+  const { choerodonConfig: { output, distBasePath } } = context;
+
+  const originPath = path.join(paths.ownRoot, fileName);
   const distPath = path.join(process.cwd(), distBasePath, output, fileName);
   fs.copyFileSync(originPath, distPath);
 }
-
+/**
+ * 由于部署的时候执行env.sh进行环境变量替换
+ * 所以这里需要指定哪些环境变量需要替换，也就是dist文件夹下的.env文件中的变量
+ * 这里打包完之后，把用户的.env(一般是总前端)复制到dist文件夹下
+ */
 function handleAfterCompile() {
-  const COPY_FILE_NAME = ['.env', '.default.env', 'env.sh', 'env-config.js'];
+  const { choerodonConfig: { output, distBasePath } } = context;
+  if (fs.existsSync(paths.dotenv)) {
+    fs.copyFileSync(paths.dotenv, path.join(process.cwd(), distBasePath, output, '.env'));
+  }
+  const COPY_FILE_NAME = ['env.sh', 'env-config.js'];
   COPY_FILE_NAME.forEach((filename) => copy(filename));
-
-  const { choerodonConfig: { output, htmlPath, distBasePath } } = context;
-
   const originPath = path.join(process.cwd(), output);
   const distPath = path.join(process.cwd(), distBasePath, output);
   fs.copySync(`${originPath}`, distPath);
@@ -37,7 +44,7 @@ export default function build(program) {
 
   const {
     choerodonConfig: {
-      entryName, output, htmlPath, distBasePath,
+      entryName, output, distBasePath,
     },
   } = context;
 
@@ -47,14 +54,10 @@ export default function build(program) {
   // 收集路由，单模块启动也得配置路径
   handleCollectRoute(entryName);
 
-  const webpackConfig = configFactory('build', env, generateEnvironmentVariable());
-  webpackConfig.plugins.push(new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(env),
-  }));
+  const webpackConfig = configFactory('build', env, getEnv());
+
   if (shouldUseEsbuild) {
-    // eslint-disable-next-line global-require
     const EsbuildPlugin = require('esbuild-webpack-plugin').default;
-    // eslint-disable-next-line no-console
     console.log('use esbuild as webpack minimizer');
     webpackConfig.optimization.minimizer = [new EsbuildPlugin()];
   }
