@@ -12,6 +12,7 @@
     ".env",
     ".default.env",
     "env.sh",
+    "env-config.js",
     "babel.config.js"
   ],
   "keywords": [
