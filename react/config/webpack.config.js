@@ -8,6 +8,7 @@ import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getDefaultTheme from './getDefaultTheme';
@@ -15,6 +16,7 @@ import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
 
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const paths = require('./paths');
 
 const jsFileName = 'dis/[name].[hash:8].js';
@@ -244,6 +246,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
+      isEnvDevelopment && new ReactRefreshWebpackPlugin(),
     ].filter(Boolean),
   }, webpack);
 }

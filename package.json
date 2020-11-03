@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.22.1",
+  "version": "0.23.0-test",
   "description": "Choerodon Scaffold to run react application.",
   "homepage": "http://choerodon.io/",
   "bin": {
@@ -88,7 +88,9 @@
     "webpack-dev-server": "^3.10.3",
     "webpack-filter-warnings-plugin": "^1.2.1",
     "webpack-theme-color-replacer": "^1.2.17",
-    "webpackbar": "^4.0.0"
+    "webpackbar": "^4.0.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "react-refresh": "^0.9.0"
   },
   "devDependencies": {
     "@choerodon/compiler": "^0.0.1",
