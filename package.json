@@ -3,6 +3,7 @@
   "version": "0.23.0-test",
   "description": "Choerodon Scaffold to run react application.",
   "homepage": "http://choerodon.io/",
+  "main": "lib/index.js",
   "bin": {
     "choerodon-front-boot": "./bin/choerodon-front-boot"
   },
@@ -29,7 +30,6 @@
   "bugs": {
     "url": "https://github.com/choerodon/choerodon/issues"
   },
-  "author": "Qyellow <598260403@qq.com>",
   "license": "ISC",
   "dependencies": {
     "@babel/cli": "^7.8.4",
@@ -38,6 +38,8 @@
     "@babel/parser": "^7.4.3",
     "@babel/preset-env": "^7.8.7",
     "@babel/traverse": "^7.8.6",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "@types/webpack": "^4.41.24",
     "address": "1.1.2",
     "autoprefixer": "^6.7.7",
     "babel-loader": "^8.0.6",
@@ -48,6 +50,7 @@
     "cross-spawn": "^6.0.5",
     "css-loader": "^3.4.2",
     "detect-port-alt": "1.1.6",
+    "dotenv-runtime-plugin": "^0.0.1",
     "escape-string-regexp": "2.0.0",
     "file-loader": "^5.1.0",
     "fork-ts-checker-webpack-plugin": "4.1.6",
@@ -69,6 +72,7 @@
     "postcss-loader": "^3.0.0",
     "prop-types": "^15.5.10",
     "react-error-overlay": "^6.0.7",
+    "react-refresh": "^0.9.0",
     "recursive-readdir": "2.2.2",
     "rimraf": "2.4.3",
     "sass": "^1.26.10",
@@ -88,9 +92,7 @@
     "webpack-dev-server": "^3.10.3",
     "webpack-filter-warnings-plugin": "^1.2.1",
     "webpack-theme-color-replacer": "^1.2.17",
-    "webpackbar": "^4.0.0",
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
-    "react-refresh": "^0.9.0"
+    "webpackbar": "^4.0.0"
   },
   "devDependencies": {
     "@choerodon/compiler": "^0.0.1",

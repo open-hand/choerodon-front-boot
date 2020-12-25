@@ -17,6 +17,7 @@ import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
 
 const jsFileName = 'dis/[name].[hash:8].js';
@@ -130,12 +131,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
       extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.ts', '.tsx', '.js', '.jsx', '.json'],
+      // TODO: 引用都改完后，这个可以去掉了
       alias: {
         '@choerodon/boot': '@choerodon/master',
       },
     },
     resolveLoader: {
-      modules: ['node_modules', join(__dirname, '../../node_modules')],
+      modules: ['node_modules', join(__dirname, '../../node_modules'), join(__dirname, '../plugin')],
     },
     node: {
       fs: 'empty',
@@ -196,6 +198,9 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       ],
     },
     plugins: [
+      isEnvDevelopment && new DotEnvRuntimePlugin({
+        entry: paths.dotenv,
+      }),
       new ThemeColorReplacer({
         changeSelector,
         fileName: cssColorFileName,
@@ -232,7 +237,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         template: paths.appHtml,
         inject: true,
         favicon: paths.appFavicon,
-        env: envStr,
+        env: isEnvProduction ? envStr : undefined,
         minify: {
           html5: true,
           collapseWhitespace: true,
