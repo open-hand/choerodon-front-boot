@@ -8,6 +8,7 @@ import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import PreloadWebpackPlugin from 'preload-webpack-plugin';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
@@ -246,6 +247,10 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           removeEmptyAttributes: true,
           removeStyleLinkTypeAttributes: true,
         },
+      }),
+      new PreloadWebpackPlugin({
+        rel: 'preload',
+        include: 'asyncChunks'
       }),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
