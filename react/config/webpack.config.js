@@ -252,7 +252,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         rel: 'preload',
         include: 'asyncChunks'
       }),
-      isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
