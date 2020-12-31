@@ -253,6 +253,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         rel: 'preload',
         include: 'asyncChunks'
       }),
+      new uedConfig.generateC7nUiConfig(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
