@@ -33,8 +33,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/cli": "^7.8.4",
-    "@hzero-front-ui/c7n-ui": "^2.0.7-alpha-c7n.5",
-    "@hzero-front-ui/cfg": "^2.0.7-alpha-c7n.4",
+    "@hzero-front-ui/cfg": "^2.0.7-alpha-c7n.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/webpack": "^4.41.24",
     "address": "1.1.2",
