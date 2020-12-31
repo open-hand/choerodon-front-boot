@@ -9,7 +9,6 @@ import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import PreloadWebpackPlugin from 'preload-webpack-plugin';
-import uedConfig from '@hzero-front-ui/cfg/lib/utils/uedConfig';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
@@ -253,7 +252,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         rel: 'preload',
         include: 'asyncChunks'
       }),
-      new uedConfig.generateC7nUiConfig(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
