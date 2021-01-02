@@ -249,7 +249,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         },
       }),
       new PreloadWebpackPlugin({
-        rel: 'preload',
+        rel: 'prefetch',
         include: 'asyncChunks'
       }),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
