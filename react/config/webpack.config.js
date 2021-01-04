@@ -248,10 +248,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           removeStyleLinkTypeAttributes: true,
         },
       }),
-      new PreloadWebpackPlugin({
-        rel: 'prefetch',
-        include: 'asyncChunks'
-      }),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
