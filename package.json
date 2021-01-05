@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.22.2",
+  "version": "0.22.3",
   "description": "Choerodon Scaffold to run react application.",
   "homepage": "http://choerodon.io/",
   "bin": {
@@ -95,7 +95,7 @@
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
     "babel-eslint": "^10.1.0",
-    "babel-preset-c7n-app": "^0.0.1",
+    "babel-preset-c7n": "^0.0.1",
     "choerodon-ui": "0.8.x",
     "eslint": "^7.6.0",
     "eslint-config-airbnb": "^18.2.0",
