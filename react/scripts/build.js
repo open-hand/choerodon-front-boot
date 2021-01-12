@@ -59,7 +59,7 @@ export default function build(program) {
   if (shouldUseEsbuild) {
     const EsbuildPlugin = require('esbuild-webpack-plugin').default;
     console.log('use esbuild as webpack minimizer');
-    webpackConfig.optimization.minimizer = [new EsbuildPlugin()];
+    webpackConfig.optimization.minimizer = [new EsbuildPlugin({ target: 'es2015' })];
   }
   webpack(webpackConfig, (err, stats) => {
     if (err !== null) {
