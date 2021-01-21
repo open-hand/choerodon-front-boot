@@ -147,6 +147,10 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       noParse: [/moment.js/],
       rules: [
         {
+          test: /\.svg$/,
+          loader: 'svg-sprite-loader',
+        },
+        {
           test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
           loader: 'babel-loader',
