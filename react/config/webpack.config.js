@@ -191,7 +191,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
           use: getAssetLoader(env, 'image/svg+xml'),
-          exclude: ['/node_moduels/@choerodon/master/lib/containers/components/c7n/ui/header/style/icons']
+          exclude: /\.sprite\.svg$/
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
@@ -200,7 +200,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.svg$/,
           loader: 'svg-sprite-loader',
-          include: ['/node_moduels/@choerodon/master/lib/containers/components/c7n/ui/header/style/icons']
+          include: /\.sprite\.svg$/
         },
       ],
     },
