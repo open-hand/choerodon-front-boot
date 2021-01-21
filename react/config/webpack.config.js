@@ -200,6 +200,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.svg$/,
           loader: 'svg-sprite-loader',
+          include: ['/node_moduels/@choerodon/master/lib/containers/components/c7n/ui/header/style/icons']
         },
       ],
     },
