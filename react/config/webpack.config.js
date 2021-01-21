@@ -191,6 +191,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
           use: getAssetLoader(env, 'image/svg+xml'),
+          exclude: ['/node_moduels/@choerodon/master/lib/containers/components/c7n/ui/header/style/icons']
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
