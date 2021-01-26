@@ -131,7 +131,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
-      extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.ts', '.tsx', '.js', '.jsx', '.json'],
+      extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.overwrite.ts', '.overwrite.tsx', '.overwrite.js', '.overwrite.jsx', '.ts', '.tsx', '.js', '.jsx', '.json'],
       // TODO: 引用都改完后，这个可以去掉了
       alias: {
         '@choerodon/boot': '@choerodon/master',
