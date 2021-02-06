@@ -191,7 +191,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
           use: getAssetLoader(env, 'image/svg+xml'),
-          exclude: /\.sprite\.svg$/
+          exclude: /\.sprite\.svg$/,
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
@@ -200,7 +200,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.svg$/,
           loader: 'svg-sprite-loader',
-          include: /\.sprite\.svg$/
+          include: /\.sprite\.svg$/,
         },
       ],
     },
@@ -254,6 +254,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           removeStyleLinkTypeAttributes: true,
         },
       }),
+      isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
