@@ -6,7 +6,7 @@ export default function babel(mode, env) {
   const isEnvDevelopment = env === 'development';
   return choerodonConfig.babelConfig({
     cacheDirectory: true,
-    presets: ['c7n-app'],
+    presets: ['c7n'],
     plugins: [
       // ... other plugins
       isEnvDevelopment && require.resolve('react-refresh/babel'),

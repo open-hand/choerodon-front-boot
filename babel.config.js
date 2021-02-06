@@ -1,5 +1,5 @@
 module.exports = {
-  presets: [['c7n-app', {
+  presets: [['c7n', {
     envConfig: {
       useBuiltIns: 'entry',
       corejs: 3,
