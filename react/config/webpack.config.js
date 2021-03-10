@@ -53,7 +53,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   const {
     choerodonConfig: {
       output, root,
-      routes, postcssConfig, theme, resourcesLevel, enterPoints, outward,
+      routes, installs, postcssConfig, theme, resourcesLevel, enterPoints, outward,
       titlename, entryName, entry, webpackConfig,
     },
   } = context;
@@ -64,6 +64,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     key: `/${key}`,
     path: escapeWinPath(join(process.cwd(), routes[key])),
   }));
+  const INSTALLS = installs.map((key) => escapeWinPath(join(process.cwd(), key)));
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
     modifyVars: { ...getDefaultTheme(env), ...theme },
@@ -157,8 +158,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           use: [{
             loader: 'string-replace-loader',
             options: {
-              search: '__ROUTES__',
-              replace: `[${ROUTES.map((route) => `["${route.key}", ()=>import("${route.path}")]`).join(',\n')}]`,
+              multiple: [{
+                search: '__ROUTES__',
+                replace: `[${ROUTES.map((route) => `["${route.key}", ()=>import("${route.path}")]`).join(',\n')}]`,
+              }, {
+                search: '__INSTALLS__',
+                replace: `${INSTALLS.map((install) => `import "${install}"`).join(',\n')}`,
+              }],
             },
           }],
         },
