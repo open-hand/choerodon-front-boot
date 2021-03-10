@@ -4,6 +4,9 @@ import transformMain from './transformMain';
 export default function getPackageInstall(packageInfo, base = '.') {
   if (packageInfo) {
     const { install } = packageInfo;
+    if (!install) {
+      return undefined;
+    }
     const rMain = base !== '.'
       ? install
       : transformMain(install);
