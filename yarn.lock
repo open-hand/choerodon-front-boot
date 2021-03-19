@@ -1062,30 +1062,18 @@
     normalize-path "^2.0.1"
     through2 "^2.0.3"
 
-"@hzero-front-ui/c7n-ui@^2.0.8":
-  version "2.0.8"
-  resolved "https://nexus.choerodon.com.cn/repository/choerodon-npm/@hzero-front-ui/c7n-ui/-/c7n-ui-2.0.8.tgz#07c707db13e7c2bd2a92aafa6923d26b50bd8ab3"
-  integrity sha512-OdVczr4JHeg7ZdP8BmA8luZPEG4RKMWYRiwqkZDuOTo5cY7m+IQLhSbJZoWVRJgD/m0R6+RhvpMm1zg8UMoTRA==
-
-"@hzero-front-ui/cfg@^2.0.7-alpha-c7n.6":
-  version "2.0.8"
-  resolved "https://nexus.choerodon.com.cn/repository/choerodon-npm/@hzero-front-ui/cfg/-/cfg-2.0.8.tgz#a18751defdfa7f24f09f903b98ba88ea816011aa"
-  integrity sha512-DQQH7Jax6y187l4JPnfN8NmqnHYzPNfFpgRn7yPY5c/PHJjd+FKUVAUFrEvH07sfDFsCraU1M2zC2VKtRqtzYQ==
+"@hzero-front-ui/cfg@2.0.7-alpha-c7n.23":
+  version "2.0.7-alpha-c7n.23"
+  resolved "http://nexus.saas.hand-china.com/repository/hzero-npm-group/@hzero-front-ui/cfg/-/cfg-2.0.7-alpha-c7n.23.tgz#47f922d390b123335594196878eb2c3c069ca3c2"
+  integrity sha512-kW0t2GMM0I8cE5uc0vDdYY7RHBS6A8x3f/dWnCG3YJxAZ6h2z68km4D04Rc5xk0lFqdlJZocv21OTyqqaojxAw==
   dependencies:
-    "@hzero-front-ui/c7n-ui" "^2.0.8"
-    "@hzero-front-ui/font" "^2.0.8"
-    "@hzero-front-ui/hzero-ui" "^2.0.8"
+    "@hzero-front-ui/font" "^2.0.5-alpha-c7n.23"
     memoize-one "^5.1.1"
 
-"@hzero-front-ui/font@^2.0.8":
-  version "2.0.8"
-  resolved "https://nexus.choerodon.com.cn/repository/choerodon-npm/@hzero-front-ui/font/-/font-2.0.8.tgz#449fc4babe631a0c62ab08300226bdc9210b9496"
-  integrity sha512-SXoZu8MpCf+5Z+JGcZDxxJyHvOunNPpT4wSnl1I6GJAPcmVyHkG+/IsSGmTlggeHnEShW53mU+USay8Qwbwg2g==
-
-"@hzero-front-ui/hzero-ui@^2.0.8":
-  version "2.0.8"
-  resolved "https://nexus.choerodon.com.cn/repository/choerodon-npm/@hzero-front-ui/hzero-ui/-/hzero-ui-2.0.8.tgz#fff57580356b7be3cbde91bcb4abbbbec52e100c"
-  integrity sha512-fgg1AONwv8kBLCnwA5FTQclJpnQMygYx2HmRSjxidF4KkfDd+cp+5FoWSeDBObXmiMZ6oEfTtIEpqf2b7NS9og==
+"@hzero-front-ui/font@^2.0.5-alpha-c7n.23":
+  version "2.0.9"
+  resolved "http://nexus.saas.hand-china.com/repository/hzero-npm-group/@hzero-front-ui/font/-/font-2.0.9.tgz#70de01a4a98ba94b7f8b513551a92339637b223c"
+  integrity sha512-YLsu+iZEXzKRr07m2txqftOWOa39pbM1uWmy3RkxgRwfe8cAIeZDpMoMZsz9yoRC9Ar/t9rDkzvi4H8SMfm7SQ==
 
 "@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents":
   version "2.1.8-no-fsevents"
