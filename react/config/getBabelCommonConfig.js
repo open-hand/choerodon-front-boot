@@ -1,5 +1,5 @@
 import context from '../utils/context';
-import uedConfig from '@hzero-front-ui/cfg/lib/utils/uedConfig';
+// import uedConfig from '@hzero-front-ui/cfg/lib/utils/uedConfig';
 
 export default function babel(mode, env) {
   const { choerodonConfig } = context;
@@ -10,7 +10,7 @@ export default function babel(mode, env) {
     plugins: [
       // ... other plugins
       isEnvDevelopment && require.resolve('react-refresh/babel'),
-      ...uedConfig.generateC7nUiConfig(),
+      // ...uedConfig.generateC7nUiConfig(),
     ].filter(Boolean),
   }, mode, env);
 }

@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "0.23.0-test",
+  "version": "0.23.0",
   "description": "Choerodon Scaffold to run react application.",
   "homepage": "http://choerodon.io/",
   "main": "lib/index.js",
@@ -33,7 +33,6 @@
   "license": "ISC",
   "dependencies": {
     "@babel/cli": "^7.8.4",
-    "@hzero-front-ui/cfg": "2.0.7-alpha-c7n.23",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/webpack": "^4.41.24",
     "address": "1.1.2",
