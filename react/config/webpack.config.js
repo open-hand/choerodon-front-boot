@@ -163,7 +163,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
                 replace: `[${ROUTES.map((route) => `["${route.key}", ()=>import("${route.path}")]`).join(',\n')}]`,
               }, {
                 search: '__INSTALLS__',
-                replace: `${INSTALLS.map((install) => `import "${install}"`).join(',\n')}`,
+                replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
               }],
             },
           }],
