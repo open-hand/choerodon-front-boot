@@ -86,8 +86,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   }, {});
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
-    watch: isEnvDevelopment,
-    devtool: isEnvDevelopment ? 'source-map' : undefined,
+    devtool: isEnvDevelopment ? 'eval-cheap-module-source-map' : undefined,
     entry: {
       [entryName]: entry,
     },
@@ -141,9 +140,9 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     resolveLoader: {
       modules: ['node_modules', join(__dirname, '../../node_modules'), join(__dirname, '../plugin')],
     },
-    node: {
-      fs: 'empty',
-    },
+    // node: {
+    //   fs: 'empty',
+    // },
     module: {
       noParse: [/moment.js/],
       rules: [
