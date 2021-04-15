@@ -96,6 +96,9 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       chunkFilename: jsChunkFileName,
       publicPath: isEnvDevelopment ? '/' : root,
     },
+    cache: {
+      type: 'filesystem',
+    },
     optimization: {
       splitChunks: {
         chunks: 'all',
@@ -140,9 +143,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     resolveLoader: {
       modules: ['node_modules', join(__dirname, '../../node_modules'), join(__dirname, '../plugin')],
     },
-    // node: {
-    //   fs: 'empty',
-    // },
     module: {
       noParse: [/moment.js/],
       rules: [
@@ -243,11 +243,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       }),
       new MiniCssExtractPlugin({
         filename: cssFileName,
-        chunkFilename: env === 'development' ? '[id].css' : '[id].[hash].css',
+        chunkFilename: env === 'development' ? '[id].css' : '[id].[contenthash].css',
         ignoreOrder: true, // 不加控制台一堆warn
       }),
       new WebpackBar(),
       new webpack.DefinePlugin(defines),
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+      }),
       new HtmlWebpackPlugin({
         title: process.env.TITLE_NAME || titlename,
         template: paths.appHtml,
