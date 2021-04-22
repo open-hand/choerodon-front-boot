@@ -87,7 +87,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     watch: isEnvDevelopment,
-    devtool: isEnvDevelopment ? 'cheap-module-eval-source-map' : undefined,
+    devtool: isEnvDevelopment ? 'source-map' : undefined,
     entry: {
       [entryName]: entry,
     },
