@@ -160,7 +160,11 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
             options: {
               multiple: [{
                 search: '__ROUTES__',
-                replace: `[${ROUTES.map((route) => `["${route.key}", ()=>import("${route.path}")]`).join(',\n')}]`,
+                replace: `(()=>{
+                  ${ROUTES.map((route) => `const ${route.key.replace('/', '')} = React.lazy(()=>import("${route.path}"));`).join('\n')}
+                  return [${ROUTES.map((route) => `["${route.key}",${route.key.replace('/', '')} ]`).join(',\n')}]
+                })()
+                `,
               }, {
                 search: '__INSTALLS__',
                 replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
