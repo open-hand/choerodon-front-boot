@@ -268,7 +268,9 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
-      isEnvDevelopment && new ReactRefreshWebpackPlugin(),
+      isEnvDevelopment && new ReactRefreshWebpackPlugin({
+        overlay: false,
+      }),
     ].filter(Boolean),
   }, webpack);
 }
