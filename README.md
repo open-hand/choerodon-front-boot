@@ -1,43 +1,145 @@
-# 开发（@choerodon/boot）
+# 主要功能
 
-## 安装依赖
+ `@choerodon/boot`为猪齿鱼前端提供了模块的启动/打包，以及子模块的组合功能。
 
-```bash
-npm install
+## 使用
+
+### 1. 安装依赖
+
+```
+yarn add @choerodon/boot
 ```
 
-安装的依赖包含了webpack，babel，react等@choerodon/boot必须的依赖，可以在`package.json`中进行查看。
+### 2. 创建配置文件
 
-## 运行配置及配置项说明
+在项目目录/react目录下创建`config.js`
 
-### 运行
+```
+module.exports = {
+  modules: [
+    '.',
+  ]
+};
+```
 
-### 功能描述
+### 3. 添加命令
 
-@choerodon/boot作为一个脚手架项目，希望在功能纯净且单一的基础上帮助用户做更多的事，以更好地开发猪齿鱼Choerodon平台的模块或者Master。
+在package.json添加
 
-下面介绍贯穿在整个运行过程中的几个关键步骤：
+```json
+"scripts": {
+    "start": "node --max_old_space_size=4096 node_modules/@choerodon/boot/bin/choerodon-front-boot-start --config ./react/config.js",
+    "dist": "choerodon-front-boot dist --config ./react/config.js"    
+  },
+```
+
+## 常用运行配置及配置项说明
+
+| 名称          | 值类型                                | 用途                                    | 默认值                                         |
+| ------------- | ------------------------------------- | --------------------------------------- | ---------------------------------------------- |
+| port          | number                                | 前端启动时的端口                        | 9090                                           |
+| modules       | Array<string>                         | 指定启动的子模块，其中`.`指代自身子模块 |                                                |
+| webpackConfig | (config:webpackConfig)=>webpackConfig | 自定义webpack配置                       |                                                |
+| entry         | string                                | 应用入口文件                            | node_modules下的@choerodon/master/lib/entry.js |
+| theme         | Object                                | 全局覆盖less变量                        | {}                                             |
+| titlename     | string                                | html的title                             | Choerodon \| 多云应用技术集成平台              |
+
+> 更多配置请查看[链接](https://code.choerodon.com.cn/hzero-c7ncd/choerodon-front-boot/blob/master/react/config/getChoerodonConfig.js)
+>
+
+
+
+## 子模块路由收集
+
+### 1. 配置方式
+
+猪齿鱼前端具有子模块组合功能，猪齿鱼前端可分为`分前端`和`总前端`，分前端指代各个子模块，这些子模块在启动时一般会启动自身，这时需要配置`modules`为`['.']`，总前端是子模块的聚合，`modules`配置为子模块的名称列表，如：
+
+```javascript
+const config = {
+  local: true, //是否为本地开发
+  modules: [
+    '@choerodon/base',
+    '@choerodon/asgard',
+    '@choerodon/notify',
+    '@choerodon/manager',
+    "@choerodon/agile",
+    "@choerodon/testmanager",
+    "@choerodon/knowledge",
+    "@choerodon/devops",
+    "@choerodon/code-repo",
+    "@choerodon/prod-repo",
+  ]
+};
+
+module.exports = config;
+```
+
+### 2. 约定
+
+猪齿鱼前端子模块应遵守以下约定
+
+1. 在package.json中配置唯一的`routeName`和`main`和`install`（可选）字段
+2. main指定了一个文件路径，这个文件应有一个默认导出
+
+### 3. 路由分配
+
+每个在modules中配置的子模块都会被分配一个一级路由，路由分配规则是读取子模块的`package.json`中的`routeName`字段，并引入`main`字段配置的文件，所以请保证不同的子模块配置了不同的`routeName`。
+
+例如针对以下`package.json`配置：
+
+```json
+{
+  "routeName": "agile",
+  "main": "./lib/index.js",
+}
+```
+
+会生成
+
+```javascript
+const agile = React.lazy(()=>import("D:\\Desktop\\分前端\\agile-service\\react\\index.js"));
+
+...
+<Route path="/agile" component={agile}/>
+```
+
+
 
 ## 环境变量方案
 
 Choerodon猪齿鱼平台的前端环境变量方案是一种给用户自定义环境变量，并且可以在部署时进行替换的一种方案。
 
-在react目录下建立.env文件，以`键=值`的方式写入环境变量，在启动过程中会与默认环境变量进行合并（默认环境变量文件在@choerodon/boot下，名为`.default.env`，当然用户变量的优先级更高）。
+### 1. 使用
 
-*特别需要注意的是，你永远应该配置一个名为`API_HOST`的环境变量，这是代码运行时访问的API的路径前缀。*
+在react目录下建立.env文件，以`键=值`的方式写入环境变量，最终可以使用`window._env_`来访问配置的环境变量。
 
-## 主入口生成和路由收集生成
+### 2. 常用环境变量
 
-主入口和路由文件，会生成在tmp目录下，有nunjucks模板生成。会经过如下步骤：
+| 名称             | 类型                                                         | 用途                                   |
+| ---------------- | ------------------------------------------------------------ | -------------------------------------- |
+| HTTP             | 'http'\|'https'                                              | 目前没什么用（已废弃）                 |
+| API_HOST         | string                                                       | 指定后端api地址前缀                    |
+| CLIENT_ID        | string                                                       | 指定登录时使用的客户端                 |
+| LOCAL            | true\|false                                                  | 是否为本地开发（目前请始终设置为true） |
+| WEBSOCKET_SERVER | string                                                       | 指定后端websocket地址前缀              |
+| outward          | 逗号隔开的路由地址，如/agile/preview,/agile/test,/agile/outside | 指定不需要登录即可访问的页面           |
 
-1. 收集路由，根据配置的modules去进行路由收集
-   * 注意：如果modules字段为空，表示当前模块也不会被webpack编译进去，这也之前有不同，当前模块用'.'表示，其余模块可以直接用模块名或者模块路径表示，相对于根目录
+### 3. 运行原理
 
-2. 路由生成：根据收集路由得到的路由对象，生成路由文件
-3. 主入口文件生成：根据配置的Master属性，将Master和路由文件注入到总入口，生成最终入口文件`entry.index.js`
+环境变量方案分为开发时和部署时
+
+在开发模式下使用了[dotenv-runtime-plugin](https://github.com/laincarl/dotenv-runtime-plugin)来实现了开发时的环境变量热更新。
+
+在部署时，会执行[env.sh](https://code.choerodon.com.cn/hzero-c7ncd/choerodon-front-boot/blob/master/env.sh)实现在docker启动时读取docker配置的环境变量，并生成一个js语句，插入到html中
+
+## 跨模块组件注入方案
+
+[链接](https://code.choerodon.com.cn/hzero-c7ncd/c7n-front/blob/master/packages/inject/README.md)
 
 ## 组件转发
 
-为了便于Master暴露的组件在模块中使用，而切换Master后不改用各个模块中的代码，所以用`@choerodon/boot`对组件进行转发。
+由于历史原因，你可以使用`import ...  from '@choerodon/boot'`形式的语句来引用`@choerodon/master`中的内容，这是因为`@choerodon/boot`配置了`alias`
 
-主要是对master中的exportPath指向的文件进行解析，如果是指向一个相对路径的，使用exportPath和相对路径做一定处理（截尾+拼接），生成到`tmp/transfer.index.js`目录中，最后由@choerodon/boot暴露出去。
+[^注]: 新代码请使用`import ... from @choerodon/master`，因为`alias`之后可能会去掉。
+
