@@ -7,6 +7,8 @@ import WebpackBar from 'webpackbar';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import PreloadWebpackPlugin from 'preload-webpack-plugin';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
@@ -25,17 +27,7 @@ const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 const baseColor = '#3f51b5';
-function changeSelector(selector, util) {
-  // ui-pro替换这个样式后选择框样式有问题
-  switch (selector) {
-    case '.c7n-pro-calendar-today .c7n-pro-calendar-cell-inner':
-      return `${selector}.dropBy-@choerodon/boot`;
-    case '.c7n-calendar-today .c7n-calendar-date':
-      return `${selector}.dropBy-@choerodon/boot`;
-    default:
-      return selector;
-  }
-}
+
 function getAssetLoader(env, mimetype, limit = 10000) {
   return {
     loader: 'url-loader',
@@ -216,27 +208,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       isEnvDevelopment && new DotEnvRuntimePlugin({
         entry: paths.dotenv,
       }),
-      new ThemeColorReplacer({
-        changeSelector,
-        fileName: cssColorFileName,
-        matchColors: [
-          colorPalette(baseColor, 1),
-          colorPalette(baseColor, 2),
-          colorPalette(baseColor, 3),
-          colorPalette(baseColor, 4),
-          colorPalette(baseColor, 5),
-          baseColor,
-          colorPalette(baseColor, 7),
-          colorPalette(baseColor, 8),
-          colorPalette(baseColor, 9),
-          colorPalette(baseColor, 10),
-          '#303f9f', // 左上角颜色
-          '140, 158, 255, 0.12', // menu-item背景
-          '140, 158, 255, 0.16', // 左侧菜单menu-item背景
-        ],
-        injectCss: true,
-        isJsUgly: env !== 'development',
-      }),
       new FilterWarningsPlugin({
         exclude: /.*@choerodon.*/,
       }),
@@ -249,6 +220,21 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       new webpack.DefinePlugin(defines),
       new webpack.ProvidePlugin({
         process: 'process/browser',
+      }),
+      new HtmlWebpackPlugin({
+        title: process.env.TITLE_NAME || titlename,
+        template: paths.appHtml,
+        inject: true,
+        favicon: paths.appFavicon,
+        env: isEnvProduction ? envStr : undefined,
+        minify: {
+          html5: true,
+          collapseWhitespace: true,
+          removeComments: true,
+          removeTagWhitespace: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+        },
       }),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
