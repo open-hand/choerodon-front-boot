@@ -7,8 +7,6 @@ import WebpackBar from 'webpackbar';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import PreloadWebpackPlugin from 'preload-webpack-plugin';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
@@ -86,7 +84,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   }, {});
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
-    devtool: isEnvDevelopment ? 'eval-cheap-module-source-map' : undefined,
+    devtool: isEnvDevelopment ? 'eval-cheap-module-source-map' : 'hidden-source-map',
     entry: {
       [entryName]: entry,
     },
@@ -95,9 +93,10 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       filename: jsFileName,
       chunkFilename: jsChunkFileName,
       publicPath: isEnvDevelopment ? '/' : root,
+      clean: true, // 打包之前清除之前打包的东西
     },
     cache: {
-      type: 'filesystem',
+      type: 'filesystem', // 开启系统缓存增加第二次打包速度
     },
     optimization: {
       splitChunks: {
@@ -144,7 +143,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       modules: ['node_modules', join(__dirname, '../../node_modules'), join(__dirname, '../plugin')],
     },
     module: {
-      noParse: [/moment.js/],
+      noParse: [/moment.js|lodash/],
       rules: [
         {
           test: /\.(js|jsx|ts|tsx)$/,
@@ -250,21 +249,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       new webpack.DefinePlugin(defines),
       new webpack.ProvidePlugin({
         process: 'process/browser',
-      }),
-      new HtmlWebpackPlugin({
-        title: process.env.TITLE_NAME || titlename,
-        template: paths.appHtml,
-        inject: true,
-        favicon: paths.appFavicon,
-        env: isEnvProduction ? envStr : undefined,
-        minify: {
-          html5: true,
-          collapseWhitespace: true,
-          removeComments: true,
-          removeTagWhitespace: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-        },
       }),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
