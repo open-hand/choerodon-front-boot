@@ -5,15 +5,13 @@ import FilterWarningsPlugin from 'webpack-filter-warnings-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import WebpackBar from 'webpackbar';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
-import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import PreloadWebpackPlugin from 'preload-webpack-plugin';
 
+import SvgToMiniDataURI from 'mini-svg-data-uri';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getDefaultTheme from './getDefaultTheme';
-import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
 
@@ -24,9 +22,7 @@ const paths = require('./paths');
 const jsFileName = 'dis/[name].[hash:8].js';
 const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
 const cssFileName = 'dis/[name].[contenthash:8].css';
-const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
-const baseColor = '#3f51b5';
 
 function getAssetLoader(env, mimetype, limit = 10000) {
   return {
@@ -85,10 +81,11 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       filename: jsFileName,
       chunkFilename: jsChunkFileName,
       publicPath: isEnvDevelopment ? '/' : root,
-      clean: true, // 打包之前清除之前打包的东西
+      clean: true, // 打包之前清除之前打包的东西,
+      assetModuleFilename: assetFileName,
     },
     cache: {
-      type: 'filesystem', // 开启系统缓存增加第二次打包速度
+      type: isEnvDevelopment ? 'memory' : 'filesystem', // 开启系统缓存增加第二次打包速度
     },
     optimization: {
       splitChunks: {
@@ -129,13 +126,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       // TODO: 引用都改完后，这个可以去掉了
       alias: {
         '@choerodon/boot': '@choerodon/master',
+        process: 'process/browser',
       },
     },
     resolveLoader: {
       modules: ['node_modules', join(__dirname, '../../node_modules'), join(__dirname, '../plugin')],
     },
     module: {
-      noParse: [/moment.js|lodash/],
+      noParse: [/moment.js/],
       rules: [
         {
           test: /\.(js|jsx|ts|tsx)$/,
@@ -174,28 +172,49 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         })),
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/font-woff'),
+          // use: getAssetLoader(env, 'application/font-woff'),
+          type: 'asset/resource',
         },
         {
           test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/font-woff'),
+          // use: getAssetLoader(env, 'application/font-woff'),
+          type: 'asset/resource',
         },
         {
           test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/octet-stream'),
+          // use: getAssetLoader(env, 'application/octet-stream'),
+          type: 'asset/resource',
         },
         {
           test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
+          // use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
+          type: 'asset/resource',
+
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'image/svg+xml'),
+          // use: getAssetLoader(env, 'image/svg+xml'),
+          type: 'asset',
           exclude: /\.sprite\.svg$/,
+          generator: {
+            // 默认是呈现为使用 Base64 算法编码的文件内容
+            dataUrl: (content) => SvgToMiniDataURI(content.toString()), // 自定义URL的转换规则，对于匹配到
+          },
+          parser: {
+            dataUrlCondition: {
+              maxSize: 100 * 1024, // 100kb 以下用inline形式转base64，否者直接source
+            },
+          },
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
-          use: getAssetLoader(env),
+          // use: getAssetLoader(env),
+          type: 'asset', // 这里不确定使用inline还是用source方式去转换所以需按下面得配置
+          parser: {
+            dataUrlCondition: {
+              maxSize: 10 * 1024, // 10kb 以下用inline形式转base64，否者直接resource
+            },
+          },
         },
         {
           test: /\.svg$/,
