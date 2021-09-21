@@ -24,17 +24,6 @@ const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
 const cssFileName = 'dis/[name].[contenthash:8].css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 
-function getAssetLoader(env, mimetype, limit = 10000) {
-  return {
-    loader: 'url-loader',
-    options: {
-      limit,
-      mimetype,
-      name: assetFileName,
-    },
-  };
-}
-
 export default function getWebpackCommonConfig(mode, env, envStr) {
   const {
     choerodonConfig: {
@@ -85,7 +74,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       assetModuleFilename: assetFileName,
     },
     cache: {
-      type: isEnvDevelopment ? 'memory' : 'filesystem', // 开启系统缓存增加第二次打包速度
+      type: 'filesystem', // 开启系统缓存增加第二次打包速度
     },
     optimization: {
       splitChunks: {
@@ -119,6 +108,8 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           },
         },
       },
+      usedExports: true, //只导出被使用的模块
+      minimize : true // 启动压缩
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
@@ -126,7 +117,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       // TODO: 引用都改完后，这个可以去掉了
       alias: {
         '@choerodon/boot': '@choerodon/master',
-        process: 'process/browser',
+        process: 'process/browser', // 因为webpack5不再自带node的一些包了，process就是其中一个，这里用到了。
       },
     },
     resolveLoader: {
@@ -164,6 +155,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           oneOf: [{
             test: config.test,
             resourceQuery: /modules/,
+            // 开发环境使用style-loader，否则会使得样式的热更新失效
             use: [isEnvDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader, ...styleLoadersConfigWithCssLoader[index].use],
           }, {
             test: config.test,
@@ -173,23 +165,22 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
           // use: getAssetLoader(env, 'application/font-woff'),
-          type: 'asset/resource',
+          type: 'asset/inline',
         },
         {
           test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
           // use: getAssetLoader(env, 'application/font-woff'),
-          type: 'asset/resource',
+          type: 'asset/inline',
         },
         {
           test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
           // use: getAssetLoader(env, 'application/octet-stream'),
-          type: 'asset/resource',
+          type: 'asset/inline',
         },
         {
           test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
           // use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
-          type: 'asset/resource',
-
+          type: 'asset/inline',
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
