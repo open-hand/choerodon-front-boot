@@ -5,6 +5,7 @@ export default function babel(mode, env) {
   const { choerodonConfig } = context;
   const isEnvDevelopment = env === 'development';
   return choerodonConfig.babelConfig({
+    cacheDirectory: true,
     presets: ['c7n'],
     plugins: [
       // ... other plugins
