@@ -1,6 +1,5 @@
 const evalSourceMapMiddleware = require('../dev-utils/evalSourceMapMiddleware');
 const paths = require('./paths');
-const ignoredFiles = require('../dev-utils/ignoredFiles');
 
 const host = process.env.HOST || 'localhost';
 module.exports = function (allowedHost) {
@@ -30,9 +29,9 @@ module.exports = function (allowedHost) {
     // https://github.com/facebook/create-react-app/issues/293
     // src/node_modules is not ignored to support absolute imports
     // https://github.com/facebook/create-react-app/issues/1065
-    watchOptions: {
-      ignored: ignoredFiles(paths.appSrc),
-    },
+    // watchOptions: {
+    //   ignored: ignoredFiles(paths.appSrc),
+    // },
     host,
     overlay: false,
     historyApiFallback: {

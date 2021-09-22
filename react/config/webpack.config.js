@@ -5,13 +5,15 @@ import FilterWarningsPlugin from 'webpack-filter-warnings-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import WebpackBar from 'webpackbar';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
+import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import PreloadWebpackPlugin from 'preload-webpack-plugin';
 
-import SvgToMiniDataURI from 'mini-svg-data-uri';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getDefaultTheme from './getDefaultTheme';
+import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
 
@@ -22,7 +24,30 @@ const paths = require('./paths');
 const jsFileName = 'dis/[name].[hash:8].js';
 const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
 const cssFileName = 'dis/[name].[contenthash:8].css';
+const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
+const baseColor = '#3f51b5';
+function changeSelector(selector, util) {
+  // ui-pro替换这个样式后选择框样式有问题
+  switch (selector) {
+    case '.c7n-pro-calendar-today .c7n-pro-calendar-cell-inner':
+      return `${selector}.dropBy-@choerodon/boot`;
+    case '.c7n-calendar-today .c7n-calendar-date':
+      return `${selector}.dropBy-@choerodon/boot`;
+    default:
+      return selector;
+  }
+}
+function getAssetLoader(env, mimetype, limit = 10000) {
+  return {
+    loader: 'url-loader',
+    options: {
+      limit,
+      mimetype,
+      name: assetFileName,
+    },
+  };
+}
 
 export default function getWebpackCommonConfig(mode, env, envStr) {
   const {
@@ -61,7 +86,8 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   }, {});
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
-    devtool: isEnvDevelopment ? 'eval-cheap-module-source-map' : 'hidden-source-map',
+    watch: isEnvDevelopment,
+    devtool: isEnvDevelopment ? 'source-map' : undefined,
     entry: {
       [entryName]: entry,
     },
@@ -70,11 +96,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       filename: jsFileName,
       chunkFilename: jsChunkFileName,
       publicPath: isEnvDevelopment ? '/' : root,
-      clean: true, // 打包之前清除之前打包的东西,
-      assetModuleFilename: assetFileName,
-    },
-    cache: {
-      type: 'filesystem', // 开启系统缓存增加第二次打包速度
     },
     optimization: {
       splitChunks: {
@@ -108,8 +129,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           },
         },
       },
-      usedExports: true, //只导出被使用的模块
-      minimize : true // 启动压缩
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
@@ -117,11 +136,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       // TODO: 引用都改完后，这个可以去掉了
       alias: {
         '@choerodon/boot': '@choerodon/master',
-        process: 'process/browser', // 因为webpack5不再自带node的一些包了，process就是其中一个，这里用到了。
       },
     },
     resolveLoader: {
       modules: ['node_modules', join(__dirname, '../../node_modules'), join(__dirname, '../plugin')],
+    },
+    node: {
+      fs: 'empty',
     },
     module: {
       noParse: [/moment.js/],
@@ -155,7 +176,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           oneOf: [{
             test: config.test,
             resourceQuery: /modules/,
-            // 开发环境使用style-loader，否则会使得样式的热更新失效
             use: [isEnvDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader, ...styleLoadersConfigWithCssLoader[index].use],
           }, {
             test: config.test,
@@ -164,48 +184,28 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         })),
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          // use: getAssetLoader(env, 'application/font-woff'),
-          type: 'asset/inline',
+          use: getAssetLoader(env, 'application/font-woff'),
         },
         {
           test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          // use: getAssetLoader(env, 'application/font-woff'),
-          type: 'asset/inline',
+          use: getAssetLoader(env, 'application/font-woff'),
         },
         {
           test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          // use: getAssetLoader(env, 'application/octet-stream'),
-          type: 'asset/inline',
+          use: getAssetLoader(env, 'application/octet-stream'),
         },
         {
           test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-          // use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
-          type: 'asset/inline',
+          use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          // use: getAssetLoader(env, 'image/svg+xml'),
-          type: 'asset',
+          use: getAssetLoader(env, 'image/svg+xml'),
           exclude: /\.sprite\.svg$/,
-          generator: {
-            // 默认是呈现为使用 Base64 算法编码的文件内容
-            dataUrl: (content) => SvgToMiniDataURI(content.toString()), // 自定义URL的转换规则，对于匹配到
-          },
-          parser: {
-            dataUrlCondition: {
-              maxSize: 100 * 1024, // 100kb 以下用inline形式转base64，否者直接source
-            },
-          },
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
-          // use: getAssetLoader(env),
-          type: 'asset', // 这里不确定使用inline还是用source方式去转换所以需按下面得配置
-          parser: {
-            dataUrlCondition: {
-              maxSize: 10 * 1024, // 10kb 以下用inline形式转base64，否者直接resource
-            },
-          },
+          use: getAssetLoader(env),
         },
         {
           test: /\.svg$/,
@@ -218,19 +218,37 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       isEnvDevelopment && new DotEnvRuntimePlugin({
         entry: paths.dotenv,
       }),
+      new ThemeColorReplacer({
+        changeSelector,
+        fileName: cssColorFileName,
+        matchColors: [
+          colorPalette(baseColor, 1),
+          colorPalette(baseColor, 2),
+          colorPalette(baseColor, 3),
+          colorPalette(baseColor, 4),
+          colorPalette(baseColor, 5),
+          baseColor,
+          colorPalette(baseColor, 7),
+          colorPalette(baseColor, 8),
+          colorPalette(baseColor, 9),
+          colorPalette(baseColor, 10),
+          '#303f9f', // 左上角颜色
+          '140, 158, 255, 0.12', // menu-item背景
+          '140, 158, 255, 0.16', // 左侧菜单menu-item背景
+        ],
+        injectCss: true,
+        isJsUgly: env !== 'development',
+      }),
       new FilterWarningsPlugin({
         exclude: /.*@choerodon.*/,
       }),
       new MiniCssExtractPlugin({
         filename: cssFileName,
-        chunkFilename: env === 'development' ? '[id].css' : '[id].[contenthash].css',
+        chunkFilename: env === 'development' ? '[id].css' : '[id].[hash].css',
         ignoreOrder: true, // 不加控制台一堆warn
       }),
       new WebpackBar(),
       new webpack.DefinePlugin(defines),
-      new webpack.ProvidePlugin({
-        process: 'process/browser',
-      }),
       new HtmlWebpackPlugin({
         title: process.env.TITLE_NAME || titlename,
         template: paths.appHtml,
