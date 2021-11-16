@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import context from '../utils/context';
 import handleCollectRoute from '../utils/handleCollectRoute';
+import handleCollectModules from '../utils/handleCollectModules';
 import getEnv from '../utils/getEnv';
 import configFactory from '../config/webpack.config';
 
@@ -11,7 +12,7 @@ const paths = require('../config/paths');
 const { choosePort, createCompiler, prepareUrls } = require('../dev-utils/WebpackDevServerUtils');
 const createDevServerConfig = require('../config/webpackDevServer.config');
 
-export default function start(program) {
+export default function start (program) {
   // 初始化全局参数context
   const { initContext } = context;
   initContext(program, true);
@@ -23,6 +24,7 @@ export default function start(program) {
   } = context;
   // 收集路由，单模块启动也得配置路径
   handleCollectRoute(entryName);
+  handleCollectModules(entryName);
 
   const useYarn = fs.existsSync(paths.yarnLockFile);
 
@@ -39,7 +41,7 @@ export default function start(program) {
   choosePort(HOST, DEFAULT_PORT)
     .then((port) => {
       if (port == null) {
-      // We have not found a port.
+        // We have not found a port.
         return;
       }
       const config = configFactory('start', 'development', getEnv());

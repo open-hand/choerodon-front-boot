@@ -27,7 +27,7 @@ const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 const baseColor = '#3f51b5';
-function changeSelector(selector, util) {
+function changeSelector (selector, util) {
   // ui-pro替换这个样式后选择框样式有问题
   switch (selector) {
     case '.c7n-pro-calendar-today .c7n-pro-calendar-cell-inner':
@@ -38,7 +38,7 @@ function changeSelector(selector, util) {
       return selector;
   }
 }
-function getAssetLoader(env, mimetype, limit = 10000) {
+function getAssetLoader (env, mimetype, limit = 10000) {
   return {
     loader: 'url-loader',
     options: {
@@ -49,7 +49,7 @@ function getAssetLoader(env, mimetype, limit = 10000) {
   };
 }
 
-export default function getWebpackCommonConfig(mode, env, envStr) {
+export default function getWebpackCommonConfig (mode, env, envStr) {
   const {
     choerodonConfig: {
       output, root,
@@ -154,23 +154,24 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           options: babelOptions,
         },
         {
+          test: /moduleInjects\.(js|jsx|ts|tsx)$/,
+          loader: 'string-replace-loader',
+          options: {
+            search: '__INSTALLS__',
+            replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
+          },
+        },
+        {
           test: /routes\.(js|jsx|ts|tsx)$/,
-          use: [{
-            loader: 'string-replace-loader',
-            options: {
-              multiple: [{
-                search: '__ROUTES__',
-                replace: `(()=>{
-                  ${ROUTES.map((route) => `const ${route.key.replace('/', '')} = React.lazy(()=>import("${route.path}"));`).join('\n')}
-                  return [${ROUTES.map((route) => `["${route.key}",${route.key.replace('/', '')} ]`).join(',\n')}]
-                })()
-                `,
-              }, {
-                search: '__INSTALLS__',
-                replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
-              }],
-            },
-          }],
+          loader: 'string-replace-loader',
+          options: {
+            search: '__ROUTES__',
+            replace: `(()=>{
+              ${ROUTES.map((route) => `const ${route.key.replace('/', '')} = React.lazy(()=>import("${route.path}"));`).join('\n')}
+              return [${ROUTES.map((route) => `["${route.key}",${route.key.replace('/', '')} ]`).join(',\n')}]
+            })()
+            `,
+          },
         },
         ...styleLoadersConfig.map((config, index) => ({
           oneOf: [{

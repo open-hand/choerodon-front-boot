@@ -6,6 +6,7 @@ import rimraf from 'rimraf';
 import context from '../utils/context';
 import warning from '../utils/warning';
 import handleCollectRoute from '../utils/handleCollectRoute';
+import handleCollectModules from '../utils/handleCollectModules';
 import getEnv from '../utils/getEnv';
 import configFactory from '../config/webpack.config';
 
@@ -53,6 +54,7 @@ export default function build(program) {
   mkdirp.sync(distPath);
   // 收集路由，单模块启动也得配置路径
   handleCollectRoute(entryName);
+  handleCollectModules(entryName);
 
   const webpackConfig = configFactory('build', env, getEnv());
 
