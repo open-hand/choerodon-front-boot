@@ -162,7 +162,7 @@ export default function getWebpackCommonConfig (mode, env, envStr) {
           },
         },
         {
-          test: /routes\.(js|jsx|ts|tsx)$/,
+          test: /routesCollections\.(js|jsx|ts|tsx)$/,
           loader: 'string-replace-loader',
           options: {
             search: '__ROUTES__',
