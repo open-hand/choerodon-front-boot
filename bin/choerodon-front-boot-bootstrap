@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const bootstrap = require('../lib/scripts/bootstrap').default;
+
+program
+    .option('-c, --config <path>', 'set config path. defaults to ./choerodon.config.js')
+    .parse(process.argv);
+
+bootstrap(program);

@@ -97,7 +97,6 @@
     "@typescript-eslint/parser": "^4.0.1",
     "babel-eslint": "^10.1.0",
     "babel-preset-c7n": "^0.0.1",
-    "choerodon-ui": "0.8.x",
     "eslint": "^7.6.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-c7n-app": "^0.0.1",

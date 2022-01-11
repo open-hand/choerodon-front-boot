@@ -9,6 +9,7 @@ program
   .command('start [options]', 'to start a server')
   .command('dist [options]', 'to build micro server or a single frontend bundle')
   .command('compile [option]', 'to compile dir')
+  .command('bootstrap [option]', 'to bootstrap repo')
   .parse(process.argv);
 
 process.on('SIGINT', function() {
