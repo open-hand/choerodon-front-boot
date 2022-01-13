@@ -10,7 +10,7 @@ export default function bootstrap() {
   // 操作系统
   const platform = os.platform();
   // 是否win系统
-  const isWin = platform.includes('win');
+  const isWin = platform.startsWith('win');
   // package.lock路径
   const lockFilePath = path.join(cwd, 'package-lock.json');
   // 是否有lock文件
@@ -27,6 +27,7 @@ export default function bootstrap() {
     if (!isWin) {
       script += ' && chmod -R u+x node_modules';
     }
+    console.log(script);
     child_process = spawn(script,
       {
         stdio: 'inherit',
@@ -53,6 +54,7 @@ export default function bootstrap() {
     if (!isWin) {
       script += ' && chmod -R u+x node_modules';
     }
+    console.log(script)
     child_process = spawn(script,
       {
         stdio: 'inherit',
