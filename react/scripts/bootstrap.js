@@ -38,7 +38,7 @@ export default function bootstrap() {
     const lockFileData = fs.readFileSync(lockFilePath);
     const parseLockData = JSON.parse(lockFileData.toString())
     const lockDependencies = parseLockData?.dependencies;
-    const choerodonKeys = Object.keys(lockDependencies).filter(key => key.includes('@choerodon'));
+    const choerodonKeys = Object.keys(lockDependencies).filter(key => key.includes('choerodon'));
     if (choerodonKeys && choerodonKeys.length > 0) {
       console.log('监测到有choerodon包lock依赖');
       choerodonKeys.forEach(key => {
