@@ -1,8 +1,19 @@
 import path from 'path';
 import fs from 'fs';
 import spawn from 'cross-spawn';
+import moment from 'moment';
+import context from '../utils/context';
 
 const cwd = process.cwd();
+
+function setRandomVersion() {
+  const packagePath = path.join(cwd, 'package.json');
+  const packageData = fs.readFileSync(packagePath);
+  const parsePackageData = JSON.parse(packageData.toString());
+  const newVersion = `${parsePackageData.version}-${moment().valueOf()}`;
+  parsePackageData.version = newVersion;
+  fs.writeFileSync(packagePath, JSON.stringify(parsePackageData, null, '\t'));
+}
 
 /**
  * 使用babel进行转义
@@ -10,7 +21,12 @@ const cwd = process.cwd();
  * 如果没有，使用boot里的配置
  * https://github.com/babel/babel/blob/master/packages/babel-cli/src/babel/options.js
  */
-export default function compile() {
+
+export default function compile(program) {
+  const isTimeRandom = program.timeRandom;
+  if (isTimeRandom) {
+    setRandomVersion();
+  }
   const userBabelConfigFile = path.join(cwd, 'babel.config.js');
   const configFile = fs.existsSync(userBabelConfigFile) ? userBabelConfigFile : path.join(__dirname, '../../babel.config.js');
   // eslint-disable-next-line camelcase

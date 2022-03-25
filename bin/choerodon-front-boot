@@ -8,8 +8,8 @@ program
   .usage('[command] [options]')
   .command('start [options]', 'to start a server')
   .command('dist [options]', 'to build micro server or a single frontend bundle')
-  .command('compile [option]', 'to compile dir')
-  .command('bootstrap [option]', 'to bootstrap repo')
+  .command('compile [options]', 'to compile dir')
+  .command('bootstrap [options]', 'to bootstrap repo')
   .parse(process.argv);
 
 process.on('SIGINT', function() {
