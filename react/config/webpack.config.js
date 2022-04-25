@@ -251,7 +251,8 @@ export default function getWebpackCommonConfig (mode, env, envStr) {
       new WebpackBar(),
       new webpack.DefinePlugin(defines),
       new HtmlWebpackPlugin({
-        title: process.env.TITLE_NAME || titlename,
+        // title: process.env.TITLE_NAME || titlename,
+        title: process.env.TITLE_NAME || '',
         template: paths.appHtml,
         inject: true,
         favicon: paths.appFavicon,
