@@ -17,6 +17,8 @@ import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
@@ -273,6 +275,7 @@ export default function getWebpackCommonConfig (mode, env, envStr) {
       isEnvDevelopment && new ReactRefreshWebpackPlugin({
         overlay: false,
       }),
+      new BundleAnalyzerPlugin(),
     ].filter(Boolean),
   }, webpack);
 }
