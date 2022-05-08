@@ -109,6 +109,11 @@ export default function getWebpackCommonConfig (mode, env, envStr) {
             priority: 10,
             chunks: 'initial', // 只打包初始时依赖的第三方
           },
+          ckeditor: {
+            name: 'chunk-ckeditor',
+            priority: 20,
+            test: /[\\/]node_modules[\\/]@choerodon\/ckeditor[\\/]/,
+          },
           choerodonUI: {
             name: 'chunk-ui', // 单独将 UI 拆包
             priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
