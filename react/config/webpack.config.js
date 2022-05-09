@@ -17,8 +17,6 @@ import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
 
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
@@ -102,17 +100,24 @@ export default function getWebpackCommonConfig (mode, env, envStr) {
     optimization: {
       splitChunks: {
         chunks: 'all',
+        maxSize: 2048,
         cacheGroups: {
           libs: {
             name: 'chunk-libs',
             test: /[\\/]node_modules[\\/]/,
             priority: 10,
+            minChunks: 1,
             chunks: 'initial', // 只打包初始时依赖的第三方
           },
           ckeditor: {
             name: 'chunk-ckeditor',
             priority: 20,
             test: /[\\/]node_modules[\\/]@choerodon\/ckeditor[\\/]/,
+          },
+          prettier: {
+            name: 'chunk-prettier',
+            priority: 20,
+            test: /[\\/]node_modules[\\/]prettier[\\/]/,
           },
           choerodonUI: {
             name: 'chunk-ui', // 单独将 UI 拆包
@@ -280,7 +285,6 @@ export default function getWebpackCommonConfig (mode, env, envStr) {
       isEnvDevelopment && new ReactRefreshWebpackPlugin({
         overlay: false,
       }),
-      new BundleAnalyzerPlugin(),
     ].filter(Boolean),
   }, webpack);
 }
