@@ -7,6 +7,7 @@ program
   .option('-c, --config <path>', 'set config path. defaults to ./choerodon.config.js')
   .option('-e, --env <path>', 'NODE_ENV in build')
   .option('--esbuild', 'use esbuild speed up bundle')// 速度增加40%左右，但是打包出文件会稍微增大5%左右，看取舍了
+  .option('--analyze', 'use analyze')
   .parse(process.argv);
 
 build(program);

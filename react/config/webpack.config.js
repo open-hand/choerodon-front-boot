@@ -27,7 +27,7 @@ const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 const baseColor = '#3f51b5';
-function changeSelector (selector, util) {
+function changeSelector(selector, util) {
   // ui-pro替换这个样式后选择框样式有问题
   switch (selector) {
     case '.c7n-pro-calendar-today .c7n-pro-calendar-cell-inner':
@@ -38,7 +38,7 @@ function changeSelector (selector, util) {
       return selector;
   }
 }
-function getAssetLoader (env, mimetype, limit = 10000) {
+function getAssetLoader(env, mimetype, limit = 10000) {
   return {
     loader: 'url-loader',
     options: {
@@ -49,7 +49,7 @@ function getAssetLoader (env, mimetype, limit = 10000) {
   };
 }
 
-export default function getWebpackCommonConfig (mode, env, envStr) {
+export default function getWebpackCommonConfig(mode, env, envStr) {
   const {
     choerodonConfig: {
       output, root,
@@ -100,12 +100,29 @@ export default function getWebpackCommonConfig (mode, env, envStr) {
     optimization: {
       splitChunks: {
         chunks: 'all',
+        name: true,
+        minChunks: 1,
+        maxAsyncRequests: 10, // 按需加载最大并行请求数量(default=5)
+        maxInitialRequests: 5, // 一个入口的最大并行请求数量(default=3)
         cacheGroups: {
           libs: {
             name: 'chunk-libs',
             test: /[\\/]node_modules[\\/]/,
             priority: 10,
+            minChunks: 1,
             chunks: 'initial', // 只打包初始时依赖的第三方
+            maxSize: 2048,
+            reuseExistingChunk: true,
+          },
+          ckeditor: {
+            name: 'chunk-ckeditor',
+            priority: 20,
+            test: /[\\/]node_modules[\\/]@choerodon\/ckeditor[\\/]/,
+          },
+          prettier: {
+            name: 'chunk-prettier',
+            priority: 20,
+            test: /[\\/]node_modules[\\/]prettier[\\/]/,
           },
           choerodonUI: {
             name: 'chunk-ui', // 单独将 UI 拆包
