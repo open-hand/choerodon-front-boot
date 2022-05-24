@@ -9,6 +9,7 @@ import ThemeColorReplacer from 'webpack-theme-color-replacer';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import PreloadWebpackPlugin from 'preload-webpack-plugin';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
@@ -281,6 +282,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           removeTagWhitespace: true,
           removeEmptyAttributes: true,
           removeStyleLinkTypeAttributes: true,
+        },
+      }),
+      isEnvProduction && new UglifyJsPlugin({
+        uglifyOptions: {
+          compress: {
+            drop_console: true,
+            drop_debugger: true,
+          },
         },
       }),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
