@@ -10,8 +10,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import PreloadWebpackPlugin from 'preload-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
-import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
@@ -101,6 +100,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       publicPath: isEnvDevelopment ? '/' : root,
     },
     optimization: {
+      usedExports: true,
       splitChunks: {
         chunks: 'all',
         name: true,
@@ -149,6 +149,9 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           },
         },
       },
+      minimizer: [
+        new CssMinimizerPlugin(),
+      ],
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
@@ -171,7 +174,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
           use: [
-            'cache-loader',
             'babel-loader',
           ],
         },
@@ -296,7 +298,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           },
         },
       }),
-      isEnvProduction && new OptimizeCssAssetsPlugin(),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
