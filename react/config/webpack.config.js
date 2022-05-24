@@ -173,9 +173,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
-          use: [
-            'babel-loader',
-          ],
+          loader: 'babel-loader',
           options: babelOptions,
         },
         {
