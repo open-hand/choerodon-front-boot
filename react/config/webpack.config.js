@@ -171,9 +171,9 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
           use: [
-            'cache-loader',
             'babel-loader',
           ],
+          options: babelOptions,
         },
         {
           test: /moduleInjects\.(js|jsx|ts|tsx)$/,
@@ -288,15 +288,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           removeStyleLinkTypeAttributes: true,
         },
       }),
-      isEnvProduction && new UglifyJsPlugin({
-        uglifyOptions: {
-          compress: {
-            drop_console: true,
-            drop_debugger: true,
-          },
-        },
-      }),
-      isEnvProduction && new OptimizeCssAssetsPlugin(),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
