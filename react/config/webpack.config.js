@@ -99,6 +99,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       publicPath: isEnvDevelopment ? '/' : root,
     },
     optimization: {
+      usedExports: true,
       splitChunks: {
         chunks: 'all',
         name: true,
@@ -168,8 +169,10 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         {
           test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
-          loader: 'babel-loader',
-          options: babelOptions,
+          use: [
+            'cache-loader',
+            'babel-loader',
+          ],
         },
         {
           test: /moduleInjects\.(js|jsx|ts|tsx)$/,
