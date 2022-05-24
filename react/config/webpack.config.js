@@ -10,6 +10,8 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import PreloadWebpackPlugin from 'preload-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+
 
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
@@ -99,7 +101,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       publicPath: isEnvDevelopment ? '/' : root,
     },
     optimization: {
-      usedExports: true,
       splitChunks: {
         chunks: 'all',
         name: true,
@@ -295,6 +296,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           },
         },
       }),
+      isEnvProduction && new OptimizeCssAssetsPlugin(),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
