@@ -150,7 +150,11 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         },
       },
       minimizer: [
-        new CssMinimizerPlugin(),
+        isEnvProduction && new UglifyJsPlugin({
+          exclude: /node_modules/,
+          parallel: true,
+        }),
+        isEnvProduction && new CssMinimizerPlugin(),
       ],
     },
     resolve: {
@@ -287,14 +291,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           removeTagWhitespace: true,
           removeEmptyAttributes: true,
           removeStyleLinkTypeAttributes: true,
-        },
-      }),
-      isEnvProduction && new UglifyJsPlugin({
-        uglifyOptions: {
-          compress: {
-            drop_console: true,
-            drop_debugger: true,
-          },
         },
       }),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
