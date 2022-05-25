@@ -103,7 +103,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       usedExports: true,
       splitChunks: {
         chunks: 'all',
-        name: true,
+        name: false,
         minChunks: 1,
         maxAsyncRequests: 10, // 按需加载最大并行请求数量(default=5)
         maxInitialRequests: 5, // 一个入口的最大并行请求数量(default=3)
@@ -150,11 +150,11 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         },
       },
       minimizer: [
-        isEnvProduction && new UglifyJsPlugin({
+        new UglifyJsPlugin({
           exclude: /node_modules/,
           parallel: true,
         }),
-        isEnvProduction && new CssMinimizerPlugin(),
+        new CssMinimizerPlugin(),
       ],
     },
     resolve: {
@@ -164,12 +164,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       alias: {
         '@choerodon/boot': '@choerodon/master',
       },
+      fallback: {
+        fs: false,
+        path: false,
+      },
     },
     resolveLoader: {
       modules: ['node_modules', join(__dirname, '../../node_modules'), join(__dirname, '../plugin')],
-    },
-    node: {
-      fs: 'empty',
     },
     module: {
       noParse: [/moment.js/],
@@ -243,6 +244,9 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       ],
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+      }),
       isEnvDevelopment && new DotEnvRuntimePlugin({
         entry: paths.dotenv,
       }),
