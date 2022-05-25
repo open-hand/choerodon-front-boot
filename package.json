@@ -44,6 +44,7 @@
     "commander": "^2.9.0",
     "cross-spawn": "^6.0.5",
     "css-loader": "^3.4.2",
+    "css-minimizer-webpack-plugin": "^4.0.0",
     "detect-port-alt": "1.1.6",
     "dotenv-runtime-plugin": "^0.0.1",
     "escape-string-regexp": "2.0.0",
