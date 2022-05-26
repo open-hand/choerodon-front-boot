@@ -23,11 +23,11 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
 
-const jsFileName = 'dis/[name].[hash:8].js';
+const jsFileName = 'dis/[name].[chunkhash:8].js';
 const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
 const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
-const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
+const assetFileName = 'dis/assets/[name].[chunkhash:8].[ext]';
 const baseColor = '#3f51b5';
 function changeSelector(selector, util) {
   // ui-pro替换这个样式后选择框样式有问题
@@ -88,7 +88,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   }, {});
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
-    watch: isEnvDevelopment,
     devtool: isEnvDevelopment ? 'source-map' : undefined,
     entry: {
       [entryName]: entry,
@@ -100,7 +99,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       publicPath: isEnvDevelopment ? '/' : root,
     },
     optimization: {
-      usedExports: true,
       splitChunks: {
         chunks: 'all',
         name: false,
@@ -149,13 +147,15 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           },
         },
       },
-      minimizer: [
-        new UglifyJsPlugin({
-          exclude: /node_modules/,
-          parallel: true,
-        }),
-        new CssMinimizerPlugin(),
-      ],
+      ...isEnvProduction ? {
+        minimizer: [
+          new UglifyJsPlugin({
+            exclude: /node_modules/,
+            parallel: true,
+          }),
+          new CssMinimizerPlugin(),
+        ],
+      } : {},
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
@@ -276,7 +276,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       }),
       new MiniCssExtractPlugin({
         filename: cssFileName,
-        chunkFilename: env === 'development' ? '[id].css' : '[id].[hash].css',
+        chunkFilename: env === 'development' ? '[id].css' : '[id].[chunkhash].css',
         ignoreOrder: true, // 不加控制台一堆warn
       }),
       new WebpackBar(),
