@@ -23,11 +23,11 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
 
-const jsFileName = 'dis/[name].[chunkhash:8].js';
-const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
+const jsFileName = 'dis/[name].[contenthash:8].js';
+const jsChunkFileName = 'dis/chunks/[name].[contenthash:5].chunk.js';
 const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
-const assetFileName = 'dis/assets/[name].[chunkhash:8].[ext]';
+const assetFileName = 'dis/assets/[name].[contenthash:8].[ext]';
 const baseColor = '#3f51b5';
 function changeSelector(selector, util) {
   // ui-pro替换这个样式后选择框样式有问题
@@ -69,11 +69,15 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   const INSTALLS = installs.map((key) => escapeWinPath(join(process.cwd(), key)));
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
-    modifyVars: { ...getDefaultTheme(env), ...theme },
+    lessOptions: {
+      modifyVars: { ...getDefaultTheme(env), ...theme },
+    }
   });
   const styleLoadersConfigWithCssLoader = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
-    modifyVars: { ...getDefaultTheme(env), ...theme },
+    lessOptions: {
+      modifyVars: { ...getDefaultTheme(env), ...theme },
+    }
   }, true);
   const mergedEnterPoints = {
     NODE_ENV: env,
@@ -105,6 +109,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         minChunks: 1,
         maxAsyncRequests: 10, // 按需加载最大并行请求数量(default=5)
         maxInitialRequests: 5, // 一个入口的最大并行请求数量(default=3)
+        minSize: 0,
         cacheGroups: {
           libs: {
             name: 'chunk-libs',
@@ -112,38 +117,44 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
             priority: 10,
             minChunks: 1,
             chunks: 'initial', // 只打包初始时依赖的第三方
-            maxSize: 2048,
             reuseExistingChunk: true,
+            maxSize: 2048,
           },
           ckeditor: {
             name: 'chunk-ckeditor',
             priority: 20,
             test: /[\\/]node_modules[\\/]@choerodon\/ckeditor[\\/]/,
+            maxSize: 2048,
           },
           prettier: {
             name: 'chunk-prettier',
             priority: 20,
             test: /[\\/]node_modules[\\/]prettier[\\/]/,
+            maxSize: 2048,
           },
           choerodonUI: {
             name: 'chunk-ui', // 单独将 UI 拆包
             priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
             test: /[\\/]node_modules[\\/]choerodon-ui[\\/]/,
+            maxSize: 2048,
           },
           pdf: {
             name: 'chunk-pdf',
             priority: 20,
             test: /[\\/]node_modules[\\/]pdfjs-dist[\\/]/,
+            maxSize: 2048,
           },
           quill: {
             name: 'chunk-quill',
             priority: 20,
             test: /[\\/]node_modules[\\/]quill[\\/]/,
+            maxSize: 2048,
           },
           echarts: {
             name: 'chunk-echarts',
             priority: 20,
             test: /[\\/]node_modules[\\/]echarts[\\/]/,
+            maxSize: 2048,
           },
         },
       },
@@ -167,6 +178,8 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       fallback: {
         fs: false,
         path: false,
+        url: require.resolve('url'),
+        buffer: require.resolve('buffer'),
       },
     },
     resolveLoader: {
@@ -276,7 +289,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       }),
       new MiniCssExtractPlugin({
         filename: cssFileName,
-        chunkFilename: env === 'development' ? '[id].css' : '[id].[chunkhash].css',
+        chunkFilename: env === 'development' ? '[id].css' : '[id].[contenthash].css',
         ignoreOrder: true, // 不加控制台一堆warn
       }),
       new WebpackBar(),
