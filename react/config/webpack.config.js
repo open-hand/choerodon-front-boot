@@ -27,7 +27,7 @@ const jsFileName = 'dis/[name].[contenthash:8].js';
 const jsChunkFileName = 'dis/chunks/[name].[contenthash:5].chunk.js';
 const cssFileName = 'dis/[name].[contenthash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
-const assetFileName = 'dis/assets/[name].[contenthash:8].[ext]';
+const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 const baseColor = '#3f51b5';
 function changeSelector(selector, util) {
   // ui-pro替换这个样式后选择框样式有问题
@@ -124,37 +124,31 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
             name: 'chunk-ckeditor',
             priority: 20,
             test: /[\\/]node_modules[\\/]@choerodon\/ckeditor[\\/]/,
-            maxSize: 2048,
           },
           prettier: {
             name: 'chunk-prettier',
             priority: 20,
             test: /[\\/]node_modules[\\/]prettier[\\/]/,
-            maxSize: 2048,
           },
           choerodonUI: {
             name: 'chunk-ui', // 单独将 UI 拆包
             priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
             test: /[\\/]node_modules[\\/]choerodon-ui[\\/]/,
-            maxSize: 2048,
           },
           pdf: {
             name: 'chunk-pdf',
             priority: 20,
             test: /[\\/]node_modules[\\/]pdfjs-dist[\\/]/,
-            maxSize: 2048,
           },
           quill: {
             name: 'chunk-quill',
             priority: 20,
             test: /[\\/]node_modules[\\/]quill[\\/]/,
-            maxSize: 2048,
           },
           echarts: {
             name: 'chunk-echarts',
             priority: 20,
             test: /[\\/]node_modules[\\/]echarts[\\/]/,
-            maxSize: 2048,
           },
         },
       },
@@ -226,19 +220,23 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         })),
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/font-woff'),
+          type: 'asset/resource',
+          // use: getAssetLoader(env, 'application/font-woff'),
         },
         {
           test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/font-woff'),
+          type: 'asset/resource',
+          // use: getAssetLoader(env, 'application/font-woff'),
         },
         {
           test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/octet-stream'),
+          type: 'asset/resource',
+          // use: getAssetLoader(env, 'application/octet-stream'),
         },
         {
           test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
+          type: 'asset/resource',
+          // use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
