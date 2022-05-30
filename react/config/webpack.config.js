@@ -118,7 +118,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
             minChunks: 1,
             chunks: 'initial', // 只打包初始时依赖的第三方
             reuseExistingChunk: true,
-            maxSize: 2048,
           },
           ckeditor: {
             name: 'chunk-ckeditor',
