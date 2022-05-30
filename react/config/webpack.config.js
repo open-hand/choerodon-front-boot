@@ -71,13 +71,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     sourceMap: mode === 'start',
     lessOptions: {
       modifyVars: { ...getDefaultTheme(env), ...theme },
-    }
+    },
   });
   const styleLoadersConfigWithCssLoader = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
     lessOptions: {
       modifyVars: { ...getDefaultTheme(env), ...theme },
-    }
+    },
   }, true);
   const mergedEnterPoints = {
     NODE_ENV: env,
@@ -251,6 +251,12 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           test: /\.svg$/,
           loader: 'svg-sprite-loader',
           include: /\.sprite\.svg$/,
+        },
+        {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: false,
+          },
         },
       ],
     },
