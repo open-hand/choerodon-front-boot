@@ -19,10 +19,6 @@ import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
 
-const path = require('path');
-
-const CopyPlugin = require('copy-webpack-plugin');
-
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
@@ -249,13 +245,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     plugins: [
       isEnvDevelopment && new DotEnvRuntimePlugin({
         entry: paths.dotenv,
-      }),
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(__dirname, './loading.gif'), // 原始位置
-          },
-        ],
       }),
       new ThemeColorReplacer({
         changeSelector,
