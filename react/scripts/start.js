@@ -55,8 +55,8 @@ export default function start (program) {
         port,
       );
       const devSocket = {
-        warnings: (warnings) => devServer.sockWrite(devServer.sockets, 'warnings', warnings),
-        errors: (errors) => devServer.sockWrite(devServer.sockets, 'errors', errors),
+        warnings: (warnings) => devServer.sendMessage(devServer.sockets, 'warnings', warnings),
+        errors: (errors) => devServer.sendMessage(devServer.sockets, 'errors', errors),
       };
       // Create a webpack compiler that is configured with custom messages.
       const compiler = createCompiler({
@@ -73,14 +73,18 @@ export default function start (program) {
       const serverConfig = createDevServerConfig(
         urls.lanUrlForConfig,
       );
-      const devServer = new WebpackDevServer(compiler, serverConfig);
+      const devServer = new WebpackDevServer(serverConfig, compiler);
       // Launch WebpackDevServer.
-      devServer.listen(port, HOST, (err) => {
+      try {
+        (async () => {
+          await devServer.start();
+        })();
+      } catch (err) {
         if (err) {
           return console.log(err);
         }
         openBrowser(urls.localUrlForBrowser);
-      });
+      }
 
       ['SIGINT', 'SIGTERM'].forEach((sig) => {
         process.on(sig, () => {
