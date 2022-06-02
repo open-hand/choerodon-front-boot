@@ -28,14 +28,16 @@
         justify-content: center;
         align-items: center;
       }
-      .c7ncd-global-loading-img {
-        width: 100px;
-        height: 100px;
-      }
     </style>
     <div id="c7ncd-global-loading">
-      <img src="./loading.gif" alt="" class="c7ncd-global-loading-img" importance="high">
+      <img  alt="" class="c7ncd-global-loading-img" importance="high">
     </div>
+    <script>
+      const imgLoading = document.getElementsByClassName('c7ncd-global-loading-img')
+      imgLoading.style.width = '100px'
+      imgLoading.style.height = '100px'
+      imgLoading.src = './loading.gif'
+    </script>
     <div id='app'>
     </div>
   </body>
