@@ -17,6 +17,28 @@
     <script><%= htmlWebpackPlugin.options.env %></script>
   </head>
   <body>
+    <style>
+      #c7ncd-global-loading {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+    <div id="c7ncd-global-loading">
+      <img  alt="" class="c7ncd-global-loading-img" importance="high">
+    </div>
+    <script>
+      const imgLoading = document.getElementsByClassName('c7ncd-global-loading-img')[0]
+      imgLoading.style.width = '100px'
+      imgLoading.style.height = '100px'
+      imgLoading.src = './loading.gif'
+    </script>
     <div id='app'>
     </div>
   </body>

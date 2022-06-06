@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "1.3.0-test",
+  "version": "1.3.0",
   "description": "Choerodon Scaffold to run react application.",
   "homepage": "http://choerodon.io/",
   "main": "lib/index.js",
@@ -58,6 +58,7 @@
     "husky": "^1.1.1",
     "inquirer": "7.2.0",
     "is-root": "2.1.0",
+    "copy-webpack-plugin": "5.1.1",
     "less": "^3.11.1",
     "less-loader": "^11.0.0",
     "lint-staged": "^7.2.2",
