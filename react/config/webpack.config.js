@@ -25,9 +25,9 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
 
-const jsFileName = 'dis/[name].[hash:8].js';
-const jsChunkFileName = 'dis/chunks/[name].[chunkhash:5].chunk.js';
-const cssFileName = 'dis/[name].[contenthash:8].css';
+const jsFileName = 'dis/[name].[fullhash:8].js';
+const jsChunkFileName = 'dis/chunks/[name].[fullhash:5].chunk.js';
+const cssFileName = 'dis/[name].[hash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 const baseColor = '#3f51b5';
@@ -71,11 +71,15 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   const INSTALLS = installs.map((key) => escapeWinPath(join(process.cwd(), key)));
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
-    modifyVars: { ...getDefaultTheme(env), ...theme },
+    lessOptions: {
+      modifyVars: { ...getDefaultTheme(env), ...theme },
+    },
   });
   const styleLoadersConfigWithCssLoader = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
-    modifyVars: { ...getDefaultTheme(env), ...theme },
+    lessOptions: {
+      modifyVars: { ...getDefaultTheme(env), ...theme },
+    },
   }, true);
   const mergedEnterPoints = {
     NODE_ENV: env,
@@ -90,7 +94,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   }, {});
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
-    watch: isEnvDevelopment,
     devtool: isEnvDevelopment ? 'source-map' : undefined,
     entry: {
       [entryName]: entry,
@@ -102,13 +105,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       publicPath: isEnvDevelopment ? '/' : root,
     },
     optimization: {
-      usedExports: true,
       splitChunks: {
         chunks: 'all',
-        name: true,
+        name: false,
         minChunks: 1,
         maxAsyncRequests: 10, // 按需加载最大并行请求数量(default=5)
         maxInitialRequests: 5, // 一个入口的最大并行请求数量(default=3)
+        minSize: 0,
         cacheGroups: {
           libs: {
             name: 'chunk-libs',
@@ -116,7 +119,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
             priority: 10,
             minChunks: 1,
             chunks: 'initial', // 只打包初始时依赖的第三方
-            maxSize: 2048,
             reuseExistingChunk: true,
           },
           ckeditor: {
@@ -151,13 +153,15 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           },
         },
       },
-      minimizer: [
-        isEnvProduction && new UglifyJsPlugin({
-          exclude: /node_modules/,
-          parallel: true,
-        }),
-        isEnvProduction && new CssMinimizerPlugin(),
-      ],
+      ...isEnvProduction ? {
+        minimizer: [
+          new UglifyJsPlugin({
+            exclude: /node_modules/,
+            parallel: true,
+          }),
+          new CssMinimizerPlugin(),
+        ],
+      } : {},
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
@@ -166,12 +170,15 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       alias: {
         '@choerodon/boot': '@choerodon/master',
       },
+      fallback: {
+        fs: false,
+        path: false,
+        url: require.resolve('url'),
+        buffer: require.resolve('buffer'),
+      },
     },
     resolveLoader: {
       modules: ['node_modules', join(__dirname, '../../node_modules'), join(__dirname, '../plugin')],
-    },
-    node: {
-      fs: 'empty',
     },
     module: {
       noParse: [/moment.js/],
@@ -214,19 +221,23 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         })),
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/font-woff'),
+          type: 'asset/resource',
+          // use: getAssetLoader(env, 'application/font-woff'),
         },
         {
           test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/font-woff'),
+          type: 'asset/resource',
+          // use: getAssetLoader(env, 'application/font-woff'),
         },
         {
           test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/octet-stream'),
+          type: 'asset/resource',
+          // use: getAssetLoader(env, 'application/octet-stream'),
         },
         {
           test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
+          type: 'asset/resource',
+          // use: getAssetLoader(env, 'application/vnd.ms-fontobject'),
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
@@ -242,9 +253,18 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           loader: 'svg-sprite-loader',
           include: /\.sprite\.svg$/,
         },
+        {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: false,
+          },
+        },
       ],
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+      }),
       isEnvDevelopment && new DotEnvRuntimePlugin({
         entry: paths.dotenv,
       }),
@@ -279,7 +299,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       }),
       new MiniCssExtractPlugin({
         filename: cssFileName,
-        chunkFilename: env === 'development' ? '[id].css' : '[id].[hash].css',
+        chunkFilename: env === 'development' ? '[id].css' : '[id].[contenthash].css',
         ignoreOrder: true, // 不加控制台一堆warn
       }),
       new WebpackBar(),

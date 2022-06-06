@@ -40,7 +40,13 @@ const getStyleLoadersConfig = (postcssOptions, loaderOptions, useCssModules) => 
       },
       {
         loader: 'less-loader',
-        options: { ...loaderOptions, javascriptEnabled: true },
+        options: {
+          ...loaderOptions,
+          lessOptions: {
+            ...loaderOptions.lessOptions,
+            javascriptEnabled: true,
+          },
+        },
       },
     ],
   },

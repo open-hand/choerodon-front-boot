@@ -9,18 +9,20 @@ const defaultConfig = {
   entry: path.resolve(process.cwd(), './node_modules/@choerodon/master/lib/entry.js'),
   output: './dist',
   postcssConfig: {
-    plugins: [
-      autoprefixer({
-        browsers: [
-          'last 2 versions',
-          'Firefox ESR',
-          '> 1%',
-          'ie >= 8',
-          'iOS >= 8',
-          'Android >= 4',
-        ],
-      }),
-    ],
+    postcssOptions: {
+      plugins: [
+        autoprefixer({
+          browsers: [
+            'last 2 versions',
+            'Firefox ESR',
+            '> 1%',
+            'ie >= 8',
+            'iOS >= 8',
+            'Android >= 4',
+          ],
+        }),
+      ],
+    },
   },
   babelConfig(config, mode, env) {
     return config;

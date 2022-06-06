@@ -4,6 +4,7 @@
 # IDE
 .idea
 .project
+launch.json
 
 # npm / yarn
 node_modules
