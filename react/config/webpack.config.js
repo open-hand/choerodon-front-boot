@@ -241,12 +241,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          use: getAssetLoader(env, 'image/svg+xml'),
+          // use: getAssetLoader(env, 'image/svg+xml'),
+          type: 'asset/resource',
           exclude: /\.sprite\.svg$/,
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
-          use: getAssetLoader(env),
+          type: 'asset/resource',
+          // use: getAssetLoader(env),
         },
         {
           test: /\.svg$/,
