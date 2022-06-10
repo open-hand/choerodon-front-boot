@@ -9,3 +9,4 @@ program
   .parse(process.argv);
 
 compile(program);
+	
