@@ -1,45 +1,272 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
-    <title><%= htmlWebpackPlugin.options.title %></title>
-    <script>
-      window.updateFavicon = function(faviconUrl) {
-        var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-        link.type = 'image/x-icon';
-        link.rel = 'shortcut icon';
-        link.href = faviconUrl;
-        document.getElementsByTagName('head')[0].appendChild(link);
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+  <title>
+    <%= htmlWebpackPlugin.options.title %>
+  </title>
+  <script>
+    window.updateFavicon = function (faviconUrl) {
+      var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/x-icon';
+      link.rel = 'shortcut icon';
+      link.href = faviconUrl;
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+  <script><%= htmlWebpackPlugin.options.env %></script>
+</head>
+
+<body>
+  <style>
+    #c7ncd-global-loading {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .c7ncd-skeleton {
+      background: white;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .c7ncd-skeleton-rec {
+      border-radius: 4px;
+      background: rgba(14, 29, 128, 0.16);
+      height: 16px;
+      animation-name: light;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+
+    @keyframes light {
+      from {
+        opacity: 1;
       }
-    </script>
-    <script><%= htmlWebpackPlugin.options.env %></script>
-  </head>
-  <body>
-    <style>
-      #c7ncd-global-loading {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        z-index: 99999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+
+      to {
+        opacity: 0.2;
       }
-    </style>
-    <div id="c7ncd-global-loading">
-      <img  alt="" class="c7ncd-global-loading-img" importance="high">
+    }
+
+    .c7ncd-skeleton-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 24px;
+    }
+
+    .c7ncd-skeleton-content-wrap {
+      background: white;
+      width: 100%;
+      height: 100%;
+      padding: 20px 30px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .c7ncd-skeleton-content-wrap-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .c7ncd-skeleton-content-wrap-line-item {
+      overflow: hidden;
+    }
+  </style>
+  <div id="c7ncd-global-loading">
+    <div class="c7ncd-skeleton">
+      <div class="c7ncd-skeleton-header">
+        <div style="width: 20%;" class="c7ncd-skeleton-rec"></div>
+        <div style="width: 40%;" class="c7ncd-skeleton-rec"></div>
+      </div>
+      <div class="c7ncd-skeleton-content">
+        <div class="c7ncd-skeleton-content-wrap">
+          <div style="width: 100%;" class="c7ncd-skeleton-rec"></div>
+          <div class="c7ncd-skeleton-content-wrap-line">
+            <div style="width: 20%" class="c7ncd-skeleton-content-wrap-line-item">
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+            </div>
+            <div style="width: 5%" class="c7ncd-skeleton-content-wrap-line-item">
+              <div style="width: 0;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+
+              <div style="width: 0;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+            </div>
+            <div style="width: 20%" class="c7ncd-skeleton-content-wrap-line-item">
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+            </div>
+            <div style="width: 15%" class="c7ncd-skeleton-content-wrap-line-item">
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+            </div>
+            <div style="width: 20%" class="c7ncd-skeleton-content-wrap-line-item">
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+            </div>
+            <div style="width: 10%" class="c7ncd-skeleton-content-wrap-line-item">
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+            </div>
+            <div style="width: 10%" class="c7ncd-skeleton-content-wrap-line-item">
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <script>
-      const imgLoading = document.getElementsByClassName('c7ncd-global-loading-img')[0]
-      imgLoading.style.width = '100px'
-      imgLoading.style.height = '100px'
-      imgLoading.src = './loading.gif'
-    </script>
+  </div>
+    <!-- <img  alt="" class="c7ncd-global-loading-img" importance="high"> -->
     <div id='app'>
     </div>
-  </body>
+</body>
+
 </html>
