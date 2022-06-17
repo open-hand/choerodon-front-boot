@@ -34,235 +34,333 @@
       align-items: center;
     }
 
-    .c7ncd-skeleton {
-      background: white;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
+    .rec {
+            animation-name: light;
+            animation-duration: 1s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
 
-    .c7ncd-skeleton-rec {
-      border-radius: 4px;
-      background: rgba(14, 29, 128, 0.16);
-      height: 16px;
-      animation-name: light;
-      animation-duration: 1s;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-      animation-direction: alternate;
-    }
+        @keyframes light {
+            from {
+                opacity: 1;
+            }
 
-    @keyframes light {
-      from {
-        opacity: 1;
-      }
+            to {
+                opacity: 0.2;
+            }
+        }
 
-      to {
-        opacity: 0.2;
-      }
-    }
+        .startLoading {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
 
-    .c7ncd-skeleton-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-right: 24px;
-    }
+        .startLoading-header {
+            height: 56px;
+            box-shadow: 0px 0px 8px 0px #DFE8F1;
+            align-items: center;
+            display: flex;
+        }
 
-    .c7ncd-skeleton-content-wrap {
-      background: white;
-      width: 100%;
-      height: 100%;
-      padding: 20px 30px;
-      position: relative;
-      z-index: 1;
-    }
+        .startLoading-header-circle {
+            margin: 0 9px;
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            background: rgba(14, 29, 128, 0.06);
+        }
 
-    .c7ncd-skeleton-content-wrap-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+        .startLoading-header-menuText {
+            width: 160px;
+            height: 20px;
+            background: rgba(14, 29, 128, 0.06);
+            border-radius: 4px;
+            margin-left: 27px;
+        }
 
-    .c7ncd-skeleton-content-wrap-line-item {
-      overflow: hidden;
-    }
+        .startLoading-header-menuText-249 {
+            width: 249px;
+            height: 20px;
+            background: rgba(14, 29, 128, 0.06);
+            border-radius: 4px;
+            margin-left: 27px;
+        }
+
+        .startLoading-header-menuText-420 {
+            width: 420px;
+            height: 20px;
+            background: rgba(14, 29, 128, 0.06);
+            border-radius: 4px;
+            margin-left: 27px;
+        }
+
+        .startLoading-header-menuText-40 {
+            width: 40px;
+            height: 20px;
+            background: rgba(14, 29, 128, 0.06);
+            border-radius: 4px;
+            margin-left: 27px;
+        }
+
+        .startLoading-header-menuText-20 {
+            width: 40px;
+            height: 20px;
+            background: rgba(14, 29, 128, 0.06);
+            border-radius: 4px;
+            margin-left: 27px;
+        }
+
+        .startLoading-header-menuText-20p {
+            width: 20%;
+            height: 20px;
+            background: rgba(14, 29, 128, 0.06);
+            border-radius: 4px;
+            margin-left: 27px;
+        }
+
+        .startLoading-header-menuText-60p {
+            width: 40%;
+            height: 20px;
+            background: rgba(14, 29, 128, 0.06);
+            border-radius: 4px;
+            margin-left: 27px;
+        }
+
+        .startLoading-header-menuText-80p {
+            width: 80%;
+            height: 20px;
+            background: rgba(14, 29, 128, 0.06);
+            border-radius: 4px;
+            margin-left: 27px;
+        }
+
+        .margin-left-79 {
+            margin-left: 79px;
+        }
+
+        .margin-left-40 {
+            margin-left: 40px;
+        }
+
+        .margin-left-49 {
+            margin-left: 49px;
+        }
+
+        .margin-left-0 {
+            margin-left: 0px;
+        }
+
+        .margin-bottom-20 {
+            margin-bottom: 20px;
+        }
+
+        .startLoading-content {
+            flex: 1;
+            display: flex;
+        }
+
+        .startLoading-content-menu {
+            height: 100%;
+            display: flex;
+        }
+
+        .startLoading-content-menu-category {
+            width: 50px;
+            background: linear-gradient(228deg, #4F51EC 0%, #537CEA 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 17px 0;
+        }
+
+        .startLoading-content-menu-category-icon {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.16);
+            border-radius: 4px;
+            margin-bottom: 44px;
+        }
+
+        .startLoading-content-menu-text {
+            width: 217px;
+            height: 100px;
+            box-shadow: 0px 0px 8px 0px #DFE8F1;
+            height: calc(100vh - 56px);
+            padding-top: 17px;
+        }
+
+        .startLoading-content-menu-text .startLoading-header-menuText {
+            margin-bottom: 44px;
+        }
+
+        .startLoading-content-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .startLoading-content-right-header {
+            height: 50px;
+            box-shadow: 0px 0px 8px 0px #DFE8F1;
+            display: flex;
+            align-items: center;
+            padding: 0px 24px 0 49px;
+            justify-content: space-between;
+        }
+
+        .startLoading-content-right-content {
+            background: rgba(14, 29, 128, 0.06);
+            flex: 1;
+            padding: 12px;
+            display: flex;
+        }
+
+        .startLoading-content-right-content-container {
+            flex: 1;
+            background: #fff;
+            padding: 20px 37px 0px 37px;
+            display: flex;
+        }
+
+        .startLoading-content-right-content-container-column-20 {
+            width: 20%;
+        }
+
+        .startLoading-content-right-content-container-column-10 {
+            width: 10%;
+        }
   </style>
   <div id="c7ncd-global-loading">
-    <div class="c7ncd-skeleton">
-      <div style="margin-top: 24px;" class="c7ncd-skeleton-header">
-        <div style="width: 20%;" class="c7ncd-skeleton-rec"></div>
-        <div style="width: 40%;" class="c7ncd-skeleton-rec"></div>
+    <div class="startLoading">
+      <div class="startLoading-header">
+          <div class="startLoading-header-circle rec"></div>
+          <div class="startLoading-header-menuText rec"></div>
+          <div class="startLoading-header-menuText-249 margin-left-79 rec"></div>
+          <div class="startLoading-header-menuText-40 margin-left-40 rec"></div>
+          <div class="startLoading-header-menuText-40 margin-left-40 rec"></div>
+          <div class="startLoading-header-menuText-40 margin-left-40 rec"></div>
       </div>
-      <div class="c7ncd-skeleton-content">
-        <div class="c7ncd-skeleton-content-wrap">
-          <div style="width: 100%;" class="c7ncd-skeleton-rec"></div>
-          <div class="c7ncd-skeleton-content-wrap-line">
-            <div style="width: 20%" class="c7ncd-skeleton-content-wrap-line-item">
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 120px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 160px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-            </div>
-            <div style="width: 5%" class="c7ncd-skeleton-content-wrap-line-item">
-              <div style="width: 0;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-
-              <div style="width: 0;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 12px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-            </div>
-            <div style="width: 20%" class="c7ncd-skeleton-content-wrap-line-item">
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-            </div>
-            <div style="width: 15%" class="c7ncd-skeleton-content-wrap-line-item">
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-            </div>
-            <div style="width: 20%" class="c7ncd-skeleton-content-wrap-line-item">
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-            </div>
-            <div style="width: 10%" class="c7ncd-skeleton-content-wrap-line-item">
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-            </div>
-            <div style="width: 10%" class="c7ncd-skeleton-content-wrap-line-item">
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-              <div style="width: 52px;margin-top: 24px;" class="c7ncd-skeleton-rec"></div>
-            </div>
+      <div class="startLoading-content">
+          <div class="startLoading-content-menu">
+              <div class="startLoading-content-menu-category">
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+                  <div class="startLoading-content-menu-category-icon rec"></div>
+              </div>
+              <div class="startLoading-content-menu-text">
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+                  <div class="startLoading-header-menuText rec"></div>
+              </div>
           </div>
-        </div>
+          <div class="startLoading-content-right">
+              <div class="startLoading-content-right-header">
+                  <div class="startLoading-header-menuText-249 margin-left-0 rec"></div>
+                  <div class="startLoading-header-menuText-420 rec"></div>
+              </div>
+              <div class="startLoading-content-right-content">
+                  <div class="startLoading-content-right-content-container">
+                      <div class="startLoading-content-right-content-container-column-20">
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-80p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-80p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-80p margin-left-0 margin-bottom-20"></div>
+                      </div>
+                      <div class="startLoading-content-right-content-container-column-10">
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                      </div>
+                      <div class="startLoading-content-right-content-container-column-20">
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-80p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-80p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-80p margin-left-0 margin-bottom-20"></div>
+                      </div>
+                      <div class="startLoading-content-right-content-container-column-10">
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                      </div>
+                      <div class="startLoading-content-right-content-container-column-20">
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-80p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-60p margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-80p margin-left-0 margin-bottom-20"></div>
+                      </div>
+                      <div class="startLoading-content-right-content-container-column-10">
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                      </div>
+                      <div class="startLoading-content-right-content-container-column-10">
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                          <div class="rec startLoading-header-menuText-20 margin-left-0 margin-bottom-20"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
-    </div>
+  </div>
   </div>
     <!-- <img  alt="" class="c7ncd-global-loading-img" importance="high"> -->
     <div id='app'>
