@@ -98,6 +98,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     entry: {
       [entryName]: entry,
     },
+    stats: 'normal',
     output: {
       path: join(process.cwd(), output),
       filename: jsFileName,
