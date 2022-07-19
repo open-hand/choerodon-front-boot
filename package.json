@@ -111,9 +111,16 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.5",
-    "eslint-plugin-react-hooks": "^4.0.8"
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0"
   },
   "peerDependencies": {},
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "scripts": {
     "clean": "rimraf lib",
     "compile": "compiler compile",
@@ -131,6 +138,7 @@
     "lint:es": "eslint react/**/*.{js,jsx} test ./choerodon.config.js",
     "lint:style": "stylelint react/**/*.less",
     "lint-staged": "lint-staged",
-    "lint-staged:es": "eslint test ./choerodon.config.js"
+    "lint-staged:es": "eslint test ./choerodon.config.js",
+    "commit": "cz"
   }
 }

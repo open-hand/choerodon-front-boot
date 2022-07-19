@@ -159,6 +159,10 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           new UglifyJsPlugin({
             exclude: /node_modules/,
             parallel: true,
+            uglifyOptions: {
+              drop_debugger: true,
+              drop_console: true,
+            },
           }),
           new CssMinimizerPlugin(),
         ],
