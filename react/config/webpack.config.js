@@ -157,11 +157,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       ...isEnvProduction ? {
         minimizer: [
           new UglifyJsPlugin({
-            exclude: /node_modules/,
             parallel: true,
+            sourceMap: true,
             uglifyOptions: {
-              drop_debugger: true,
-              drop_console: true,
+              compress: {
+                drop_debugger: true,
+                drop_console: true,
+              },
             },
           }),
           new CssMinimizerPlugin(),
