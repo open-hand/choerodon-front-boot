@@ -6,7 +6,14 @@ import path from 'path';
 
 const defaultConfig = {
   port: 9090,
-  entry: path.resolve(process.cwd(), './node_modules/@choerodon/master/lib/entry.js'),
+  entry: [
+    {
+      index: path.resolve(process.cwd(), './node_modules/@choerodon/master/lib/entry.js'),
+    },
+    {
+      registerOrganization: path.resolve(process.cwd(), './node_modules/@choerodon/master/lib/registerOrganizationEntry.js'),
+    },
+  ],
   output: './dist',
   postcssConfig: {
     postcssOptions: {

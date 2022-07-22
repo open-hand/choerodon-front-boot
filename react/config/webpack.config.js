@@ -20,7 +20,6 @@ import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
 
 const path = require('path');
-const CopyPlugin = require('copy-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
@@ -51,6 +50,41 @@ function getAssetLoader(env, mimetype, limit = 10000) {
       name: assetFileName,
     },
   };
+}
+
+function getEntry(entry) {
+  const obj = {};
+  entry.forEach((item) => {
+    Object.assign(obj, item);
+  });
+  return obj;
+}
+
+function getHtmlWebpackPlugin(entry, isEnvProduction, envStr) {
+  const arr = [];
+  entry.forEach((item, index) => {
+    const name = Object.keys(item)[0];
+    arr.push(
+      new HtmlWebpackPlugin({
+        filename: `${name}.html`,
+        title: process.env.TITLE_NAME || '',
+        chunks: [`${name}`],
+        template: paths.appHtml[index],
+        inject: true,
+        favicon: paths.appFavicon,
+        env: isEnvProduction ? envStr : undefined,
+        minify: {
+          html5: true,
+          collapseWhitespace: true,
+          removeComments: true,
+          removeTagWhitespace: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+        },
+      }),
+    );
+  });
+  return arr;
 }
 
 export default function getWebpackCommonConfig(mode, env, envStr) {
@@ -95,9 +129,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     devtool: isEnvDevelopment ? 'source-map' : undefined,
-    entry: {
-      [entryName]: entry,
-    },
+    entry: getEntry(entry),
     stats: 'normal',
     output: {
       path: join(process.cwd(), output),
@@ -107,7 +139,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     },
     optimization: {
       splitChunks: {
-        chunks: 'all',
+        chunks: 'initial',
         name: false,
         minChunks: 1,
         maxAsyncRequests: 10, // 按需加载最大并行请求数量(default=5)
@@ -117,10 +149,10 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           libs: {
             name: 'chunk-libs',
             test: /[\\/]node_modules[\\/]/,
-            priority: 10,
+            priority: -20,
             minChunks: 1,
             chunks: 'initial', // 只打包初始时依赖的第三方
-            reuseExistingChunk: true,
+            reuseExistingChunk: false,
           },
           ckeditor: {
             name: 'chunk-ckeditor',
@@ -189,6 +221,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           exclude: /node_modules/,
           loader: 'babel-loader',
           options: babelOptions,
+
         },
         {
           test: /moduleInjects\.(js|jsx|ts|tsx)$/,
@@ -271,11 +304,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       isEnvDevelopment && new DotEnvRuntimePlugin({
         entry: paths.dotenv,
       }),
-      new CopyPlugin(
-        [
-          { from: path.resolve(__dirname, './loading.gif') },
-        ],
-      ),
       new ThemeColorReplacer({
         changeSelector,
         fileName: cssColorFileName,
@@ -307,22 +335,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       }),
       new WebpackBar(),
       new webpack.DefinePlugin(defines),
-      new HtmlWebpackPlugin({
-        // title: process.env.TITLE_NAME || titlename,
-        title: process.env.TITLE_NAME || '',
-        template: paths.appHtml,
-        inject: true,
-        favicon: paths.appFavicon,
-        env: isEnvProduction ? envStr : undefined,
-        minify: {
-          html5: true,
-          collapseWhitespace: true,
-          removeComments: true,
-          removeTagWhitespace: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-        },
-      }),
+      ...getHtmlWebpackPlugin(entry, isEnvProduction, envStr),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
