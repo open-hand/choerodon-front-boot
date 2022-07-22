@@ -56,6 +56,9 @@ LINE=`echo $(cat ${env_config}) | sed 's#\/#\\\/#g'`
 mv ${absolute_path}/index.html ${absolute_path}/index.html.bak
 sed -e "s/window\.\_env\_.*\}\;/${LINE}/g" ${absolute_path}/index.html.bak > ${absolute_path}/index.html
 
+mv $${absolute_path}/registerOrganization.html ${absolute_path}/registerOrganization.html.bak
+sed -e "s/window\.\_env\_.*\}\;/${LINE}/g" ${absolute_path}/registerOrganization.html.bak > ${absolute_path}/registerOrganization.html
+
 cat ${env_config}
 
 exec "$@"
