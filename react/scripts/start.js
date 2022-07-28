@@ -12,7 +12,7 @@ const paths = require('../config/paths');
 const { choosePort, createCompiler, prepareUrls } = require('../dev-utils/WebpackDevServerUtils');
 const createDevServerConfig = require('../config/webpackDevServer.config');
 
-export default function start (program) {
+export default function start(program) {
   // 初始化全局参数context
   const { initContext } = context;
   initContext(program, true);
@@ -73,7 +73,10 @@ export default function start (program) {
       const serverConfig = createDevServerConfig(
         urls.lanUrlForConfig,
       );
-      const devServer = new WebpackDevServer(serverConfig, compiler);
+      const devServer = new WebpackDevServer(compiler, {
+        ...serverConfig,
+        port,
+      });
       // Launch WebpackDevServer.
       try {
         (async () => {
