@@ -139,6 +139,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       chunkFilename: jsChunkFileName,
       publicPath: isEnvDevelopment ? '/' : root,
     },
+    watchOptions: {
+      // 对于node_modules仅监听猪齿鱼服务前缀的文件变化
+      ignored: /node_modules\/(?!@choerodon\/.+)/,
+    },
+    snapshot: {
+      // 去除此优化，避免yalc 无法使用，已对`watchOptions.ignored` 配置，确定监控范围
+      managedPaths: [],
+    },
     optimization: {
       splitChunks: {
         chunks: 'initial',
