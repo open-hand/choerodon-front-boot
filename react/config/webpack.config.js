@@ -52,7 +52,10 @@ function getAssetLoader(env, mimetype, limit = 10000) {
   };
 }
 
-function getEntry(entry) {
+function getEntry(entry, isPro) {
+  if (!isPro) {
+    entry.pop();
+  }
   const obj = {};
   entry.forEach((item) => {
     Object.assign(obj, item);
@@ -102,7 +105,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     key: `/${key}`,
     path: escapeWinPath(join(process.cwd(), routes[key])),
   }));
-  const INSTALLS = installs.map((key) => escapeWinPath(join(process.cwd(), key)));
+  let isPro = false;
+  const INSTALLS = installs.map((key) => {
+    if (key.indexOf('base-pro') !== -1) {
+      isPro = true;
+    }
+    return escapeWinPath(join(process.cwd(), key));
+  });
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
     lessOptions: {
@@ -129,7 +138,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     devtool: isEnvDevelopment ? 'source-map' : undefined,
-    entry: getEntry(entry),
+    entry: getEntry(entry, isPro),
     stats: 'normal',
     output: {
       path: join(process.cwd(), output),
