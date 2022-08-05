@@ -232,6 +232,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           },
         },
         {
+          test: /registerOrganizationEntry\.(js|jsx|ts|tsx)$/,
+          loader: 'string-replace-loader',
+          options: {
+            search: '__REGISTERORG__',
+            replace: "import registerOrg from '@choerodon/base-pro/lib/routes/outward/register-organization'",
+          },
+        },
+        {
           test: /routesCollections\.(js|jsx|ts|tsx)$/,
           loader: 'string-replace-loader',
           options: {
