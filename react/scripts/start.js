@@ -73,26 +73,21 @@ export default function start(program) {
       const serverConfig = createDevServerConfig(
         urls.lanUrlForConfig,
       );
-      const devServer = new WebpackDevServer(compiler, {
+      const devServer = new WebpackDevServer({
         ...serverConfig,
         port,
-      });
+      }, compiler);
       // Launch WebpackDevServer.
-      try {
-        (async () => {
-          await devServer.start();
-        })();
-      } catch (err) {
+      devServer.startCallback((err) => {
         if (err) {
           return console.log(err);
         }
         openBrowser(urls.localUrlForBrowser);
-      }
-
-      ['SIGINT', 'SIGTERM'].forEach((sig) => {
-        process.on(sig, () => {
-          devServer.close();
-          process.exit();
+        ['SIGINT', 'SIGTERM'].forEach((sig) => {
+          process.on(sig, () => {
+            devServer.close();
+            process.exit();
+          });
         });
       });
     });
