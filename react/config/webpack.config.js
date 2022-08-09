@@ -24,9 +24,6 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
 
-const jsFileName = 'dis/[name].[fullhash:8].js';
-const jsChunkFileName = 'dis/chunks/[name].[fullhash:5].chunk.js';
-const cssFileName = 'dis/[name].[hash:8].css';
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
 const baseColor = '#3f51b5';
@@ -100,6 +97,11 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   } = context;
   const isEnvDevelopment = env === 'development';
   const isEnvProduction = env === 'production';
+
+  const jsFileName = isEnvDevelopment ? 'dis/[name].js' : 'dis/[name].[fullhash:8].js';
+  const jsChunkFileName = isEnvDevelopment ? 'dis/chunks/[name].chunk.js' : 'dis/chunks/[name].[fullhash:5].chunk.js';
+  const cssFileName = isEnvDevelopment ? 'dis/[name].css' : 'dis/[name].[hash:8].css';
+
   const babelOptions = getBabelCommonConfig(mode, env);
   const ROUTES = Object.keys(routes).map((key) => ({
     key: `/${key}`,
@@ -145,6 +147,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       filename: jsFileName,
       chunkFilename: jsChunkFileName,
       publicPath: isEnvDevelopment ? '/' : root,
+    },
+    watchOptions: {
+      // 对于node_modules仅监听猪齿鱼服务前缀的文件变化
+      ignored: /node_modules\/(?!@choerodon\/.+)/,
+    },
+    snapshot: {
+      // 去除此优化，避免yalc 无法使用，已对`watchOptions.ignored` 配置，确定监控范围
+      managedPaths: [],
     },
     optimization: {
       splitChunks: {
@@ -198,8 +208,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       ...isEnvProduction ? {
         minimizer: [
           new UglifyJsPlugin({
-            exclude: /node_modules/,
             parallel: true,
+            sourceMap: true,
+            uglifyOptions: {
+              compress: {
+                drop_debugger: true,
+                drop_console: true,
+              },
+            },
           }),
           new CssMinimizerPlugin(),
         ],
