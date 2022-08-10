@@ -50,6 +50,11 @@ function getAssetLoader(env, mimetype, limit = 10000) {
 }
 
 function getEntry(entry, isPro) {
+  if (typeof entry === 'string') { // master本地跑指定entry
+    return {
+      index: entry,
+    };
+  }
   if (!isPro) {
     entry.pop();
   }
@@ -61,29 +66,35 @@ function getEntry(entry, isPro) {
 }
 
 function getHtmlWebpackPlugin(entry, isEnvProduction, envStr) {
+  function getPluginInstance(name, index = 0) {
+    return new HtmlWebpackPlugin({
+      filename: `${name}.html`,
+      title: process.env.TITLE_NAME || '',
+      chunks: [`${name}`],
+      template: paths.appHtml[index],
+      inject: true,
+      favicon: paths.appFavicon,
+      env: isEnvProduction ? envStr : undefined,
+      minify: {
+        html5: true,
+        collapseWhitespace: true,
+        removeComments: true,
+        removeTagWhitespace: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+      },
+    });
+  }
   const arr = [];
-  entry.forEach((item, index) => {
-    const name = Object.keys(item)[0];
-    arr.push(
-      new HtmlWebpackPlugin({
-        filename: `${name}.html`,
-        title: process.env.TITLE_NAME || '',
-        chunks: [`${name}`],
-        template: paths.appHtml[index],
-        inject: true,
-        favicon: paths.appFavicon,
-        env: isEnvProduction ? envStr : undefined,
-        minify: {
-          html5: true,
-          collapseWhitespace: true,
-          removeComments: true,
-          removeTagWhitespace: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-        },
-      }),
-    );
-  });
+  if (typeof entry === 'string') {
+    arr.push(getPluginInstance('index'));
+  } else {
+    entry.forEach((item, index) => {
+      const name = Object.keys(item)[0];
+      arr.push(getPluginInstance(name, index));
+    });
+  }
+
   return arr;
 }
 
