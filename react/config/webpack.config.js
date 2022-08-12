@@ -1,5 +1,5 @@
 import { join } from 'path';
-import webpack from 'webpack';
+import webpack, { container } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import FilterWarningsPlugin from 'webpack-filter-warnings-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
@@ -10,6 +10,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import PreloadWebpackPlugin from 'preload-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import fs from 'fs';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
@@ -23,6 +24,12 @@ const path = require('path');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
+
+const cwd = process.cwd();
+
+const {
+  ModuleFederationPlugin,
+} = container;
 
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
@@ -55,6 +62,13 @@ function getEntry(entry) {
     Object.assign(obj, item);
   });
   return obj;
+}
+
+function getPackageRouteName() {
+  const packagePath = path.join(cwd, 'package.json');
+  const packageData = fs.readFileSync(packagePath);
+  const parsePackageData = JSON.parse(packageData.toString());
+  return parsePackageData.routeName;
 }
 
 function getHtmlWebpackPlugin(entry, isEnvProduction, envStr) {
@@ -358,6 +372,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
       isEnvDevelopment && new ReactRefreshWebpackPlugin({
         overlay: false,
+      }),
+      new ModuleFederationPlugin({
+        filename: 'remoteEntry.js',
+        name: getPackageRouteName(),
+        exposes: {
+          './index': './react/index.js',
+        },
       }),
     ].filter(Boolean),
   }, webpack);
