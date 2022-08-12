@@ -49,7 +49,15 @@ function getAssetLoader(env, mimetype, limit = 10000) {
   };
 }
 
-function getEntry(entry) {
+function getEntry(entry, isPro) {
+  if (typeof entry === 'string') { // master本地跑指定entry
+    return {
+      index: entry,
+    };
+  }
+  if (!isPro) {
+    entry.pop();
+  }
   const obj = {};
   entry.forEach((item) => {
     Object.assign(obj, item);
@@ -58,29 +66,35 @@ function getEntry(entry) {
 }
 
 function getHtmlWebpackPlugin(entry, isEnvProduction, envStr) {
+  function getPluginInstance(name, index = 0) {
+    return new HtmlWebpackPlugin({
+      filename: `${name}.html`,
+      title: process.env.TITLE_NAME || '',
+      chunks: [`${name}`],
+      template: paths.appHtml[index],
+      inject: true,
+      favicon: paths.appFavicon,
+      env: isEnvProduction ? envStr : undefined,
+      minify: {
+        html5: true,
+        collapseWhitespace: true,
+        removeComments: true,
+        removeTagWhitespace: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+      },
+    });
+  }
   const arr = [];
-  entry.forEach((item, index) => {
-    const name = Object.keys(item)[0];
-    arr.push(
-      new HtmlWebpackPlugin({
-        filename: `${name}.html`,
-        title: process.env.TITLE_NAME || '',
-        chunks: [`${name}`],
-        template: paths.appHtml[index],
-        inject: true,
-        favicon: paths.appFavicon,
-        env: isEnvProduction ? envStr : undefined,
-        minify: {
-          html5: true,
-          collapseWhitespace: true,
-          removeComments: true,
-          removeTagWhitespace: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-        },
-      }),
-    );
-  });
+  if (typeof entry === 'string') {
+    arr.push(getPluginInstance('index'));
+  } else {
+    entry.forEach((item, index) => {
+      const name = Object.keys(item)[0];
+      arr.push(getPluginInstance(name, index));
+    });
+  }
+
   return arr;
 }
 
@@ -104,7 +118,13 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     key: `/${key}`,
     path: escapeWinPath(join(process.cwd(), routes[key])),
   }));
-  const INSTALLS = installs.map((key) => escapeWinPath(join(process.cwd(), key)));
+  let isPro = false;
+  const INSTALLS = installs.map((key) => {
+    if (key.indexOf('base-pro') !== -1) {
+      isPro = true;
+    }
+    return escapeWinPath(join(process.cwd(), key));
+  });
   const styleLoadersConfig = getStyleLoadersConfig(postcssConfig, {
     sourceMap: mode === 'start',
     lessOptions: {
@@ -131,7 +151,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     devtool: isEnvDevelopment ? 'source-map' : undefined,
-    entry: getEntry(entry),
+    entry: getEntry(entry, isPro),
     stats: 'normal',
     output: {
       path: join(process.cwd(), output),
@@ -245,6 +265,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           options: {
             search: '__INSTALLS__',
             replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
+          },
+        },
+        {
+          test: /registerOrganizationEntry\.(js|jsx|ts|tsx)$/,
+          loader: 'string-replace-loader',
+          options: {
+            search: '__REGISTERORG__',
+            replace: "import registerOrg from '@choerodon/base-pro/lib/routes/outward/register-organization'",
           },
         },
         {
