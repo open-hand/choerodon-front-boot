@@ -77,7 +77,7 @@ function getRemotes(envStr, modules) {
   const obj = {};
   modules.forEach((item) => {
     if (env[item]) {
-      obj[item] = `${item}@${env[item]}/remoteEntry.js`;
+      obj[item] = JSON.stringify(`${item}@${env[item]}/remoteEntry.js`);
     }
   });
   return obj;
@@ -115,7 +115,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     choerodonConfig: {
       output, root,
       routes, installs, postcssConfig, theme, resourcesLevel, enterPoints, outward,
-      titlename, entryName, entry, webpackConfig, modules,
+      titlename, entryName, entry, webpackConfig, modules, routeName, port,
     },
   } = context;
   const isEnvDevelopment = env === 'development';
