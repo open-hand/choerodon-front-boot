@@ -6,7 +6,7 @@ function parse(src, options) {
   const obj = {};
 
   src.toString().split('\n').forEach((line, idx) => {
-    const keyValueArr = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+    const keyValueArr = line.match(/^\s*([\w.-@]+)\s*=\s*(.*)?\s*$/);
     if (keyValueArr != null) {
       const key = keyValueArr[1];
 

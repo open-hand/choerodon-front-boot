@@ -71,6 +71,18 @@ function getPackageRouteName() {
   return parsePackageData.routeName;
 }
 
+function getRemotes(envStr, modules) {
+  const regex = /\{(.+?)\}/g;
+  const env = JSON.parse(envStr.match(regex)[0]);
+  const obj = {};
+  modules.forEach((item) => {
+    if (env[item]) {
+      obj[item] = `${item}@${env[item]}/remoteEntry.js`;
+    }
+  });
+  return obj;
+}
+
 function getHtmlWebpackPlugin(entry, isEnvProduction, envStr) {
   const arr = [];
   entry.forEach((item, index) => {
@@ -103,7 +115,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     choerodonConfig: {
       output, root,
       routes, installs, postcssConfig, theme, resourcesLevel, enterPoints, outward,
-      titlename, entryName, entry, webpackConfig,
+      titlename, entryName, entry, webpackConfig, modules,
     },
   } = context;
   const isEnvDevelopment = env === 'development';
@@ -376,9 +388,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       new ModuleFederationPlugin({
         filename: 'remoteEntry.js',
         name: getPackageRouteName(),
+        library: {
+          type: 'var',
+          name: getPackageRouteName(),
+        },
         exposes: {
           './index': './react/index.js',
         },
+        remotes: getRemotes(envStr, modules),
       }),
     ].filter(Boolean),
   }, webpack);
