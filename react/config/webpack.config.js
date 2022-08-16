@@ -163,7 +163,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       path: join(process.cwd(), output),
       filename: jsFileName,
       chunkFilename: jsChunkFileName,
-      publicPath: isEnvDevelopment ? '/' : root,
+      publicPath: 'auto',
     },
     watchOptions: {
       // 对于node_modules仅监听猪齿鱼服务前缀的文件变化
@@ -172,71 +172,6 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     snapshot: {
       // 去除此优化，避免yalc 无法使用，已对`watchOptions.ignored` 配置，确定监控范围
       managedPaths: [],
-    },
-    optimization: {
-      splitChunks: {
-        chunks: 'initial',
-        name: false,
-        minChunks: 1,
-        maxAsyncRequests: 10, // 按需加载最大并行请求数量(default=5)
-        maxInitialRequests: 5, // 一个入口的最大并行请求数量(default=3)
-        minSize: 0,
-        cacheGroups: {
-          libs: {
-            name: 'chunk-libs',
-            test: /[\\/]node_modules[\\/]/,
-            priority: -20,
-            minChunks: 1,
-            chunks: 'initial', // 只打包初始时依赖的第三方
-            reuseExistingChunk: false,
-          },
-          ckeditor: {
-            name: 'chunk-ckeditor',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]@choerodon\/ckeditor[\\/]/,
-          },
-          prettier: {
-            name: 'chunk-prettier',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]prettier[\\/]/,
-          },
-          choerodonUI: {
-            name: 'chunk-ui', // 单独将 UI 拆包
-            priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
-            test: /[\\/]node_modules[\\/]choerodon-ui[\\/]/,
-          },
-          pdf: {
-            name: 'chunk-pdf',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]pdfjs-dist[\\/]/,
-          },
-          quill: {
-            name: 'chunk-quill',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]quill[\\/]/,
-          },
-          echarts: {
-            name: 'chunk-echarts',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]echarts[\\/]/,
-          },
-        },
-      },
-      ...isEnvProduction ? {
-        minimizer: [
-          new UglifyJsPlugin({
-            parallel: true,
-            sourceMap: true,
-            uglifyOptions: {
-              compress: {
-                drop_debugger: true,
-                drop_console: true,
-              },
-            },
-          }),
-          new CssMinimizerPlugin(),
-        ],
-      } : {},
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
@@ -395,7 +330,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         exposes: {
           './index': './react/index.js',
         },
-        remotes: getRemotes(envStr, modules),
+        // remotes: getRemotes(envStr, modules),
       }),
     ].filter(Boolean),
   }, webpack);
