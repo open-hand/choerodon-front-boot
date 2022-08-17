@@ -32,6 +32,9 @@ module.exports = function (allowedHost) {
     //   ignored: ignoredFiles(paths.appSrc),
     // },
     host,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     client: {
       overlay: false,
     },
