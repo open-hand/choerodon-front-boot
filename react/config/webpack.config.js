@@ -78,7 +78,46 @@ function getShared() {
   const packageData = fs.readFileSync(packagePath);
   const parsePackageData = JSON.parse(packageData.toString());
   const dep = parsePackageData.dependencies;
-  const obj = {};
+  const obj = {
+    ckeditor: {
+      singleton: true,
+      eager: true,
+    },
+    '@choerodon/ckeditor': {
+      singleton: true,
+      eager: true,
+    },
+    react: {
+      singleton: true,
+      requiredVersion: '16.14.0',
+      eager: true,
+    },
+    'react-dom': {
+      singleton: true,
+      requiredVersion: '16.14.0',
+      eager: true,
+    },
+    'react-router-dom': {
+      singleton: true,
+      requiredVersion: '^5.1.2',
+    },
+    'react-router': {
+      singleton: true,
+      requiredVersion: '^5.1.2',
+    },
+    'mobx-react': {
+      singleton: true,
+      requiredVersion: '~6.1.1',
+    },
+    'mobx-react-lite': {
+      singleton: true,
+      requiredVersion: '^1.4.1',
+    },
+    'choerodon-ui': {
+      singleton: true,
+      requiredVersion: '^1.4.1',
+    },
+  };
   Object.keys(dep).forEach((item) => {
     obj[item] = {
       singleton: true,
@@ -104,6 +143,51 @@ function getRemotes(envStr, modules) {
     }
   });
   return obj;
+}
+
+function loadComponent(scope, module, onError) {
+  return async () => {
+    // eslint-disable-next-line no-undef
+    await __webpack_init_sharing__('default');
+    const container1 = window[scope]; // or get the container somewhere else
+    // Initialize the container, it may provide shared modules
+    if (!container1) {
+      throw new Error('加载了错误的importManifest.js，请检查服务版本');
+    }
+    try {
+      // eslint-disable-next-line no-undef
+      await container1.init(__webpack_share_scopes__.default);
+      const factory = await window[scope].get(module);
+      const Module = factory();
+      return Module;
+    } catch (e) {
+      if (onError) {
+        return onError(e);
+      }
+      throw e;
+    }
+  };
+}
+
+function getRoutesStringReplace(ROUTES, modules, envStr) {
+  // const regex = /\{(.+?)\}/g;
+  // const env = JSON.parse(envStr.match(regex)[0]);
+  // modules.forEach((i) => {
+  //   if (i !== '.' && env[i]) {
+  //     const script = document.createElement('script');
+  //     script.src = env[i];
+  //     script.crossOrigin = true;
+  //     document.body.appendChild(script);
+  //     const lazyComponent = loadComponent(i, './index');
+  //   }
+  // });
+  // console.log(modules, envStr);
+  const str = `(()=>{
+    ${ROUTES.map((route) => `const ${route.key.replace('/', '')} = React.lazy(()=>import("${route.path}"));`).join('\n')}
+    return [${ROUTES.map((route) => `["${route.key}",${route.key.replace('/', '')} ]`).join(',\n')}]
+  })()`;
+
+  return str;
 }
 
 function getHtmlWebpackPlugin(entry, isEnvProduction, envStr) {
@@ -179,7 +263,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
   }, {});
   return webpackConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
-    devtool: isEnvDevelopment ? 'source-map' : undefined,
+    devtool: isEnvDevelopment ? 'cheap-module-source-map' : undefined,
     entry: getEntry(entry),
     stats: 'normal',
     output: {
@@ -301,11 +385,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           loader: 'string-replace-loader',
           options: {
             search: '__ROUTES__',
-            replace: `(()=>{
-              ${ROUTES.map((route) => `const ${route.key.replace('/', '')} = React.lazy(()=>import("${route.path}"));`).join('\n')}
-              return [${ROUTES.map((route) => `["${route.key}",${route.key.replace('/', '')} ]`).join(',\n')}]
-            })()
-            `,
+            replace: getRoutesStringReplace(ROUTES, modules, envStr),
           },
         },
         ...styleLoadersConfig.map((config, index) => ({
