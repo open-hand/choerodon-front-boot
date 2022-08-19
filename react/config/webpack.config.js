@@ -78,46 +78,54 @@ function getShared() {
   const packageData = fs.readFileSync(packagePath);
   const parsePackageData = JSON.parse(packageData.toString());
   const dep = parsePackageData.dependencies;
-  const obj = {
-    ckeditor: {
-      singleton: true,
-      eager: true,
-    },
-    '@choerodon/ckeditor': {
-      singleton: true,
-      eager: true,
-    },
-    react: {
-      singleton: true,
-      requiredVersion: '16.14.0',
-      eager: true,
-    },
-    'react-dom': {
-      singleton: true,
-      requiredVersion: '16.14.0',
-      eager: true,
-    },
-    'react-router-dom': {
-      singleton: true,
-      requiredVersion: '^5.1.2',
-    },
-    'react-router': {
-      singleton: true,
-      requiredVersion: '^5.1.2',
-    },
-    'mobx-react': {
-      singleton: true,
-      requiredVersion: '~6.1.1',
-    },
-    'mobx-react-lite': {
-      singleton: true,
-      requiredVersion: '^1.4.1',
-    },
-    'choerodon-ui': {
-      singleton: true,
-      requiredVersion: '^1.4.1',
-    },
-  };
+  const obj = {};
+  // ckeditor: {
+  //   singleton: true,
+  //   eager: true,
+  // },
+  // '@choerodon/ckeditor': {
+  //   singleton: true,
+  //   eager: true,
+  // },
+  // react: {
+  //   singleton: true,
+  //   requiredVersion: '16.14.0',
+  //   eager: true,
+  // },
+  // 'react-dom': {
+  //   singleton: true,
+  //   requiredVersion: '16.14.0',
+  //   eager: true,
+  // },
+  // 'react-router-dom': {
+  //   singleton: true,
+  //   requiredVersion: '^5.1.2',
+  //   eager: true,
+  // },
+  // 'react-router': {
+  //   singleton: true,
+  //   requiredVersion: '^5.1.2',
+  //   eager: true,
+  // },
+  // 'mobx-react': {
+  //   singleton: true,
+  //   requiredVersion: '~6.1.1',
+  //   eager: true,
+  // },
+  // 'mobx-react-lite': {
+  //   singleton: true,
+  //   requiredVersion: '^1.4.1',
+  //   eager: true,
+  // },
+  // 'choerodon-ui': {
+  //   singleton: true,
+  //   requiredVersion: '^1.4.1',
+  // },
+  // axios: {
+  //   singleton: true,
+  //   requiredVersion: '^0.16.2',
+  // },
+  // };
   Object.keys(dep).forEach((item) => {
     obj[item] = {
       singleton: true,
