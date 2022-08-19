@@ -27,7 +27,9 @@ const paths = require('./paths');
 
 const cwd = process.cwd();
 
-const eagerList = ['mobx-react-lite', 'moment', 'json-bigint'];
+const eagerList = [
+
+];
 
 const {
   ModuleFederationPlugin,
@@ -74,58 +76,48 @@ function getPackageRouteName() {
 }
 
 function getShared() {
-  const packagePath = path.join(cwd, 'package.json');
+  const packagePath = path.join(cwd, './node_modules/@choerodon/boot/package.json');
   const packageData = fs.readFileSync(packagePath);
   const parsePackageData = JSON.parse(packageData.toString());
   const dep = parsePackageData.dependencies;
-  const obj = {};
-  // ckeditor: {
-  //   singleton: true,
-  //   eager: true,
-  // },
-  // '@choerodon/ckeditor': {
-  //   singleton: true,
-  //   eager: true,
-  // },
-  // react: {
-  //   singleton: true,
-  //   requiredVersion: '16.14.0',
-  //   eager: true,
-  // },
-  // 'react-dom': {
-  //   singleton: true,
-  //   requiredVersion: '16.14.0',
-  //   eager: true,
-  // },
-  // 'react-router-dom': {
-  //   singleton: true,
-  //   requiredVersion: '^5.1.2',
-  //   eager: true,
-  // },
-  // 'react-router': {
-  //   singleton: true,
-  //   requiredVersion: '^5.1.2',
-  //   eager: true,
-  // },
-  // 'mobx-react': {
-  //   singleton: true,
-  //   requiredVersion: '~6.1.1',
-  //   eager: true,
-  // },
-  // 'mobx-react-lite': {
-  //   singleton: true,
-  //   requiredVersion: '^1.4.1',
-  //   eager: true,
-  // },
-  // 'choerodon-ui': {
-  //   singleton: true,
-  //   requiredVersion: '^1.4.1',
-  // },
-  // axios: {
-  //   singleton: true,
-  //   requiredVersion: '^0.16.2',
-  // },
-  // };
+  const obj = {
+    ckeditor: {
+      singleton: true,
+      eager: true,
+    },
+    '@choerodon/ckeditor': {
+      singleton: true,
+      eager: true,
+    },
+    react: {
+      singleton: true,
+      requiredVersion: '16.14.0',
+    },
+    'react-dom': {
+      singleton: true,
+      requiredVersion: '16.14.0',
+    },
+    'react-router-dom': {
+      singleton: true,
+      requiredVersion: '^5.1.2',
+    },
+    'react-router': {
+      singleton: true,
+      requiredVersion: '^5.1.2',
+    },
+    'choerodon-ui/dataset': {
+      singleton: true,
+      requiredVersion: false,
+    },
+    'choerodon-ui/shared': {
+      singleton: true,
+      requiredVersion: false,
+    },
+    axios: {
+      singleton: true,
+      requiredVersion: '^0.16.2',
+    },
+  };
   Object.keys(dep).forEach((item) => {
     obj[item] = {
       singleton: true,
@@ -138,6 +130,7 @@ function getShared() {
       };
     }
   });
+  console.log(obj);
   return obj;
 }
 
