@@ -1,5 +1,8 @@
 function transformMain(main) {
-  return main.replace(/lib/, 'react');
+  if (main) {
+    return main.replace(/lib/, 'react');
+  }
+  return '';
 }
 
 module.exports = transformMain;
