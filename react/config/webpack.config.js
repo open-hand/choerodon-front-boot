@@ -75,6 +75,18 @@ function getPackageRouteName() {
   return parsePackageData.routeName;
 }
 
+function getExpose() {
+  const packagePath = path.join(cwd, 'package.json');
+  const packageData = fs.readFileSync(packagePath);
+  const parsePackageData = JSON.parse(packageData.toString());
+  if (parsePackageData.nonExpose && parsePackageData.nonExpose === 'true') {
+    return {};
+  }
+  return {
+    './index': './react/index.js',
+  };
+}
+
 function getShared() {
   const packagePath = path.join(cwd, './node_modules/@choerodon/boot/package.json');
   const packageData = fs.readFileSync(packagePath);
@@ -503,9 +515,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           type: 'var',
           name: getPackageRouteName(),
         },
-        exposes: {
-          './index': './react/index.js',
-        },
+        exposes: getExpose(),
         shared: getShared(),
         // remotes: getRemotes(envStr, modules),
       }),
