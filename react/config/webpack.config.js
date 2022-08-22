@@ -130,7 +130,6 @@ function getShared() {
       };
     }
   });
-  console.log(obj);
   return obj;
 }
 
