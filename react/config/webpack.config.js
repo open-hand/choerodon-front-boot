@@ -385,7 +385,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           loader: 'string-replace-loader',
           options: {
             search: '__MODULES__',
-            replace: `[${modules}]`,
+            replace: `[${modules.map((i) => String(i))}]`,
           },
         },
         {
