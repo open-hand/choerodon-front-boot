@@ -82,6 +82,11 @@ function getExpose() {
   if (parsePackageData.nonExpose && parsePackageData.nonExpose === 'true') {
     return {};
   }
+  if (parsePackageData.expose) {
+    return {
+      './index': parsePackageData.expose,
+    };
+  }
   return {
     './index': './react/index.js',
   };
