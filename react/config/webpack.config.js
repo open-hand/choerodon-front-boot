@@ -129,6 +129,10 @@ function getShared() {
       singleton: true,
       requiredVersion: '^0.16.2',
     },
+    'react-query': {
+      singleton: true,
+      requiredVersion: '^3.34.6',
+    },
   };
   Object.keys(dep).forEach((item) => {
     obj[item] = {
