@@ -79,17 +79,21 @@ function getExpose() {
   const packagePath = path.join(cwd, 'package.json');
   const packageData = fs.readFileSync(packagePath);
   const parsePackageData = JSON.parse(packageData.toString());
-  if (parsePackageData.nonExpose && parsePackageData.nonExpose === 'true') {
-    return {};
-  }
-  if (parsePackageData.expose) {
-    return {
-      './index': parsePackageData.expose,
-    };
-  }
-  return {
-    './index': './react/index.js',
+  const obj = {
+    './install': './react/install.js',
   };
+  // if (parsePackageData.nonExpose && parsePackageData.nonExpose === 'true') {
+  //   return {};
+  // }
+  if (parsePackageData.expose) {
+    obj['./index'] = parsePackageData.expose;
+    // return {
+    //   './index': parsePackageData.expose,
+    // };
+  } else if (!parsePackageData.nonExpose || parsePackageData.nonExpose === 'false') {
+    obj['./index'] = './react/index.js';
+  }
+  return obj;
 }
 
 function getShared() {
@@ -137,6 +141,10 @@ function getShared() {
     'react-query': {
       singleton: true,
       requiredVersion: '^3.34.6',
+    },
+    '@choerodon/inject': {
+      singleton: true,
+      requiredVersion: false,
     },
   };
   Object.keys(dep).forEach((item) => {
@@ -393,14 +401,14 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           options: babelOptions,
 
         },
-        {
-          test: /moduleInjects\.(js|jsx|ts|tsx)$/,
-          loader: 'string-replace-loader',
-          options: {
-            search: '__INSTALLS__',
-            replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
-          },
-        },
+        // {
+        //   test: /moduleInjects\.(js|jsx|ts|tsx)$/,
+        //   loader: 'string-replace-loader',
+        //   options: {
+        //     search: '__INSTALLS__',
+        //     replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
+        //   },
+        // },
         {
           test: /routesCollections\.(js|jsx|ts|tsx)$/,
           loader: 'string-replace-loader',
