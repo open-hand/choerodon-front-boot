@@ -79,9 +79,12 @@ function getExpose() {
   const packagePath = path.join(cwd, 'package.json');
   const packageData = fs.readFileSync(packagePath);
   const parsePackageData = JSON.parse(packageData.toString());
-  const obj = {
-    './install': './react/install.js',
-  };
+  let obj = {};
+  if (!parsePackageData.nonInstall || parsePackageData.nonInstall === 'false') {
+    obj = {
+      './install': './react/install.js',
+    };
+  }
   // if (parsePackageData.nonExpose && parsePackageData.nonExpose === 'true') {
   //   return {};
   // }
