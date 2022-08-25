@@ -149,6 +149,10 @@ function getShared() {
       singleton: true,
       requiredVersion: false,
     },
+    'react-intl': {
+      singleton: true,
+      requiredVersion: false,
+    },
   };
   Object.keys(dep).forEach((item) => {
     obj[item] = {
