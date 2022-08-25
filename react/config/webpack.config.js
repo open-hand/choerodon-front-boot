@@ -72,7 +72,7 @@ function getPackageRouteName() {
   const packagePath = path.join(cwd, 'package.json');
   const packageData = fs.readFileSync(packagePath);
   const parsePackageData = JSON.parse(packageData.toString());
-  return parsePackageData?.exposeName || parsePackageData?.routeName;
+  return parsePackageData.routeName;
 }
 
 function getExpose() {
