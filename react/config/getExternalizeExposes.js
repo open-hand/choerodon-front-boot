@@ -24,11 +24,9 @@ function fileDisplay(filePath) {
       Object.assign(externalFiles, dirExternalFiles);// 递归，如果是文件夹，就继续遍历该文件夹下面的文件
     }
   }
-  console.log('externalFiles===', externalFiles);
   return externalFiles;
 }
 
 export default function getExternalizeExposes() {
   return fileDisplay(path.resolve('react'));
 }
-// getExternalizeExposes();
