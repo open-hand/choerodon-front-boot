@@ -16,6 +16,7 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getDefaultTheme from './getDefaultTheme';
+import getExternalizeExposes from './getExternalizeExposes';
 import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
@@ -96,7 +97,7 @@ function getExpose() {
   } else if (!parsePackageData.nonExpose || parsePackageData.nonExpose === 'false') {
     obj['./index'] = './react/index.js';
   }
-  return obj;
+  return { ...obj, ...getExternalizeExposes() };
 }
 
 function getShared() {
