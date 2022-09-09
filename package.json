@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "2.1.0",
+  "version": "2.1.0-inner",
   "description": "Choerodon Scaffold to run react application.",
   "homepage": "http://choerodon.io/",
   "main": "lib/index.js",
