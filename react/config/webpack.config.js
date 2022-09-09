@@ -20,6 +20,7 @@ import getExternalizeExposes from './getExternalizeExposes';
 import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
+import transformMain from '../utils/transformMain';
 
 const path = require('path');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
@@ -83,7 +84,7 @@ function getExpose() {
   let obj = {};
   if (!parsePackageData.nonInstall || parsePackageData.nonInstall === 'false') {
     obj = {
-      './install': './react/install.js',
+      './install': parsePackageData.install && typeof parsePackageData.install === 'string' ? transformMain(parsePackageData.install) : './react/install.js',
     };
   }
   // if (parsePackageData.nonExpose && parsePackageData.nonExpose === 'true') {
