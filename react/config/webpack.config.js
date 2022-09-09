@@ -525,7 +525,33 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         ignoreOrder: true, // 不加控制台一堆warn
       }),
       new WebpackBar(),
-      new webpack.DefinePlugin(defines),
+      new webpack.DefinePlugin({
+        ...defines,
+        C7NHasModule: (string) => {
+          const map = {
+            '@choerodon/agile-pro': 'remote_agile',
+            '@choerodon/asgard': 'remote_asgard',
+            '@choerodon/base-pro': 'remote_basePro',
+            '@choerodon/base-business': 'remote_baseBusiness',
+            '@choerodon/base': 'remote_base',
+            '@choerodon/devops': 'remote_devops',
+            '@choerodon/manager': 'remote_manager',
+            '@choerodon/market': 'remote_market',
+            '@choerodon/notify': 'remote_notify',
+            '@choerodon/testmanager-pro': 'remote_testManager',
+            '@choerodon/code-repo': 'remote_rducm',
+            '@choerodon/doc-repo': 'remote_rdudm',
+            '@choerodon/prod-repo': 'remote_rdupm',
+            '@choerodon/hrds-qa': 'remote_rdqam',
+            '@choerodon/knowledge': 'remote_knowledge',
+          };
+          const flag = map[string];
+          if (flag && window._env_?.[flag]) {
+            return true;
+          }
+          return false;
+        },
+      }),
       ...getHtmlWebpackPlugin(entry, isEnvProduction, envStr),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
