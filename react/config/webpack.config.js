@@ -1,5 +1,5 @@
 import { join } from 'path';
-import webpack from 'webpack';
+import webpack, { container } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import FilterWarningsPlugin from 'webpack-filter-warnings-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
@@ -10,19 +10,32 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import PreloadWebpackPlugin from 'preload-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import fs from 'fs';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 import getBabelCommonConfig from './getBabelCommonConfig';
 import getStyleLoadersConfig from './getStyleLoadersConfig';
 import getDefaultTheme from './getDefaultTheme';
+import getExternalizeExposes from './getExternalizeExposes';
 import colorPalette from '../utils/colorPalette';
 import context from '../utils/context';
 import escapeWinPath from '../utils/escapeWinPath';
+import transformMain from '../utils/transformMain';
 
 const path = require('path');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const DotEnvRuntimePlugin = require('dotenv-runtime-plugin');
 const paths = require('./paths');
+
+const cwd = process.cwd();
+
+const eagerList = [
+
+];
+
+const {
+  ModuleFederationPlugin,
+} = container;
 
 const cssColorFileName = 'dis/theme-colors.css';
 const assetFileName = 'dis/assets/[name].[hash:8].[ext]';
@@ -65,6 +78,164 @@ function getEntry(entry, isPro) {
   return obj;
 }
 
+function getPackageRouteName() {
+  const packagePath = path.join(cwd, 'package.json');
+  const packageData = fs.readFileSync(packagePath);
+  const parsePackageData = JSON.parse(packageData.toString());
+  return parsePackageData.routeName;
+}
+
+function getExpose() {
+  const packagePath = path.join(cwd, 'package.json');
+  const packageData = fs.readFileSync(packagePath);
+  const parsePackageData = JSON.parse(packageData.toString());
+  let obj = {};
+  if (!parsePackageData.nonInstall || parsePackageData.nonInstall === 'false') {
+    obj = {
+      './install': parsePackageData.install && typeof parsePackageData.install === 'string' ? transformMain(parsePackageData.install) : './react/install.js',
+    };
+  }
+  // if (parsePackageData.nonExpose && parsePackageData.nonExpose === 'true') {
+  //   return {};
+  // }
+  if (parsePackageData.expose) {
+    obj['./index'] = parsePackageData.expose;
+    // return {
+    //   './index': parsePackageData.expose,
+    // };
+  } else if (!parsePackageData.nonExpose || parsePackageData.nonExpose === 'false') {
+    obj['./index'] = './react/index.js';
+  }
+  return { ...obj, ...getExternalizeExposes() };
+}
+
+function getShared() {
+  const packagePath = path.join(cwd, './node_modules/@choerodon/boot/package.json');
+  const packageData = fs.readFileSync(packagePath);
+  const parsePackageData = JSON.parse(packageData.toString());
+  const dep = parsePackageData.dependencies;
+  const obj = {
+    ckeditor: {
+      singleton: true,
+      eager: true,
+    },
+    '@choerodon/ckeditor': {
+      singleton: true,
+      eager: true,
+    },
+    react: {
+      singleton: true,
+      requiredVersion: '16.14.0',
+    },
+    'react-dom': {
+      singleton: true,
+      requiredVersion: '16.14.0',
+    },
+    'react-router-dom': {
+      singleton: true,
+      requiredVersion: '^5.1.2',
+    },
+    'react-router': {
+      singleton: true,
+      requiredVersion: '^5.1.2',
+    },
+    'choerodon-ui/dataset': {
+      singleton: true,
+      requiredVersion: false,
+    },
+    'choerodon-ui/shared': {
+      singleton: true,
+      requiredVersion: false,
+    },
+    axios: {
+      singleton: true,
+      requiredVersion: '^0.16.2',
+    },
+    'react-query': {
+      singleton: true,
+      requiredVersion: '^3.34.6',
+    },
+    '@choerodon/inject': {
+      singleton: true,
+      requiredVersion: false,
+    },
+    'react-intl': {
+      singleton: true,
+      requiredVersion: false,
+    },
+  };
+  Object.keys(dep).forEach((item) => {
+    obj[item] = {
+      singleton: true,
+      requiredVersion: dep[item],
+    };
+    if (eagerList.includes(item)) {
+      obj[item] = {
+        ...obj[item],
+        eager: true,
+      };
+    }
+  });
+  return obj;
+}
+
+function getRemotes(envStr, modules) {
+  const regex = /\{(.+?)\}/g;
+  const env = JSON.parse(envStr.match(regex)[0]);
+  const obj = {};
+  modules.forEach((item) => {
+    if (env[item]) {
+      obj[item] = JSON.stringify(`${item}@${env[item]}/remoteEntry.js`);
+    }
+  });
+  return obj;
+}
+
+function loadComponent(scope, module, onError) {
+  return async () => {
+    // eslint-disable-next-line no-undef
+    await __webpack_init_sharing__('default');
+    const container1 = window[scope]; // or get the container somewhere else
+    // Initialize the container, it may provide shared modules
+    if (!container1) {
+      throw new Error('加载了错误的importManifest.js，请检查服务版本');
+    }
+    try {
+      // eslint-disable-next-line no-undef
+      await container1.init(__webpack_share_scopes__.default);
+      const factory = await window[scope].get(module);
+      const Module = factory();
+      return Module;
+    } catch (e) {
+      if (onError) {
+        return onError(e);
+      }
+      throw e;
+    }
+  };
+}
+
+function getRoutesStringReplace(ROUTES, modules, envStr) {
+  // const regex = /\{(.+?)\}/g;
+  // const env = JSON.parse(envStr.match(regex)[0]);
+  // modules.forEach((i) => {
+  //   if (i !== '.' && env[i]) {
+  //     const script = document.createElement('script');
+  //     script.src = env[i];
+  //     script.crossOrigin = true;
+  //     document.body.appendChild(script);
+  //     const lazyComponent = loadComponent(i, './index');
+  //   }
+  // });
+  // console.log(modules, envStr);
+  const str = `(()=>{
+    ${ROUTES.map((route) => `const ${route.key.replace('/', '')} = React.lazy(()=>import("${route.path}"));`).join('\n')}
+    return [${ROUTES.map((route) => `["${route.key}",${route.key.replace('/', '')} ]`).join(',\n')}]
+  })()`;
+
+  return str;
+}
+
 function getHtmlWebpackPlugin(entry, isEnvProduction, envStr) {
   function getPluginInstance(name, index = 0) {
     return new HtmlWebpackPlugin({
@@ -103,7 +274,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
     choerodonConfig: {
       output, root,
       routes, installs, postcssConfig, theme, resourcesLevel, enterPoints, outward,
-      titlename, entryName, entry, webpackConfig,
+      titlename, entryName, entry, webpackConfig, modules, routeName, port,
     },
   } = context;
   const isEnvDevelopment = env === 'development';
@@ -157,80 +328,80 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       path: join(process.cwd(), output),
       filename: jsFileName,
       chunkFilename: jsChunkFileName,
-      publicPath: isEnvDevelopment ? '/' : root,
+      publicPath: 'auto',
     },
     watchOptions: {
       // 对于node_modules仅监听猪齿鱼服务前缀的文件变化
       ignored: /node_modules\/(?!@choerodon\/.+)/,
     },
+    // optimization: {
+    //   splitChunks: {
+    //     chunks: 'initial',
+    //     name: false,
+    //     minChunks: 1,
+    //     maxAsyncRequests: 10, // 按需加载最大并行请求数量(default=5)
+    //     maxInitialRequests: 5, // 一个入口的最大并行请求数量(default=3)
+    //     minSize: 0,
+    //     cacheGroups: {
+    //       libs: {
+    //         name: 'chunk-libs',
+    //         test: /[\\/]node_modules[\\/]/,
+    //         priority: -20,
+    //         minChunks: 1,
+    //         chunks: 'initial', // 只打包初始时依赖的第三方
+    //         reuseExistingChunk: false,
+    //       },
+    //       ckeditor: {
+    //         name: 'chunk-ckeditor',
+    //         priority: 20,
+    //         test: /[\\/]node_modules[\\/]@choerodon\/ckeditor[\\/]/,
+    //       },
+    //       prettier: {
+    //         name: 'chunk-prettier',
+    //         priority: 20,
+    //         test: /[\\/]node_modules[\\/]prettier[\\/]/,
+    //       },
+    //       choerodonUI: {
+    //         name: 'chunk-ui', // 单独将 UI 拆包
+    //         priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
+    //         test: /[\\/]node_modules[\\/]choerodon-ui[\\/]/,
+    //       },
+    //       pdf: {
+    //         name: 'chunk-pdf',
+    //         priority: 20,
+    //         test: /[\\/]node_modules[\\/]pdfjs-dist[\\/]/,
+    //       },
+    //       quill: {
+    //         name: 'chunk-quill',
+    //         priority: 20,
+    //         test: /[\\/]node_modules[\\/]quill[\\/]/,
+    //       },
+    //       echarts: {
+    //         name: 'chunk-echarts',
+    //         priority: 20,
+    //         test: /[\\/]node_modules[\\/]echarts[\\/]/,
+    //       },
+    //     },
+    //   },
+    //   ...isEnvProduction ? {
+    //     minimizer: [
+    //       new UglifyJsPlugin({
+    //         parallel: true,
+    //         sourceMap: true,
+    //         uglifyOptions: {
+    //           compress: {
+    //             drop_debugger: true,
+    //             drop_console: true,
+    //           },
+    //         },
+    //       }),
+    //       new CssMinimizerPlugin(),
+    //     ],
+    //   } : {},
+    // },
     snapshot: {
       // 去除此优化，避免yalc 无法使用，已对`watchOptions.ignored` 配置，确定监控范围
       managedPaths: [],
-    },
-    optimization: {
-      splitChunks: {
-        chunks: 'initial',
-        name: false,
-        minChunks: 1,
-        maxAsyncRequests: 10, // 按需加载最大并行请求数量(default=5)
-        maxInitialRequests: 5, // 一个入口的最大并行请求数量(default=3)
-        minSize: 0,
-        cacheGroups: {
-          libs: {
-            name: 'chunk-libs',
-            test: /[\\/]node_modules[\\/]/,
-            priority: -20,
-            minChunks: 1,
-            chunks: 'initial', // 只打包初始时依赖的第三方
-            reuseExistingChunk: false,
-          },
-          ckeditor: {
-            name: 'chunk-ckeditor',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]@choerodon\/ckeditor[\\/]/,
-          },
-          prettier: {
-            name: 'chunk-prettier',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]prettier[\\/]/,
-          },
-          choerodonUI: {
-            name: 'chunk-ui', // 单独将 UI 拆包
-            priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
-            test: /[\\/]node_modules[\\/]choerodon-ui[\\/]/,
-          },
-          pdf: {
-            name: 'chunk-pdf',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]pdfjs-dist[\\/]/,
-          },
-          quill: {
-            name: 'chunk-quill',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]quill[\\/]/,
-          },
-          echarts: {
-            name: 'chunk-echarts',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]echarts[\\/]/,
-          },
-        },
-      },
-      ...isEnvProduction ? {
-        minimizer: [
-          new UglifyJsPlugin({
-            parallel: true,
-            sourceMap: true,
-            uglifyOptions: {
-              compress: {
-                drop_debugger: true,
-                drop_console: true,
-              },
-            },
-          }),
-          new CssMinimizerPlugin(),
-        ],
-      } : {},
     },
     resolve: {
       modules: ['node_modules', join(__dirname, '../../node_modules')],
@@ -259,12 +430,20 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           options: babelOptions,
 
         },
+        // {
+        //   test: /moduleInjects\.(js|jsx|ts|tsx)$/,
+        //   loader: 'string-replace-loader',
+        //   options: {
+        //     search: '__INSTALLS__',
+        //     replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
+        //   },
+        // },
         {
-          test: /moduleInjects\.(js|jsx|ts|tsx)$/,
+          test: /routesCollections\.(js|jsx|ts|tsx)$/,
           loader: 'string-replace-loader',
           options: {
-            search: '__INSTALLS__',
-            replace: `${INSTALLS.map((install) => `import "${install}"`).join(';\n')}`,
+            search: '__MODULES__',
+            replace: `[${modules.map((i) => `"${i}"`)}]`,
           },
         },
         {
@@ -280,11 +459,7 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
           loader: 'string-replace-loader',
           options: {
             search: '__ROUTES__',
-            replace: `(()=>{
-              ${ROUTES.map((route) => `const ${route.key.replace('/', '')} = React.lazy(()=>import("${route.path}"));`).join('\n')}
-              return [${ROUTES.map((route) => `["${route.key}",${route.key.replace('/', '')} ]`).join(',\n')}]
-            })()
-            `,
+            replace: getRoutesStringReplace(ROUTES, modules, envStr),
           },
         },
         ...styleLoadersConfig.map((config, index) => ({
@@ -378,7 +553,33 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
         ignoreOrder: true, // 不加控制台一堆warn
       }),
       new WebpackBar(),
-      new webpack.DefinePlugin(defines),
+      new webpack.DefinePlugin({
+        ...defines,
+        C7NHasModule: (string) => {
+          const map = {
+            '@choerodon/agile-pro': 'remote_agile',
+            '@choerodon/asgard': 'remote_asgard',
+            '@choerodon/base-pro': 'remote_basePro',
+            '@choerodon/base-business': 'remote_baseBusiness',
+            '@choerodon/base': 'remote_base',
+            '@choerodon/devops': 'remote_devops',
+            '@choerodon/manager': 'remote_manager',
+            '@choerodon/market': 'remote_market',
+            '@choerodon/notify': 'remote_notify',
+            '@choerodon/testmanager-pro': 'remote_testManager',
+            '@choerodon/code-repo': 'remote_rducm',
+            '@choerodon/doc-repo': 'remote_rdudm',
+            '@choerodon/prod-repo': 'remote_rdupm',
+            '@choerodon/hrds-qa': 'remote_rdqam',
+            '@choerodon/knowledge': 'remote_knowledge',
+          };
+          const flag = map[string];
+          if (flag && window._env_?.[flag]) {
+            return true;
+          }
+          return false;
+        },
+      }),
       ...getHtmlWebpackPlugin(entry, isEnvProduction, envStr),
       isEnvDevelopment && new ForkTsCheckerWebpackPlugin(),
       isEnvDevelopment && new FriendlyErrorsWebpackPlugin(),
@@ -386,6 +587,17 @@ export default function getWebpackCommonConfig(mode, env, envStr) {
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
       isEnvDevelopment && new ReactRefreshWebpackPlugin({
         overlay: false,
+      }),
+      new ModuleFederationPlugin({
+        filename: 'remoteEntry.js',
+        name: getPackageRouteName(),
+        library: {
+          type: 'var',
+          name: getPackageRouteName(),
+        },
+        exposes: getExpose(),
+        shared: getShared(),
+        // remotes: getRemotes(envStr, modules),
       }),
     ].filter(Boolean),
   }, webpack);

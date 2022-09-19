@@ -10,9 +10,6 @@ const defaultConfig = {
     {
       index: path.resolve(process.cwd(), './node_modules/@choerodon/master/lib/entry.js'),
     },
-    {
-      registerOrganization: path.resolve(process.cwd(), './node_modules/@choerodon/master/lib/registerOrganizationEntry.js'),
-    },
   ],
   output: './dist',
   postcssConfig: {

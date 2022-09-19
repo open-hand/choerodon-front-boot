@@ -62,10 +62,10 @@ export default function build(program) {
   if (shouldUseEsbuild) {
     const EsbuildPlugin = require('esbuild-webpack-plugin').default;
     console.log('use esbuild as webpack minimizer');
-    webpackConfig.optimization.minimizer = [new EsbuildPlugin({ target: 'es2015' })];
+    // webpackConfig.optimization.minimizer = [new EsbuildPlugin({ target: 'es2015' })];
   }
   if (shouldAnalze) {
-    const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+    const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
     webpackConfig.plugins.push(
       new BundleAnalyzerPlugin(),
     );
