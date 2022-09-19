@@ -83,6 +83,11 @@ export default function start(program) {
           return console.log(err);
         }
         openBrowser(urls.localUrlForBrowser);
+        // 打印node异常关闭信息以及堆栈信息
+        process.on('uncaughtException', (catchError) => {
+          console.log(catchError);
+          console.log(catchError.stack);
+        });
         ['SIGINT', 'SIGTERM'].forEach((sig) => {
           process.on(sig, () => {
             devServer.close();

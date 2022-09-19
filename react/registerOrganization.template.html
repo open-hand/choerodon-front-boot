@@ -6,17 +6,9 @@
   <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
   <title>
-    <%= htmlWebpackPlugin.options.title %>
+    Choerodon | 数智化开发管理平台
   </title>
-  <script>
-    window.updateFavicon = function (faviconUrl) {
-      var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-      link.type = 'image/x-icon';
-      link.rel = 'shortcut icon';
-      link.href = faviconUrl;
-      document.getElementsByTagName('head')[0].appendChild(link);
-    }
-  </script>
+  <link id="dynamic-favicon" rel="shortcut icon" href="https://zkc7n-iam-service.obs.cn-east-3.myhuaweicloud.com:443/1128/CHOERODON-HUAWEI/e465b29c6a08402e95311b53a6fb32f8@WechatIMG480.png">
   <script><%= htmlWebpackPlugin.options.env %></script>
 </head>
 
