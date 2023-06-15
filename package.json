@@ -77,7 +77,7 @@
     "rimraf": "2.4.3",
     "sass": "^1.26.10",
     "sass-loader": "^13.0.0",
-    "shell-quote": "1.7.2",
+    "shell-quote": "1.7.3",
     "string-replace-loader": "^3.1.0",
     "strip-ansi": "6.0.0",
     "style-loader": "^3.3.1",
