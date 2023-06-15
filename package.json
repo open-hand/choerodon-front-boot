@@ -1,6 +1,6 @@
 {
   "name": "@choerodon/boot",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Choerodon Scaffold to run react application.",
   "homepage": "http://choerodon.io/",
   "main": "lib/index.js",
@@ -38,7 +38,7 @@
     "address": "1.1.2",
     "autoprefixer": "^6.7.7",
     "babel-loader": "^8.2.5",
-    "browserslist": "4.12.0",
+    "browserslist": "4.16.5",
     "buffer": "^6.0.3",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "2.4.2",
